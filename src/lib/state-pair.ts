@@ -53,6 +53,21 @@ function collapsesOnHome(homeCode: string, workCode: string): boolean {
 }
 
 /**
+ * The plain credit case: both states tax wages, no agreement between them, no
+ * Arizona WEC. The answer is formulaic — file a nonresident return, claim the
+ * credit at home, end up paying roughly the higher of the two rates — and only
+ * two numbers change between one such pair and the next. Ninety-nine of these
+ * carried a median of 17 trigrams no sibling had. They collapse to one page per
+ * home state, which can answer for every neighbour at once and compare them.
+ */
+function collapsesOnCredit(homeCode: string, workCode: string): boolean {
+  const azWec = workCode === 'AZ'
+    && (AZ_WEC_WITHHOLDING_EXEMPTION.eligibleResidentStates as readonly string[]).includes(homeCode);
+  return !noTax(states[homeCode]) && !noTax(states[workCode])
+    && !hasReciprocity(homeCode, workCode) && !azWec;
+}
+
+/**
  * Home→work pairs that deserve their own page.
  *
  * Excludes pairs whose work state has no income tax. Those are not distinct
@@ -66,7 +81,67 @@ function collapsesOnHome(homeCode: string, workCode: string): boolean {
  * every work state.
  */
 export function highValuePairs(): Array<[string, string]> {
-  return allCandidatePairs().filter(([h, w]) => !collapsesOnWork(h, w) && !collapsesOnHome(h, w));
+  return allCandidatePairs().filter(
+    ([h, w]) => !collapsesOnWork(h, w) && !collapsesOnHome(h, w) && !collapsesOnCredit(h, w),
+  );
+}
+
+/**
+ * Everything one home state faces across all its borders, on one page.
+ *
+ * Splitting a home state's neighbours across three collapsed pages (reciprocity
+ * / credit / no-income-tax) meant its own rate structure and facts appeared on
+ * all three, so none of that text counted as unique to any of them — which is
+ * why 24 collapsed pages still measured thin. It is also the wrong unit for the
+ * reader: someone in West Virginia commuting over a line wants one answer, not
+ * three pages to guess between.
+ */
+export interface HomeCommute {
+  homeCode: string;
+  reciprocity: string[];
+  credit: string[];
+  noTax: string[];
+}
+
+export function homeCommutePages(): HomeCommute[] {
+  const byHome = new Map<string, HomeCommute>();
+  for (const [h, w] of allCandidatePairs()) {
+    if (noTax(states[h])) continue; // covered by the mirror, grouped by work state
+    if (!byHome.has(h)) byHome.set(h, { homeCode: h, reciprocity: [], credit: [], noTax: [] });
+    const e = byHome.get(h)!;
+    if (hasReciprocity(h, w)) e.reciprocity.push(w);
+    else if (noTax(states[w])) e.noTax.push(w);
+    else e.credit.push(w);
+  }
+  const byName = (a: string, b: string) => states[a].name.localeCompare(states[b].name);
+  return [...byHome.values()]
+    .map((e) => ({ ...e, reciprocity: e.reciprocity.sort(byName), credit: e.credit.sort(byName), noTax: e.noTax.sort(byName) }))
+    .sort((a, b) => byName(a.homeCode, b.homeCode));
+}
+
+export function homeCommuteSlug(homeCode: string): string {
+  return `living-in-${stateSlugFn(states[homeCode].name)}-working-in-another-state`;
+}
+
+/** One entry per home state with ordinary credit-case neighbours. */
+export function creditPages(): Array<{ homeCode: string; workCodes: string[] }> {
+  const byHome = new Map<string, string[]>();
+  for (const [h, w] of allCandidatePairs()) {
+    if (!collapsesOnCredit(h, w)) continue;
+    if (!byHome.has(h)) byHome.set(h, []);
+    byHome.get(h)!.push(w);
+  }
+  return [...byHome.entries()]
+    .map(([homeCode, workCodes]) => ({
+      homeCode,
+      workCodes: workCodes.sort((a, b) => states[a].name.localeCompare(states[b].name)),
+    }))
+    .sort((a, b) => states[a.homeCode].name.localeCompare(states[b.homeCode].name));
+}
+
+/** Slug for a collapsed credit page. */
+export function creditSlug(homeCode: string): string {
+  return `living-in-${stateSlugFn(states[homeCode].name)}-working-in-a-neighbouring-state`;
 }
 
 /**

@@ -12,7 +12,7 @@ import { formatMoney, formatPct } from '../../../lib/tax-engine';
 import { describeStateTax } from '../../../lib/state-copy';
 import { stateSlug } from '../../../lib/slug';
 import { siblingStates } from '../../../data/neighbors';
-import { describeStateFacts, neighbourComparison, describeNeighbours } from '../../../lib/state-facts';
+import { describeStateFacts, neighbourComparison, describeNeighbours, neighbourSentences } from '../../../lib/state-facts';
 import { getStandardDeduction } from '../../../lib/tax-engine';
 import type { StateData } from '../../../data/types';
 
@@ -29,6 +29,7 @@ const ladder = [45000, 75000, 120000].map((g) => paycheckEstimate(g, code, 'sing
 const facts = describeStateFacts(code, state, 'wages');
 const neighbours = neighbourComparison(code, EXAMPLE);
 const neighbourSummary = describeNeighbours(code, state, neighbours, EXAMPLE);
+const neighbourLines = neighbourSentences(state, neighbours);
 const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);
 const noTax = state.noIncomeTax === true || state.type === 'none';
 
@@ -110,6 +111,11 @@ const description = `Estimate 2026 take-home pay in ${state.name}: federal incom
         ))}
       </tbody>
     </table>
+  )}
+  {neighbourLines.length > 0 && (
+    <ul>
+      {neighbourLines.map((l) => <li data-source="lib/tax-engine.ts calcStateTax()">{l}</li>)}
+    </ul>
   )}
   <p>
     If you live on one side of the {state.name} state line and work on the other,

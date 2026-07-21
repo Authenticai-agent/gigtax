@@ -1,37 +1,21 @@
 ---
 /**
- * Hub for the state-pair pages — groups every generated pair by home state so
- * none of the 231 pages is orphaned (each is one click from here, and this hub
- * is linked from the homepage).
+ * Hub for the cross-border guides. One entry per taxing home state, plus one
+ * per work state reachable from a no-income-tax state. Nothing is orphaned.
  */
 import Base from '../../layouts/Base.astro';
 import { states } from '../../data/states';
-import {
-  highValuePairs, stateSlug,
-  noTaxWorkPages, noTaxWorkSlug,
-  noTaxHomePages, noTaxHomeSlug,
-} from '../../lib/state-pair';
+import { homeCommutePages, homeCommuteSlug, noTaxHomePages } from '../../lib/state-pair';
 
-// Group pairs by home state, sorted by state name.
-const byHome = new Map<string, string[]>();
-for (const [home, work] of highValuePairs()) {
-  if (!byHome.has(home)) byHome.set(home, []);
-  byHome.get(home)!.push(work);
-}
-// Where one side has no income tax the answer does not vary by that side, so
-// those combinations are one page each instead of one per partner state. They
-// are listed here too — nothing generated is left orphaned.
-const collapsedWork = noTaxWorkPages();
-const collapsedHome = noTaxHomePages();
-const noTaxWorkFor = new Map(collapsedWork.map((e) => [e.homeCode, e.workCodes]));
-const homes = [...new Set([...byHome.keys(), ...noTaxWorkFor.keys()])]
-  .sort((a, b) => states[a].name.localeCompare(states[b].name));
-const total = highValuePairs().length + collapsedWork.length + collapsedHome.length;
+const homes = homeCommutePages();
+const inbound = new Map(noTaxHomePages().map((e) => [e.workCode, e.homeCodes]));
+const total = homes.length;
+const name = (c: string) => states[c].name;
 ---
 
 <Base
   title="Living and working in different states — 2026 state tax guides"
-  description="If you live in one state and work in another, which state taxes your wages in 2026? Reciprocity, nonresident returns, and credits explained for every bordering-state pair."
+  description="If you live in one state and work in another, which state taxes your wages in 2026? Reciprocity agreements, nonresident returns and credits, worked out for every state."
 >
   <section class="hero">
     <p class="hero-label">2026 tax year</p>
@@ -40,52 +24,36 @@ const total = highValuePairs().length + collapsedWork.length + collapsedHome.len
   </section>
 
   <p>
-    Commute across a state line and two tax systems can touch your paycheck. Whether
-    you owe one state or both depends on reciprocity agreements and the credit for
-    taxes paid. These {total} guides cover the common cross-border pairs with the
-    actual 2026 rules and a worked example for each.
+    Commute across a state line and two tax systems can touch your paycheck. Whether you owe one
+    state or both depends on reciprocity agreements and the credit for taxes paid. These {total}
+    guides work it out one state at a time, in both directions, with the actual 2026 rates for every
+    neighbour.
   </p>
 
-  {collapsedHome.length > 0 && (
-    <>
-      <h2>Living in a state with no income tax</h2>
-      <p>
-        Nine states levy no personal income tax. If you live in one of them the home-state half of the
-        question disappears entirely, so these are grouped by where you work rather than where you live.
-      </p>
-      <ul class="link-columns">
-        {collapsedHome.map((e) => (
-          <li>
-            <a href={`/working-in-one-state-living-in-another/${noTaxHomeSlug(e.workCode)}/`}>
-              …working in {states[e.workCode].name}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </>
-  )}
+  <h2>Pick the state you live in — or the one you work in</h2>
+  <p>
+    Each guide covers both directions: commuting out of that state, and commuting into it from a
+    neighbour, including from the nine states with no income tax at all.
+  </p>
+  <ul class="link-columns">
+    {homes.map((e) => (
+      <li>
+        <a href={`/working-in-one-state-living-in-another/${homeCommuteSlug(e.homeCode)}/`}>
+          {name(e.homeCode)}{inbound.has(e.homeCode) ? ' ↔' : ''}
+        </a>
+      </li>
+    ))}
+  </ul>
+  <p style="font-family: var(--mono); font-size: .78rem; color: var(--muted);">
+    ↔ also covers commuting in from a no-income-tax neighbour.
+  </p>
 
-  {homes.map((home) => (
-    <>
-      <h2>Living in {states[home].name}</h2>
-      <ul class="link-columns">
-        {(byHome.get(home) ?? [])
-          .sort((a, b) => states[a].name.localeCompare(states[b].name))
-          .map((work) => (
-            <li>
-              <a href={`/working-in-one-state-living-in-another/living-in-${stateSlug(states[home].name)}-working-in-${stateSlug(states[work].name)}/`}>
-                …working in {states[work].name}
-              </a>
-            </li>
-          ))}
-        {noTaxWorkFor.has(home) && (
-          <li>
-            <a href={`/working-in-one-state-living-in-another/${noTaxWorkSlug(home)}/`}>
-              …working in a no-income-tax state ({noTaxWorkFor.get(home)!.map((c) => states[c].name).join(', ')})
-            </a>
-          </li>
-        )}
-      </ul>
-    </>
-  ))}
+  <h2>What these guides cover, and what they don't</h2>
+  <ul>
+    <li>State income tax on wages. Federal tax and FICA are the same wherever you commute.</li>
+    <li>Reciprocity agreements cover wages paid by an employer — not self-employment income.</li>
+    <li>Local and municipal income tax is called out where the dataset has it, but is not in the figures.</li>
+    <li>Worked examples assume a single filer and each state's own rules for 2026.</li>
+    <li>Informational only, not tax advice.</li>
+  </ul>
 </Base>
