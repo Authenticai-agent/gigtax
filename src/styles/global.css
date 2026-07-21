@@ -1,0 +1,109 @@
+/*
+ * MoneyScope brand design system.
+ * Harvested from legacy/css/styles.css (the original app's look) and adapted
+ * for the Astro build. Fonts: Syne (display), DM Mono (labels), Literata (body).
+ */
+:root {
+  --ink: #0f0e0c;
+  --paper: #f4f1eb;
+  --accent: #c94a1e;
+  --g: #2b5b3c;
+  --b: #1d3a6b;
+  --p: #7a3b8f;
+  --y: #9a6b00;
+  --muted: #6b6760;
+  --border: rgba(15, 14, 12, 0.12);
+  --tag-bg: rgba(15, 14, 12, 0.06);
+  --mono: 'DM Mono', ui-monospace, monospace;
+  --serif: 'Literata', Georgia, serif;
+  --disp: 'Syne', system-ui, sans-serif;
+  --radius: 8px;
+  --shadow: 0 2px 12px rgba(15, 14, 12, 0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--serif); background: var(--paper); color: var(--ink); font-size: 15px; line-height: 1.72; min-height: 100vh; }
+
+/* Header */
+.site-header { background: #fff; border-bottom: 1.5px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.header-inner { max-width: 1100px; margin: 0 auto; padding: .85rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.logo { font-family: var(--disp); font-size: 1.35rem; font-weight: 800; color: var(--ink); text-decoration: none; letter-spacing: -.02em; }
+.logo-accent { color: var(--accent); }
+.main-nav { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+.main-nav a { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; transition: .2s; }
+.main-nav a:hover { color: var(--ink); border-color: var(--accent); }
+
+/* Main + typography */
+main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+h1, h2, h3, h4 { font-family: var(--disp); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; }
+h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); }
+h2 { font-size: clamp(1.3rem, 3vw, 1.8rem); margin: 2.5rem 0 1rem; }
+h3 { font-size: 1.15rem; margin: 1.75rem 0 .6rem; }
+p { margin-bottom: 1rem; max-width: 70ch; }
+a { color: var(--accent); }
+ul { margin: 0 0 1rem 1.25rem; }
+
+/* Hero */
+.hero { padding: 2.5rem 0 2rem; border-bottom: 2px solid var(--ink); margin-bottom: 2.5rem; }
+.hero-label { font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: .6rem; }
+.hero h1 { margin-bottom: .75rem; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.tagline { font-size: 1rem; font-family: var(--mono); color: var(--g); border-left: 3px solid var(--g); padding-left: .75rem; margin: .75rem 0 0; line-height: 1.5; }
+
+/* Section label */
+.section-label { font-family: var(--mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: .4rem; }
+
+/* Breadcrumbs */
+.breadcrumbs { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 1.25rem; }
+.breadcrumbs a { color: var(--b); text-decoration: none; }
+.breadcrumbs a:hover { text-decoration: underline; }
+
+/* Tiles */
+.tile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 1.5rem 0; }
+.tile-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem; transition: transform .15s, box-shadow .15s; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 4px; }
+.tile-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: rgba(15, 14, 12, .2); }
+.tile-name { font-family: var(--disp); font-size: 15px; font-weight: 700; }
+.tile-desc { font-size: 12px; color: var(--muted); font-family: var(--mono); line-height: 1.45; }
+
+/* Calculator panel */
+.calc-panel { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; }
+.calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem 1.25rem; }
+.form-group { display: flex; flex-direction: column; }
+.form-group label { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 6px; }
+.form-group input, .form-group select { width: 100%; padding: .6rem .75rem; border: 1.5px solid var(--border); border-radius: 4px; font-family: var(--serif); font-size: 16px; background: #fff; color: var(--ink); transition: border-color .2s; }
+.form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
+
+/* Results box (dark, mint numbers) */
+.results-box { background: var(--ink); color: var(--paper); padding: 1.5rem; border-radius: var(--radius); margin: 1.5rem 0; }
+.results-box h3 { color: var(--paper); font-family: var(--disp); font-size: 1.2rem; margin: 0 0 1rem; }
+.result-line { display: flex; justify-content: space-between; align-items: baseline; padding: .4rem 0; border-bottom: 1px solid rgba(255, 255, 255, .1); font-family: var(--mono); font-size: 13px; }
+.result-line.total { border-top: 2px solid var(--accent); border-bottom: none; margin-top: .5rem; padding-top: .75rem; font-weight: 700; font-size: 15px; }
+.result-line .num { color: #a8e6cf; font-variant-numeric: tabular-nums; }
+.results-note { font-family: var(--mono); font-size: 11px; color: rgba(244, 241, 235, .55); margin: .75rem 0 0; }
+
+/* Data table */
+.data-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 1rem 0; font-family: var(--mono); }
+.data-table th { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 8px 10px; border-bottom: 1.5px solid var(--ink); }
+.data-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+.data-table td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table tr.total td { font-weight: 700; border-top: 1.5px solid var(--ink); }
+
+/* Callout */
+.callout { border-left: 3px solid var(--accent); background: rgba(201, 74, 30, .05); padding: .85rem 1.1rem; margin: 1.1rem 0; font-size: 14px; line-height: 1.6; border-radius: 0 4px 4px 0; }
+.callout strong { font-family: var(--disp); font-size: 10px; text-transform: uppercase; letter-spacing: .12em; display: block; margin-bottom: .2rem; color: var(--accent); }
+
+/* Footer */
+.site-footer { border-top: 1.5px solid var(--border); padding: 2rem 1.5rem; }
+.disclaimer { max-width: 1100px; margin: 0 auto; color: var(--muted); font-size: .82rem; font-family: var(--mono); line-height: 1.6; }
+
+/* Column list for state/platform indexes */
+.link-columns { columns: 2; font-family: var(--mono); font-size: 13px; }
+.link-columns li { margin-bottom: .3rem; break-inside: avoid; }
+
+@media (max-width: 720px) {
+  main { padding: 1.25rem 1rem 4rem; }
+  .hero { padding: 1.75rem 0 1.25rem; }
+  .calc-panel { padding: 1.25rem; }
+  .link-columns { columns: 1; }
+}

@@ -1,16 +1,17 @@
 ---
 /**
  * Base layout: <head> management, self-referencing canonical derived from
- * Astro.site (the single SITE_URL), site nav, and the footer disclaimer.
+ * Astro.site (the single SITE_URL), brand header, and the footer disclaimer.
  * Zero JavaScript ships from this layout — islands opt in per page.
  */
+import '../styles/global.css';
+
 interface Props {
   title: string;
   description: string;
 }
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const year = 2026;
 ---
 
 <!doctype html>
@@ -26,13 +27,21 @@ const year = 2026;
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Literata:ital,wght@0,400;0,500;1,400&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header class="site-header">
-      <a href="/" class="logo"><span>MoneyScope</span>Calculators</a>
-      <nav>
-        <a href="/1099-tax-calculator/">1099 tax calculator</a>
-      </nav>
+      <div class="header-inner">
+        <a href="/" class="logo"><span class="logo-accent">MoneyScope</span>Calculators</a>
+        <nav class="main-nav">
+          <a href="/1099-tax-calculator/">1099 calculator</a>
+        </nav>
+      </div>
     </header>
 
     <main>
@@ -41,33 +50,10 @@ const year = 2026;
 
     <footer class="site-footer">
       <p class="disclaimer">
-        For informational purposes only. Not tax advice. {year} tax year figures.
+        For informational purposes only. Not tax advice. 2026 tax year figures.
         Verify with <a href="https://www.irs.gov" rel="noopener">IRS.gov</a> or a
-        qualified tax professional before filing.
+        qualified tax professional before filing. · MoneyScopeCalculators
       </p>
     </footer>
-
-    <style>
-      :root {
-        --ink: #0f0e0c; --paper: #f4f1eb; --accent: #c94a1e;
-        --muted: #6b6760; --border: rgba(15, 14, 12, 0.12);
-      }
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: Georgia, 'Times New Roman', serif; background: var(--paper); color: var(--ink); line-height: 1.6; }
-      .site-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1rem 1.5rem; background: #fff; border-bottom: 1.5px solid var(--border); }
-      .logo { font-weight: 800; font-size: 1.2rem; color: var(--ink); text-decoration: none; font-family: system-ui, sans-serif; }
-      .logo span { color: var(--accent); }
-      nav a { margin-left: 1rem; color: var(--ink); text-decoration: none; font-family: system-ui, sans-serif; font-size: .95rem; }
-      main { max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-      h1 { font-family: system-ui, sans-serif; font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.15; margin-bottom: 1rem; }
-      h2 { font-family: system-ui, sans-serif; font-size: 1.3rem; margin: 2rem 0 .75rem; }
-      p { margin-bottom: 1rem; }
-      a { color: var(--accent); }
-      .site-footer { border-top: 1.5px solid var(--border); padding: 2rem 1.5rem; }
-      .disclaimer { max-width: 780px; margin: 0 auto; color: var(--muted); font-size: .82rem; }
-      table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-family: system-ui, sans-serif; font-size: .95rem; }
-      th, td { text-align: left; padding: .5rem .75rem; border-bottom: 1px solid var(--border); }
-      ul { margin: 0 0 1rem 1.25rem; }
-    </style>
   </body>
 </html>

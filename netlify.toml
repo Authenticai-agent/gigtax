@@ -1,0 +1,11 @@
+# Netlify build config for the Astro static site.
+# base = "" means build from the repo root (NOT a subfolder). If the Netlify UI
+# has a "Base directory" set, clear it — a stale value there overrides this file
+# and points the build at a folder that doesn't exist.
+[build]
+  base = ""
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"

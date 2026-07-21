@@ -8,18 +8,22 @@ import { stateList } from '../../data/states';
   title="1099 tax calculator (2026) — self-employment & income tax estimate"
   description="Estimate 2026 taxes on 1099 income: self-employment tax, federal income tax, and your state's income tax. Free, no sign-up, figures verified from IRS sources."
 >
-  <h1>1099 tax calculator (2026)</h1>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>1099 tax calculator</h1>
+    <p class="tagline">No tax is withheld on 1099 income — estimate what you'll owe and set it aside.</p>
+  </section>
+
   <p>
-    If you're paid on a 1099, no tax is withheld — you owe self-employment tax
-    (15.3% on 92.35% of net profit) plus federal and state income tax. This
-    calculator estimates all three so you know what to set aside.
+    If you're paid on a 1099, you owe self-employment tax (15.3% on 92.35% of net
+    profit) plus federal and state income tax. This calculator estimates all three.
   </p>
 
   <QuickEstimator client:load defaultSeIncome={50000} />
 
   <h2>Choose your state</h2>
   <p>Each state page is built on that state's 2026 income tax rules with a worked example:</p>
-  <ul style="columns: 2; font-family: system-ui, sans-serif; font-size: .95rem;">
+  <ul class="link-columns">
     {stateList.map(([code, s]) => (
       <li><a href={`/1099-tax-calculator/${code.toLowerCase()}/`}>1099 taxes in {s.name}</a></li>
     ))}
