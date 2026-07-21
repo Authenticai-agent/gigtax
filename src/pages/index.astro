@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import QuickEstimator from '../components/calculators/QuickEstimator.tsx';
+import { VERIFIED, LAST_VERIFIED } from '../data/federal';
+import { stateList } from '../data/states';
+---
+
+<Base
+  title="MoneyScope — 2026 tax calculators for 1099, gig, and self-employed income"
+  description="Free 2026 tax calculators. Estimate self-employment tax, federal and state income tax, and what to set aside — with figures verified from IRS sources."
+>
+  <h1>2026 tax calculators for people who work for themselves</h1>
+  <p>
+    Estimate self-employment tax, federal income tax, and your state's income tax
+    in one place. Every figure comes from the verified 2026 dataset
+    (<code>{VERIFIED}</code>, last verified {LAST_VERIFIED}) — the same numbers that
+    drive the worked examples on each page.
+  </p>
+
+  <h2>Quick estimate</h2>
+  <QuickEstimator client:load defaultSeIncome={50000} />
+
+  <h2>1099 tax calculator by state</h2>
+  <p>Pick your state for a page built on that state's 2026 income tax rules:</p>
+  <ul style="columns: 2; font-family: system-ui, sans-serif; font-size: .95rem;">
+    {stateList.map(([code, s]) => (
+      <li><a href={`/1099-tax-calculator/${code.toLowerCase()}/`}>{s.name}</a></li>
+    ))}
+  </ul>
+</Base>
