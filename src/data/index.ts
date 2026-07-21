@@ -15,6 +15,7 @@ import {
 } from './federal';
 import { states, stateMetadata } from './states';
 import { platforms, platformList } from './platforms';
+import { reciprocity, hasReciprocity, DC_EXEMPTS_ALL_NONRESIDENTS, VERIFIED_RECIPROCITY } from './reciprocity';
 import type { TaxData } from './types';
 
 export const taxData: TaxData = {
@@ -40,6 +41,10 @@ export {
   stateMetadata,
   platforms,
   platformList,
+  reciprocity,
+  hasReciprocity,
+  DC_EXEMPTS_ALL_NONRESIDENTS,
+  VERIFIED_RECIPROCITY,
   VERIFIED,
 };
 export * from './types';
