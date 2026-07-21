@@ -13,6 +13,9 @@ interface Props {
   presetState?: string;
   defaultSeIncome?: number;
   defaultW2Income?: number;
+  /** If set, changing the state dropdown navigates to that state's page under
+   *  this base (e.g. "/1099-tax-calculator"), keeping URL and content in sync. */
+  stateBaseUrl?: string;
 }
 
 const STATUSES = [
@@ -26,7 +29,7 @@ const stateOptions = Object.entries(states)
   .map(([code, s]) => [code, s.name] as const)
   .sort((a, b) => a[1].localeCompare(b[1]));
 
-export default function QuickEstimator({ presetState = 'CA', defaultSeIncome = 40000, defaultW2Income = 0 }: Props) {
+export default function QuickEstimator({ presetState = 'CA', defaultSeIncome = 40000, defaultW2Income = 0, stateBaseUrl }: Props) {
   const [seIncome, setSeIncome] = useState(defaultSeIncome);
   const [seDeductions, setSeDeductions] = useState(0);
   const [w2Income, setW2Income] = useState(defaultW2Income);
@@ -39,6 +42,10 @@ export default function QuickEstimator({ presetState = 'CA', defaultSeIncome = 4
   );
 
   const num = (v: string) => (v === '' ? 0 : Math.max(0, Number(v) || 0));
+  const onStateChange = (code: string) => {
+    if (stateBaseUrl) window.location.href = `${stateBaseUrl}/${code.toLowerCase()}/`;
+    else setStateCode(code);
+  };
 
   return (
     <div className="calc-panel">
@@ -63,7 +70,7 @@ export default function QuickEstimator({ presetState = 'CA', defaultSeIncome = 4
         </div>
         <div className="form-group">
           <label htmlFor="state">State</label>
-          <select id="state" value={stateCode} onChange={(e) => setStateCode(e.target.value)}>
+          <select id="state" value={stateCode} onChange={(e) => onStateChange(e.target.value)}>
             {stateOptions.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
           </select>
         </div>

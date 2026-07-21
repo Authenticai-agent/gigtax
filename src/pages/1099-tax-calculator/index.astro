@@ -19,7 +19,10 @@ import { stateList } from '../../data/states';
     profit) plus federal and state income tax. This calculator estimates all three.
   </p>
 
-  <QuickEstimator client:load defaultSeIncome={50000} />
+  <p style="font-family: var(--mono); font-size: .8rem; color: var(--muted);">
+    Enter your numbers and the estimate updates live. Pick your state to open its full 1099 guide.
+  </p>
+  <QuickEstimator client:load defaultSeIncome={50000} stateBaseUrl="/1099-tax-calculator" />
 
   <h2>Choose your state</h2>
   <p>Each state page is built on that state's 2026 income tax rules with a worked example:</p>

@@ -37,7 +37,7 @@ const description = `Estimate 2026 take-home pay in ${state.name}: federal incom
     <p class="tagline">{describeStateTax(state)}</p>
   </section>
 
-  <PaycheckCalculator client:load presetState={code} defaultGross={EXAMPLE} />
+  <PaycheckCalculator client:load presetState={code} defaultGross={EXAMPLE} stateBaseUrl="/paycheck-calculator" />
 
   <h2>Worked example: {formatMoney(EXAMPLE)} salary in {state.name}</h2>
   <p>A single filer earning {formatMoney(EXAMPLE)} in {state.name}, taking the standard deduction, keeps an estimated:</p>

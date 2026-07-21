@@ -20,7 +20,10 @@ import { stateList } from '../../data/states';
     all three so you can see your real annual take-home.
   </p>
 
-  <PaycheckCalculator client:load defaultGross={75000} />
+  <p style="font-family: var(--mono); font-size: .8rem; color: var(--muted);">
+    Enter your salary and the estimate updates live. Pick your state to open its full paycheck guide.
+  </p>
+  <PaycheckCalculator client:load defaultGross={75000} stateBaseUrl="/paycheck-calculator" />
 
   <h2>Paycheck calculator by state</h2>
   <p>Each state page is preset to that state's 2026 income tax rules with a worked example:</p>

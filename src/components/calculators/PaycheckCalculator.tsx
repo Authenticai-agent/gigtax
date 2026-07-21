@@ -11,6 +11,8 @@ import { states } from '../../data/states';
 interface Props {
   presetState?: string;
   defaultGross?: number;
+  /** If set, changing state navigates to that state's page under this base. */
+  stateBaseUrl?: string;
 }
 
 const STATUSES = [
@@ -24,13 +26,17 @@ const stateOptions = Object.entries(states)
   .map(([code, s]) => [code, s.name] as const)
   .sort((a, b) => a[1].localeCompare(b[1]));
 
-export default function PaycheckCalculator({ presetState = 'CA', defaultGross = 75000 }: Props) {
+export default function PaycheckCalculator({ presetState = 'CA', defaultGross = 75000, stateBaseUrl }: Props) {
   const [gross, setGross] = useState(defaultGross);
   const [status, setStatus] = useState<string>('single');
   const [stateCode, setStateCode] = useState(presetState);
 
   const r = useMemo(() => paycheckEstimate(gross, stateCode, status), [gross, stateCode, status]);
   const num = (v: string) => (v === '' ? 0 : Math.max(0, Number(v) || 0));
+  const onStateChange = (code: string) => {
+    if (stateBaseUrl) window.location.href = `${stateBaseUrl}/${code.toLowerCase()}/`;
+    else setStateCode(code);
+  };
 
   return (
     <div className="calc-panel">
@@ -47,7 +53,7 @@ export default function PaycheckCalculator({ presetState = 'CA', defaultGross = 
         </div>
         <div className="form-group">
           <label htmlFor="state">State</label>
-          <select id="state" value={stateCode} onChange={(e) => setStateCode(e.target.value)}>
+          <select id="state" value={stateCode} onChange={(e) => onStateChange(e.target.value)}>
             {stateOptions.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
           </select>
         </div>
