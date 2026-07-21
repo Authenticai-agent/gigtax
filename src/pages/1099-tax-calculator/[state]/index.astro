@@ -112,17 +112,6 @@ const description = `Estimate 2026 self-employment, federal, and ${state.name} s
       <tr class="total"><td>After-tax income</td><td>{formatMoney(r.afterTax)}</td></tr>
     </tbody>
   </table>
-  <p>
-    These figures are computed by the same engine that powers the calculator
-    above, from the verified 2026 dataset — so the example can never contradict
-    the tool.
-  </p>
-
-  <div class="callout">
-    <strong>Set aside</strong>
-    Based on this example, set aside about {formatPct(r.effectiveRate)} of your 1099
-    income for taxes. Self-employed workers pay this via quarterly estimated payments.
-  </div>
 
   {facts.length > 0 && (
     <>

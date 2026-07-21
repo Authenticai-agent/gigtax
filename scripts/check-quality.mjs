@@ -186,6 +186,37 @@ for (const p of pages) {
   }
 }
 
+/* ---- 7. data integrity: a state that taxes income must be computable ------- */
+
+/**
+ * West Virginia was rendering $0 of state income tax on every page. Its data
+ * entry says `type: "graduated"` with a topRate, but carries no bracket array —
+ * so the engine loops over nothing and returns zero. A state that has an income
+ * tax must never silently compute to nothing; that is a wrong number presented
+ * with the same confidence as a right one.
+ */
+const statesFile = readFileSync('src/data/states.ts', 'utf8');
+// Only the `states` object — stateMetadata below it has nested entries that
+// would otherwise match the same shape.
+const statesSrc = statesFile.slice(
+  statesFile.indexOf('export const states'),
+  statesFile.indexOf('export const stateMetadata'),
+);
+const entryRe = /"(\w{2})":\s*\{([\s\S]*?)\n  \}/g;
+for (const [, code, body] of statesSrc.matchAll(entryRe)) {
+  const noTax = /"noIncomeTax":\s*true/.test(body) || /"type":\s*"none"/.test(body);
+  if (noTax) continue;
+  const flat = /"type":\s*"flat"/.test(body) && /"rate":\s*[\d.]/.test(body);
+  const graduated = /"type":\s*"graduated"/.test(body) && /"brackets_single":\s*\[/.test(body);
+  if (!flat && !graduated) {
+    const name = (body.match(/"name":\s*"([^"]+)"/) ?? [, code])[1];
+    failures.push(
+      `data: ${name} (${code}) has an income tax but no usable rate — every page computes $0 for it. ` +
+        `Needs brackets_single (or a flat rate) in src/data/states.ts.`,
+    );
+  }
+}
+
 /* ---- output --------------------------------------------------------------- */
 
 worst.sort((a, b) => b.sim - a.sim);
@@ -211,7 +242,10 @@ if (uniqWarn.length) {
   if (uniqWarn.length > 10) console.log(`  …and ${uniqWarn.length - 10} more`);
 }
 
-const uniqFail = [...new Set(failures)];
+const uniqFail = [...new Set(failures)].sort((a, b) => {
+  const rank = (f) => (f.startsWith('near-duplicate') ? 1 : 0);
+  return rank(a) - rank(b);
+});
 if (uniqFail.length) {
   console.log(`\n${uniqFail.length} failure(s):`);
   for (const f of uniqFail.slice(0, 25)) console.log(`  ✗ ${f}`);

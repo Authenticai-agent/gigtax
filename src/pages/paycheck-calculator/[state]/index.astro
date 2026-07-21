@@ -88,7 +88,7 @@ const description = `Estimate 2026 take-home pay in ${state.name}: federal incom
 
   {facts.length > 0 && (
     <>
-      <h2>What comes out of a {state.name} paycheck beyond income tax</h2>
+      <h2>What else comes out of a paycheck in {state.name}</h2>
       {facts.map((p) => <p data-source={`data/states.ts → stateMetadata, ${code}.note`}>{p}</p>)}
     </>
   )}
@@ -112,7 +112,7 @@ const description = `Estimate 2026 take-home pay in ${state.name}: federal incom
     </table>
   )}
   <p>
-    If you live on one side of a {state.name} border and work on the other,
+    If you live on one side of the {state.name} state line and work on the other,
     <a href="/working-in-one-state-living-in-another/"> which state taxes your wages</a> depends on
     whether the two have a reciprocity agreement.
   </p>

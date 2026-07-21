@@ -101,12 +101,6 @@ const description = `What to send each quarter on 1099 income in ${state.name} f
       </tr>
     </tbody>
   </table>
-  <p>
-    Those figures come from the same engine as the calculator above: {formatMoney(ex.federalYear)}
-    of federal income tax and self-employment tax for the year
-    {noTax ? '' : `, plus ${formatMoney(ex.stateYear)} of ${state.name} income tax`}, at
-    an effective rate of {(ex.effectiveRate * 100).toFixed(1)}%.
-  </p>
 
   <h2>The {state.name} side of each payment</h2>
   {stateParas.map((p) => <p data-source={`data/states.ts → ${code}`}>{p}</p>)}

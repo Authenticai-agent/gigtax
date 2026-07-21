@@ -152,22 +152,4 @@ const description = noTaxWork
     </div>
   )}
 
-  <h2>The short version</h2>
-  <ul>
-    {o.type === 'reciprocity' && (
-      <li>
-        {o.work.name} will not tax these wages — file{' '}
-        {o.exemptionForm
-          ? `${o.exemptionForm} with your ${o.work.name} employer`
-          : `${o.work.name}'s nonresident exemption certificate with your employer (the 2026 dataset does not carry its form number — ask ${o.work.name}'s tax agency)`}
-        {' '}and report everything to {o.home.name}.
-      </li>
-    )}
-    {o.type === 'reciprocity' && <li>No {o.work.name} nonresident return for your wages.</li>}
-    {(o.type === 'credit' || o.type === 'az-wec') && <li>File {/^[AEIOU]/.test(o.work.name) ? 'an' : 'a'} {o.work.name} nonresident return, then claim a credit on your {o.home.name} return.</li>}
-    {(o.type === 'credit' || o.type === 'az-wec') && <li>Your combined state tax is about the higher of the two states' rates — not both stacked.</li>}
-    {o.type === 'az-wec' && <li>As {/^[AEIOU]/.test(o.home.name) ? 'an' : 'a'} {o.home.name} resident you may file Arizona Form WEC to skip withholding, but Arizona tax still applies.</li>}
-    {o.type === 'single-state' && <li>Only one of the two states taxes wage income, so you file in that state only.</li>}
-    {o.type === 'no-tax-either' && <li>No state income tax applies in either state — federal tax still does.</li>}
-  </ul>
 </Base>
