@@ -7,7 +7,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "node scripts/check-quality.mjs",
+    "check:report": "node scripts/check-quality.mjs --report"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",
