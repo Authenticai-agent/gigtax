@@ -169,39 +169,6 @@ export function buildQuarterlyFaqs(code: string, state: StateData, ex: Quarterly
       source: 'lib/tax-engine.ts calcCombined() + federal.quarterlyEstimated.safeHarborRules.rule1',
     },
     {
-      q: 'Do I have to pay quarterly at all?',
-      a:
-        `Only if you expect to owe at least ${formatMoney(MIN_TO_OWE)} when you file. Below that the ` +
-        `IRS does not require estimated payments. The ${formatMoney(ex.income)} example above owes ` +
-        `${formatMoney(ex.totalYear)} for the year, so it is well over the line.`,
-      source: 'data/federal.ts → federal.quarterlyEstimated.safeHarborRules.minimumToOweEstimated',
-    },
-    {
-      q: 'What is the safe harbor, and how do I stay inside it?',
-      a:
-        `Two routes avoid an underpayment penalty. ${SAFE_HARBOR_CURRENT}. Or: ` +
-        `${SAFE_HARBOR_PRIOR}. The prior-year route is the safer one when this year's ` +
-        `income is hard to predict, because the target is a number you already know from your last return.`,
-      source: 'data/federal.ts → federal.quarterlyEstimated.safeHarborRules',
-    },
-    {
-      q: 'What happens if I miss a payment?',
-      a:
-        `The IRS charges an underpayment penalty on the shortfall, at the ${PENALTY_RATE.toLowerCase()}, ` +
-        `accruing from that quarter's due date until the money is paid. It is charged per quarter, so a ` +
-        `late first payment still costs something even if you catch up fully in April.`,
-      source: 'data/federal.ts → federal.quarterlyEstimated.safeHarborRules.underpaymentPenaltyRate',
-    },
-    {
-      q: 'My 1099 income is uneven — do I still pay a flat quarter?',
-      a:
-        `The four periods are not equal quarters: ${quarters
-          .map((q) => `Q${q.quarter} covers ${q.periodLabel}`)
-          .join(', ')}. Equal payments are the simple route; if your income is concentrated in one ` +
-        `period you can instead annualise your income so each payment tracks what you actually earned.`,
-      source: 'data/federal.ts → federal.quarterlyEstimated.quarters',
-    },
-    {
       q: noTax
         ? `Does ${state.name} require estimated payments?`
         : `Does ${state.name} use the same due dates as the IRS?`,

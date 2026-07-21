@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import QuickEstimator from '../../components/calculators/QuickEstimator.tsx';
 import { stateList } from '../../data/states';
-import { stateSlug } from '../../lib/state-copy';
+import { stateSlug, describeSelfEmploymentTax } from '../../lib/state-copy';
 ---
 
 <Base
@@ -21,6 +21,14 @@ import { stateSlug } from '../../lib/state-copy';
   </p>
 
   <QuickEstimator client:load defaultSeIncome={50000} stateHrefBase="/1099-tax-calculator/" />
+
+  <h2>How self-employment tax is built</h2>
+  <p data-source="data/federal.ts → federal.selfEmployment">{describeSelfEmploymentTax()}</p>
+  <p>
+    This federal layer is identical in all 51 jurisdictions. What changes from
+    state to state is the income tax stacked on top of it — which is what each
+    state page below works out.
+  </p>
 
   <h2>Choose your state</h2>
   <p>Each state page is built on that state's 2026 income tax rules with a worked example:</p>

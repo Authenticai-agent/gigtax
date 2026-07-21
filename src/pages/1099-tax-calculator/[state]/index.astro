@@ -14,12 +14,12 @@ import { siblingStates } from '../../../data/neighbors';
 import { calcCombined, formatMoney, formatPct, getStandardDeduction } from '../../../lib/tax-engine';
 import {
   describeStateTax,
-  describeSelfEmploymentTax,
   describeStateLayer,
   bracketRows,
   buildStateFaqs,
   stateSlug,
 } from '../../../lib/state-copy';
+import { describeStateFacts, neighbourComparison, describeNeighbours } from '../../../lib/state-facts';
 import type { StateData } from '../../../data/types';
 
 export function getStaticPaths() {
@@ -48,6 +48,10 @@ const faqs = buildStateFaqs(code, state, {
   effectiveRate: r.effectiveRate,
 });
 const siblings = siblingStates(code, 4).map((c) => [c, states[c]] as const).filter(([, s]) => s);
+const noTax = state.noIncomeTax === true || state.type === 'none';
+const facts = describeStateFacts(code, state);
+const neighbours = neighbourComparison(code, EXAMPLE_INCOME);
+const neighbourSummary = describeNeighbours(code, state, neighbours, EXAMPLE_INCOME);
 
 const title = `1099 tax calculator — ${state.name} (2026)`;
 const description = `Estimate 2026 self-employment, federal, and ${state.name} state income tax on 1099 income. Worked example and free calculator, figures verified from IRS sources.`;
@@ -72,8 +76,13 @@ const description = `Estimate 2026 self-employment, federal, and ${state.name} s
   />
 
   <h2>How 1099 tax works in {state.name}</h2>
-  <p data-source="data/federal.ts → federal.selfEmployment">{describeSelfEmploymentTax()}</p>
   {stateParas.map((p) => <p data-source={`data/states.ts → ${code}`}>{p}</p>)}
+  <p>
+    On top of that sits the federal layer, which is the same wherever you live:
+    self-employment tax plus federal income tax. The
+    <a href="/1099-tax-calculator/"> 1099 tax calculator hub</a> works through how
+    that half is built.
+  </p>
 
   {brackets.length > 0 && (
     <table class="data-table">
@@ -115,18 +124,45 @@ const description = `Estimate 2026 self-employment, federal, and ${state.name} s
     income for taxes. Self-employed workers pay this via quarterly estimated payments.
   </div>
 
+  {facts.length > 0 && (
+    <>
+      <h2>What the rate alone doesn't tell you about {state.name}</h2>
+      {facts.map((p) => <p data-source={`data/states.ts → stateMetadata, ${code}.note`}>{p}</p>)}
+    </>
+  )}
+
+  <h2>{state.name} against the states it borders</h2>
+  {neighbourSummary && <p data-source="lib/tax-engine.ts calcStateTax() + data/adjacency.ts">{neighbourSummary}</p>}
+  {neighbours.length > 0 && (
+    <table class="data-table">
+      <thead>
+        <tr><th>State</th><th>Tax on {formatMoney(EXAMPLE_INCOME)}</th><th>vs {state.name}</th></tr>
+      </thead>
+      <tbody>
+        {neighbours.map((n) => (
+          <tr>
+            <td><a href={`/1099-tax-calculator/${n.slug}/`}>{n.name}</a></td>
+            <td>{n.noTax ? 'No income tax' : formatMoney(n.tax)}</td>
+            <td>{n.delta === 0 ? 'same' : `${n.delta < 0 ? '−' : '+'}${formatMoney(Math.abs(n.delta))}`}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+
   <h2>What this estimate assumes</h2>
   <ul>
-    <li>Filing status defaults to single; the calculator supports the other three statuses.</li>
-    <li>The federal standard deduction of {formatMoney(getStandardDeduction('single'))} is taken, not itemized deductions.</li>
-    <li>Net 1099 profit is entered after business expenses — expenses you don't enter aren't deducted.</li>
+    <li>Single filer, {formatMoney(getStandardDeduction('single'))} federal standard deduction, net profit after expenses.</li>
     <li>
       {state.localTaxNote
-        ? `Local income tax is not modelled. ${state.localTaxNote}.`
-        : 'Local income tax is not modelled.'}
+        ? `No local income tax is modelled. ${state.localTaxNote}.`
+        : 'No local income tax is modelled.'}
     </li>
-    <li>No credits beyond those in the engine (child tax credit, EIC) and no state-specific credits are applied.</li>
-    <li>Figures are 2026 tax-year amounts from the verified dataset, not a filed-return calculation.</li>
+    <li>
+      {noTax
+        ? `Nothing is withheld and ${state.name} collects no income tax, so the whole liability is yours to set aside.`
+        : `No ${state.name} credits are applied beyond the deductions in its own rules.`}
+    </li>
   </ul>
 
   <h2>{state.name} 1099 tax questions</h2>

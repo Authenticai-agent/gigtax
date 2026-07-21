@@ -12,6 +12,7 @@ import Base from '../../../layouts/Base.astro';
 import { states } from '../../../data/states';
 import { pairOutcome, stateSlug, highValuePairs } from '../../../lib/state-pair';
 import { formatMoney } from '../../../lib/tax-engine';
+import { stateFacts } from '../../../lib/state-facts';
 
 export function getStaticPaths() {
   return highValuePairs().map(([homeCode, workCode]) => {
@@ -23,6 +24,11 @@ export function getStaticPaths() {
 interface Props { homeCode: string; workCode: string; }
 const { homeCode, workCode } = Astro.props as Props;
 const o = pairOutcome(homeCode, workCode);
+// The work state's local income tax is the single most consequential thing a
+// cross-border commuter can miss — a New Jersey resident working in New York
+// City, or a Delaware resident working in Philadelphia, owes a city tax that
+// no reciprocity agreement and no state-level credit touches.
+const workLocal = stateFacts(workCode, o.work).localIncomeTax;
 
 const title = `Living in ${o.home.name}, working in ${o.work.name} — 2026 state tax guide`;
 const description = `How state income tax works if you live in ${o.home.name} and work in ${o.work.name} in 2026: ${o.type === 'reciprocity' ? 'reciprocity agreement' : o.type === 'credit' || o.type === 'az-wec' ? 'nonresident return and credit for taxes paid' : 'which state taxes your wages'}, with a worked example.`;
@@ -60,10 +66,19 @@ const description = `How state income tax works if you live in ${o.home.name} an
     </tbody>
   </table>
   <p style="font-family: var(--mono); font-size: .78rem; color: var(--muted);">
-    Estimate of state income tax on wages only, using 2026 state rates. Excludes federal
-    tax, local/municipal taxes, and personal exemptions beyond each state's standard
-    deduction. Not tax advice.
+    State income tax on wages only, 2026 rates. Not tax advice —
+    <a href="/working-in-one-state-living-in-another/">what this does and doesn't cover</a>.
   </p>
+
+  {workLocal && (
+    <div class="callout">
+      <strong>Local tax in {o.work.name}</strong>
+      The figures above are state income tax only. {o.work.name} also has local income tax —
+      {' '}{workLocal.join('; ')} — and a local tax is generally owed where the work is performed,
+      whatever the two states have agreed between themselves. Check the city or county you
+      actually work in.
+    </div>
+  )}
 
   <h2>The short version</h2>
   <ul>
@@ -82,6 +97,5 @@ const description = `How state income tax works if you live in ${o.home.name} an
     {o.type === 'az-wec' && <li>As {/^[AEIOU]/.test(o.home.name) ? 'an' : 'a'} {o.home.name} resident you may file Arizona Form WEC to skip withholding, but Arizona tax still applies.</li>}
     {o.type === 'single-state' && <li>Only one of the two states taxes wage income, so you file in that state only.</li>}
     {o.type === 'no-tax-either' && <li>No state income tax applies in either state — federal tax still does.</li>}
-    <li>Reciprocity and credits cover wages, not necessarily local taxes or self-employment income.</li>
   </ul>
 </Base>

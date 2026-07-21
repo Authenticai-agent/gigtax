@@ -6,11 +6,14 @@
  */
 import Base from '../../../layouts/Base.astro';
 import PaycheckCalculator from '../../../components/calculators/PaycheckCalculator.tsx';
-import { stateList } from '../../../data/states';
+import { states, stateList } from '../../../data/states';
 import { paycheckEstimate } from '../../../lib/paycheck';
 import { formatMoney, formatPct } from '../../../lib/tax-engine';
 import { describeStateTax } from '../../../lib/state-copy';
 import { stateSlug } from '../../../lib/slug';
+import { siblingStates } from '../../../data/neighbors';
+import { describeStateFacts, neighbourComparison, describeNeighbours } from '../../../lib/state-facts';
+import { getStandardDeduction } from '../../../lib/tax-engine';
 import type { StateData } from '../../../data/types';
 
 export function getStaticPaths() {
@@ -22,6 +25,12 @@ const { code, state } = Astro.props as Props;
 
 const EXAMPLE = 75000;
 const r = paycheckEstimate(EXAMPLE, code, 'single');
+const ladder = [45000, 75000, 120000].map((g) => paycheckEstimate(g, code, 'single'));
+const facts = describeStateFacts(code, state);
+const neighbours = neighbourComparison(code, EXAMPLE);
+const neighbourSummary = describeNeighbours(code, state, neighbours, EXAMPLE);
+const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);
+const noTax = state.noIncomeTax === true || state.type === 'none';
 
 const title = `Paycheck calculator — ${state.name} (2026 take-home pay)`;
 const description = `Estimate 2026 take-home pay in ${state.name}: federal income tax, FICA, and ${state.name} state income tax on a W-2 salary. Free calculator with a worked example.`;
@@ -59,10 +68,70 @@ const description = `Estimate 2026 take-home pay in ${state.name}: federal incom
     tax, leaving roughly {formatMoney(r.takeHome)}. Adjust the amount above for your own salary.
   </div>
 
-  <h2>Other states</h2>
+  <h2>Take-home at three salary levels in {state.name}</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>Gross salary</th><th>{state.name} income tax</th><th>Total tax</th><th>Take-home</th><th>Effective rate</th></tr>
+    </thead>
+    <tbody>
+      {ladder.map((row) => (
+        <tr>
+          <td>{formatMoney(row.gross)}</td>
+          <td>{noTax ? '—' : formatMoney(row.stateTax)}</td>
+          <td>{formatMoney(row.totalTax)}</td>
+          <td>{formatMoney(row.takeHome)}</td>
+          <td>{formatPct(row.effectiveRate)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  {facts.length > 0 && (
+    <>
+      <h2>What comes out of a {state.name} paycheck beyond income tax</h2>
+      {facts.map((p) => <p data-source={`data/states.ts → stateMetadata, ${code}.note`}>{p}</p>)}
+    </>
+  )}
+
+  <h2>Take-home in the states {state.name} borders</h2>
+  {neighbourSummary && <p data-source="lib/tax-engine.ts calcStateTax() + data/adjacency.ts">{neighbourSummary}</p>}
+  {neighbours.length > 0 && (
+    <table class="data-table">
+      <thead>
+        <tr><th>State</th><th>State tax on {formatMoney(EXAMPLE)}</th><th>vs {state.name}</th></tr>
+      </thead>
+      <tbody>
+        {neighbours.map((n) => (
+          <tr>
+            <td><a href={`/paycheck-calculator/${n.slug}/`}>{n.name}</a></td>
+            <td>{n.noTax ? 'No income tax' : formatMoney(n.tax)}</td>
+            <td>{n.delta === 0 ? 'same' : `${n.delta < 0 ? '−' : '+'}${formatMoney(Math.abs(n.delta))}`}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+  <p>
+    If you live on one side of a {state.name} border and work on the other,
+    <a href="/working-in-one-state-living-in-another/"> which state taxes your wages</a> depends on
+    whether the two have a reciprocity agreement.
+  </p>
+
+  <h2>What this estimate assumes</h2>
+  <ul>
+    <li>Single filer taking the federal standard deduction of {formatMoney(getStandardDeduction('single'))}; the calculator supports the other three statuses.</li>
+    <li>No pre-tax deductions — a 401(k), HSA or health premium taken from gross pay would lower every tax line.</li>
+    <li>Employee-side FICA only (7.65%). Your employer pays a matching share you never see.</li>
+    <li>No local or municipal income tax, and no state disability withholding beyond what is described above.</li>
+    <li>No credits, and no state-specific credits.</li>
+  </ul>
+
+  <h2>Related tools</h2>
   <ul class="link-columns">
-    {stateList.filter(([c]) => c !== code).slice(0, 8).map(([c, s]) => (
-      <li><a href={`/paycheck-calculator/${stateSlug(s.name)}/`}>{s.name} paycheck calculator</a></li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator (all states)</a></li>
+    <li><a href={`/1099-tax-calculator/${stateSlug(state.name)}/`}>1099 tax calculator for {state.name}</a></li>
+    {siblings.map((s) => (
+      <li><a href={`/paycheck-calculator/${stateSlug(s!.name)}/`}>{s!.name} paycheck calculator</a></li>
     ))}
   </ul>
 </Base>

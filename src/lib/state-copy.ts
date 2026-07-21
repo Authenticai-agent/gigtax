@@ -221,16 +221,6 @@ export function buildStateFaqs(
     source: 'data/federal.ts → federal.quarterlyEstimated.quarters',
   });
 
-  faqs.push({
-    q: 'What deduction does the estimate assume?',
-    a:
-      `The federal standard deduction of ${formatMoney(getStandardDeduction('single'))} for a single ` +
-      `filer, plus the deductible half of self-employment tax. It does not itemize, and it does not ` +
-      `subtract business expenses unless you enter them — enter mileage, home office and supplies as ` +
-      `deductions in the calculator to see them reduce the estimate.`,
-    source: 'data/federal.ts → federal.standardDeduction',
-  });
-
   return faqs;
 }
 
