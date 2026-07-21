@@ -34,6 +34,8 @@ export interface StateFacts {
   sdi: { rate: number | string; wageBase?: number | string; note: string } | null;
   /** The dataset's own note on this state's 2026 rate changes. */
   note: string | null;
+  /** A known limitation in how this state is modelled, surfaced on the page. */
+  caveat: string | null;
 }
 
 export function stateFacts(code: string, state: StateData): StateFacts {
@@ -44,6 +46,7 @@ export function stateFacts(code: string, state: StateData): StateFacts {
     noSalesTax: meta.statesWithNoSalesTax.includes(code),
     sdi: meta.statesWithSDI[code] ?? null,
     note: typeof state.note === 'string' ? state.note : null,
+    caveat: typeof state.dataCaveat === 'string' ? state.dataCaveat : null,
   };
 }
 
@@ -59,6 +62,12 @@ export function describeStateFacts(code: string, state: StateData): string[] {
 
   if (f.note) {
     out.push(`On the 2026 rate itself: ${lowerFirst(f.note)}`);
+  }
+
+  // A known modelling limitation is worth more to a reader than a silently
+  // wrong number, so it is stated on the page rather than buried in the data.
+  if (f.caveat) {
+    out.push(f.caveat);
   }
 
   if (f.localIncomeTax) {
