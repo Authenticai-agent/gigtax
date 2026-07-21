@@ -19,9 +19,13 @@
  *    by Thomson Reuters (IL, IN, MI, OH, MD, WV, WI). Marked `null` where a form
  *    number could NOT be independently confirmed (IA, MN, MT, ND) — confirm with
  *    the state DOR before displaying these as authoritative.
- *  - Arizona is deliberately EXCLUDED: sources disagree on whether AZ has true
- *    withholding reciprocity (CA/IN/OR/VA) or only a credit arrangement. Do not
- *    present AZ as a reciprocity state until resolved.
+ *  - Arizona: RESOLVED via azdor.gov. Arizona is NOT a true-reciprocity state and
+ *    is correctly excluded from the map below. It offers only a credit-based
+ *    WITHHOLDING exemption to residents of CA/IN/OR/VA (Form WEC): Arizona income
+ *    tax still applies and a nonresident return (Form 140NR) is still in play; the
+ *    worker skips withholding because a credit for taxes paid to the home state
+ *    makes them whole. See AZ_WEC_WITHHOLDING_EXEMPTION below — never present this
+ *    as reciprocity (that would wrongly tell users they owe no Arizona tax).
  *  - Minnesota–Wisconsin reciprocity ended in 2010 and is correctly absent.
  */
 
@@ -65,6 +69,19 @@ export const reciprocity: Record<string, ReciprocityInfo> = {
 
 /** DC uniquely never taxes nonresident wages (federal Home Rule Act limit). */
 export const DC_EXEMPTS_ALL_NONRESIDENTS = true;
+
+/**
+ * Arizona's credit-based withholding exemption — NOT reciprocity (azdor.gov).
+ * A resident of one of these states working in Arizona may file Form WEC to skip
+ * Arizona withholding, but Arizona income tax still applies and is reconciled via
+ * the credit for taxes paid (Form 140NR / Form 309). Do not add AZ to `reciprocity`.
+ */
+export const AZ_WEC_WITHHOLDING_EXEMPTION = {
+  workState: 'AZ',
+  eligibleResidentStates: ['CA', 'IN', 'OR', 'VA'],
+  form: 'WEC',
+  mechanism: 'credit-based withholding exemption (not reciprocity)',
+} as const;
 
 /** True if a resident of `homeState` working in `workState` is covered by a reciprocity agreement. */
 export function hasReciprocity(homeState: string, workState: string): boolean {
