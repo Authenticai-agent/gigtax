@@ -1,0 +1,67 @@
+---
+/**
+ * Tier-2 paycheck pages: one static page per state. Unique title/meta/H1, a
+ * state-specific explanation from verified data, and a worked example computed
+ * by the same engine as the island — all present before JavaScript.
+ */
+import Base from '../../../layouts/Base.astro';
+import PaycheckCalculator from '../../../components/calculators/PaycheckCalculator.tsx';
+import { stateList } from '../../../data/states';
+import { paycheckEstimate } from '../../../lib/paycheck';
+import { formatMoney, formatPct } from '../../../lib/tax-engine';
+import { describeStateTax } from '../../../lib/state-copy';
+import type { StateData } from '../../../data/types';
+
+export function getStaticPaths() {
+  return stateList.map(([code, s]) => ({ params: { state: code.toLowerCase() }, props: { code, state: s } }));
+}
+
+interface Props { code: string; state: StateData; }
+const { code, state } = Astro.props as Props;
+
+const EXAMPLE = 75000;
+const r = paycheckEstimate(EXAMPLE, code, 'single');
+
+const title = `Paycheck calculator — ${state.name} (2026 take-home pay)`;
+const description = `Estimate 2026 take-home pay in ${state.name}: federal income tax, FICA, and ${state.name} state income tax on a W-2 salary. Free calculator with a worked example.`;
+---
+
+<Base title={title} description={description}>
+  <div class="breadcrumbs">
+    <a href="/">Home</a> / <a href="/paycheck-calculator/">Paycheck calculator</a> / {state.name}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year · {state.name}</p>
+    <h1>{state.name} paycheck calculator</h1>
+    <p class="tagline">{describeStateTax(state)}</p>
+  </section>
+
+  <PaycheckCalculator client:load presetState={code} defaultGross={EXAMPLE} />
+
+  <h2>Worked example: {formatMoney(EXAMPLE)} salary in {state.name}</h2>
+  <p>A single filer earning {formatMoney(EXAMPLE)} in {state.name}, taking the standard deduction, keeps an estimated:</p>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Federal income tax</td><td>{formatMoney(r.federalTax)}</td></tr>
+      <tr><td>FICA (employee share)</td><td>{formatMoney(r.fica)}</td></tr>
+      <tr><td>{state.name} state income tax</td><td>{formatMoney(r.stateTax)}</td></tr>
+      <tr class="total"><td>Total tax</td><td>{formatMoney(r.totalTax)}</td></tr>
+      <tr><td>Effective rate</td><td>{formatPct(r.effectiveRate)}</td></tr>
+      <tr class="total"><td>Annual take-home</td><td>{formatMoney(r.takeHome)}</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Take-home</strong>
+    On {formatMoney(EXAMPLE)} in {state.name}, about {formatPct(r.effectiveRate)} goes to
+    tax, leaving roughly {formatMoney(r.takeHome)}. Adjust the amount above for your own salary.
+  </div>
+
+  <h2>Other states</h2>
+  <ul class="link-columns">
+    {stateList.filter(([c]) => c !== code).slice(0, 8).map(([c, s]) => (
+      <li><a href={`/paycheck-calculator/${c.toLowerCase()}/`}>{s.name} paycheck calculator</a></li>
+    ))}
+  </ul>
+</Base>
