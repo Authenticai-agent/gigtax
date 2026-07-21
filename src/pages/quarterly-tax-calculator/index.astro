@@ -1,0 +1,102 @@
+---
+/**
+ * Tier-1 hub: quarterly estimated tax. Methodology lives here in full; the
+ * state pages below carry the state half of each payment.
+ */
+import Base from '../../layouts/Base.astro';
+import QuarterlyEstimator from '../../components/calculators/QuarterlyEstimator.tsx';
+import { stateList } from '../../data/states';
+import { stateSlug } from '../../lib/slug';
+import { formatMoney } from '../../lib/tax-engine';
+import {
+  quarters,
+  MIN_TO_OWE,
+  SAFE_HARBOR_CURRENT,
+  SAFE_HARBOR_PRIOR,
+  PENALTY_RATE,
+} from '../../lib/quarterly-copy';
+---
+
+<Base
+  title="Quarterly tax calculator (2026) — 1040-ES estimated payments"
+  description="Work out each 2026 quarterly estimated tax payment on 1099 income: the four due dates, the safe harbor targets, and what to send the IRS and your state."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Quarterly tax calculator</h1>
+    <p class="tagline">Nobody withholds tax from a 1099 — the IRS expects four payments a year instead.</p>
+  </section>
+
+  <p>
+    If you expect to owe {formatMoney(MIN_TO_OWE)} or more when you file, the IRS
+    wants the money as you earn it, on Form 1040-ES. This works out each payment
+    from what you expect to make.
+  </p>
+
+  <QuarterlyEstimator client:load defaultSeIncome={50000} stateHrefBase="/quarterly-tax-calculator/" />
+
+  <h2>The four 2026 due dates</h2>
+  <p>
+    They are not calendar quarters. Q2 covers two months, Q4 covers four, and the
+    last payment falls in the following January:
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Payment</th><th>Income earned</th><th>Due</th><th>Form</th></tr>
+    </thead>
+    <tbody>
+      {quarters.map((q) => (
+        <tr>
+          <td>Q{q.quarter}</td>
+          <td>{q.periodLabel}</td>
+          <td>{q.due}</td>
+          <td>{q.form}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>The two safe harbors</h2>
+  <p>
+    You avoid an underpayment penalty by hitting either target, whichever is
+    lower — you do not have to predict the year perfectly:
+  </p>
+  <ul>
+    <li><strong>Current-year route.</strong> {SAFE_HARBOR_CURRENT}.</li>
+    <li><strong>Prior-year route.</strong> {SAFE_HARBOR_PRIOR}.</li>
+  </ul>
+  <p>
+    The prior-year route is the practical one for anyone whose income swings:
+    the target is a number already printed on your last return, so it cannot
+    move underneath you. The current-year route is what a first-year filer uses,
+    since there is no prior return to point at.
+  </p>
+
+  <div class="callout">
+    <strong>Penalty</strong>
+    Miss a payment and the shortfall accrues at the {PENALTY_RATE.toLowerCase()},
+    charged from that quarter's due date. It applies per quarter — catching up in
+    April does not erase a missed April-to-June payment.
+  </div>
+
+  <h2>What this calculator does and doesn't cover</h2>
+  <ul>
+    <li>It sizes payments from expected 1099 profit, self-employment tax included.</li>
+    <li>It does not model W-2 withholding. If you also hold a job, withholding there counts toward the same targets and reduces what you send.</li>
+    <li>It assumes the standard deduction and applies no credits beyond those in the engine.</li>
+    <li>State estimated payments are shown where the state has an income tax; state due dates are not in the 2026 dataset, so confirm them with the state.</li>
+  </ul>
+
+  <h2>Quarterly estimated tax by state</h2>
+  <p>Each state page adds that state's own quarterly payment to the federal schedule:</p>
+  <ul class="link-columns">
+    {stateList.map(([, s]) => (
+      <li><a href={`/quarterly-tax-calculator/${stateSlug(s.name)}/`}>{s.name}</a></li>
+    ))}
+  </ul>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator — the annual view</a></li>
+  </ul>
+</Base>

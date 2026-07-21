@@ -1,0 +1,177 @@
+---
+/**
+ * Tier-2 SSG page: quarterly estimated tax for one state. Deliberately a
+ * different question from the 1099 annual page — this one is about the four
+ * payment dates, the safe harbor, and the state voucher — so the two pages do
+ * not read as near-duplicates of each other.
+ */
+import Base from '../../../layouts/Base.astro';
+import QuarterlyEstimator from '../../../components/calculators/QuarterlyEstimator.tsx';
+import { states, stateList } from '../../../data/states';
+import { siblingStates } from '../../../data/neighbors';
+import { formatMoney } from '../../../lib/tax-engine';
+import { stateSlug } from '../../../lib/slug';
+import {
+  quarters,
+  quarterlyExample,
+  quarterlyLadder,
+  describeStateQuarterly,
+  buildQuarterlyFaqs,
+  stateHasNoIncomeTax,
+  MIN_TO_OWE,
+  SAFE_HARBOR_CURRENT,
+  SAFE_HARBOR_PRIOR,
+  PENALTY_RATE,
+} from '../../../lib/quarterly-copy';
+import type { StateData } from '../../../data/types';
+
+export function getStaticPaths() {
+  return stateList.map(([code, s]) => ({
+    params: { state: stateSlug(s.name) },
+    props: { code, state: s },
+  }));
+}
+
+interface Props {
+  code: string;
+  state: StateData;
+}
+const { code, state } = Astro.props as Props;
+
+const EXAMPLE_INCOME = 50000;
+const ex = quarterlyExample(code, EXAMPLE_INCOME);
+const ladder = quarterlyLadder(code);
+const noTax = stateHasNoIncomeTax(state);
+const stateParas = describeStateQuarterly(state, ex);
+const faqs = buildQuarterlyFaqs(code, state, ex);
+const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);
+
+const title = `Quarterly tax calculator — ${state.name} (2026)`;
+const description = `What to send each quarter on 1099 income in ${state.name} for 2026: the four 1040-ES due dates, safe harbor targets, and the ${state.name} share.`;
+---
+
+<Base title={title} description={description}>
+  <div class="breadcrumbs">
+    <a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> / {state.name}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year · {state.name}</p>
+    <h1>Quarterly tax calculator for {state.name}</h1>
+    <p class="tagline" data-source={`lib/tax-engine.ts + data/states.ts → ${code}`}>
+      {noTax
+        ? `A ${formatMoney(EXAMPLE_INCOME)} 1099 year in ${state.name} means about ${formatMoney(ex.perQuarterFederal)} to the IRS four times a year, and nothing to the state.`
+        : `A ${formatMoney(EXAMPLE_INCOME)} 1099 year in ${state.name} means about ${formatMoney(ex.perQuarterFederal)} to the IRS and ${formatMoney(ex.perQuarterState)} to the state, four times a year.`}
+    </p>
+  </section>
+
+  <QuarterlyEstimator
+    client:load
+    presetState={code}
+    defaultSeIncome={EXAMPLE_INCOME}
+    stateHrefBase="/quarterly-tax-calculator/"
+  />
+
+  <h2>The {state.name} payment schedule on {formatMoney(EXAMPLE_INCOME)}</h2>
+  <p>
+    A single filer with {formatMoney(EXAMPLE_INCOME)} of net 1099 profit, taking
+    the standard deduction and paying 90% of this year's liability:
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Due</th><th>Income earned</th><th>To the IRS</th><th>To {state.name}</th></tr>
+    </thead>
+    <tbody>
+      {quarters.map((q) => (
+        <tr>
+          <td>{q.due}</td>
+          <td>{q.periodLabel}</td>
+          <td>{formatMoney(ex.perQuarterFederal)}</td>
+          <td>{noTax ? '—' : formatMoney(ex.perQuarterState)}</td>
+        </tr>
+      ))}
+      <tr class="total">
+        <td colspan="2">Year</td>
+        <td>{formatMoney(ex.federalYear * 0.9)}</td>
+        <td>{noTax ? '—' : formatMoney(ex.stateYear * 0.9)}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    Those figures come from the same engine as the calculator above: {formatMoney(ex.federalYear)}
+    of federal income tax and self-employment tax for the year
+    {noTax ? '' : `, plus ${formatMoney(ex.stateYear)} of ${state.name} income tax`}, at
+    an effective rate of {(ex.effectiveRate * 100).toFixed(1)}%.
+  </p>
+
+  <h2>The {state.name} side of each payment</h2>
+  {stateParas.map((p) => <p data-source={`data/states.ts → ${code}`}>{p}</p>)}
+
+  <h2>What each quarter costs at three income levels in {state.name}</h2>
+  <p>
+    The federal column moves with the self-employment tax and the federal
+    brackets; the {state.name} column moves with {state.name}'s own rules, so the
+    two do not scale together:
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Net 1099 profit</th><th>Per quarter to the IRS</th><th>Per quarter to {state.name}</th><th>Effective rate</th></tr>
+    </thead>
+    <tbody>
+      {ladder.map((row) => (
+        <tr>
+          <td>{formatMoney(row.income)}</td>
+          <td>{formatMoney(row.perQuarterFederal)}</td>
+          <td>{noTax ? '—' : formatMoney(row.perQuarterState)}</td>
+          <td>{(row.effectiveRate * 100).toFixed(1)}%</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>Staying inside the safe harbor</h2>
+  <p data-source="data/federal.ts → federal.quarterlyEstimated.safeHarborRules">
+    Estimated payments are required once you expect to owe {formatMoney(MIN_TO_OWE)} or
+    more. Two targets keep the penalty away, and you only need whichever is lower:
+  </p>
+  <ul>
+    <li>{SAFE_HARBOR_CURRENT}.</li>
+    <li>{SAFE_HARBOR_PRIOR}.</li>
+  </ul>
+  <div class="callout">
+    <strong>If you fall short</strong>
+    The unpaid amount accrues at the {PENALTY_RATE.toLowerCase()} from that quarter's
+    due date. Because it is charged per quarter, an underpaid first payment costs
+    something even if the year balances out by {quarters[3].due}.
+  </div>
+
+  <h2>What this schedule assumes</h2>
+  <ul>
+    <li>Single filer, standard deduction, no credits beyond those in the engine.</li>
+    <li>Net 1099 profit after business expenses — expenses you don't enter aren't deducted.</li>
+    <li>No W-2 withholding. Withholding from a job counts toward the same targets and would reduce each payment.</li>
+    <li>Four equal payments. Uneven income can instead be annualised so each payment tracks what you actually earned.</li>
+    <li>
+      {noTax
+        ? `${state.name} has no income tax, so the state column is empty by design.`
+        : `${state.name} due dates are not in the 2026 dataset — only the federal ones are shown.`}
+    </li>
+  </ul>
+
+  <h2>{state.name} quarterly tax questions</h2>
+  {faqs.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-source={f.source}>{f.a}</p>
+    </div>
+  ))}
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator (all states)</a></li>
+    <li><a href={`/1099-tax-calculator/${stateSlug(state.name)}/`}>1099 tax calculator for {state.name}</a></li>
+    {siblings.map((s) => (
+      <li><a href={`/quarterly-tax-calculator/${stateSlug(s!.name)}/`}>Quarterly taxes in {s!.name}</a></li>
+    ))}
+  </ul>
+</Base>
