@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import PaycheckCalculator from '../../components/calculators/PaycheckCalculator.tsx';
+import { stateSlug } from '../../lib/slug';
+import { stateList } from '../../data/states';
+---
+
+<Base
+  title="Paycheck calculator (2026) — W-2 take-home pay by state"
+  description="Estimate your 2026 W-2 take-home pay: federal income tax, FICA, and your state's income tax. Free paycheck calculator with a page for every state."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Paycheck calculator</h1>
+    <p class="tagline">What actually lands in your bank account after federal tax, FICA, and state tax.</p>
+  </section>
+
+  <p>
+    Your W-2 gross isn't your take-home. Federal income tax, the employee share of
+    FICA (7.65%), and state income tax all come out first. This calculator estimates
+    all three so you can see your real annual take-home.
+  </p>
+
+  <p style="font-family: var(--mono); font-size: .8rem; color: var(--muted);">
+    Enter your salary and the estimate updates live. Pick your state to open its full paycheck guide.
+  </p>
+  <PaycheckCalculator client:load defaultGross={75000} stateBaseUrl="/paycheck-calculator" />
+
+  <h2>Paycheck calculator by state</h2>
+  <p>Each state page is preset to that state's 2026 income tax rules with a worked example:</p>
+  <ul class="link-columns">
+    {stateList.map(([code, s]) => (
+      <li><a href={`/paycheck-calculator/${stateSlug(s.name)}/`}>{s.name} paycheck calculator</a></li>
+    ))}
+  </ul>
+</Base>
