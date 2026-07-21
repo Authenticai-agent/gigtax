@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GigTaxCalculator — Complete Build Plan v4</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Literata:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f0e0c;--paper:#f4f1eb;--accent:#c94a1e;--g:#2b5b3c;
+  --b:#1d3a6b;--p:#7a3b8f;--y:#9a6b00;--muted:#6b6760;
+  --border:rgba(15,14,12,0.12);--tag-bg:rgba(15,14,12,0.06);
+  --mono:'DM Mono',monospace;--serif:'Literata',serif;--disp:'Syne',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif);background:var(--paper);color:var(--ink);font-size:15px;line-height:1.72}
+.page{max-width:980px;margin:0 auto;padding:2rem 2rem 6rem}
+.cover{border-bottom:3px solid var(--ink);padding:3.5rem 0 2.5rem;margin-bottom:3rem}
+.v-badge{display:inline-block;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:10px;padding:3px 10px;letter-spacing:.12em;margin-bottom:.75rem}
+.cover-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.cover h1{font-family:var(--disp);font-size:clamp(1.9rem,5vw,3.4rem);font-weight:800;line-height:1.04;letter-spacing:-.03em;margin-bottom:.75rem}
+.cover h1 em{font-style:normal;color:var(--accent)}
+.tagline{font-size:1rem;font-family:var(--mono);color:var(--g);border-left:3px solid var(--g);padding-left:.75rem;margin:.75rem 0 1.25rem;line-height:1.5}
+.cover-sub{font-style:italic;color:var(--muted);font-size:.95rem;max-width:640px;line-height:1.6}
+.cover-meta{display:flex;gap:1.5rem;margin-top:1.5rem;flex-wrap:wrap}
+.meta-item{font-family:var(--mono);font-size:11px}
+.meta-item strong{display:block;color:var(--muted);font-weight:400;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1px}
+.meta-item span{font-size:13px;color:var(--ink);font-weight:500}
+.toc{background:var(--ink);color:var(--paper);padding:2rem 2.25rem;margin-bottom:3.5rem}
+.toc-label{font-family:var(--disp);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,242,236,.4);margin-bottom:1rem;font-weight:500}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 2rem}
+.toc-item{font-family:var(--mono);font-size:12px;display:flex;gap:8px;align-items:baseline;color:rgba(245,242,236,.65)}
+.toc-item a{color:inherit;text-decoration:none}
+.toc-item:hover a{color:#fff}
+.toc-num{color:var(--accent);font-size:10px;min-width:22px}
+.toc-div{grid-column:1/-1;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:rgba(245,242,236,.25);margin-top:.75rem;padding-top:.5rem;border-top:.5px solid rgba(255,255,255,.1)}
+.section{margin-bottom:3.5rem}
+.section-label{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem}
+.section h2{font-family:var(--disp);font-size:1.55rem;font-weight:700;letter-spacing:-.02em;border-bottom:1.5px solid var(--border);padding-bottom:.65rem;margin-bottom:1.4rem}
+.section h3{font-family:var(--disp);font-size:1.05rem;font-weight:700;margin:1.75rem 0 .5rem}
+.section h4{font-family:var(--mono);font-size:.82rem;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:1.25rem 0 .4rem}
+.call{border-left:3px solid var(--accent);background:rgba(201,74,30,.05);padding:.85rem 1.1rem;margin:1.1rem 0;font-size:14px;line-height:1.6}
+.call.g{border-color:var(--g);background:rgba(43,91,60,.05)}
+.call.b{border-color:var(--b);background:rgba(29,58,107,.05)}
+.call.p{border-color:var(--p);background:rgba(122,59,143,.05)}
+.call.y{border-color:var(--y);background:rgba(154,107,0,.06)}
+.call strong{font-family:var(--disp);font-size:10px;text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:.2rem;color:var(--accent)}
+.call.g strong{color:var(--g)}.call.b strong{color:var(--b)}.call.p strong{color:var(--p)}.call.y strong{color:var(--y)}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin:.65rem 0}
+.tag{font-family:var(--mono);font-size:11px;padding:2px 9px;border-radius:2px;background:var(--tag-bg);border:.5px solid var(--border);white-space:nowrap}
+.tag.r{background:rgba(201,74,30,.09);border-color:rgba(201,74,30,.22);color:var(--accent)}
+.tag.g{background:rgba(43,91,60,.09);border-color:rgba(43,91,60,.22);color:var(--g)}
+.tag.b{background:rgba(29,58,107,.09);border-color:rgba(29,58,107,.22);color:var(--b)}
+.tag.p{background:rgba(122,59,143,.09);border-color:rgba(122,59,143,.22);color:var(--p)}
+.tag.y{background:rgba(154,107,0,.09);border-color:rgba(154,107,0,.22);color:var(--y)}
+.dt{width:100%;border-collapse:collapse;font-size:13px;margin:.9rem 0 1.4rem}
+.dt th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:5px 9px;border-bottom:1.5px solid var(--ink)}
+.dt td{padding:6px 9px;border-bottom:.5px solid var(--border);vertical-align:top;line-height:1.45}
+.dt tr:hover td{background:rgba(15,14,12,.02)}
+.good{color:var(--g);font-weight:500}.bad{color:var(--accent)}.warn{color:var(--y)}.neu{color:var(--b)}
+.mono{font-family:var(--mono);font-size:12px}
+.vcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:.9rem 0}
+.vcard{border:.5px solid var(--border);padding:1rem 1.1rem;background:#fff}
+.vcard .vc-cat{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:4px}
+.vcard .vc-name{font-family:var(--disp);font-size:14px;font-weight:700;margin-bottom:3px}
+.vcard .vc-desc{font-size:12px;color:var(--muted);font-family:var(--mono);line-height:1.45}
+.vcard .vc-kw{font-size:11px;margin-top:7px;font-family:var(--mono);color:var(--g)}
+.entity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:1rem 0}
+.entity-card{border:.5px solid var(--border);padding:1.25rem;background:#fff}
+.entity-card .etype{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:6px}
+.entity-card .ename{font-family:var(--disp);font-size:16px;font-weight:800;margin-bottom:.5rem}
+.entity-card .edesc{font-size:12px;color:var(--muted);font-family:var(--mono);line-height:1.5}
+.ebadge{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 7px;margin-top:.5rem;border-radius:2px}
+.badge-sole{background:#FAEEDA;color:#633806}.badge-llc{background:#E6F1FB;color:#0C447C}
+.badge-scorp{background:#E1F5EE;color:#085041}.badge-ccorp{background:#FBEAF0;color:#72243E}
+.badge-de{background:#EEEDFE;color:#3C3489}.badge-wy{background:#EAF3DE;color:#27500A}
+.tc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:1rem 0}
+.tc{border:.5px solid var(--border);padding:.85rem 1rem;background:#fff}
+.tc .tc-label{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:4px}
+.tc .tc-amount{font-family:var(--disp);font-size:1.3rem;font-weight:800;color:var(--ink)}
+.tc .tc-sub{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:3px;line-height:1.4}
+.tc.cliff .tc-amount{color:var(--accent)}.tc.safe .tc-amount{color:var(--g)}
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:1rem 0}
+.phase-card{border:.5px solid var(--border);padding:1rem 1.1rem;background:#fff;position:relative}
+.phase-num{font-family:var(--disp);font-size:2.5rem;font-weight:800;color:rgba(201,74,30,.12);position:absolute;top:8px;right:12px;line-height:1}
+.phase-card .pc-label{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:4px}
+.phase-card .pc-name{font-family:var(--disp);font-size:14px;font-weight:700;margin-bottom:4px}
+.phase-card .pc-desc{font-size:12px;color:var(--muted);font-family:var(--mono);line-height:1.45}
+.phase-card .pc-kpi{font-family:var(--mono);font-size:11px;color:var(--g);margin-top:7px;font-weight:500}
+.url-table{width:100%;border-collapse:collapse;font-size:12px;margin:.9rem 0}
+.url-table th{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:5px 8px;border-bottom:1.5px solid var(--ink);text-align:left}
+.url-table td{padding:5px 8px;border-bottom:.5px solid var(--border);font-family:var(--mono);vertical-align:middle}
+.url-table .pattern{color:var(--accent)}.url-table .pages{color:var(--g);font-weight:500}
+.stack-row{display:flex;gap:10px;flex-wrap:wrap;margin:.9rem 0}
+.si{flex:1;min-width:145px;border:.5px solid var(--border);padding:.9rem}
+.si .layer{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:5px}
+.si .tech{font-family:var(--disp);font-size:14px;font-weight:700}
+.si .why{font-size:12px;color:var(--muted);margin-top:3px;font-family:var(--mono)}
+.rev-table{width:100%;border-collapse:collapse;font-size:13px;margin:.9rem 0}
+.rev-table th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-align:left;padding:6px 9px;border-bottom:1.5px solid var(--ink)}
+.rev-table td{padding:7px 9px;border-bottom:.5px solid var(--border);font-family:var(--mono);font-size:13px;vertical-align:middle}
+.rv{color:var(--g);font-weight:500}
+.stat-row{display:flex;gap:2rem;flex-wrap:wrap;margin:1.5rem 0;justify-content:center}
+.stat-block{text-align:center}
+.big-num{display:block;font-family:var(--disp);font-size:2.5rem;font-weight:800;color:var(--accent);line-height:1}
+.big-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:3px}
+.code{background:#0f0e0c;color:#f4f1eb;padding:1.15rem;font-family:var(--mono);font-size:11.5px;line-height:1.65;overflow-x:auto;margin:1rem 0}
+.warn-box{background:rgba(201,74,30,.06);border:1.5px solid rgba(201,74,30,.25);padding:1rem 1.2rem;margin:1rem 0;font-size:13px}
+.warn-box .wt{font-family:var(--disp);font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem}
+p{margin-bottom:.82rem}
+ul,ol{margin:.4rem 0 .82rem 1.5rem}
+li{margin-bottom:.3rem}
+code{font-family:var(--mono);font-size:12px;background:var(--tag-bg);padding:1px 5px}
+strong{font-weight:600}
+@media(max-width:620px){.toc-grid,.vcard-grid,.phase-grid,.entity-grid{grid-template-columns:1fr}.stat-row{gap:1rem}}
+</style>
+</head>
+<body>
+<div style="background:#2b5b3c;color:#fff;font-family:'DM Mono',monospace;font-size:11px;padding:.6rem 1.25rem;letter-spacing:.05em;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px">
+  <span>⚠ VERIFIED BUILD PLAN — v4.1 CORRECTED EDITION · June 2026</span>
+  <span>Corrections applied: HSA 2026 ($4,400/$8,750) · SSDI SGA 2026 ($1,690/$2,830) · Delaware franchise tax (corp.delaware.gov confirmed)</span>
+</div>
+
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="v-badge">VERSION 4.0 — UNIFIED COMPLETE EDITION</div>
+  <p class="cover-label">GigTaxCalculator · Master Build Plan · June 2026</p>
+  <h1><em>GigTaxCalculator</em> — The Complete Build Plan</h1>
+  <div class="tagline">W-2 · 1099 · Gig apps · Creators · Sellers · Rentals · Equity comp · LLCs · S-Corps · C-Corps · Delaware · Wyoming · SSDI · ACA subsidies · STD/LTD · Family scenarios — every way people make money now, in one calculator.</div>
+  <p class="cover-sub">Single consolidated document merging v3 main plan, the disability/ACA/LTD addendum, and the new equity compensation + combined salary calculator modules. Every section, every keyword cluster, every build phase — one document, current as of June 2026.</p>
+  <div class="cover-meta">
+    <div class="meta-item"><strong>Traffic potential</strong><span>15M–30M/mo at scale</span></div>
+    <div class="meta-item"><strong>Programmatic pages</strong><span>5,000+ core · 2,000+ platform×state</span></div>
+    <div class="meta-item"><strong>JSON data version</strong><span>v2026.3.0 · 144KB · 4,436 lines</span></div>
+    <div class="meta-item"><strong>Calculator modules</strong><span>40+ standalone tools</span></div>
+    <div class="meta-item"><strong>Tech stack</strong><span>Windsurf + Netlify · ~$40/mo</span></div>
+    <div class="meta-item"><strong>Sections in this doc</strong><span>28 complete sections</span></div>
+    <div class="meta-item"><strong>Year 2 revenue peak</strong><span>$200K+ April month</span></div>
+    <div class="meta-item"><strong>Competitor covering this scope</strong><span>Zero</span></div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-label">Contents — v4 Unified</div>
+  <div class="toc-grid">
+    <div class="toc-div">Strategy & Infrastructure</div>
+    <div class="toc-item"><span class="toc-num">01</span><a href="#positioning">Positioning, tagline &amp; domain</a></div>
+    <div class="toc-item"><span class="toc-num">02</span><a href="#userflow">User flow — "How do you make money?"</a></div>
+    <div class="toc-item"><span class="toc-num">03</span><a href="#stack">Tech stack — Windsurf + Netlify</a></div>
+    <div class="toc-div">Income Verticals</div>
+    <div class="toc-item"><span class="toc-num">04</span><a href="#gig">Gig economy — 16 platforms</a></div>
+    <div class="toc-item"><span class="toc-num">05</span><a href="#creator">Creator economy — 14 types</a></div>
+    <div class="toc-item"><span class="toc-num">06</span><a href="#seller">Marketplace seller + 1099-K</a></div>
+    <div class="toc-item"><span class="toc-num">07</span><a href="#rental">Rental &amp; asset income — 12 types</a></div>
+    <div class="toc-item"><span class="toc-num">08</span><a href="#pro">Professional freelancers — 23 professions</a></div>
+    <div class="toc-item"><span class="toc-num">09</span><a href="#equity">Equity comp — RSU, ISO, NSO, ESPP, QSBS ★ NEW</a></div>
+    <div class="toc-item"><span class="toc-num">10</span><a href="#combined">Combined salary calculator ★ NEW</a></div>
+    <div class="toc-div">Benefits &amp; Healthcare</div>
+    <div class="toc-item"><span class="toc-num">11</span><a href="#ssdi">SSDI taxability — 0/50/85% rule ★ NEW</a></div>
+    <div class="toc-item"><span class="toc-num">12</span><a href="#aca">ACA subsidy — 2026 cliff ★ NEW</a></div>
+    <div class="toc-item"><span class="toc-num">13</span><a href="#ltd">STD/LTD disability income ★ NEW</a></div>
+    <div class="toc-item"><span class="toc-num">14</span><a href="#mixed">Mixed-income household scenarios</a></div>
+    <div class="toc-div">Entity &amp; Tax Structure</div>
+    <div class="toc-item"><span class="toc-num">15</span><a href="#entities">All 24 entity types</a></div>
+    <div class="toc-item"><span class="toc-num">16</span><a href="#recommender">Entity recommender engine</a></div>
+    <div class="toc-item"><span class="toc-num">17</span><a href="#salary">Owner salary + S Corp optimizer</a></div>
+    <div class="toc-item"><span class="toc-num">18</span><a href="#deductions">Complete deductions library</a></div>
+    <div class="toc-item"><span class="toc-num">19</span><a href="#modules">30+ standalone calculator modules</a></div>
+    <div class="toc-item"><span class="toc-num">20</span><a href="#filing">Filing status — all family scenarios</a></div>
+    <div class="toc-item"><span class="toc-num">21</span><a href="#delaware">Delaware vs Wyoming C Corp</a></div>
+    <div class="toc-div">SEO, Build &amp; Revenue</div>
+    <div class="toc-item"><span class="toc-num">22</span><a href="#seo">5,000+ page SEO architecture</a></div>
+    <div class="toc-item"><span class="toc-num">23</span><a href="#keywords">Keyword clusters — 15 verticals</a></div>
+    <div class="toc-item"><span class="toc-num">24</span><a href="#checklists">Compliance checklists</a></div>
+    <div class="toc-item"><span class="toc-num">25</span><a href="#build">Build order — 6 phases</a></div>
+    <div class="toc-item"><span class="toc-num">26</span><a href="#monetization">Monetization — 6 revenue streams</a></div>
+    <div class="toc-item"><span class="toc-num">27</span><a href="#revenue">Revenue projections</a></div>
+    <div class="toc-item"><span class="toc-num">28</span><a href="#json">JSON data architecture notes</a></div>
+  </div>
+</div>
+<!-- 01 POSITIONING -->
+<div class="section" id="positioning">
+  <p class="section-label">01 — Positioning & Product Name</p>
+  <h2>The positioning that wins: "Every way people make money now"</h2>
+
+  <p>The v1/v2 framing — "Business Tax Calculator" — is too broad and too boring. It sounds like a tool for accountants. The actual users are a DoorDash driver who started doing Etsy on the side, a TikToker getting brand deals, and a nurse who picks up travel contracts. They do not identify as "business owners." They identify as people who have income they don't know how to handle.</p>
+
+  <div class="call g">
+    <strong>Winning tagline</strong>
+    "W-2, 1099, gig apps, creators, sellers, LLCs, S-Corps, C-Corps — see what you owe, what to set aside, and how to legally keep more."
+  </div>
+
+  <h3>Recommended product names (ranked)</h3>
+  <table class="dt">
+    <thead><tr><th>Name</th><th>Strength</th><th>Domain availability likely</th></tr></thead>
+    <tbody>
+      <tr><td><strong>GigTaxCalculator.com</strong></td><td>Exact-match for the largest keyword cluster. Wedge first, expand later. Clear brand extension path.</td><td class="mono good">High</td></tr>
+      <tr><td><strong>HowMuchTax.com</strong></td><td>Universal. Works for all income types. Intuitively searchable. Very shareable.</td><td class="mono warn">Check</td></tr>
+      <tr><td><strong>KeepMoreTax.com</strong></td><td>Aspirational positioning. Emphasizes the savings angle, not just the calculation.</td><td class="mono good">High</td></tr>
+      <tr><td><strong>TaxMode.com</strong></td><td>Clean, modern SaaS feel. Brand-able. Less SEO-direct but works for the full product.</td><td class="mono warn">Check</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Recommended strategy:</strong> Register GigTaxCalculator.com as the wedge domain. Build authority there first around gig/creator/seller. At scale, acquire HowMuchTax.com and redirect — the broader brand name fits the full product better once you've built topical authority.</p>
+</div>
+
+<!-- 02 USER FLOW -->
+<div class="section" id="userflow">
+  <p class="section-label">02 — User Flow</p>
+  <h2>Start with "How do you make money?" — not entity type</h2>
+
+  <p>The fundamental problem with every existing tax tool: they ask users to self-identify their entity type first. Most people do not know if they are "Schedule C" or "1099-K" or "pass-through." They know <em>how they earn</em>. Start there.</p>
+
+  <div class="dtree">
+    <div class="dtree-q">How do you make money? (Select all that apply)</div>
+    <div class="dtree-tiles">
+      <div class="tile">💼 I have a W-2 job</div>
+      <div class="tile">🧾 I freelance / consult</div>
+      <div class="tile">🚗 I drive or deliver</div>
+      <div class="tile">🛒 I sell online</div>
+      <div class="tile">📱 I create content</div>
+      <div class="tile">🏠 I rent property / car / gear</div>
+      <div class="tile">🏢 I own an LLC or S-Corp</div>
+      <div class="tile">🏗️ I want to form a company</div>
+      <div class="tile">👫 Multiple income sources</div>
+      <div class="tile">💑 Married — we both earn</div>
+      <div class="tile">💡 I want to reduce my taxes</div>
+    </div>
+    <div class="dtree-arrow">↓ Calculator branches to the right module automatically</div>
+    <div class="dtree-out">
+      <div class="out-card">Gig driver calculator</div>
+      <div class="out-card">Creator tax calculator</div>
+      <div class="out-card">Marketplace + 1099-K</div>
+      <div class="out-card">Rental income calculator</div>
+      <div class="out-card">Entity optimizer</div>
+      <div class="out-card">Mixed household calculator</div>
+    </div>
+  </div>
+
+  <div class="call b">
+    <strong>Why this matters for SEO</strong>
+    Each tile maps to a keyword cluster. Selecting "I drive or deliver" opens the gig driver module — which is also the landing page for "DoorDash tax calculator" and 15 other high-volume queries. The user flow and the SEO architecture are the same tree. The tiles are basically internal links to your highest-traffic pages, making the homepage itself a powerful hub page for link equity distribution.
+  </div>
+</div>
+
+<!-- 03 GIG ECONOMY -->
+<div class="section" id="gig">
+  <p class="section-label">03 — Gig Economy Calculators</p>
+  <h2>16 platform-specific calculators — each with preloaded deductions</h2>
+
+  <p>This is the highest-priority category. Gig economy searches have very high volume and very low competition because large tax sites don't build platform-specific pages. The key: each page is the same calculator core with a different deduction preset and contextual copy.</p>
+
+  <div class="vcard-grid">
+    <div class="vcard">
+      <div class="vc-cat">Rideshare</div>
+      <div class="vc-name">Uber Driver</div>
+      <div class="vc-desc">Vol: ~40K/mo. KD: 12. Pre-load: mileage (standard or actual), phone, dashcam, car washes, tolls, parking, Uber service fee % of gross.</div>
+      <div class="vc-deeds">Key deduction: standard mileage ($0.70/mi) vs. actual — show both</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Rideshare</div>
+      <div class="vc-name">Lyft Driver</div>
+      <div class="vc-desc">Vol: ~22K/mo. KD: 10. Same logic as Uber. Lyft-specific: platform fee varies. Show net earnings after Lyft's cut then apply SE tax.</div>
+      <div class="vc-deeds">Key: Rideshare fee deduction from gross receipts</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Delivery</div>
+      <div class="vc-name">DoorDash Driver</div>
+      <div class="vc-desc">Vol: ~35K/mo. KD: 9. Pre-load: mileage, insulated bags, phone, parking, tolls, hot bags. Show quarterly payment amounts prominently.</div>
+      <div class="vc-deeds">Key: Mileage is #1 deduction — emphasize it</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Delivery</div>
+      <div class="vc-name">Instacart Shopper</div>
+      <div class="vc-desc">Vol: ~18K/mo. KD: 8. Pre-load: mileage, insulated bags, phone, parking. Full-service vs. in-store shopper distinction (SE tax vs. W-2).</div>
+      <div class="vc-deeds">Key: Full-service = SE tax; in-store = W-2 (explain this)</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Delivery</div>
+      <div class="vc-name">Grubhub Driver</div>
+      <div class="vc-desc">Vol: ~12K/mo. KD: 7. Pre-load: mileage, phone, insulated bag, parking, tolls. Block earnings = SE income.</div>
+      <div class="vc-deeds">Key: Mileage + phone deductions</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Delivery</div>
+      <div class="vc-name">Amazon Flex</div>
+      <div class="vc-desc">Vol: ~14K/mo. KD: 9. Pre-load: mileage, phone, dolly, locks, vehicle wear. Pay is higher per block but fewer deductions vs. rideshare.</div>
+      <div class="vc-deeds">Key: Mileage between delivery stops, loading equipment</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Delivery</div>
+      <div class="vc-name">Spark Driver (Walmart)</div>
+      <div class="vc-desc">Vol: ~8K/mo. KD: 7. Pre-load: mileage, phone, insulated bags, parking, tolls. Spark pays per batch — model batch × volume.</div>
+      <div class="vc-deeds">Key: Mileage is primary deduction</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Gig services</div>
+      <div class="vc-name">TaskRabbit Tasker</div>
+      <div class="vc-desc">Vol: ~9K/mo. KD: 8. Pre-load: tools/supplies, mileage, phone, work clothing (protective only), liability insurance, TaskRabbit platform fee.</div>
+      <div class="vc-deeds">Key: Tools, mileage, protective clothing</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Gig services</div>
+      <div class="vc-name">Rover / Pet Sitter</div>
+      <div class="vc-desc">Vol: ~7K/mo. KD: 7. Pre-load: pet supplies, mileage for walks, phone, pet first-aid certification, home insurance (if hosting), Rover platform fee.</div>
+      <div class="vc-deeds">Key: Supplies, mileage, platform fee</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Home services</div>
+      <div class="vc-name">Handyman / 1099</div>
+      <div class="vc-desc">Vol: ~11K/mo. KD: 8. Pre-load: tools (Section 179), truck/vehicle, materials (if client-supplied deducted differently), mileage, liability insurance, licensing fees.</div>
+      <div class="vc-deeds">Key: Section 179 for tools, vehicle actual expense</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Home services</div>
+      <div class="vc-name">Cleaning Business</div>
+      <div class="vc-desc">Vol: ~9K/mo. KD: 8. Pre-load: supplies, equipment, mileage, uniform/protective wear, liability insurance, advertising, phone.</div>
+      <div class="vc-deeds">Key: Supplies, mileage, liability insurance</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Home services</div>
+      <div class="vc-name">Lawn Care Self-Employed</div>
+      <div class="vc-desc">Vol: ~8K/mo. KD: 7. Pre-load: mower/equipment (Section 179), truck, fuel, trailer, maintenance, seasonal fluctuation modeling.</div>
+      <div class="vc-deeds">Key: Equipment depreciation / Section 179</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Child/pet care</div>
+      <div class="vc-name">Babysitter / Nanny 1099</div>
+      <div class="vc-desc">Vol: ~12K/mo. KD: 9. Note: Nannies may be household employees (W-2) vs. true 1099 — this distinction is critical and calculator must ask. FICA rules differ.</div>
+      <div class="vc-deeds">Key: Employee vs. contractor distinction module</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Gig services</div>
+      <div class="vc-name">Shipt Shopper</div>
+      <div class="vc-desc">Vol: ~6K/mo. KD: 7. Similar to Instacart. Pre-load: mileage, insulated bags, phone, parking. Quarterly payment amounts prominent.</div>
+      <div class="vc-deeds">Key: Mileage + quarterly payment calculator</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Gig services</div>
+      <div class="vc-name">Thumbtack Contractor</div>
+      <div class="vc-desc">Vol: ~5K/mo. KD: 7. Pre-load: profession-specific supplies, mileage, Thumbtack lead fees (deductible!), tools, phone, liability insurance.</div>
+      <div class="vc-deeds">Key: Lead fees are 100% deductible business expense</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Gig services</div>
+      <div class="vc-name">Nanny / Household Employer</div>
+      <div class="vc-desc">Vol: ~10K/mo. KD: 10. Unique module: if you employ a nanny you may owe payroll taxes ("Nanny Tax"). Calculator for employer FICA, Schedule H, state payroll.</div>
+      <div class="vc-deeds">Key: Schedule H, household payroll tax</div>
+    </div>
+  </div>
+
+  <div class="call g">
+    <strong>Preloaded deduction logic (the technical advantage)</strong>
+    Each platform page uses a JSON config: <code>deductionPresets["doordash"] = [{id:"mileage",default:true,prominence:"high"}, {id:"phone",default:true}, {id:"insulated_bag",default:true,amount:40}]</code>. The same calculator component loads with different presets. All 16 pages built from one component in a single afternoon.
+  </div>
+</div>
+
+<!-- 04 CREATOR -->
+<div class="section" id="creator">
+  <p class="section-label">04 — Creator Economy Calculators</p>
+  <h2>14 creator types — the highest-RPM category on the site</h2>
+
+  <p>Creator economy searches have very low keyword difficulty because most existing tools were built before the creator economy existed. This category also has the highest affiliate revenue potential: creators need LLC formation, banking, bookkeeping, contracts, insurance, and tax filing software simultaneously.</p>
+
+  <div class="call r">
+    <strong>1099-K note for creators (2026 rules)</strong>
+    Under OBBBA (July 2025), the 1099-K threshold was restored to $20,000 and 200+ transactions. BUT income is still taxable even without a 1099-K. Creators earning $5,000 from brand deals still owe SE tax. The calculator must make this clear: "You may not receive a 1099-K, but you still owe taxes on this income."
+  </div>
+
+  <div class="vcard-grid">
+    <div class="vcard">
+      <div class="vc-cat">Video / Social</div>
+      <div class="vc-name">OnlyFans</div>
+      <div class="vc-desc">Vol: ~33K/mo. KD: 6. Highest volume, lowest competition. Pre-load: camera/lighting equipment (Section 179), internet, phone, props/costumes, OnlyFans platform fee (20%), LLC formation highly recommended for privacy.</div>
+      <div class="vc-deeds">Key: Equipment, platform fee, LLC privacy angle</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Video / Social</div>
+      <div class="vc-name">TikTok Creator</div>
+      <div class="vc-desc">Vol: ~28K/mo. KD: 9. Pre-load: phone/camera, ring light, props, editing software, TikTok Creator Fund vs. brand deal income (different tax treatment), LLC formation.</div>
+      <div class="vc-deeds">Key: Creator Fund = 1099; brand deals = 1099-NEC</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Video / Social</div>
+      <div class="vc-name">YouTube Creator</div>
+      <div class="vc-desc">Vol: ~22K/mo. KD: 12. AdSense = 1099-MISC. Pre-load: camera, lighting, microphone, editing software, home studio, travel for content. Adsense + memberships + merch = multiple income sources.</div>
+      <div class="vc-deeds">Key: Equipment (Section 179), editing software</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Live streaming</div>
+      <div class="vc-name">Twitch Streamer</div>
+      <div class="vc-desc">Vol: ~14K/mo. KD: 8. Subscriptions + bits + donations = 1099. Pre-load: PC/console (Section 179), internet, microphone, webcam, gaming chair, lighting, subscriptions, streaming software.</div>
+      <div class="vc-deeds">Key: PC equipment full Section 179 write-off</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Newsletter / Podcast</div>
+      <div class="vc-name">Substack Writer</div>
+      <div class="vc-desc">Vol: ~10K/mo. KD: 8. Substack takes 10%. Pre-load: laptop, writing software, home office, internet, research subscriptions, contractor writers/editors.</div>
+      <div class="vc-deeds">Key: Substack fee deductible; home office central</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Newsletter / Podcast</div>
+      <div class="vc-name">Podcast Income</div>
+      <div class="vc-desc">Vol: ~8K/mo. KD: 7. Sponsorships + Patreon + courses. Pre-load: microphone, recording software (Section 179), hosting fees, home studio, travel for interviews, advertising costs.</div>
+      <div class="vc-deeds">Key: Equipment + sponsorship contract templates</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Subscription</div>
+      <div class="vc-name">Patreon Creator</div>
+      <div class="vc-desc">Vol: ~9K/mo. KD: 7. Patreon issues 1099-K if $20K+ / 200+ transactions. Below that: still taxable. Pre-load: creation-specific costs, Patreon platform fee, fulfillment costs for physical rewards.</div>
+      <div class="vc-deeds">Key: Taxable even without 1099-K — emphasize this</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Social</div>
+      <div class="vc-name">Instagram Influencer</div>
+      <div class="vc-desc">Vol: ~12K/mo. KD: 9. Brand deals via 1099-NEC + gifted products (FMV taxable!). Pre-load: camera, phone, props, travel, editing apps, agency fees.</div>
+      <div class="vc-deeds">Key: Gifted products are taxable income at FMV</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">UGC / Brand deals</div>
+      <div class="vc-name">UGC Creator</div>
+      <div class="vc-desc">Vol: ~7K/mo. KD: 6. New category: creators making content for brands but not posting on own channels. Pre-load: camera/phone, editing software, props, contracts.</div>
+      <div class="vc-deeds">Key: Low KD, rising volume — early mover advantage</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Courses / Digital</div>
+      <div class="vc-name">Online Course Creator</div>
+      <div class="vc-desc">Vol: ~8K/mo. KD: 10. Platform fees (Teachable, Thinkific, Kajabi). Pre-load: course platform fee, video equipment, home office, software, marketing spend, contractor editors.</div>
+      <div class="vc-deeds">Key: Platform fees + marketing deductible</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Affiliate</div>
+      <div class="vc-name">Affiliate Marketer</div>
+      <div class="vc-desc">Vol: ~11K/mo. KD: 9. Amazon, ShareASale, etc. 1099-MISC. Pre-load: hosting, domains, software tools, email platform, advertising spend, content creation costs.</div>
+      <div class="vc-deeds">Key: High S-Corp potential if earning $80K+</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Newsletter</div>
+      <div class="vc-name">Newsletter Business</div>
+      <div class="vc-desc">Vol: ~5K/mo. KD: 7. Beehiiv, ConvertKit, etc. Sponsorship + subscription revenue. Pre-load: ESP costs, copywriter contractors, home office, laptop.</div>
+      <div class="vc-deeds">Key: Contractor costs are 100% deductible</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Brand deals</div>
+      <div class="vc-name">Sponsorship Income</div>
+      <div class="vc-desc">Vol: ~6K/mo. KD: 8. Any creator receiving paid sponsorships. Brand deal = 1099-NEC above $2,000 (2026 threshold). Pre-load: platform-specific costs, agent/manager fees.</div>
+      <div class="vc-deeds">Key: Agent/manager fees are deductible</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Brand deals</div>
+      <div class="vc-name">Brand Deal Calculator</div>
+      <div class="vc-desc">Vol: ~5K/mo. KD: 7. Standalone tool: "I got a $10,000 brand deal — what do I owe?" One-page calculator. Very shareable on creator community forums.</div>
+      <div class="vc-deeds">Key: Most shareable page on the site</div>
+    </div>
+  </div>
+</div>
+
+<!-- 05 MARKETPLACE SELLER -->
+<div class="section" id="seller">
+  <p class="section-label">05 — Marketplace Seller Calculators + 1099-K Module</p>
+  <h2>13 platforms + dedicated 1099-K reconciliation tool</h2>
+
+  <div class="call y">
+    <strong>2026 1099-K rules (OBBBA update)</strong>
+    Threshold restored to $20,000 + 200 transactions. Platforms like PayPal, Venmo, Etsy, and eBay issue 1099-K ONLY if both thresholds are met. But income is taxable regardless. Key pain point: 1099-K shows GROSS receipts before fees, refunds, chargebacks, and COGS — leading sellers to overpay taxes if they don't reconcile properly. This reconciliation module is a massive SEO and utility opportunity.
+  </div>
+
+  <h3>1099-K reconciliation module (standalone tool)</h3>
+  <p>Inputs: Gross 1099-K amount → Platform fees → Returns/refunds → Shipping costs charged → Cost of goods sold → Net taxable income. This single module targets "1099-K calculator", "Etsy 1099-K reconciliation", "eBay gross vs net income tax" — all high-volume, near-zero competition queries.</p>
+
+  <div class="vcard-grid">
+    <div class="vcard">
+      <div class="vc-cat">Handmade / vintage</div>
+      <div class="vc-name">Etsy Seller</div>
+      <div class="vc-desc">Vol: ~22K/mo. KD: 10. Pre-load: Etsy listing fee, transaction fee (6.5%), payment processing, shipping supplies, COGS (materials), home studio, photography equipment.</div>
+      <div class="vc-deeds">Key: COGS + platform fees = biggest deductions</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Used goods</div>
+      <div class="vc-name">eBay Seller</div>
+      <div class="vc-desc">Vol: ~14K/mo. KD: 10. Pre-load: eBay final value fee, PayPal fee, shipping, packing supplies, cost basis of items sold. Distinguish personal items (cap gain) vs. business inventory (ordinary income).</div>
+      <div class="vc-deeds">Key: Personal items vs. inventory — critical distinction</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">E-commerce</div>
+      <div class="vc-name">Amazon Seller</div>
+      <div class="vc-desc">Vol: ~18K/mo. KD: 14. FBA vs. FBM. Pre-load: Amazon fees (15% referral + FBA fulfillment + storage), COGS, advertising (ACoS), inventory. Complex — show Schedule C breakdown.</div>
+      <div class="vc-deeds">Key: FBA fees + COGS + advertising spend</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">E-commerce</div>
+      <div class="vc-name">Shopify Store</div>
+      <div class="vc-desc">Vol: ~12K/mo. KD: 12. Pre-load: Shopify subscription, payment processing, COGS, shipping, advertising (Meta/Google), app subscriptions, returns.</div>
+      <div class="vc-deeds">Key: Advertising spend can be 30–50% of revenue</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Resale</div>
+      <div class="vc-name">Facebook Marketplace</div>
+      <div class="vc-desc">Vol: ~8K/mo. KD: 8. Personal property sold at a loss = not taxable. Personal property sold at a gain = taxable. Inventory for resale = Schedule C. Module must ask: "Are you reselling for profit or selling personal items?"</div>
+      <div class="vc-deeds">Key: Personal vs. business classification</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Resale fashion</div>
+      <div class="vc-name">Poshmark / Depop</div>
+      <div class="vc-desc">Vol: ~9K/mo. KD: 7. Pre-load: Poshmark fee (20% on sales $15+), cost basis of items, shipping supplies. Casual thrifter vs. resale business = different treatment.</div>
+      <div class="vc-deeds">Key: Cost basis tracking is key to avoiding overpayment</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Resale</div>
+      <div class="vc-name">Mercari / OfferUp</div>
+      <div class="vc-desc">Vol: ~7K/mo. KD: 7. Pre-load: platform fee, shipping, cost basis. Mercari sends 1099-K at $20K threshold. But all taxable profit must be reported regardless.</div>
+      <div class="vc-deeds">Key: No 1099-K ≠ no tax obligation (emphasize)</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Sneakers / collectibles</div>
+      <div class="vc-name">StockX / GOAT</div>
+      <div class="vc-desc">Vol: ~6K/mo. KD: 8. Pre-load: StockX fees (seller fee + transaction fee), authentication fee, cost basis, short-term vs. long-term capital gains vs. ordinary income (business vs. investment).</div>
+      <div class="vc-deeds">Key: Capital gain vs. ordinary income determination</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Print-on-demand</div>
+      <div class="vc-name">Printful / Printify</div>
+      <div class="vc-desc">Vol: ~5K/mo. KD: 8. Pre-load: base product cost (COGS), design software, Shopify/Etsy fees, advertising. POD = no inventory risk but lower margins → show net taxable clearly.</div>
+      <div class="vc-deeds">Key: COGS = cost of each item fulfilled</div>
+    </div>
+    <div class="vcard">
+      <div class="vc-cat">Digital products</div>
+      <div class="vc-name">Gumroad / Stan Store</div>
+      <div class="vc-desc">Vol: ~6K/mo. KD: 6. Digital products = high margin. Pre-load: platform fee (Gumroad 10%, Stan 5%), email platform, software, home office. Very low COGS → high effective SE tax on net.</div>
+      <div class="vc-deeds">Key: High S-Corp potential at $80K+</div>
+    </div>
+  </div>
+</div>
+
+<!-- 06 RENTAL -->
+<div class="section" id="rental">
+  <p class="section-label">06 — Rental & Asset-Income Calculators</p>
+  <h2>12 rental types — Schedule C vs Schedule E logic built in</h2>
+
+  <p>Rental income is complicated because it may be Schedule C (short-term rental with services) or Schedule E (passive landlord). Airbnb with cleaning services may be Schedule C. A long-term landlord is Schedule E. The calculator must ask the right questions to route correctly.</p>
+
+  <div class="call b">
+    <strong>Critical routing question</strong>
+    "Do you provide substantial services to guests (cleaning, meals, concierge)? If yes: Schedule C — SE tax applies. If no (simple rent): Schedule E — no SE tax, different passive loss rules apply." This single question changes the entire tax calculation.
+  </div>
+
+  <div class="tags">
+    <span class="tag r">Airbnb host calculator — $28K/mo vol, KD 12</span>
+    <span class="tag r">Vrbo tax calculator — $14K/mo vol, KD 10</span>
+    <span class="tag r">Turo tax calculator — $22K/mo vol, KD 8</span>
+    <span class="tag">Getaround tax calculator</span>
+    <span class="tag">RV rental tax calculator</span>
+    <span class="tag">Boat rental tax calculator</span>
+    <span class="tag">Equipment rental tax calculator</span>
+    <span class="tag">Parking space rental tax calculator</span>
+    <span class="tag">Storage rental tax calculator</span>
+    <span class="tag">Short-term vs long-term rental comparison</span>
+    <span class="tag r">Landlord tax calculator — $18K/mo vol, KD 14</span>
+    <span class="tag r">Real estate agent tax calculator — $22K/mo vol, KD 18</span>
+  </div>
+
+  <h3>Turo-specific logic (car rental)</h3>
+  <p>Turo income can use: (a) standard mileage rate, (b) actual expense method (insurance, depreciation, maintenance × business-use %), or (c) special Turo deduction. The calculator should compare all three and auto-select the best. This distinction alone is worth a dedicated page that no existing tool handles.</p>
+</div>
+
+<!-- 07 PROFESSIONAL FREELANCERS -->
+<div class="section" id="pro">
+  <p class="section-label">07 — Professional Freelancer Calculators</p>
+  <h2>24+ profession pages — preloaded deductions, highest long-tail value</h2>
+
+  <table class="dt">
+    <thead><tr><th>Profession</th><th>Est. monthly vol</th><th>KD</th><th>Key preloaded deductions</th></tr></thead>
+    <tbody>
+      <tr><td>Software developer / consultant</td><td class="mono good">18K</td><td class="mono good">14</td><td>Home office, laptop/monitors (S179), cloud tools, professional development</td></tr>
+      <tr><td>AI consultant</td><td class="mono good">6K</td><td class="mono good">8</td><td>GPU compute costs, AI software subscriptions, home office, conferences</td></tr>
+      <tr><td>Designer / UX freelancer</td><td class="mono good">12K</td><td class="mono good">11</td><td>Adobe CC, Figma, monitor/iPad, home office, stock assets</td></tr>
+      <tr><td>Copywriter / content writer</td><td class="mono good">9K</td><td class="mono good">9</td><td>Grammarly, research tools, home office, professional development</td></tr>
+      <tr><td>Marketing consultant</td><td class="mono good">8K</td><td class="mono good">11</td><td>Ad platform costs (if agency), home office, SaaS tools, conference travel</td></tr>
+      <tr><td>Bookkeeper / accountant</td><td class="mono good">7K</td><td class="mono good">10</td><td>QuickBooks, continuing education, E&O insurance, home office</td></tr>
+      <tr><td>Virtual assistant</td><td class="mono good">8K</td><td class="mono good">8</td><td>Home office, computer, software subscriptions, phone</td></tr>
+      <tr><td>Coach (business/life/health)</td><td class="mono good">9K</td><td class="mono good">10</td><td>Coaching certification, Zoom, home office, professional development</td></tr>
+      <tr><td>Therapist / private practice</td><td class="mono good">11K</td><td class="mono good">12</td><td>Malpractice insurance, CEUs, EHR software, home office or office rent, supervision</td></tr>
+      <tr><td>Travel nurse / nurse contractor</td><td class="mono good">14K</td><td class="mono good">10</td><td>Licensing fees, per diem allowances, travel, scrubs, CEUs, malpractice insurance</td></tr>
+      <tr><td>CDL owner-operator / truck driver</td><td class="mono good">16K</td><td class="mono good">11</td><td>Truck depreciation or lease, fuel, maintenance, DOT fees, per diem, logbook</td></tr>
+      <tr><td>Truck driver per diem</td><td class="mono good">12K</td><td class="mono good">9</td><td>$69/day standard per diem × days on road. 80% deductible for OTR drivers.</td></tr>
+      <tr><td>Realtor / real estate agent</td><td class="mono good">18K</td><td class="mono good">14</td><td>MLS fees, E&O insurance, client gifts, marketing, vehicle, staging costs</td></tr>
+      <tr><td>Insurance agent</td><td class="mono good">8K</td><td class="mono good">10</td><td>Licensing fees, E&O insurance, CRM, lead generation costs, vehicle</td></tr>
+      <tr><td>Notary / signing agent</td><td class="mono good">7K</td><td class="mono good">8</td><td>Notary bond, commission fees, supplies, mileage, stamps/seals</td></tr>
+      <tr><td>Photographer / videographer</td><td class="mono good">12K</td><td class="mono good">11</td><td>Camera/lenses (S179), lighting, editing software, travel, props, studio rent</td></tr>
+      <tr><td>Hair stylist — booth rental</td><td class="mono good">9K</td><td class="mono good">9</td><td>Booth rent (deductible!), tools, supplies, continuing education, liability insurance</td></tr>
+      <tr><td>Massage therapist</td><td class="mono good">7K</td><td class="mono good">9</td><td>Massage table, oils/supplies, liability insurance, CE credits, booth/studio rent</td></tr>
+      <tr><td>Personal trainer</td><td class="mono good">10K</td><td class="mono good">10</td><td>Certification fees, equipment, gym membership (if business), liability insurance, marketing</td></tr>
+      <tr><td>Tutor / online teacher</td><td class="mono good">8K</td><td class="mono good">9</td><td>Learning materials, platform fees, home office, laptop, video equipment</td></tr>
+      <tr><td>Wedding planner / event planner</td><td class="mono good">7K</td><td class="mono good">10</td><td>Event software, vendor deposits, marketing, vehicle, professional attire</td></tr>
+      <tr><td>QA tester / contractor</td><td class="mono good">4K</td><td class="mono good">7</td><td>Device testing setup (S179), home office, software tools</td></tr>
+      <tr><td>Clergy / minister</td><td class="mono good">5K</td><td class="mono good">9</td><td>Housing allowance exclusion (unique rule), ministry expenses, vehicle, continuing education</td></tr>
+      <tr><td>Farm income (Schedule F)</td><td class="mono good">8K</td><td class="mono good">11</td><td>Equipment, seeds, livestock, fuel, land rent, depreciation — different form (Schedule F not C)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- EQUITY COMPENSATION -->
+<div class="section" id="equity">
+  <p class="section-label">09 — Equity Compensation Calculators (NEW)</p>
+  <h2>RSU · ISO · NSO · ESPP · QSBS — the two-event tax model</h2>
+  <div class="call b"><strong>The core mental model every equity page must teach</strong>Equity compensation creates two separate taxable events: (1) an ordinary income event when shares vest or options are exercised, and (2) a capital gains event when shares are eventually sold. Misunderstanding this two-layer structure — especially the Form 1099-B basis trap — is the single most expensive tax mistake equity-compensated employees make.</div>
+  <h3>RSU — Restricted Stock Units</h3>
+  <table class="dt">
+    <thead><tr><th>Event</th><th>Tax treatment</th><th>Key risk / action</th></tr></thead>
+    <tbody>
+      <tr><td>Vesting</td><td>Ordinary income at FMV on vest date. W-2 Box 1. FICA applies (SS to $184,500 wage base 2026).</td><td>22% supplemental withholding under-covers 32%+ bracket. Gap = (marginal rate − 0.22) × RSU income. Fix via W-4 or quarterly payment.</td></tr>
+      <tr><td>Sale — short-term (under 1 year)</td><td>Capital gain at ordinary income rates. Basis = FMV at vesting.</td><td>Broker 1099-B often shows $0 basis. Adjust on Form 8949 Column E or pay tax twice.</td></tr>
+      <tr><td>Sale — long-term (over 1 year)</td><td>LTCG at 0/15/20%. Holding 366+ days post-vest changes effective rate by 7–22%.</td><td>Always log vest date and FMV. Use broker statement or Form 3922.</td></tr>
+    </tbody>
+  </table>
+  <h3>ISO — Incentive Stock Options</h3>
+  <table class="dt">
+    <thead><tr><th>Event</th><th>Tax treatment</th><th>Key risk</th></tr></thead>
+    <tbody>
+      <tr><td>Exercise</td><td>No regular income tax. AMT preference = bargain element (FMV − strike). AMT exemption 2026: $90,100 single / $140,200 MFJ.</td><td>Large exercise triggers AMT even without selling. Exercise in tranches across years to stay below exemption phaseout.</td></tr>
+      <tr><td>Qualifying disposition</td><td>2+ years from grant AND 1+ year from exercise → entire gain = LTCG. No ordinary income.</td><td>California taxes qualifying dispositions at ordinary state rates. No CA preferential treatment.</td></tr>
+      <tr><td>Disqualifying disposition</td><td>Either holding requirement not met → bargain element = W-2 ordinary income + STCG or LTCG on remaining gain.</td><td>Same 1099-B basis trap. AMT credit (Form 8801) from exercise year can offset future regular tax.</td></tr>
+    </tbody>
+  </table>
+  <h3>NSO — Non-Qualified Stock Options</h3>
+  <p>Spread at exercise = ordinary income. W-2 for employees; 1099-NEC + SE tax for contractors (quarterly estimated payments required — no withholding). Cost basis = FMV at exercise. Subsequent gain/loss = STCG or LTCG based on holding period from exercise date. Annual ISO limit: $100,000 aggregate FMV at grant exercisable per year — excess treated as NSOs.</p>
+  <h3>ESPP — §423 Qualified Employee Stock Purchase Plan</h3>
+  <div class="call g"><strong>Most-misunderstood ESPP rule</strong>§423 qualified ESPP shares are NOT subject to FICA/FUTA on qualifying OR disqualifying dispositions. Non-qualified ESPPs ARE subject to FICA at purchase. Qualifying disposition ordinary income is also NOT subject to federal withholding — must pay via quarterly estimated taxes or W-4 adjustment.</div>
+  <table class="dt">
+    <thead><tr><th>Disposition type</th><th>Ordinary income</th><th>Capital gain</th><th>Basis to use on Form 8949</th></tr></thead>
+    <tbody>
+      <tr><td>Qualifying (2yr from grant + 1yr from purchase)</td><td>LESSER of: 15% × FMV at offering date, or actual gain</td><td>Remaining gain above OI portion → LTCG</td><td>Purchase price + OI per share (already on W-2)</td></tr>
+      <tr><td>Disqualifying (either period not met)</td><td>FMV at purchase − purchase price (full spread)</td><td>Sale price − FMV at purchase → STCG or LTCG by holding period</td><td>FMV at purchase date</td></tr>
+    </tbody>
+  </table>
+  <h3>QSBS — Qualified Small Business Stock (§1202) — OBBBA 2025 Changes</h3>
+  <div class="call g"><strong>OBBBA update — stock issued after July 4, 2025</strong>Exclusion limit raised from $10M to $15M (inflation-indexed from 2027). New tiered holding: 50% exclusion at 3 years, 75% at 4 years, 100% at 5+ years. Pre-July-2025 stock still requires 5 years for 100% exclusion. California, Alabama, Mississippi, Pennsylvania do NOT conform — full state tax on excluded gains. AMT and NIIT: no impact on 100% excluded QSBS gains.</div>
+  <h3>Form 1099-B Basis Trap — the #1 equity filing error</h3>
+  <table class="dt">
+    <thead><tr><th>Equity type</th><th>Broker reports as basis</th><th>Correct adjusted basis</th></tr></thead>
+    <tbody>
+      <tr><td>RSU sale</td><td class="bad">$0 or purchase price</td><td class="good">FMV at vesting date — enter in Form 8949 Column E</td></tr>
+      <tr><td>NSO exercise + sale</td><td class="bad">Strike price only</td><td class="good">FMV at exercise date</td></tr>
+      <tr><td>ISO disqualifying disposition</td><td class="bad">Strike price only</td><td class="good">FMV at exercise date</td></tr>
+      <tr><td>ESPP qualifying disposition</td><td class="bad">Purchase price</td><td class="good">Purchase price + OI per share reported on W-2</td></tr>
+      <tr><td>ESPP disqualifying disposition</td><td class="bad">Purchase price</td><td class="good">FMV at purchase date</td></tr>
+    </tbody>
+  </table>
+  <div class="tags">
+    <span class="tag r">RSU tax calculator 2026 — ~25K/mo, KD 14</span>
+    <span class="tag r">ISO stock option AMT calculator — ~12K/mo, KD 12</span>
+    <span class="tag r">ESPP qualifying vs disqualifying tax — ~9K/mo, KD 10</span>
+    <span class="tag r">QSBS Section 1202 exclusion calculator — ~8K/mo, KD 10</span>
+    <span class="tag">NSO exercise tax calculator — ~7K/mo, KD 9</span>
+    <span class="tag">startup founder equity tax calculator — ~6K/mo, KD 8</span>
+    <span class="tag">RSU adjusted cost basis Form 8949 — ~5K/mo, KD 7</span>
+  </div>
+</div>
+
+<!-- COMBINED SALARY CALCULATOR -->
+<div class="section" id="combined">
+  <p class="section-label">10 — Combined Salary Calculator (NEW)</p>
+  <h2>All income types in one model — W-2 + 1099 + equity + family</h2>
+  <p>The central hub calculator. A user selects all income types, enters amounts, and sees one unified tax bill, quarterly payment schedule, and withholding optimization recommendation. No existing tool does this across W-2, equity compensation, and self-employment income simultaneously.</p>
+  <h3>Supported income types (all stacked in one calculation)</h3>
+  <div class="tags">
+    <span class="tag g">W-2 salary</span><span class="tag g">RSU vesting</span><span class="tag g">ISO exercise (AMT)</span>
+    <span class="tag g">NSO exercise</span><span class="tag g">ESPP qualifying/disqualifying sale</span>
+    <span class="tag g">QSBS sale (§1202 exclusion)</span><span class="tag g">Capital gains (stock/crypto/fund)</span>
+    <span class="tag g">SE income / 1099</span><span class="tag g">Rental income (Sch C or E)</span>
+    <span class="tag g">SSDI benefits (combined income formula)</span><span class="tag g">STD/LTD disability benefits</span>
+    <span class="tag g">Dividend income (qualified vs ordinary)</span><span class="tag g">Pension / annuity</span>
+    <span class="tag g">K-1 partnership / S Corp income</span><span class="tag g">Unemployment (1099-G)</span>
+  </div>
+  <h3>Quarterly estimated tax engine</h3>
+  <table class="dt">
+    <thead><tr><th>Safe harbor rule</th><th>Formula</th><th>When to use</th></tr></thead>
+    <tbody>
+      <tr><td>Rule 1 — 90% current year</td><td>0.90 × projected current year total tax</td><td>If you expect to owe less than prior year</td></tr>
+      <tr><td>Rule 2 — 100% prior year</td><td>1.00 × prior year total tax</td><td>Prior year AGI ≤ $150,000</td></tr>
+      <tr><td>Rule 2 — 110% prior year</td><td>1.10 × prior year total tax</td><td>Prior year AGI > $150,000</td></tr>
+      <tr><td>Annualized income method</td><td>Form 2210 Schedule AI — per-quarter actual income</td><td>Lumpy income: large RSU vest Q3, QSBS sale Q4, ESPP purchase in Q2</td></tr>
+    </tbody>
+  </table>
+  <h3>Key family household scenarios</h3>
+  <table class="dt">
+    <thead><tr><th>Scenario</th><th>Key risks</th><th>Quarterly strategy</th></tr></thead>
+    <tbody>
+      <tr><td>Tech couple: dual W-2 + RSU + ISO + ESPP</td><td>AMT on combined return. Additional Medicare >$250K MFJ. ESPP OI not withheld. RSU 22% gap.</td><td>Increase RSU spouse W-4 by gap ÷ pay periods. ESPP gap as Q3/Q4 estimated payment.</td></tr>
+      <tr><td>Founder: salary + QSBS sale</td><td>Federal excluded. CA: 13.3% on full gain. $15M × 13.3% = $1,995,000 CA tax due.</td><td>CA quarterly payment in quarter of sale. No federal quarterly on excluded amount.</td></tr>
+      <tr><td>W-2 spouse + 1099 gig spouse + hired children</td><td>SE spouse SE tax not covered by W-2 withholding. Children FICA-exempt if sole prop under 18.</td><td>SE spouse pays quarterly independently. W-2 spouse W-4 increase optional to simplify.</td></tr>
+      <tr><td>W-2 + RSU + rental + SSDI family member</td><td>SSDI to 85% taxable tier from stacked income. RSU withholding gap. Rental passive losses.</td><td>Increase W-4 by RSU gap. Verify SSDI tier and voluntary withholding via Form W-4V.</td></tr>
+      <tr><td>W-2 + RSU + 1099 consulting + ESPP + rental + crypto</td><td>Most complex — NIIT, AMT, passive loss, SE tax all interact.</td><td>Use annualized income method (Form 2210 AI). Recommend CPA for filing.</td></tr>
+    </tbody>
+  </table>
+  <div class="tags">
+    <span class="tag r">combined income tax calculator W-2 1099 RSU 2026 — ~20K/mo, KD 12</span>
+    <span class="tag r">tech employee total compensation tax calculator — ~12K/mo, KD 10</span>
+    <span class="tag r">W-4 withholding calculator equity compensation — ~9K/mo, KD 9</span>
+    <span class="tag">quarterly estimated tax calculator all income types — ~8K/mo, KD 10</span>
+    <span class="tag">family tax calculator W-2 self-employed — ~7K/mo, KD 9</span>
+  </div>
+</div>
+<!-- 08 MIXED HOUSEHOLD -->
+<div class="section" id="mixed">
+  <p class="section-label">08 — Mixed-Income Household Scenarios</p>
+  <h2>The "real life" calculator — combinations no other tool models</h2>
+
+  <p>This is the most powerful differentiator with families. People's actual income situations don't fit into single categories. The mixed-household module lets users add multiple income sources and see the combined tax picture.</p>
+
+  <div class="tags">
+    <span class="tag r">W-2 job + DoorDash side income</span>
+    <span class="tag r">W-2 job + Etsy shop</span>
+    <span class="tag r">W-2 job + 1099 consulting</span>
+    <span class="tag r">W-2 spouse + self-employed spouse</span>
+    <span class="tag r">Two 1099 spouses</span>
+    <span class="tag r">One spouse S-Corp + one spouse W-2</span>
+    <span class="tag">Retiree + self-employment income</span>
+    <span class="tag">Social Security + self-employment income</span>
+    <span class="tag">SSDI / disability + 1099 income</span>
+    <span class="tag">Student + gig income (teen creator)</span>
+    <span class="tag">Military spouse self-employment</span>
+    <span class="tag">Unemployment + gig income</span>
+    <span class="tag p">Parent hiring child in business</span>
+    <span class="tag p">Husband-wife qualified joint venture</span>
+    <span class="tag">W-2 + Airbnb rental income</span>
+    <span class="tag">W-2 + crypto trading income</span>
+  </div>
+
+  <div class="call p">
+    <strong>Why "W-2 + side hustle" is your single biggest keyword cluster</strong>
+    "W-2 and DoorDash taxes," "Etsy income W-2 job tax," "how to file taxes with side hustle" — collectively these queries represent hundreds of thousands of monthly searches with KD 8–22. The existing tools (TurboTax, NerdWallet) do not model this combination interactively. Someone with a W-2 withholding and a DoorDash side income needs to know exactly how much extra SE tax they owe and whether they need quarterly payments — the W-2 withholding may or may not cover the gap.
+  </div>
+
+  <h3>Technical spec: income stacking calculator</h3>
+  <p>User adds income sources via "Add another income source" button. Each source has: type, gross amount, relevant deductions. Calculator aggregates: total AGI → bracket calculation → SE tax on only self-employment income → W-2 withholding credit → net tax owed or refund → quarterly payment recommendation if SE income > $1,000.</p>
+</div>
+
+<!-- 09 ENTITIES -->
+<div class="section" id="entities">
+  <p class="section-label">09 — All Entity Types (Expanded)</p>
+  <h2>24 entity types and income structures — complete coverage</h2>
+
+  <table class="dt">
+    <thead><tr><th>Entity / Structure</th><th>Tax form</th><th>SE tax?</th><th>Key use case</th></tr></thead>
+    <tbody>
+      <tr><td>W-2 Employee</td><td class="mono">W-2 / 1040</td><td class="mono good">None</td><td>Standard employment</td></tr>
+      <tr><td>Sole Proprietor / 1099</td><td class="mono">Schedule C</td><td class="mono bad">15.3%</td><td>Default freelancer structure</td></tr>
+      <tr><td>Single-Member LLC (SMLLC)</td><td class="mono">Schedule C</td><td class="mono bad">15.3%</td><td>Liability protection, same tax as sole prop</td></tr>
+      <tr><td>Multi-Member LLC</td><td class="mono">Form 1065 / K-1</td><td class="mono bad">15.3%</td><td>Business partnerships</td></tr>
+      <tr><td>General Partnership</td><td class="mono">Form 1065 / K-1</td><td class="mono bad">15.3%</td><td>Informal partnerships</td></tr>
+      <tr><td>Limited Partnership</td><td class="mono">Form 1065 / K-1</td><td class="mono warn">General partners only</td><td>Real estate, investment funds</td></tr>
+      <tr><td>LLC + S Corp Election</td><td class="mono">Form 1120-S / K-1</td><td class="mono warn">Salary portion only</td><td>$60K–$500K net profit — tax sweet spot</td></tr>
+      <tr><td>S Corporation (standalone)</td><td class="mono">Form 1120-S / K-1</td><td class="mono warn">Salary portion only</td><td>Same as above, different formation path</td></tr>
+      <tr><td>C Corporation</td><td class="mono">Form 1120</td><td class="mono good">None (21% corp rate)</td><td>VC-backed, retained earnings, benefits</td></tr>
+      <tr><td>Delaware C Corp</td><td class="mono">Form 1120 + DE filing</td><td class="mono good">None</td><td>Startup / investor-ready standard</td></tr>
+      <tr><td>Wyoming C Corp / LLC</td><td class="mono">Form 1120 or Sch C</td><td class="mono good">None / varies</td><td>Privacy, low cost, no franchise tax</td></tr>
+      <tr><td>LLC taxed as C Corp</td><td class="mono">Form 1120</td><td class="mono good">None</td><td>LLC formation with corporate tax treatment</td></tr>
+      <tr><td>Professional LLC (PLLC)</td><td class="mono">Varies</td><td class="mono bad">15.3% or salary</td><td>Doctors, lawyers, CPAs — licensed professionals</td></tr>
+      <tr><td>Professional Corporation (PC)</td><td class="mono">Form 1120</td><td class="mono good">None corp-level</td><td>Licensed professionals needing corp structure</td></tr>
+      <tr><td>Husband-Wife Qualified Joint Venture</td><td class="mono">Two Schedule Cs</td><td class="mono bad">Both spouses pay SE</td><td>Married couple business — avoids partnership filing</td></tr>
+      <tr><td>Family LLC</td><td class="mono">Form 1065 + K-1s</td><td class="mono warn">Managing member only</td><td>Estate planning, income shifting to children</td></tr>
+      <tr><td>Holding Company + Operating Co.</td><td class="mono">Multiple 1120s or 1065s</td><td class="mono warn">Varies by structure</td><td>Asset protection, multiple businesses</td></tr>
+      <tr><td>Real Estate Holding LLC</td><td class="mono">Schedule E or Form 1065</td><td class="mono good">None (passive)</td><td>Rental property holding, liability protection</td></tr>
+      <tr><td>Series LLC</td><td class="mono">Varies by state</td><td class="mono warn">Varies</td><td>Multiple asset classes under one umbrella (limited state support)</td></tr>
+      <tr><td>Statutory Employee</td><td class="mono">W-2 (special)</td><td class="mono warn">Partial — see rules</td><td>Life insurance agents, certain home workers</td></tr>
+      <tr><td>Household Employer (Nanny Tax)</td><td class="mono">Schedule H</td><td class="mono warn">Employer FICA</td><td>Families who employ household workers</td></tr>
+      <tr><td>Clergy / Minister</td><td class="mono">Schedule C + Form 4361</td><td class="mono warn">Unique — housing allowance</td><td>Ordained ministers — housing allowance is tax-free</td></tr>
+      <tr><td>Farm Income (Schedule F)</td><td class="mono">Schedule F</td><td class="mono bad">15.3%</td><td>Agricultural income — different deduction rules</td></tr>
+      <tr><td>K-1 Partnership / S Corp Income</td><td class="mono">K-1 → Schedule E pg 2</td><td class="mono warn">No SE on passive K-1</td><td>Partners / shareholders receiving pass-through income</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 10 ENTITY RECOMMENDER -->
+<div class="section" id="recommender">
+  <p class="section-label">10 — Entity Recommender Engine</p>
+  <h2>The "What should I become?" decision tool — your strongest differentiator</h2>
+
+  <p>No existing tax tool does this. Users answer 12 questions, the engine scores each entity structure, and recommends the optimal one with a plain-English explanation and projected tax savings.</p>
+
+  <h3>Input questions (progressive — not all shown at once)</h3>
+  <table class="dt">
+    <thead><tr><th>Question</th><th>How it affects the recommendation</th></tr></thead>
+    <tbody>
+      <tr><td>What is your annual net profit?</td><td>Below $60K → stay sole prop. $60–$80K → S Corp breakeven. Above $80K → S Corp strongly recommended.</td></tr>
+      <tr><td>What state do you operate in?</td><td>State income tax rate affects S Corp vs. C Corp math. California S Corp franchise tax minimum ($800/yr) changes the threshold.</td></tr>
+      <tr><td>What is your profession?</td><td>SSTBs (doctors, lawyers, consultants) face QBI phaseout above income threshold — changes S Corp vs. C Corp recommendation.</td></tr>
+      <tr><td>Are you married? What is spouse's income?</td><td>MFJ filing changes bracket effects and SE tax interaction.</td></tr>
+      <tr><td>Do you have or plan to hire employees?</td><td>Employees → S Corp payroll infrastructure already needed. C Corp → better benefits structure.</td></tr>
+      <tr><td>Do you plan to raise outside investment?</td><td>Yes → Delaware C Corp. No → Wyoming or home state LLC.</td></tr>
+      <tr><td>Do you want owner privacy?</td><td>Yes → Wyoming LLC/Corp. No → Delaware or home state.</td></tr>
+      <tr><td>Do you sell physical products?</td><td>Yes → sales tax nexus check, inventory tracking, potentially C Corp for retained earnings.</td></tr>
+      <tr><td>Do you work in multiple states?</td><td>Multi-state → adds foreign qualification cost to analysis.</td></tr>
+      <tr><td>What are your health insurance costs?</td><td>Self-employed health insurance deduction changes effective tax rate comparison.</td></tr>
+      <tr><td>What are your retirement savings goals?</td><td>High retirement savings → Solo 401(k) available to any entity; pension plan for C Corp.</td></tr>
+      <tr><td>Do you want to retain profits in the business?</td><td>Yes → C Corp (21% rate on retained earnings vs. personal rate). No → S Corp or LLC pass-through.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Output: entity recommendation with side-by-side tax comparison</h3>
+  <p>The output shows: recommended entity → why → projected annual tax saving vs. current structure → next steps checklist → links to formation services (ZenBusiness, Stripe Atlas, Clerky — affiliate revenue). This page is the highest-converting page on the site.</p>
+</div>
+
+<!-- 11 OWNER SALARY -->
+<div class="section" id="salary">
+  <p class="section-label">11 — Owner Salary + S Corp Optimizer</p>
+  <h2>The salary/distribution split that saves $5K–$25K/yr</h2>
+
+  <p>S Corp owners must pay themselves a "reasonable salary." The calculator shows the live tax impact of moving the salary slider, showing the tradeoff between: FICA savings on distributions vs. QBI deduction optimization vs. retirement contribution capacity vs. audit risk.</p>
+
+  <div class="call g">
+    <strong>2026 update: QBI is now permanent (OBBBA)</strong>
+    The 20% Qualified Business Income deduction was made permanent by the One Big Beautiful Bill Act (July 2025). For S Corp owners, QBI applies to distributions, not salary. So: lower salary = more QBI = bigger deduction. But lower salary also increases IRS audit risk. The calculator models the mathematical optimum. 2026 QBI phaseout: $201,775 (single) / $403,500 (MFJ). Social Security wage base: $184,500.
+  </div>
+
+  <h3>Reasonable salary benchmark lookup by profession</h3>
+  <p>The salary benchmarking feature — comparing the user's proposed salary to BLS wage data for their profession and state — is the feature that will get cited by every "S Corp salary" article on the internet. Build it with a simple BLS data lookup embedded in the JSON config.</p>
+</div>
+
+<!-- 12 DEDUCTIONS -->
+<div class="section" id="deductions">
+  <p class="section-label">12 — Complete Deductions Library</p>
+  <h2>Every legal deduction — with Augusta Rule, family hiring, and vehicle comparison</h2>
+
+  <h3>Unique modules (not found on any competitor)</h3>
+  <div class="tags">
+    <span class="tag r">Augusta Rule calculator (IRC 280A) — rent home to business 14 days tax-free</span>
+    <span class="tag r">Hire your children calculator — FICA exemption + standard deduction shield</span>
+    <span class="tag r">Hire your spouse calculator — 401(k) contribution doubling</span>
+    <span class="tag r">Mileage vs. actual expense comparison — auto-selects larger deduction</span>
+    <span class="tag r">Home office actual vs. simplified comparison — auto-selects larger</span>
+    <span class="tag r">1099-K gross-to-net reconciliation — prevents overpayment</span>
+    <span class="tag r">Platform fee deduction calculator — per-platform fee presets</span>
+    <span class="tag">Solo 401(k) vs SEP IRA vs SIMPLE IRA comparison</span>
+    <span class="tag">Section 179 vs bonus depreciation comparison</span>
+    <span class="tag">QBI phaseout calculator</span>
+    <span class="tag">SALT deduction impact ($40,400 cap 2026)</span>
+    <span class="tag">HSA vs FSA comparison</span>
+  </div>
+</div>
+
+<!-- 13 MISSING MODULES -->
+<div class="section" id="modules">
+  <p class="section-label">13 — Additional Calculator Modules</p>
+  <h2>30+ standalone calculators — each its own SEO-targeted page</h2>
+
+  <div class="tags">
+    <span class="tag b">Quarterly estimated tax safe harbor calculator</span>
+    <span class="tag b">Underpayment penalty calculator</span>
+    <span class="tag b">State estimated tax calculator (all 50 states)</span>
+    <span class="tag b">Local / city tax calculator (NYC, Philadelphia, etc.)</span>
+    <span class="tag b">Sales tax nexus checker by state</span>
+    <span class="tag b">Marketplace facilitator sales tax explainer</span>
+    <span class="tag b">1099-K vs 1099-NEC reconciliation tool</span>
+    <span class="tag b">Gross income vs net income calculator</span>
+    <span class="tag b">Additional Medicare tax / NIIT calculator ($200K+ single)</span>
+    <span class="tag b">Payroll tax calculator for S Corp salary</span>
+    <span class="tag b">Reasonable salary IRS audit risk score</span>
+    <span class="tag b">Delaware franchise tax both-method calculator</span>
+    <span class="tag b">Foreign qualification cost calculator (state-by-state)</span>
+    <span class="tag b">Registered agent annual cost comparison</span>
+    <span class="tag y">Earned income credit (EIC) impact for lower-income gig workers</span>
+    <span class="tag y">Child tax credit / dependent credit impact</span>
+    <span class="tag y">Child + dependent care credit for self-employed</span>
+    <span class="tag y">SALT deduction impact calculator</span>
+    <span class="tag y">W-2 withholding gap calculator (side hustle addition)</span>
+    <span class="tag g">Bookkeeping "what records do I need?" checklist generator</span>
+    <span class="tag g">Audit risk score by deduction profile</span>
+    <span class="tag g">Tax savings opportunities ranker (auto-prioritizes strategies)</span>
+    <span class="tag g">Solo 401(k) vs SEP IRA vs SIMPLE IRA comparison tool</span>
+    <span class="tag g">Defined benefit pension contribution calculator</span>
+    <span class="tag">1099-NEC threshold alert ($2,000 in 2026 — up from $600)</span>
+    <span class="tag">Crypto income tax calculator (Schedule D vs Schedule C)</span>
+    <span class="tag">Short-term vs long-term capital gain tax calculator</span>
+    <span class="tag">Social Security + self-employment income interaction</span>
+    <span class="tag">Medicare premium surcharge (IRMAA) calculator</span>
+    <span class="tag">Pass-through entity tax (PTET) election by state</span>
+  </div>
+
+  <div class="call y">
+    <strong>1099-NEC threshold change (2026)</strong>
+    OBBBA raised the 1099-NEC / 1099-MISC reporting threshold from $600 to $2,000. This means many small contractors won't receive 1099-NEC forms from clients who paid them $600–$1,999. But the income is still taxable. A "Do I need a 1099-NEC?" calculator explaining the new threshold + "Am I still taxable without it?" is a fast SEO win with rising search volume as this rule takes effect.
+  </div>
+</div>
+
+<!-- 14 FILING STATUS -->
+<div class="section" id="filing">
+  <p class="section-label">14 — Filing Status & Family Scenarios</p>
+  <h2>Owner + spouse + children — all modeled interactively</h2>
+
+  <p>The family scenarios are covered in depth in v2. Key additions from the expanded scope: the husband-wife qualified joint venture (many couples do not know this exists), statutory employees, and the nanny tax (household employer scenarios).</p>
+
+  <div class="call p">
+    <strong>Husband-wife qualified joint venture — the hidden option</strong>
+    Married couples who run a business together can elect QJV status instead of filing as a partnership. Each spouse files their own Schedule C for their share of income. Both pay SE tax on their share. Benefit: no Form 1065 required. Simpler compliance. Both spouses build Social Security credits. Many couples operating as LLCs don't know this is available to them. A dedicated calculator + explainer page targets "married couple LLC taxes" — high volume, very low competition.
+  </div>
+</div>
+
+<!-- 15 DELAWARE WYOMING -->
+<div class="section" id="delaware">
+  <p class="section-label">15 — Delaware / Wyoming C Corp Module</p>
+  <h2>State incorporation comparison + franchise tax calculator</h2>
+  <p>Covered comprehensively in v2. Key addition: the foreign qualification cost calculator — showing that incorporating in Delaware or Wyoming when you operate in California means paying California's $800 minimum franchise tax PLUS the out-of-state registration fee + registered agent fee. For many small businesses, the home-state LLC is actually cheaper and simpler. This calculator models total annual cost of each option.</p>
+</div>
+
+<!-- 16 CHECKLISTS -->
+<div class="section" id="checklists">
+  <p class="section-label">16 — Compliance Checklists</p>
+  <h2>Downloadable checklists — email capture + backlink bait</h2>
+
+  <p>Each calculator result page generates a personalized checklist. These are also standalone downloadable PDFs that creators, Reddit users, and bloggers will link to organically.</p>
+
+  <table class="dt">
+    <thead><tr><th>Checklist</th><th>Who gets it</th><th>Key items</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1099 / Gig Worker</strong></td><td>Any self-employed result</td><td>Track income + mileage + platform fees + quarterly payment dates + FICA savings strategies</td></tr>
+      <tr><td><strong>Creator Tax Checklist</strong></td><td>Creator module results</td><td>Equipment receipts, platform fee statements, 1099-K vs 1099-NEC, brand deal contracts, LLC timing</td></tr>
+      <tr><td><strong>Marketplace Seller</strong></td><td>Seller module results</td><td>COGS tracking, platform fee reconciliation, 1099-K gross vs. net, sales tax nexus, inventory records</td></tr>
+      <tr><td><strong>S Corp Compliance</strong></td><td>LLC+S Corp result</td><td>Payroll setup, accountable plan, separate bank account, W-2 to self, Form 1120-S, K-1, quarterly payroll deposits</td></tr>
+      <tr><td><strong>C Corp Compliance</strong></td><td>C Corp result</td><td>Corporate tax return, payroll, fringe benefits, board minutes, stock ledger, franchise tax, dividends vs. salary</td></tr>
+      <tr><td><strong>Family Business</strong></td><td>Hire spouse/children result</td><td>Job descriptions, time records, pay stubs, separate bank account for child's wages, 401(k) setup for spouse</td></tr>
+      <tr><td><strong>New LLC Formation</strong></td><td>Entity recommender → LLC</td><td>EIN, business bank account, operating agreement, registered agent, state annual report calendar</td></tr>
+      <tr><td><strong>Augusta Rule Documentation</strong></td><td>Augusta Rule calculator</td><td>Written rental agreement, agenda for each meeting day, comparable rental rate documentation, no home office overlap</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 17 SEO ARCHITECTURE -->
+<div class="section" id="seo">
+  <p class="section-label">17 — Programmatic SEO Architecture</p>
+  <h2>5,000+ quality pages — the URL structure</h2>
+
+  <div class="stat-row">
+    <div class="stat-block"><span class="big-num">5,000+</span><div class="big-label">Indexable pages</div></div>
+    <div class="stat-block"><span class="big-num">12</span><div class="big-label">URL pattern types</div></div>
+    <div class="stat-block"><span class="big-num">3–8</span><div class="big-label">KD on profession × state pages</div></div>
+    <div class="stat-block"><span class="big-num">$0</span><div class="big-label">Incremental hosting cost (static)</div></div>
+  </div>
+
+  <table class="url-table">
+    <thead><tr><th>URL Pattern</th><th>Example</th><th># pages</th><th>Avg KD</th></tr></thead>
+    <tbody>
+      <tr><td class="pattern">/[platform]-tax-calculator/</td><td>/doordash-tax-calculator/</td><td class="pages">80</td><td>7–15</td></tr>
+      <tr><td class="pattern">/[platform]-tax-calculator/[state]/</td><td>/doordash-tax-calculator/ohio/</td><td class="pages">4,000</td><td>3–8</td></tr>
+      <tr><td class="pattern">/[platform]-tax-deductions/</td><td>/uber-driver-tax-deductions/</td><td class="pages">80</td><td>8–18</td></tr>
+      <tr><td class="pattern">/[platform]-1099-k-calculator/</td><td>/etsy-1099-k-calculator/</td><td class="pages">20</td><td>5–12</td></tr>
+      <tr><td class="pattern">/how-much-tax-on-[amount]-1099/</td><td>/how-much-tax-on-50000-1099-income/</td><td class="pages">30</td><td>5–10</td></tr>
+      <tr><td class="pattern">/[state]/llc-vs-s-corp-calculator/</td><td>/california/llc-vs-s-corp-calculator/</td><td class="pages">50</td><td>10–20</td></tr>
+      <tr><td class="pattern">/[state]/quarterly-tax-calculator/</td><td>/texas/quarterly-tax-calculator/</td><td class="pages">50</td><td>8–16</td></tr>
+      <tr><td class="pattern">/[profession]/llc-or-s-corp/</td><td>/doordash-driver/llc-or-s-corp/</td><td class="pages">60</td><td>5–12</td></tr>
+      <tr><td class="pattern">/[platform]/mileage-vs-actual/</td><td>/uber/mileage-vs-actual-expense/</td><td class="pages">20</td><td>6–12</td></tr>
+      <tr><td class="pattern">/[income-type]/tax-checklist/</td><td>/etsy-seller/tax-checklist/</td><td class="pages">40</td><td>6–14</td></tr>
+      <tr><td class="pattern">/[state]/self-employment-tax/</td><td>/florida/self-employment-tax/</td><td class="pages">50</td><td>8–18</td></tr>
+      <tr><td class="pattern">/[state]/s-corp-calculator/</td><td>/new-york/s-corp-calculator/</td><td class="pages">50</td><td>8–15</td></tr>
+      <tr><td colspan="2"><strong>Total core pages</strong></td><td class="pages good"><strong>4,530+</strong></td><td>avg 8</td></tr>
+      <tr><td colspan="2">+ Platform × state intersections (40 platforms × 50 states)</td><td class="pages good"><strong>2,000</strong></td><td>3–8</td></tr>
+    </tbody>
+  </table>
+
+  <div class="call g">
+    <strong>Why 4,000 platform×state pages are achievable and valuable</strong>
+    /doordash-tax-calculator/ohio/ and /doordash-tax-calculator/california/ are meaningfully different pages — different state income tax rates, different quarterly payment amounts, different LLC formation costs if the user wants to form an entity. Each page is genuinely useful. Google will index them because they have real content differences. Combined, these 4,000 pages target queries that collectively drive millions of monthly searches at KD 3–8. This is the long-tail volume machine that funds everything else.
+  </div>
+</div>
+
+<!-- 18 KEYWORDS -->
+<div class="section" id="keywords">
+  <p class="section-label">18 — Keyword Clusters</p>
+  <h2>12 verticals — total addressable search volume 20M+/mo</h2>
+
+  <table class="dt">
+    <thead><tr><th>Cluster</th><th>Representative keywords</th><th>Est. total vol</th><th>Avg KD</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Gig driver/delivery</strong></td><td class="mono">DoorDash tax calculator, Uber driver taxes, Instacart 1099</td><td class="mono good">800K/mo</td><td class="mono good">7–15</td><td class="g mono">Phase 1</td></tr>
+      <tr><td><strong>Creator economy</strong></td><td class="mono">OnlyFans tax, TikTok creator taxes, YouTube 1099</td><td class="mono good">600K/mo</td><td class="mono good">6–12</td><td class="g mono">Phase 1</td></tr>
+      <tr><td><strong>Marketplace seller + 1099-K</strong></td><td class="mono">Etsy seller taxes, eBay tax calculator, 1099-K reconciliation</td><td class="mono good">500K/mo</td><td class="mono good">8–14</td><td class="g mono">Phase 1</td></tr>
+      <tr><td><strong>Core SE tax</strong></td><td class="mono">self employment tax calculator, 1099 tax calculator, freelance taxes</td><td class="mono good">400K/mo</td><td class="mono warn">30–45</td><td class="warn mono">Phase 2</td></tr>
+      <tr><td><strong>Quarterly estimated tax</strong></td><td class="mono">quarterly tax calculator, estimated taxes 2026, how much to set aside</td><td class="mono good">220K/mo</td><td class="mono good">15–25</td><td class="g mono">Phase 2</td></tr>
+      <tr><td><strong>W-2 + side hustle</strong></td><td class="mono">W-2 and DoorDash taxes, side hustle tax calculator, Etsy W2 job</td><td class="mono good">350K/mo</td><td class="mono good">10–22</td><td class="g mono">Phase 2</td></tr>
+      <tr><td><strong>State-specific</strong></td><td class="mono">California self employment tax, Texas LLC taxes, New York 1099</td><td class="mono good">600K/mo</td><td class="mono good">8–20</td><td class="warn mono">Phase 3</td></tr>
+      <tr><td><strong>Rental income</strong></td><td class="mono">Airbnb tax calculator, Turo taxes, landlord tax calculator</td><td class="mono good">280K/mo</td><td class="mono good">10–18</td><td class="warn mono">Phase 3</td></tr>
+      <tr><td><strong>Entity comparison / optimizer</strong></td><td class="mono">LLC vs S Corp calculator, should I form an LLC, entity recommender</td><td class="mono good">300K/mo</td><td class="mono warn">22–38</td><td class="warn mono">Phase 3</td></tr>
+      <tr><td><strong>S Corp salary / QBI</strong></td><td class="mono">reasonable salary S Corp, S Corp distribution calculator, QBI calculator</td><td class="mono good">180K/mo</td><td class="mono warn">25–35</td><td class="warn mono">Phase 4</td></tr>
+      <tr><td><strong>Deductions / strategies</strong></td><td class="mono">Augusta Rule calculator, hire your children tax savings, mileage calculator</td><td class="mono good">400K/mo</td><td class="mono good">8–22</td><td class="warn mono">Phase 4</td></tr>
+      <tr><td><strong>Delaware / Wyoming / C Corp</strong></td><td class="mono">Delaware C Corp taxes, Wyoming LLC benefits, Delaware franchise tax</td><td class="mono good">120K/mo</td><td class="mono good">12–22</td><td class="bad mono">Phase 5</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 19 STACK -->
+<div class="section" id="stack">
+  <p class="section-label">19 — Tech Stack & Data Architecture</p>
+  <h2>Built for 10M visits at near-zero hosting cost</h2>
+
+  <div class="stack-row">
+    <div class="si"><div class="layer">Framework</div><div class="tech">Next.js 15</div><div class="why">App Router + RSC. SSG for all 5,000+ pages. Client-side calculator logic. Perfect Core Web Vitals.</div></div>
+    <div class="si"><div class="layer">Hosting</div><div class="tech">Vercel</div><div class="why">Edge CDN. ISR for annual tax updates. Free → scales without config.</div></div>
+    <div class="si"><div class="layer">Data</div><div class="tech">JSON + MDX</div><div class="why">All tax rates, deduction presets, profession configs in flat JSON. No database. All static.</div></div>
+    <div class="si"><div class="layer">PDF</div><div class="tech">@react-pdf</div><div class="why">Client-side PDF of tax summary + checklist. Email capture gate.</div></div>
+    <div class="si"><div class="layer">Email</div><div class="tech">Resend</div><div class="why">Send results + PDF to user. Builds email list. Free for first 3K/mo.</div></div>
+    <div class="si"><div class="layer">Analytics</div><div class="tech">Plausible</div><div class="why">Privacy-friendly. No cookie banner. Track calculator completions.</div></div>
+    <div class="si"><div class="layer">Styling</div><div class="tech">Tailwind v4</div><div class="why">Utility-first. Minimal bundle. Fast iteration on 5,000+ page templates.</div></div>
+    <div class="si"><div class="layer">Ads</div><div class="tech">Raptive</div><div class="why">Finance RPM $20–40. Auto-placement. Apply at 100K sessions/mo.</div></div>
+  </div>
+
+  <h3>Core data structure — platform deduction presets</h3>
+  <div class="code">// /data/platforms.json
+{
+  "doordash": {
+    "name": "DoorDash",
+    "schedule": "C",
+    "incomeType": "1099-NEC",
+    "quarterly": true,
+    "deductionPresets": [
+      { "id": "mileage", "default": true, "prominence": "high", "note": "Track every delivery mile — this is your #1 deduction" },
+      { "id": "phone", "default": true, "defaultPct": 80 },
+      { "id": "insulated_bag", "default": true, "defaultAmount": 40 },
+      { "id": "parking", "default": false },
+      { "id": "tolls", "default": false }
+    ],
+    "keyDeductionNote": "Mileage is typically the largest deduction for delivery drivers",
+    "seoKeywords": ["doordash tax calculator", "doordash 1099 taxes", "doordash quarterly taxes"],
+    "relatedProfessions": ["grubhub", "ubereats", "instacart"]
+  },
+  "onlyfans": {
+    "name": "OnlyFans",
+    "schedule": "C",
+    "incomeType": "1099-NEC",
+    "platformFeeRate": 0.20,
+    "deductionPresets": [
+      { "id": "equipment", "default": true, "prominence": "high", "section179": true },
+      { "id": "phone", "default": true, "defaultPct": 90 },
+      { "id": "internet", "default": true, "defaultPct": 80 },
+      { "id": "props_costumes", "default": true },
+      { "id": "platform_fee", "default": true, "autoCalc": true, "rate": 0.20 }
+    ],
+    "privacyNote": "Many OnlyFans creators form an LLC for privacy — see our entity recommender",
+    "seoKeywords": ["onlyfans tax calculator", "onlyfans 1099 taxes", "onlyfans LLC"]
+  }
+}</div>
+</div>
+
+<!-- 20 BUILD ORDER -->
+<div class="section" id="build">
+  <p class="section-label">20 — Build Order</p>
+  <h2>6 phases — do not build everything first</h2>
+
+  <div class="phase-grid">
+    <div class="phase-card">
+      <div class="phase-num">1</div>
+      <div class="pc-label">Weeks 1–3 · Wedge</div>
+      <div class="pc-name">Gig + Creator + Seller</div>
+      <div class="pc-desc">Universal 1099 / SE tax core. Gig driver/delivery (16 platforms). Creator economy (14 types). Marketplace seller + 1099-K reconciliation. Quarterly payment calculator. W-2 + side hustle combined mode.</div>
+      <div class="pc-kpi">→ 100K+ pages indexed, first traffic in 30 days</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">2</div>
+      <div class="pc-label">Weeks 4–6</div>
+      <div class="pc-name">State Overlays + Mixed Household</div>
+      <div class="pc-desc">All 50 state income tax overlays on every platform page. Mixed household scenarios (16 combinations). W-2 + side hustle gap calculator. Quarterly safe harbor calculator. Underpayment penalty module.</div>
+      <div class="pc-kpi">→ 1,000+ programmatic pages live</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">3</div>
+      <div class="pc-label">Weeks 7–9</div>
+      <div class="pc-name">Rental + Professional Freelancer</div>
+      <div class="pc-desc">Rental income module (12 types, Sched C vs E routing). 24+ professional freelancer pages. Mileage vs. actual comparison. Home office actual vs simplified. Platform × state page generation (2,000 pages).</div>
+      <div class="pc-kpi">→ 3,000+ pages, Mediavine-eligible traffic</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">4</div>
+      <div class="pc-label">Weeks 10–12</div>
+      <div class="pc-name">Entity Optimizer + Family Strategies</div>
+      <div class="pc-desc">Entity recommender (12-question decision engine). LLC vs S Corp calculator. S Corp salary optimizer + QBI calculator. Owner salary by profession. Hire children/spouse calculators. Augusta Rule module. Family LLC. Husband-wife QJV.</div>
+      <div class="pc-kpi">→ Highest-converting pages on site</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">5</div>
+      <div class="pc-label">Month 4</div>
+      <div class="pc-name">Advanced Structures + Deductions</div>
+      <div class="pc-desc">Delaware/Wyoming C Corp deep module. Franchise tax both-method calculator. All 24 entity types. Complete deductions library. 30+ standalone calculator modules. Compliance checklists (downloadable PDFs). Audit risk score.</div>
+      <div class="pc-kpi">→ 5,000+ pages, authority site territory</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">6</div>
+      <div class="pc-label">Month 5–6</div>
+      <div class="pc-name">Distribution + B2B</div>
+      <div class="pc-desc">Reddit distribution campaign (r/freelance, r/uberdrivers, r/EtsySellers, r/OnlyFansCreators, r/tax, r/smallbusiness). Email nurture for quarterly payment reminders. B2B white-label pitches. January and April content calendar for seasonal spikes.</div>
+      <div class="pc-kpi">→ 500K+ sessions/mo, Raptive-eligible</div>
+    </div>
+  </div>
+</div>
+
+<!-- 21 MONETIZATION -->
+<div class="section" id="monetization">
+  <p class="section-label">21 — Monetization</p>
+  <h2>6 revenue streams — finance RPM is the highest category on the internet</h2>
+
+  <table class="dt">
+    <thead><tr><th>Stream</th><th>Mechanism</th><th>At 1M sessions/mo est.</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Display ads (Raptive)</strong></td><td>Finance/legal audience $20–40 RPM. Gig creator audience $12–20 RPM. Blended estimate $18 RPM.</td><td class="mono rv">$18,000–$40,000/mo</td></tr>
+      <tr><td><strong>Tax software affiliate</strong></td><td>TurboTax SE ($20–40 CPA), H&R Block, FlyFin. CTA after results: "File your taxes with X — starts at $99."</td><td class="mono rv">$12,000–$25,000/mo</td></tr>
+      <tr><td><strong>Accounting software</strong></td><td>QuickBooks ($50–100 CPA), FreshBooks, Wave, Bonsai, Keeper Tax, Found (banking).</td><td class="mono rv">$6,000–$15,000/mo</td></tr>
+      <tr><td><strong>Entity formation affiliate</strong></td><td>ZenBusiness, Northwest RA, Stripe Atlas, Clerky — $30–75 per LLC/corp formation referral.</td><td class="mono rv">$4,000–$10,000/mo</td></tr>
+      <tr><td><strong>Email list → seasonal products</strong></td><td>1099 tax prep checklist ($9), creator tax course ($97), CPA referral partnerships.</td><td class="mono rv">$10,000–$50,000 April spike</td></tr>
+      <tr><td><strong>B2B white-label</strong></td><td>License calculator to gig platforms, payroll companies, accounting firms. $299–$1,500/mo/client.</td><td class="mono rv">$5,000–$20,000/mo (10–20 clients)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 22 REVENUE -->
+<div class="section" id="revenue">
+  <p class="section-label">22 — Revenue Projections</p>
+  <h2>Conservative path to $50K/mo — aggressive path to $150K/mo peak</h2>
+
+  <table class="rev-table">
+    <thead><tr><th>Milestone</th><th>Sessions/mo</th><th>Ads</th><th>Affiliates</th><th>Total</th></tr></thead>
+    <tbody>
+      <tr><td>Month 2 (first gig pages rank)</td><td class="mono">15,000</td><td class="mono rv">$270</td><td class="mono rv">$400</td><td class="mono rv">$670</td></tr>
+      <tr><td>Month 4 (state × platform live)</td><td class="mono">80,000</td><td class="mono rv">$1,600</td><td class="mono rv">$2,200</td><td class="mono rv">$3,800</td></tr>
+      <tr><td>Month 6 (Raptive eligible)</td><td class="mono">150,000</td><td class="mono rv">$3,000</td><td class="mono rv">$4,500</td><td class="mono rv">$7,500</td></tr>
+      <tr><td>Month 9 (entity pages compound)</td><td class="mono">400,000</td><td class="mono rv">$9,600</td><td class="mono rv">$12,000</td><td class="mono rv">$21,600</td></tr>
+      <tr><td>Month 9 — April tax spike</td><td class="mono">1,200,000</td><td class="mono rv">$28,800</td><td class="mono rv">$35,000</td><td class="mono rv">$63,800</td></tr>
+      <tr><td>Month 12 average</td><td class="mono">600,000</td><td class="mono rv">$14,400</td><td class="mono rv">$18,000</td><td class="mono rv">$32,400</td></tr>
+      <tr><td>Year 2 average</td><td class="mono">1,500,000</td><td class="mono rv">$36,000</td><td class="mono rv">$42,000</td><td class="mono rv">$78,000+</td></tr>
+      <tr><td>Year 2 April peak</td><td class="mono">5,000,000+</td><td class="mono rv">$120,000</td><td class="mono rv">$80,000</td><td class="mono rv">$200,000+</td></tr>
+    </tbody>
+  </table>
+
+  <div class="call g">
+    <strong>The April compounding effect</strong>
+    Tax season drives 4–8× normal traffic. At 1.5M average monthly sessions in year 2, the April spike hits 5M–8M sessions. Finance advertisers bid 3–5× their normal CPM in tax season. Your April revenue in year 2 could exceed your entire first year's revenue in a single month. Build the email list from day one — a tax season email blast to 100K subscribers is worth $50K–$100K in affiliate commissions.
+  </div>
+</div>
+
+
+<div class="section" id="corrections" style="border:2px solid var(--g);padding:1.5rem;margin-top:2rem">
+  <p class="section-label" style="color:var(--g)">Verified Corrections — Applied June 7, 2026</p>
+  <h2 style="border-color:var(--g)">Fact-Check Corrections Log</h2>
+  <p>The following errors were identified through systematic verification against primary sources (IRS, SSA, corp.delaware.gov) and corrected throughout this document and the companion JSON file (v2026.3.1).</p>
+  <table class="dt">
+    <thead><tr><th>#</th><th>Item</th><th>Was (incorrect)</th><th>Corrected to</th><th>Primary source</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="mono">1</td>
+        <td><strong>HSA contribution limit 2026 — self-only</strong></td>
+        <td class="bad">$4,300</td>
+        <td class="good">$4,400</td>
+        <td class="mono">IRS Notice 2025-67 · White Coat Investor · ALPA</td>
+      </tr>
+      <tr>
+        <td class="mono">2</td>
+        <td><strong>HSA contribution limit 2026 — family</strong></td>
+        <td class="bad">$8,550</td>
+        <td class="good">$8,750</td>
+        <td class="mono">IRS Notice 2025-67 · White Coat Investor · ALPA</td>
+      </tr>
+      <tr>
+        <td class="mono">3</td>
+        <td><strong>SSDI SGA limit 2026 — non-blind</strong></td>
+        <td class="bad">$1,620/mo (2025 figure)</td>
+        <td class="good">$1,690/mo</td>
+        <td class="mono">SSA.gov 2026 COLA Fact Sheet · SSA FAQ KA-02387</td>
+      </tr>
+      <tr>
+        <td class="mono">4</td>
+        <td><strong>SSDI SGA limit 2026 — blind</strong></td>
+        <td class="bad">$2,700/mo (2025 figure)</td>
+        <td class="good">$2,830/mo</td>
+        <td class="mono">SSA.gov 2026 COLA Fact Sheet</td>
+      </tr>
+      <tr>
+        <td class="mono">5</td>
+        <td><strong>Delaware franchise tax — Assumed Par Value minimum</strong></td>
+        <td class="bad">Not stated (entry was incomplete)</td>
+        <td class="good">$400 minimum (vs. $175 minimum for Authorized Shares Method)</td>
+        <td class="mono">corp.delaware.gov (official)</td>
+      </tr>
+      <tr>
+        <td class="mono">6</td>
+        <td><strong>Delaware franchise tax — Large Corporate Filer max</strong></td>
+        <td class="bad">$200,000 shown as absolute maximum</td>
+        <td class="good">$200,000 standard; $250,000 for Large Corporate Filers</td>
+        <td class="mono">corp.delaware.gov (official)</td>
+      </tr>
+      <tr>
+        <td class="mono">7</td>
+        <td><strong>Delaware annual report filing fee</strong></td>
+        <td class="bad">Not stated</td>
+        <td class="good">$50 for non-exempt corporations; $25 for exempt corporations</td>
+        <td class="mono">corp.delaware.gov (official)</td>
+      </tr>
+      <tr>
+        <td class="mono">8</td>
+        <td><strong>Delaware late filing penalty</strong></td>
+        <td class="bad">Not stated</td>
+        <td class="good">$200 penalty + 1.5% monthly interest on unpaid balance</td>
+        <td class="mono">corp.delaware.gov (official)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="call g">
+    <strong>Items still marked "cannot verify" — do not assume correct until checked</strong>
+    The following were NOT confirmed in primary-source searches and should be verified before publishing: (1) Exact ACA 400% FPL dollar thresholds per household size — check HHS.gov for 2025 federal poverty guidelines used for 2026 coverage. (2) Windsurf Pro current pricing — verify at windsurf.ai/pricing. (3) Netlify current credit costs and plan limits — verify at netlify.com/pricing. (4) All 50 state income tax rates — spot-checked but not exhaustively verified; check Tax Foundation state tax rates table before publishing state pages. (5) Raptive/Mediavine RPM estimates ($18–40) — industry estimates, not publicly verified figures.
+  </div>
+</div>
+
+<div style="border-top:2px solid var(--ink);padding-top:2rem;margin-top:3rem;font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+  <span>GigTaxCalculator — Complete Build Plan v3.0</span>
+  <span>June 2026 · Confidential</span>
+</div><div class="module" id="ssdi">
+  <p class="module-label">Module A — Disability Benefits</p>
+  <h2>SSDI Tax Calculator — The 0% / 50% / 85% Rule</h2>
+
+  <p>SSDI (Social Security Disability Insurance) is taxed under the same federal rules as retirement Social Security — not automatically at 85%, but on a sliding scale based on <strong>combined income</strong> (also called provisional income). Most people on SSDI either panic and think they owe tax on everything, or assume they owe nothing. The reality is a three-tier formula that almost nobody explains clearly — and no interactive tool models properly.</p>
+
+  <div class="call b">
+    <strong>The core misconception to correct on every page</strong>
+    "85% taxable" does NOT mean an 85% tax rate. It means up to 85% of your SSDI benefit amount becomes taxable income, which then flows through your normal federal tax brackets. At the 10% bracket, 85% taxable SSDI means an effective tax rate of just 8.5% on benefits — not 85%. The calculator must make this distinction loudly and clearly. It's the #1 confusion and #1 reason people search.
+  </div>
+
+  <h3>The exact 2026 formula (IRS Publication 915)</h3>
+
+  <div class="flow-box">
+    <div class="flow-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Calculate Combined Income (Provisional Income)</div>
+        <div class="step-desc">Combined Income = AGI (excluding SSDI) + Tax-exempt interest + ½ of annual SSDI benefit<br>Example: $20,000 wages + $0 tax-exempt interest + ($16,800 SSDI ÷ 2) = $28,400</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Compare to Filing-Status Thresholds</div>
+        <div class="step-desc">Single / HoH / QW: $25,000 (lower) and $34,000 (upper)<br>Married Filing Jointly: $32,000 (lower) and $44,000 (upper)<br>Married Filing Separately (lived together): 85% taxable at ANY income — no threshold benefit</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Determine taxable tier</div>
+        <div class="step-desc">Below lower threshold → 0% of SSDI is taxable<br>Between lower and upper → up to 50% taxable<br>Above upper threshold → up to 85% taxable (IRS never taxes more than 85%)</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Apply the IRS Pub 915 worksheet formula</div>
+        <div class="step-desc">The taxable amount is the LESSER of: (a) 85% of benefits, or (b) 85% × (combined income − upper threshold) + 50% of (upper threshold − lower threshold). The calculator must implement this precisely — not just show a percentage.</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">Apply 2026 Senior Deduction (if 65+)</div>
+        <div class="step-desc">OBBBA (July 2025) added a temporary $6,000 extra standard deduction for individuals 65+ ($12,000 MFJ), phasing out above $75K/$150K income through 2028. For older SSDI recipients, this can eliminate federal tax on benefits entirely even when the combined-income formula produces a taxable amount.</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>2026 thresholds at a glance</h3>
+  <div class="threshold-grid">
+    <div class="tc safe">
+      <div class="tc-label">Single — 0% taxable below</div>
+      <div class="tc-amount">$25,000</div>
+      <div class="tc-sub">Combined income. SSDI fully tax-free.</div>
+    </div>
+    <div class="tc">
+      <div class="tc-label">Single — up to 50% taxable</div>
+      <div class="tc-amount">$25K–$34K</div>
+      <div class="tc-sub">Combined income band. Partial inclusion.</div>
+    </div>
+    <div class="tc cliff">
+      <div class="tc-label">Single — up to 85% taxable above</div>
+      <div class="tc-amount">$34,000</div>
+      <div class="tc-sub">Combined income. Max 85% included in AGI.</div>
+    </div>
+    <div class="tc safe">
+      <div class="tc-label">MFJ — 0% taxable below</div>
+      <div class="tc-amount">$32,000</div>
+      <div class="tc-sub">Combined income joint. SSDI fully tax-free.</div>
+    </div>
+    <div class="tc">
+      <div class="tc-label">MFJ — up to 50% taxable</div>
+      <div class="tc-amount">$32K–$44K</div>
+      <div class="tc-sub">Combined income band. Partial inclusion.</div>
+    </div>
+    <div class="tc cliff">
+      <div class="tc-label">MFJ — up to 85% taxable above</div>
+      <div class="tc-amount">$44,000</div>
+      <div class="tc-sub">Combined income. Max 85% included in AGI.</div>
+    </div>
+    <div class="tc">
+      <div class="tc-label">MFS (lived together)</div>
+      <div class="tc-amount">85% always</div>
+      <div class="tc-sub">No threshold. Any income → 85% taxable. Severe penalty for MFS filers.</div>
+    </div>
+    <div class="tc safe">
+      <div class="tc-label">SSI (Supplemental Security)</div>
+      <div class="tc-amount">Never taxable</div>
+      <div class="tc-sub">SSI is a needs-based program. Completely tax-free. Calculator must distinguish SSDI vs SSI clearly.</div>
+    </div>
+  </div>
+
+  <h3>Worked scenarios the calculator must model</h3>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      Scenario 1: Single recipient, part-time work + SSDI
+      <span class="sbadge sb-g">50% tier — some tax owed</span>
+    </div>
+    <table class="sc-table">
+      <tr><td>Annual SSDI benefit</td><td>$16,800/yr ($1,400/mo)</td></tr>
+      <tr><td>Part-time wages (W-2)</td><td>$20,000</td></tr>
+      <tr><td>Combined income (½ × $16,800 + $20,000)</td><td>$28,400</td></tr>
+      <tr><td>Above $25,000 threshold?</td><td>Yes — enters 50% tier</td></tr>
+      <tr><td>Taxable SSDI (IRS Pub 915 formula)</td><td class="warn">$3,400</td></tr>
+      <tr><td>Total AGI ($20,000 + $3,400)</td><td>$23,400</td></tr>
+      <tr><td>Standard deduction (single, 2026)</td><td>$15,000</td></tr>
+      <tr><td>Taxable income</td><td>$8,400</td></tr>
+      <tr class="sc-total"><td>Federal tax owed</td><td class="good">$840 (10% bracket)</td></tr>
+      <tr class="sc-save"><td colspan="2">✓ Not 85% taxable — and effective rate on SSDI is ~5%, not 85%</td></tr>
+    </table>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      Scenario 2: MFJ — SSDI + spouse W-2 income
+      <span class="sbadge sb-r">85% tier — spouse income pushes over threshold</span>
+    </div>
+    <table class="sc-table">
+      <tr><td>Annual SSDI benefit</td><td>$18,000/yr ($1,500/mo)</td></tr>
+      <tr><td>Spouse W-2 income</td><td>$55,000</td></tr>
+      <tr><td>Combined income (½ × $18,000 + $55,000)</td><td>$64,000</td></tr>
+      <tr><td>Above $44,000 MFJ upper threshold?</td><td>Yes — 85% tier</td></tr>
+      <tr><td>Taxable SSDI (85% of $18,000)</td><td class="bad">$15,300</td></tr>
+      <tr><td>Total AGI ($55,000 + $15,300)</td><td>$70,300</td></tr>
+      <tr><td>Standard deduction (MFJ, 2026)</td><td>$30,000</td></tr>
+      <tr><td>Taxable income</td><td>$40,300</td></tr>
+      <tr class="sc-total"><td>Federal tax owed (est.)</td><td class="bad">~$4,546</td></tr>
+      <tr class="sc-warn"><td colspan="2">⚠ Spouse's income pulls SSDI into 85% tier — recommend modeling solo filing vs joint</td></tr>
+    </table>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      Scenario 3: SSDI + self-employment side income (gig work)
+      <span class="sbadge sb-b">Dual tax issue — SE tax + SSDI inclusion</span>
+    </div>
+    <table class="sc-table">
+      <tr><td>Annual SSDI benefit</td><td>$14,400/yr</td></tr>
+      <tr><td>DoorDash / gig income (gross)</td><td>$18,000</td></tr>
+      <tr><td>Gig deductions (mileage, phone, bags)</td><td>−$4,200</td></tr>
+      <tr><td>Net SE income</td><td>$13,800</td></tr>
+      <tr><td>SE tax (15.3% × 92.35% × $13,800)</td><td class="bad">−$1,949</td></tr>
+      <tr><td>SE tax deduction (½ of SE tax)</td><td>−$975</td></tr>
+      <tr><td>AGI from gig work</td><td>$11,876</td></tr>
+      <tr><td>Combined income (½ × $14,400 + $11,876)</td><td>$19,076</td></tr>
+      <tr><td>Below $25,000 single threshold?</td><td class="good">Yes — SSDI = $0 taxable</td></tr>
+      <tr class="sc-total"><td>SE tax + income tax total</td><td class="warn">$1,949 SE tax only</td></tr>
+      <tr class="sc-save"><td colspan="2">✓ Key insight: deductions bring combined income below threshold, keeping SSDI tax-free</td></tr>
+    </table>
+  </div>
+
+  <div class="call y">
+    <strong>Critical SSDI + gig income warning to display</strong>
+    SSDI recipients who do gig work must also watch the Substantial Gainful Activity (SGA) limit — $1,690/month in 2026 for non-blind recipients. Earning above the SGA consistently can trigger a review of SSDI eligibility. The calculator should flag this: "Your gig income ($X/mo) is approaching or exceeds the SGA limit ($1,690/mo). This may affect your SSDI eligibility — consult SSA." This is a genuine, high-value user protection that no competitor provides.
+  </div>
+
+  <h3>State SSDI taxation (12 states)</h3>
+  <p>Most states (38 + DC) do not tax Social Security/SSDI. These 12 states may partially tax benefits — the calculator's state overlay must handle them: Colorado, Connecticut, Kansas, Minnesota, Missouri, Montana, Nebraska, New Mexico, Rhode Island, Utah, Vermont, and West Virginia (phasing out 2026). Each has different state-level income exemptions layered on top of the federal computation.</p>
+
+  <h3>Calculator inputs & outputs for SSDI module</h3>
+  <div class="tags">
+    <span class="tag r">Monthly SSDI benefit amount</span>
+    <span class="tag r">Other income: W-2 wages, gig income, pension, investment</span>
+    <span class="tag r">Filing status</span>
+    <span class="tag r">State</span>
+    <span class="tag r">Age 65+? (triggers senior deduction check)</span>
+    <span class="tag r">SSI vs SSDI (route to "not taxable" if SSI)</span>
+  </div>
+  <div class="tags">
+    <span class="tag g">Combined income calculation (shown step by step)</span>
+    <span class="tag g">Tier determination (0% / 50% / 85%) with explanation</span>
+    <span class="tag g">Exact dollar amount of taxable SSDI</span>
+    <span class="tag g">Federal tax on SSDI portion only</span>
+    <span class="tag g">Total tax bill including other income</span>
+    <span class="tag g">State SSDI tax (if applicable)</span>
+    <span class="tag g">SGA limit warning if gig income is involved</span>
+    <span class="tag g">Senior deduction impact if 65+</span>
+    <span class="tag g">"Strategies to reduce SSDI taxation" panel</span>
+  </div>
+
+  <h3>Tax reduction strategies to show SSDI recipients</h3>
+  <table class="dt">
+    <thead><tr><th>Strategy</th><th>How it reduces SSDI tax</th><th>Who qualifies</th></tr></thead>
+    <tbody>
+      <tr><td>Maximize deductible IRA contributions</td><td>Reduces AGI, which lowers combined income and may drop tier</td><td>Anyone with earned income</td></tr>
+      <tr><td>Use Roth instead of traditional IRA for withdrawals</td><td>Roth withdrawals don't count toward combined income</td><td>Anyone with Roth accounts</td></tr>
+      <tr><td>HSA contributions (if on HDHP)</td><td>Reduces AGI → lowers combined income</td><td>SSDI recipients under Medicare age with HDHP</td></tr>
+      <tr><td>Avoid municipal bonds (counterintuitive)</td><td>Muni bond interest is tax-free but still counts toward combined income. Can push SSDI into taxable tier.</td><td>Anyone holding munis</td></tr>
+      <tr><td>Voluntary withholding (Form W-4V)</td><td>Request 7%, 10%, 12%, or 22% withheld from SSDI checks to avoid underpayment penalty</td><td>Anyone with taxable SSDI</td></tr>
+      <tr><td>File MFJ vs MFS analysis</td><td>MFS (living together) always 85% taxable — almost never beneficial. Calculator should auto-compare.</td><td>Married SSDI recipients</td></tr>
+    </tbody>
+  </table>
+
+  <h3>SEO opportunities — SSDI keyword cluster</h3>
+  <div class="tags">
+    <span class="tag r">SSDI taxable income calculator — ~18K/mo, KD 12</span>
+    <span class="tag r">is SSDI taxable 2026 — ~25K/mo, KD 14</span>
+    <span class="tag r">how much SSDI is taxable — ~22K/mo, KD 13</span>
+    <span class="tag r">social security disability income tax calculator — ~14K/mo, KD 11</span>
+    <span class="tag">SSDI and working tax calculator — ~8K/mo, KD 9</span>
+    <span class="tag">SSDI + DoorDash taxes — ~4K/mo, KD 6</span>
+    <span class="tag">SSDI side income — ~6K/mo, KD 8</span>
+    <span class="tag">is social security disability taxable 2026 — ~20K/mo, KD 15</span>
+    <span class="tag">SSDI combined income calculator — ~5K/mo, KD 8</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     MODULE B — ACA SUBSIDY CLIFF
+═══════════════════════════════════════════════════════ -->
+<div class="module" id="aca">
+  <p class="module-label">Module B — Healthcare Subsidies</p>
+  <h2>ACA Marketplace Subsidy Calculator — The 2026 Cliff Is Back</h2>
+
+  <p>This is one of the most financially consequential calculator modules in the entire build plan. The enhanced ACA subsidies (which extended subsidies above 400% FPL) expired December 31, 2025 and were NOT renewed by OBBBA. The hard subsidy cliff returned January 1, 2026. This means tens of millions of self-employed people, gig workers, and early retirees face a binary cutoff — $1 over the income limit and they lose ALL premium tax credits, potentially costing $10,000–$20,000/year in lost subsidies. The search volume for "ACA subsidy 2026 income limit" is exploding right now.</p>
+
+  <div class="warning-box">
+    <div class="wt">The 2026 Cliff — Critical Policy Change</div>
+    From 2021–2025, the subsidy "cliff" at 400% FPL was replaced with a gradual slope — you could earn above 400% FPL and still receive some subsidy. That ended December 31, 2025. In 2026, earning $1 above 400% FPL means $0 in premium tax credits. For a single person in a high-cost market paying $800/month in premiums, accidentally exceeding the cliff costs $9,600/year in lost subsidies. This is the most urgent financial planning issue for self-employed Americans in 2026 and the calculator must address it with clawback warnings, income planning tools, and strategies to stay under the cliff.
+  </div>
+
+  <h3>2026 ACA income limits — the cliff numbers</h3>
+
+  <div class="threshold-grid">
+    <div class="tc safe">
+      <div class="tc-label">1 person — 100% FPL (min)</div>
+      <div class="tc-amount">$15,960</div>
+      <div class="tc-sub">Below this → Medicaid in expansion states. No marketplace subsidy.</div>
+    </div>
+    <div class="tc safe">
+      <div class="tc-label">1 person — 400% FPL (max)</div>
+      <div class="tc-amount">$63,840</div>
+      <div class="tc-sub">ACA subsidy cliff. $1 over = $0 subsidy. Critical threshold.</div>
+    </div>
+    <div class="tc safe">
+      <div class="tc-label">2 people — 400% FPL</div>
+      <div class="tc-amount">$86,560</div>
+      <div class="tc-sub">Couple without children. Over = zero subsidy.</div>
+    </div>
+    <div class="tc safe">
+      <div class="tc-label">3 people — 400% FPL</div>
+      <div class="tc-amount">$109,280</div>
+      <div class="tc-sub">Family of 3. Over = zero subsidy.</div>
+    </div>
+    <div class="tc cliff">
+      <div class="tc-label">4 people — 400% FPL</div>
+      <div class="tc-amount">$132,000</div>
+      <div class="tc-sub">Family of 4. The cliff. Plan income carefully.</div>
+    </div>
+    <div class="tc cliff">
+      <div class="tc-label">6 people — 400% FPL</div>
+      <div class="tc-amount">$177,440</div>
+      <div class="tc-sub">Larger family. Add $22,440 per additional person above 8.</div>
+    </div>
+  </div>
+
+  <p style="font-size:12px;font-family:var(--mono);color:var(--muted);margin-top:-.5rem">Based on 2025 HHS poverty guidelines used for 2026 marketplace coverage. 100% FPL = $15,960 (1 person), +$5,680 per additional person. Alaska and Hawaii use higher thresholds.</p>
+
+  <h3>How the subsidy is calculated (the formula)</h3>
+
+  <div class="flow-box">
+    <div class="flow-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Calculate household MAGI</div>
+        <div class="step-desc">ACA-specific MAGI = AGI + tax-exempt interest + nontaxable Social Security + foreign earned income exclusion. Note: SSDI counts in ACA MAGI even though it may not be in regular AGI — this is a key trap for SSDI recipients on marketplace plans.</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Find your % of FPL</div>
+        <div class="step-desc">MAGI ÷ FPL for your household size × 100 = your FPL%. Must be 100%–400% to qualify. The calculator shows this percentage prominently with a visual "distance to cliff" indicator.</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Find the applicable contribution percentage (Rev. Proc. 2025-25)</div>
+        <div class="step-desc">The IRS sets the % of income you're expected to pay for the benchmark plan. 2026 scale: 0% at 100% FPL → 8.5% at 300%+ FPL. Your expected contribution = MAGI × applicable %. Subsidy = benchmark premium − expected contribution.</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Find your benchmark premium (SLCSP)</div>
+        <div class="step-desc">The Second Lowest-Cost Silver Plan (SLCSP) in your area. Users enter this from their healthcare.gov lookup or Form 1095-A. The subsidy is calculated against this benchmark, not whatever plan they choose.</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">Calculate monthly credit and annual total</div>
+        <div class="step-desc">Monthly PTC = (SLCSP premium − expected monthly contribution). Annual PTC = × 12. Can be taken as advance payments (APTC) reducing monthly premiums, or claimed as refund at tax time via Form 8962.</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>2026 applicable contribution percentages (Rev. Proc. 2025-25)</h3>
+  <table class="dt">
+    <thead><tr><th>Household income (% FPL)</th><th>Expected contribution (% of income)</th><th>Example: $40K income, $600/mo benchmark</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">100%–133%</td><td class="mono good">0%</td><td>$600/mo subsidy — pays $0 for benchmark plan</td></tr>
+      <tr><td class="mono">133%–150%</td><td class="mono good">0%–2%</td><td>Up to $67/mo expected contribution</td></tr>
+      <tr><td class="mono">150%–200%</td><td class="mono good">2%–6%</td><td>Up to $200/mo expected contribution</td></tr>
+      <tr><td class="mono">200%–250%</td><td class="mono warn">6%–8%</td><td>Up to $267/mo expected contribution</td></tr>
+      <tr><td class="mono">250%–300%</td><td class="mono warn">8%–8.5%</td><td>Up to $283/mo expected contribution</td></tr>
+      <tr><td class="mono">300%–400%</td><td class="mono warn">8.5%</td><td>$283/mo expected — subsidy covers the rest</td></tr>
+      <tr><td class="mono bad">Above 400%</td><td class="mono bad">No subsidy</td><td class="bad">$0 credit — pays full $600/mo premium</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Cliff scenarios — the dollar impact of $1 over the limit</h3>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      Single freelancer — $63,839 MAGI (just under cliff)
+      <span class="sbadge sb-g">399.99% FPL — qualifies</span>
+    </div>
+    <table class="sc-table">
+      <tr><td>Household MAGI</td><td>$63,839</td></tr>
+      <tr><td>400% FPL for 1 person</td><td>$63,840</td></tr>
+      <tr><td>% of FPL</td><td class="good">399.99% — qualifies</td></tr>
+      <tr><td>Expected contribution (8.5% × $63,839 ÷ 12)</td><td>$452/mo</td></tr>
+      <tr><td>SLCSP benchmark premium (example, varies by area)</td><td>$650/mo</td></tr>
+      <tr class="sc-total"><td>Monthly subsidy</td><td class="good">$198/mo = $2,376/yr</td></tr>
+    </table>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      Same freelancer — $63,841 MAGI ($2 over cliff)
+      <span class="sbadge sb-r">400.01% FPL — loses everything</span>
+    </div>
+    <table class="sc-table">
+      <tr><td>Household MAGI</td><td>$63,841</td></tr>
+      <tr><td>400% FPL for 1 person</td><td>$63,840</td></tr>
+      <tr><td>% of FPL</td><td class="bad">400.01% — above cliff</td></tr>
+      <tr><td>Premium tax credit</td><td class="bad">$0</td></tr>
+      <tr><td>Must pay full premium</td><td class="bad">$650/mo = $7,800/yr</td></tr>
+      <tr class="sc-total"><td>Cost of being $2 over cliff</td><td class="bad">$2,376/yr in lost subsidies</td></tr>
+      <tr class="sc-warn"><td colspan="2">⚠ A $2 income difference = $2,376 annual penalty. This is why income planning matters.</td></tr>
+    </table>
+  </div>
+
+  <h3>Income strategies to stay under the cliff (the most valuable module feature)</h3>
+
+  <table class="dt">
+    <thead><tr><th>Strategy</th><th>How it reduces ACA MAGI</th><th>Potential cliff buffer created</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Traditional IRA contribution</strong></td><td>Deductible IRA reduces AGI → reduces MAGI directly</td><td class="mono good">Up to $7,000 ($8,000 if 50+)</td></tr>
+      <tr><td><strong>Solo 401(k) contributions</strong></td><td>Employee + employer contributions reduce SE net income → reduce AGI → reduce MAGI</td><td class="mono good">Up to $70,000</td></tr>
+      <tr><td><strong>SEP-IRA contributions</strong></td><td>Same as Solo 401(k) for AGI reduction</td><td class="mono good">Up to $70,000</td></tr>
+      <tr><td><strong>HSA contributions (if HDHP)</strong></td><td>Above-the-line deduction reduces AGI and ACA MAGI</td><td class="mono good">$4,400 (self) / $8,750 (family)</td></tr>
+      <tr><td><strong>Self-employed health insurance deduction</strong></td><td>100% of premiums reduce AGI. Circular interaction with PTC — use IRS Pub 974 iterative method.</td><td class="mono warn">Varies — complex circular calc</td></tr>
+      <tr><td><strong>Business deductions (gig/freelance)</strong></td><td>Schedule C deductions reduce net SE income → AGI → MAGI</td><td class="mono good">Varies by deduction amount</td></tr>
+      <tr><td><strong>Delay Roth conversions</strong></td><td>Roth conversion income counts in MAGI. Defer conversion years when near cliff.</td><td class="mono warn">Situational — check year-by-year</td></tr>
+      <tr><td><strong>Charitable giving via DAF</strong></td><td>Donor Advised Fund contributions are deductible, reducing MAGI if itemizing</td><td class="mono warn">Only if itemizing (rare for SE)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="call p">
+    <strong>The self-employed health insurance deduction circular interaction</strong>
+    For self-employed people on marketplace plans, there is a mathematically circular relationship: the SE health insurance deduction reduces MAGI → which increases the PTC → which reduces the premiums paid → which reduces the deduction → which raises MAGI → which reduces the PTC. IRS Publication 974 requires an iterative calculation to solve this. The calculator should note this limitation clearly and provide an approximate result, recommending a CPA or tax software for the precise figure. This disclaimer protects you legally and creates a natural CPA referral opportunity.
+  </div>
+
+  <h3>Calculator inputs and outputs for ACA module</h3>
+  <div class="tags">
+    <span class="tag r">Household size (1–8+)</span>
+    <span class="tag r">State (Medicaid expansion status affects lower bound)</span>
+    <span class="tag r">Estimated annual MAGI</span>
+    <span class="tag r">SLCSP benchmark premium (from healthcare.gov lookup)</span>
+    <span class="tag r">Income sources (W-2, SE, SSDI, pension, investment)</span>
+    <span class="tag r">Current year — 2026 cliff rules vs prior years</span>
+  </div>
+  <div class="tags">
+    <span class="tag g">% of FPL with visual indicator</span>
+    <span class="tag g">Distance to cliff (dollars under or over)</span>
+    <span class="tag g">Monthly and annual premium tax credit</span>
+    <span class="tag g">What you pay monthly after subsidy</span>
+    <span class="tag g">Cost if you go $1 over cliff (loss of full annual subsidy)</span>
+    <span class="tag g">Income reduction strategies to stay under cliff</span>
+    <span class="tag g">Clawback calculator — what you owe back if income was underestimated</span>
+    <span class="tag g">CSR (cost-sharing reduction) eligibility at 100–250% FPL</span>
+  </div>
+
+  <h3>Clawback calculator (Form 8962 reconciliation)</h3>
+  <p>If someone received APTC based on an estimated income that turned out to be higher than actual, they must repay some or all of the excess credits when they file. Below 400% FPL there are clawback caps. Above 400% FPL, the full APTC must be repaid. A dedicated clawback calculator — "I estimated $55,000, I actually earned $68,000, how much do I owe back?" — targets a specific, anxious searcher who just filed and found a surprise tax bill. Very low competition, very high user distress = high engagement and sharing.</p>
+
+  <h3>SEO opportunities — ACA subsidy keyword cluster</h3>
+  <div class="tags">
+    <span class="tag r">ACA subsidy calculator 2026 — ~35K/mo, KD 18</span>
+    <span class="tag r">Obamacare subsidy income limit 2026 — ~28K/mo, KD 16</span>
+    <span class="tag r">ACA 400% FPL cliff 2026 — ~12K/mo, KD 10</span>
+    <span class="tag r">how to stay under ACA income limit — ~9K/mo, KD 9</span>
+    <span class="tag r">premium tax credit calculator 2026 — ~22K/mo, KD 15</span>
+    <span class="tag">marketplace health insurance subsidy calculator — ~18K/mo, KD 14</span>
+    <span class="tag">ACA MAGI calculator self employed — ~8K/mo, KD 10</span>
+    <span class="tag">healthcare.gov subsidy income limit — ~14K/mo, KD 12</span>
+    <span class="tag">ACA subsidy clawback calculator — ~5K/mo, KD 8</span>
+    <span class="tag">self employed health insurance ACA subsidy — ~7K/mo, KD 10</span>
+  </div>
+
+  <div class="call g">
+    <strong>The programmatic page goldmine: ACA cliff by household size × state</strong>
+    "ACA income limit 2026 single person" → "ACA income limit 2026 family of 4" → "ACA income limit California 2026" — these generate 50 (states) × 8 (household sizes) = 400 additional low-competition pages, each with a meaningful FPL dollar amount and subsidy estimate. The cliff dollar amount is different for every household size. At KD 5–12, these rank within 60 days of indexing.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     MODULE C — STD / LTD INCOME
+═══════════════════════════════════════════════════════ -->
+<div class="module" id="ltd">
+  <p class="module-label">Module C — Disability Income</p>
+  <h2>Short-Term & Long-Term Disability Income Tax Calculator</h2>
+
+  <p>Short-term disability (STD) and long-term disability (LTD) are among the most commonly misunderstood income types at tax time. Whether benefits are taxable depends entirely on <em>who paid the premiums and how</em> — a fact that surprises most recipients when they file. The typical LTD benefit replaces 60% of pre-disability salary (sometimes 60% of after-tax income for individual policies), and the tax treatment can dramatically change the effective replacement rate.</p>
+
+  <div class="call b">
+    <strong>The rule that surprises everyone</strong>
+    If your employer paid 100% of your disability premiums (the most common arrangement), your disability benefits are 100% taxable as ordinary income — reported on a W-2. If you paid the premiums yourself with after-tax dollars, your benefits are 100% tax-free. If premiums were split, benefits are taxable in proportion to the employer's share. Most employees have no idea which situation they're in until they receive a W-2 from their insurer at tax time.
+  </div>
+
+  <h3>The four tax scenarios — complete decision tree</h3>
+
+  <table class="dt">
+    <thead><tr><th>Who paid premiums?</th><th>How paid?</th><th>Benefit taxability</th><th>Tax form issued</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Employer — 100%</strong></td><td>Direct employer payment (most common group plan)</td><td class="bad">100% taxable as ordinary income</td><td>W-2 from insurer</td></tr>
+      <tr><td><strong>Employee — 100%</strong></td><td>After-tax payroll deduction</td><td class="good">100% tax-free</td><td>No form issued</td></tr>
+      <tr><td><strong>Employee — 100%</strong></td><td>Pre-tax cafeteria plan / payroll deduction</td><td class="bad">100% taxable (treated same as employer-paid)</td><td>W-2 from insurer</td></tr>
+      <tr><td><strong>Split — employer/employee</strong></td><td>Employee pays after-tax portion</td><td class="warn">Taxable proportional to employer's share</td><td>W-2 for taxable portion</td></tr>
+      <tr><td><strong>Split — employer/employee</strong></td><td>Employee pays pre-tax (cafeteria)</td><td class="bad">100% taxable (both shares treated as employer-paid)</td><td>W-2 from insurer</td></tr>
+      <tr><td><strong>Individual policy</strong></td><td>Purchased privately with after-tax dollars</td><td class="good">100% tax-free</td><td>No form issued</td></tr>
+      <tr><td><strong>Self-employed owner</strong></td><td>Business paid premiums as business expense</td><td class="bad">Benefits taxable (deducted from gross income)</td><td>1099 or W-2</td></tr>
+    </tbody>
+  </table>
+
+  <h3>LTD and the SSDI offset — the hidden income reduction</h3>
+
+  <div class="call r">
+    <strong>The offset most LTD recipients don't know about</strong>
+    Most employer-paid LTD policies contain a clause: if you also receive SSDI, the LTD insurer reduces ("offsets") your monthly LTD check by the SSDI amount. So if LTD pays 60% of $80,000 salary = $4,000/mo, and SSDI pays $1,800/mo, your actual LTD check drops to $2,200/mo. But you are STILL taxed on the full $4,000/mo if your employer paid the premiums — effectively paying taxes on $1,800/mo that your insurer pocketed. The calculator should model this offset explicitly.
+  </div>
+
+  <h3>Worked scenarios</h3>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      Scenario 1: LTD — employer-paid plan, 60% of salary
+      <span class="sbadge sb-r">100% taxable — most common case</span>
+    </div>
+    <table class="sc-table">
+      <tr><td>Pre-disability salary</td><td>$90,000/yr</td></tr>
+      <tr><td>LTD benefit (60% of salary)</td><td>$54,000/yr ($4,500/mo)</td></tr>
+      <tr><td>Who paid premiums?</td><td class="bad">Employer — 100%</td></tr>
+      <tr><td>LTD benefit taxability</td><td class="bad">100% taxable</td></tr>
+      <tr><td>Filing status</td><td>Single</td></tr>
+      <tr><td>Standard deduction (2026)</td><td>$15,000</td></tr>
+      <tr><td>Taxable LTD income</td><td>$39,000</td></tr>
+      <tr><td>Estimated federal income tax</td><td class="bad">$4,478</td></tr>
+      <tr><td>State income tax (varies)</td><td class="warn">$1,500–$3,500 est.</td></tr>
+      <tr class="sc-total"><td>Actual take-home from 60% LTD</td><td class="warn">~$46,000–$48,000 (51–53% of original salary)</td></tr>
+      <tr class="sc-warn"><td colspan="2">⚠ Effective replacement rate drops from 60% to ~51% after tax — a gap most recipients didn't expect</td></tr>
+    </table>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      Scenario 2: Same LTD — employee paid with after-tax dollars
+      <span class="sbadge sb-g">100% tax-free — best case</span>
+    </div>
+    <table class="sc-table">
+      <tr><td>LTD benefit (60% of $90,000 salary)</td><td>$54,000/yr</td></tr>
+      <tr><td>Who paid premiums?</td><td class="good">Employee — after-tax dollars</td></tr>
+      <tr><td>LTD benefit taxability</td><td class="good">0% — 100% tax-free</td></tr>
+      <tr><td>Federal income tax on LTD</td><td class="good">$0</td></tr>
+      <tr><td>State income tax on LTD</td><td class="good">$0 (in most states)</td></tr>
+      <tr class="sc-total"><td>Actual take-home from 60% LTD</td><td class="good">$54,000 — full 60% kept</td></tr>
+      <tr class="sc-save"><td colspan="2">✓ After-tax premium payment strategy saves $4,478–$8,000/yr vs. pre-tax. Worth considering in open enrollment.</td></tr>
+    </table>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      Scenario 3: LTD + SSDI offset — employer plan
+      <span class="sbadge sb-r">Taxed on offset amount — double penalty</span>
+    </div>
+    <table class="sc-table">
+      <tr><td>Gross LTD benefit (60% of salary, no offset)</td><td>$4,000/mo</td></tr>
+      <tr><td>SSDI benefit received</td><td>$1,800/mo</td></tr>
+      <tr><td>LTD insurer offset (deducts SSDI amount)</td><td class="bad">−$1,800/mo</td></tr>
+      <tr><td>Actual LTD check received</td><td>$2,200/mo</td></tr>
+      <tr><td>Total disability income (LTD + SSDI)</td><td>$4,000/mo</td></tr>
+      <tr><td>Taxable LTD amount (employer paid = 100%)</td><td class="bad">$4,000/mo — full pre-offset amount</td></tr>
+      <tr><td>Taxable SSDI (combined income determines tier)</td><td class="warn">Varies — see SSDI module</td></tr>
+      <tr class="sc-total"><td>Effective take-home after all taxes</td><td class="bad">Significantly under 60% of salary</td></tr>
+      <tr class="sc-warn"><td colspan="2">⚠ IRS taxes the gross LTD benefit before the offset reduction — a frequently litigated issue</td></tr>
+    </table>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      Scenario 4: STD — 60–70% of salary, employer-paid, 3–6 months
+      <span class="sbadge sb-y">Short-term — same taxability rules apply</span>
+    </div>
+    <table class="sc-table">
+      <tr><td>Pre-disability salary</td><td>$70,000/yr ($5,833/mo)</td></tr>
+      <tr><td>STD benefit (65% of salary)</td><td>$3,791/mo</td></tr>
+      <tr><td>Duration</td><td>12 weeks (84 days)</td></tr>
+      <tr><td>Total STD received</td><td>$10,972</td></tr>
+      <tr><td>Employer paid premiums?</td><td class="bad">Yes — 100% taxable</td></tr>
+      <tr><td>Also worked remainder of year (W-2)</td><td>$45,208 (remaining salary)</td></tr>
+      <tr><td>Total taxable income</td><td>$56,180</td></tr>
+      <tr><td>Quarterly payments needed?</td><td class="warn">Maybe — if withholding insufficient on STD</td></tr>
+      <tr class="sc-total"><td>Key question calculator answers</td><td>Did enough tax get withheld from STD checks?</td></tr>
+      <tr class="sc-save"><td colspan="2">✓ Many STD payers withhold at a flat rate — may create underpayment if combined income is higher</td></tr>
+    </table>
+  </div>
+
+  <h3>Calculator inputs for STD/LTD module</h3>
+  <div class="tags">
+    <span class="tag r">Benefit type (STD or LTD)</span>
+    <span class="tag r">Pre-disability salary</span>
+    <span class="tag r">Benefit percentage (default 60%, adjustable)</span>
+    <span class="tag r">Monthly benefit cap (policy maximum)</span>
+    <span class="tag r">Who paid premiums? (employer / employee after-tax / employee pre-tax / split)</span>
+    <span class="tag r">If split: what % did employer pay?</span>
+    <span class="tag r">Receiving SSDI offset? (yes/no + SSDI amount)</span>
+    <span class="tag r">Duration of benefits</span>
+    <span class="tag r">Other income during disability period (spouse, part-time work)</span>
+    <span class="tag r">Filing status + state</span>
+  </div>
+
+  <h3>Calculator outputs for STD/LTD module</h3>
+  <div class="tags">
+    <span class="tag g">Benefit taxability determination (with plain-English explanation)</span>
+    <span class="tag g">Gross benefit vs. taxable amount</span>
+    <span class="tag g">Federal income tax on benefits</span>
+    <span class="tag g">State income tax (most states follow federal)</span>
+    <span class="tag g">Effective replacement rate after tax (% of original salary)</span>
+    <span class="tag g">If SSDI offset applies: actual check vs. taxable amount</span>
+    <span class="tag g">Withholding recommendation (should they elect withholding from benefit checks?)</span>
+    <span class="tag g">Quarterly payment check (do they need to pay estimated taxes?)</span>
+    <span class="tag g">Open enrollment tip: "Switch to after-tax premiums to make future benefits tax-free"</span>
+  </div>
+
+  <h3>SEO opportunities — STD/LTD keyword cluster</h3>
+  <div class="tags">
+    <span class="tag r">is long term disability income taxable 2026 — ~28K/mo, KD 13</span>
+    <span class="tag r">long term disability tax calculator — ~12K/mo, KD 10</span>
+    <span class="tag r">is short term disability taxable — ~22K/mo, KD 12</span>
+    <span class="tag r">short term disability income tax — ~14K/mo, KD 11</span>
+    <span class="tag">LTD benefits taxable employer paid — ~8K/mo, KD 9</span>
+    <span class="tag">disability income after tax calculator — ~6K/mo, KD 8</span>
+    <span class="tag">LTD SSDI offset tax — ~4K/mo, KD 7</span>
+    <span class="tag">how much tax on disability income — ~10K/mo, KD 10</span>
+    <span class="tag">short term disability taxes withheld — ~5K/mo, KD 8</span>
+  </div>
+
+  <h3>Additional programmatic pages for STD/LTD</h3>
+  <table class="url-table">
+    <thead><tr><th>URL Pattern</th><th>Example</th><th># Pages</th><th>KD</th></tr></thead>
+    <tbody>
+      <tr><td class="pattern">/[state]/long-term-disability-tax/</td><td>/california/long-term-disability-tax/</td><td class="pages">50</td><td>6–12</td></tr>
+      <tr><td class="pattern">/long-term-disability-tax-calculator/[salary]/</td><td>/long-term-disability-tax-calculator/80000/</td><td class="pages">20</td><td>5–10</td></tr>
+      <tr><td class="pattern">/ssdi-tax-calculator/[state]/</td><td>/ssdi-tax-calculator/ohio/</td><td class="pages">50</td><td>5–10</td></tr>
+      <tr><td class="pattern">/aca-subsidy-calculator/[state]/[household-size]/</td><td>/aca-subsidy-calculator/florida/family-of-4/</td><td class="pages">400</td><td>4–10</td></tr>
+      <tr><td class="pattern">/aca-income-limit/[state]/</td><td>/aca-income-limit/texas/</td><td class="pages">50</td><td>5–12</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════ INTEGRATION NOTE ══════════ -->
+<div class="module" id="integration">
+  <p class="module-label">Integration Notes</p>
+  <h2>How these three modules connect to the rest of the plan</h2>
+
+  <h3>Mixed-income household expansions (from v3 Section 08)</h3>
+  <p>Add these combinations to the mixed-household module:</p>
+  <div class="tags">
+    <span class="tag r">SSDI + DoorDash / gig income (SGA warning + SE tax + SSDI inclusion)</span>
+    <span class="tag r">SSDI + spouse W-2 (MFJ SSDI taxability + ACA MAGI interaction)</span>
+    <span class="tag r">LTD + part-time W-2 (withholding gap calculator)</span>
+    <span class="tag r">LTD + SSDI offset (effective take-home after both)</span>
+    <span class="tag r">Self-employed near ACA cliff + retirement contributions (model the savings)</span>
+    <span class="tag">SSDI + Airbnb rental income (passive — doesn't trigger SGA)</span>
+    <span class="tag">LTD + spouse S-Corp (family income planning near ACA cliff)</span>
+    <span class="tag">Retiree + SSDI + part-time gig (triple income type)</span>
+  </div>
+
+  <h3>Deductions that specifically help these users</h3>
+  <table class="dt">
+    <thead><tr><th>Deduction</th><th>Helps SSDI users</th><th>Helps ACA cliff users</th><th>Helps LTD users</th></tr></thead>
+    <tbody>
+      <tr><td>Solo 401(k) / SEP-IRA</td><td class="good">✓ Reduces combined income</td><td class="good">✓ Reduces MAGI below cliff</td><td class="neu">If SE income during disability</td></tr>
+      <tr><td>Traditional IRA</td><td class="good">✓ Reduces combined income</td><td class="good">✓ Reduces MAGI</td><td class="good">✓ Reduces taxable LTD income</td></tr>
+      <tr><td>HSA contributions</td><td class="good">✓ Reduces AGI (if not Medicare)</td><td class="good">✓ Reduces MAGI</td><td class="good">✓ Reduces AGI</td></tr>
+      <tr><td>Business deductions (SE)</td><td class="good">✓ Reduces SE income in combined</td><td class="good">✓ Reduces MAGI</td><td class="neu">N/A for LTD</td></tr>
+      <tr><td>After-tax LTD premiums strategy</td><td class="neu">N/A</td><td class="neu">N/A</td><td class="good">✓ Makes future benefits tax-free</td></tr>
+    </tbody>
+  </table>
+
+  <div class="call g">
+    <strong>The unified "income + benefits" calculator — the biggest unlock</strong>
+    The most powerful version of these three modules isn't three separate calculators — it's one unified calculator where a user selects all their income types: W-2 + LTD + SSDI + DoorDash side income + marketplace health insurance. The calculator then shows: (1) total federal tax bill; (2) SSDI taxable portion; (3) LTD taxable portion; (4) SE tax on gig income; (5) ACA MAGI and whether they're above or below the subsidy cliff; (6) which deductions bring them below the cliff or into a lower SSDI tier. No tool on the internet does this. This is the product that gets featured in disability advocacy groups, gig worker forums, and healthcare navigator communities — and generates thousands of organic backlinks.
+  </div>
+
+  <div style="border-top:2px solid var(--ink);padding-top:1.5rem;margin-top:2rem;font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+    <span>GigTaxCalculator — Addendum v3.1: SSDI · ACA Subsidies · STD/LTD</span>
+    <span>June 2026 · Confidential</span>
+  </div>
+</div>
+<div style="border-top:2px solid var(--ink);padding-top:2rem;margin-top:3rem;font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+  <span>GigTaxCalculator — Unified Build Plan v4.0 · June 2026</span>
+  <span>JSON: gigtax-2026-config.json v2026.3.0 · Confidential</span>
+</div>
+</div>
+</body>
+</html>

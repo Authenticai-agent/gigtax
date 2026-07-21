@@ -1,0 +1,4506 @@
+{
+  "_meta": {
+    "version": "2026.3.1",
+    "taxYear": 2026,
+    "filingYear": 2027,
+    "lastVerified": "2026-06-05",
+    "sources": [
+      "IRS Revenue Procedure 2025-32",
+      "IRS Notice 2025-67 (retirement limits)",
+      "IRS Notice IR-2025-128 (mileage)",
+      "IRS Publication 915 (Social Security taxation)",
+      "HHS 2026 Federal Poverty Guidelines",
+      "IRS Rev. Proc. 2025-25 (ACA applicable percentages)",
+      "Tax Foundation 2026 State Income Tax Rates",
+      "OBBBA (One Big Beautiful Bill Act, signed July 4 2025)"
+    ],
+    "disclaimer": "For informational purposes. Verify with IRS.gov or a qualified tax professional before filing.",
+    "patchNotes": "v2.0 patch: Added 1 gig profile (babysitter_nanny_1099), 5 creator profiles (ugc_creator, online_course_creator, newsletter_business, sponsorship_income, brand_deal_calculator), 3 seller profiles (facebook_marketplace, stockx_goat, printful_printify), 9 rental types (getaround, rv_rental, boat_rental, equipment_rental, parking_space_rental, storage_rental, short_vs_long_term_rental, landlord, real_estate_agent_rental), 11 professional profiles (bookkeeper_accountant, virtual_assistant, coach, insurance_agent, notary_signing_agent, tutor, wedding_event_planner, qa_tester_contractor, clergy_minister, farm_schedule_f), 7 entity types (limitedPartnership, professionalCorporation, familyLLC, holdingCompany, realEstateHoldingLLC, seriesLLC, statutoryEmployee).",
+    "patchNotes2_1": "v2.1 patch: (1) Normalized farm_schedule_f.uniqueDeductions to match {name, deductible, note} schema used by otherCommonDeductions. Added _deductionSchema hint to both arrays. Ensured all otherCommonDeductions items have deductible and note fields to prevent undefined exceptions in UI parser. (2) Enhanced husbandWifeQualifiedJointVenture with community property state list, LLC registration restriction rule, stateOverlayValidation engine object with per-state routing logic, and comparison to partnership filing. (3) Added top-level stateMetadata object with communityPropertyStates, noIncomeTaxStates, statesThatTaxSocialSecurity, statesWithLocalIncomeTax, statesWithSDI, and passthroughEntityTaxStates for SALT workaround states.",
+    "patchNotes3_0": "v3.0: Added equityCompensation (RSU, ISO, NSO, ESPP, QSBS, phantom/SARs, Form 1099-B basis reconciliation, multi-state allocation). Added combinedSalaryCalculator with all income type definitions, 5 family household scenarios, quarterly estimated tax engine with safe harbor, annualized income method, withholding optimization tool. Updated seoMetadata with equity keyword cluster and 14 new page patterns.",
+    "corrections_v3_1": {
+      "date": "2026-06-07",
+      "correctedBy": "Fact-check verification against primary sources",
+      "fixes": [
+        {
+          "field": "retirement.hsa.selfOnly",
+          "was": 4300,
+          "correctedTo": 4400,
+          "source": "IRS Notice 2025-67 via White Coat Investor, ALPA"
+        },
+        {
+          "field": "retirement.hsa.family",
+          "was": 8550,
+          "correctedTo": 8750,
+          "source": "IRS Notice 2025-67 via White Coat Investor, ALPA"
+        },
+        {
+          "field": "incomeSources.ssdi.sgaLimit2026",
+          "was": 1620,
+          "correctedTo": 1690,
+          "source": "SSA.gov 2026 COLA Fact Sheet, Atticus.com, DisabilityExchange.org"
+        },
+        {
+          "field": "incomeSources.ssdi.sgaLimitBlind2026",
+          "was": 2700,
+          "correctedTo": 2830,
+          "source": "SSA.gov 2026 COLA Fact Sheet"
+        },
+        {
+          "field": "entityTypes.delawareCCorp.franchiseTax",
+          "was": "Incomplete \u2014 only showed $175 minimum",
+          "correctedTo": "Full fee schedule per corp.delaware.gov: Authorized Shares min $175, Assumed Par Value min $400, filing fee $50, late penalty $200 + 1.5%/mo, Large Corporate Filer max $250,000",
+          "source": "corp.delaware.gov (official Delaware Division of Corporations)"
+        }
+      ]
+    }
+  },
+  "federal": {
+    "brackets": {
+      "single": [
+        {
+          "min": 0,
+          "max": 12400,
+          "rate": 0.1
+        },
+        {
+          "min": 12400,
+          "max": 49840,
+          "rate": 0.12
+        },
+        {
+          "min": 49840,
+          "max": 106250,
+          "rate": 0.22
+        },
+        {
+          "min": 106250,
+          "max": 201775,
+          "rate": 0.24
+        },
+        {
+          "min": 201775,
+          "max": 256225,
+          "rate": 0.32
+        },
+        {
+          "min": 256225,
+          "max": 640600,
+          "rate": 0.35
+        },
+        {
+          "min": 640600,
+          "max": null,
+          "rate": 0.37
+        }
+      ],
+      "mfj": [
+        {
+          "min": 0,
+          "max": 24800,
+          "rate": 0.1
+        },
+        {
+          "min": 24800,
+          "max": 99600,
+          "rate": 0.12
+        },
+        {
+          "min": 99600,
+          "max": 211400,
+          "rate": 0.22
+        },
+        {
+          "min": 211400,
+          "max": 403550,
+          "rate": 0.24
+        },
+        {
+          "min": 403550,
+          "max": 512450,
+          "rate": 0.32
+        },
+        {
+          "min": 512450,
+          "max": 768700,
+          "rate": 0.35
+        },
+        {
+          "min": 768700,
+          "max": null,
+          "rate": 0.37
+        }
+      ],
+      "mfs": [
+        {
+          "min": 0,
+          "max": 12400,
+          "rate": 0.1
+        },
+        {
+          "min": 12400,
+          "max": 49840,
+          "rate": 0.12
+        },
+        {
+          "min": 49840,
+          "max": 106250,
+          "rate": 0.22
+        },
+        {
+          "min": 106250,
+          "max": 201775,
+          "rate": 0.24
+        },
+        {
+          "min": 201775,
+          "max": 256225,
+          "rate": 0.32
+        },
+        {
+          "min": 256225,
+          "max": 384350,
+          "rate": 0.35
+        },
+        {
+          "min": 384350,
+          "max": null,
+          "rate": 0.37
+        }
+      ],
+      "hoh": [
+        {
+          "min": 0,
+          "max": 18750,
+          "rate": 0.1
+        },
+        {
+          "min": 18750,
+          "max": 63100,
+          "rate": 0.12
+        },
+        {
+          "min": 63100,
+          "max": 100500,
+          "rate": 0.22
+        },
+        {
+          "min": 100500,
+          "max": 201775,
+          "rate": 0.24
+        },
+        {
+          "min": 201775,
+          "max": 256225,
+          "rate": 0.32
+        },
+        {
+          "min": 256225,
+          "max": 640600,
+          "rate": 0.35
+        },
+        {
+          "min": 640600,
+          "max": null,
+          "rate": 0.37
+        }
+      ]
+    },
+    "standardDeduction": {
+      "single": 16100,
+      "mfj": 32200,
+      "mfs": 16100,
+      "hoh": 24150,
+      "additionalAge65Single": 2050,
+      "additionalAge65MFJ": 1650,
+      "seniorDeductionOBBBA": {
+        "amount": 6000,
+        "amountMFJ": 12000,
+        "phaseoutStartSingle": 75000,
+        "phaseoutStartMFJ": 150000,
+        "phaseoutRate": 0.06,
+        "expiresAfterYear": 2028,
+        "note": "New OBBBA 2025 deduction for age 65+. Separate from additional standard deduction."
+      }
+    },
+    "capitalGains": {
+      "longTerm": {
+        "single": [
+          {
+            "min": 0,
+            "max": 49450,
+            "rate": 0.0
+          },
+          {
+            "min": 49450,
+            "max": 545500,
+            "rate": 0.15
+          },
+          {
+            "min": 545500,
+            "max": null,
+            "rate": 0.2
+          }
+        ],
+        "mfj": [
+          {
+            "min": 0,
+            "max": 98900,
+            "rate": 0.0
+          },
+          {
+            "min": 98900,
+            "max": 613700,
+            "rate": 0.15
+          },
+          {
+            "min": 613700,
+            "max": null,
+            "rate": 0.2
+          }
+        ],
+        "mfs": [
+          {
+            "min": 0,
+            "max": 49450,
+            "rate": 0.0
+          },
+          {
+            "min": 49450,
+            "max": 306850,
+            "rate": 0.15
+          },
+          {
+            "min": 306850,
+            "max": null,
+            "rate": 0.2
+          }
+        ],
+        "hoh": [
+          {
+            "min": 0,
+            "max": 66200,
+            "rate": 0.0
+          },
+          {
+            "min": 66200,
+            "max": 579600,
+            "rate": 0.15
+          },
+          {
+            "min": 579600,
+            "max": null,
+            "rate": 0.2
+          }
+        ]
+      },
+      "shortTerm": "taxedAsOrdinaryIncome",
+      "niit": {
+        "rate": 0.038,
+        "thresholdSingle": 200000,
+        "thresholdMFJ": 250000,
+        "note": "Not indexed for inflation. Unchanged since 2013."
+      },
+      "collectibles": 0.28,
+      "unrecaptured1250": 0.25
+    },
+    "alternativeMinimumTax": {
+      "exemptionSingle": 90100,
+      "exemptionMFJ": 140200,
+      "phaseoutStartSingle": 500000,
+      "phaseoutStartMFJ": 1000000,
+      "rate1": 0.26,
+      "rate2": 0.28,
+      "rate2ThresholdSingle": 244500,
+      "rate2ThresholdMFJ": 244500
+    },
+    "selfEmployment": {
+      "seTaxRate": 0.153,
+      "socialSecurityRate": 0.124,
+      "medicareRate": 0.029,
+      "socialSecurityWageBase": 184500,
+      "netEarningsMultiplier": 0.9235,
+      "selfDeductionRate": 0.5,
+      "additionalMedicare": {
+        "rate": 0.009,
+        "thresholdSingle": 200000,
+        "thresholdMFJ": 250000,
+        "thresholdMFS": 125000,
+        "note": "Applies to wages and SE income over threshold. Not indexed for inflation."
+      },
+      "note": "SE tax = seTaxRate x (netEarnings x netEarningsMultiplier). Half of SE tax is deductible from AGI."
+    },
+    "quarterlyEstimated": {
+      "year": 2026,
+      "quarters": [
+        {
+          "quarter": 1,
+          "periodLabel": "Jan 1 \u2013 Mar 31",
+          "dueDate": "2026-04-15",
+          "irsForm": "1040-ES"
+        },
+        {
+          "quarter": 2,
+          "periodLabel": "Apr 1 \u2013 May 31",
+          "dueDate": "2026-06-16",
+          "irsForm": "1040-ES"
+        },
+        {
+          "quarter": 3,
+          "periodLabel": "Jun 1 \u2013 Aug 31",
+          "dueDate": "2026-09-15",
+          "irsForm": "1040-ES"
+        },
+        {
+          "quarter": 4,
+          "periodLabel": "Sep 1 \u2013 Dec 31",
+          "dueDate": "2027-01-15",
+          "irsForm": "1040-ES"
+        }
+      ],
+      "safeHarborRules": {
+        "rule1": "Pay 90% of current year tax liability",
+        "rule2": "Pay 100% of prior year tax liability (110% if prior year AGI > $150,000)",
+        "underpaymentPenaltyRate": "Federal short-term rate + 3% (varies quarterly)",
+        "minimumToOweEstimated": 1000
+      }
+    },
+    "childTaxCredit": {
+      "amountPerChild": 2200,
+      "ageLimit": 17,
+      "refundableAmount": 1700,
+      "phaseoutStartSingle": 200000,
+      "phaseoutStartMFJ": 400000,
+      "phaseoutRate": 0.05,
+      "note": "OBBBA permanently extended CTC. Refundable portion (ACTC) up to $1,700."
+    },
+    "earnedIncomeCredit": {
+      "year": 2026,
+      "brackets": [
+        {
+          "children": 0,
+          "maxCredit": 649,
+          "incomeLimit": 18591,
+          "phaseoutStart": 10330
+        },
+        {
+          "children": 1,
+          "maxCredit": 4328,
+          "incomeLimit": 49084,
+          "phaseoutStart": 21770
+        },
+        {
+          "children": 2,
+          "maxCredit": 7152,
+          "incomeLimit": 55768,
+          "phaseoutStart": 21770
+        },
+        {
+          "children": 3,
+          "maxCredit": 8046,
+          "incomeLimit": 59899,
+          "phaseoutStart": 21770
+        }
+      ],
+      "investmentIncomeLimit": 11950,
+      "note": "MFJ phaseout starts $5,990 higher than single/hoh."
+    },
+    "childDependentCareCredit": {
+      "maxExpenseOneChild": 3000,
+      "maxExpenseTwoPlus": 6000,
+      "creditRateMin": 0.2,
+      "creditRateMax": 0.35,
+      "phaseoutStartIncome": 15000,
+      "note": "Non-refundable. Rate phases down from 35% to 20% as income rises above $15,000."
+    },
+    "saltDeduction": {
+      "cap": 40400,
+      "capMFJ": 40400,
+      "phaseoutStartMAGI": 505000,
+      "revertTo": 10000,
+      "revertYear": 2030,
+      "note": "OBBBA raised SALT cap from $10,000 to $40,400 (2026-2029). Phases out for high earners."
+    },
+    "mortgageInterestDeduction": {
+      "loanLimitNewLoans": 750000,
+      "loanLimitPreTCJA": 1000000,
+      "note": "Only for loans originated after Dec 15, 2017. Older loans still use $1M limit."
+    },
+    "giftAndEstate": {
+      "annualGiftExclusion": 19000,
+      "lifetimeEstateTaxExemption": 15000000,
+      "topEstateTaxRate": 0.4
+    },
+    "foreignEarnedIncomeExclusion": {
+      "amount": 130000,
+      "note": "For US citizens/residents working abroad who meet bona fide residence or physical presence test."
+    }
+  },
+  "retirement": {
+    "solo401k": {
+      "employeeLimit": 24500,
+      "employerLimit": "25% of net self-employment income (approx 20% before SE tax deduction)",
+      "combinedMaxUnder50": 72000,
+      "catchUp50to59": 8000,
+      "catchUp60to63": 11250,
+      "combinedMax50to59": 80000,
+      "combinedMax60to63": 83250,
+      "compensationLimit": 360000,
+      "rothCatchUpMandatoryThreshold": 150000,
+      "note": "Employee deferral deadline: Dec 31. Employer contribution deadline: tax filing deadline + extensions."
+    },
+    "sep_ira": {
+      "limit": 72000,
+      "limitPct": 0.25,
+      "compensationLimit": 360000,
+      "filingDeadline": "Tax return due date including extensions (Oct 15, 2027)",
+      "note": "25% of W-2 compensation or 20% of net SE income (after SE tax deduction), whichever is less."
+    },
+    "simple_ira": {
+      "employeeLimit": 17000,
+      "catchUp50": 4000,
+      "catchUp60to63": 5250,
+      "employerMatch": "2% of compensation (non-elective) or 3% matching"
+    },
+    "traditional_ira": {
+      "limit": 7500,
+      "catchUp50": 1100,
+      "totalLimit50plus": 8600,
+      "deductibilityPhaseout": {
+        "coveredByWorkplacePlan_single": {
+          "start": 79000,
+          "end": 89000
+        },
+        "coveredByWorkplacePlan_mfj": {
+          "start": 126000,
+          "end": 146000
+        },
+        "notCoveredSpouseIsCovered_mfj": {
+          "start": 242000,
+          "end": 252000
+        }
+      },
+      "note": "IRA catch-up increased to $1,100 in 2026 \u2014 first increase since 2006 (SECURE 2.0 inflation indexing)"
+    },
+    "roth_ira": {
+      "limit": 7500,
+      "catchUp50": 1100,
+      "incomePhaseout": {
+        "single": {
+          "start": 153000,
+          "end": 168000
+        },
+        "mfj": {
+          "start": 242000,
+          "end": 252000
+        },
+        "mfs": {
+          "start": 0,
+          "end": 10000
+        }
+      },
+      "backdoorNote": "If over income limit, use backdoor Roth (non-deductible traditional IRA then convert). Pro-rata rule applies."
+    },
+    "hsa": {
+      "selfOnly": 4400,
+      "family": 8750,
+      "catchUp55": 1000,
+      "hdhpMinDeductibleSelf": 1650,
+      "hdhpMinDeductibleFamily": 3300,
+      "hdhpMaxOopSelf": 8300,
+      "hdhpMaxOopFamily": 16600,
+      "note": "Triple tax advantage: deductible contribution, tax-free growth, tax-free withdrawals for medical. HSA funds can invest like IRA after minimum cash balance met.",
+      "_correctionNote": "Corrected June 2026: previous values ($4,300/$8,550) were 2025 figures. 2026 limits per IRS Notice 2025-67 are $4,400 (self-only) and $8,750 (family). Source: White Coat Investor, IRS Notice 2025-67, ALPA benefits summary."
+    },
+    "definedBenefit": {
+      "maxBenefit": 275000,
+      "maxContributionEstimate": "Varies by age and actuarial factors. Can exceed $200,000/yr for older high earners.",
+      "note": "Requires actuary. Best for high earners age 50+ with stable high income."
+    },
+    "saversCredit": {
+      "mfj_max": 80500,
+      "hoh_max": 60375,
+      "single_max": 40250,
+      "maxCredit": 1000,
+      "maxCreditMFJ": 2000
+    }
+  },
+  "selfEmploymentDeductions": {
+    "mileage": {
+      "businessRatePerMile": 0.725,
+      "medicalRatePerMile": 0.205,
+      "charitableRatePerMile": 0.14,
+      "movingRatePerMile": 0.205,
+      "source": "IRS Notice IR-2025-128, effective Jan 1 2026",
+      "note": "Business rate is 72.5 cents (up from 70 cents in 2025). Cannot use standard mileage if previously claimed MACRS depreciation on vehicle."
+    },
+    "homeOffice": {
+      "simplified": {
+        "ratePerSqFt": 5.0,
+        "maxSqFt": 300,
+        "maxDeduction": 1500,
+        "note": "No depreciation recapture on home sale. Simpler recordkeeping."
+      },
+      "actual": {
+        "method": "Divide home office sq ft by total home sq ft. Apply percentage to: mortgage interest or rent, utilities, insurance, repairs, depreciation.",
+        "depreciationPeriod": 39,
+        "note": "Depreciation recapture (25%) applies when home is sold. Higher deduction for most situations."
+      },
+      "rule": "Space must be used regularly and exclusively for business. Home office must be principal place of business."
+    },
+    "section179": {
+      "limit": 1220000,
+      "phaseoutStart": 3050000,
+      "bonusDepreciationRate": 1.0,
+      "suvLimit": 30500,
+      "businessUsePctRequired": 0.5,
+      "note": "OBBBA made 100% bonus depreciation permanent for qualified property placed in service after Jan 19, 2025."
+    },
+    "vehicleActualMethod": {
+      "approach": "Track actual gas, insurance, repairs, registration, depreciation x business-use percentage",
+      "macrsDepreciationCar": {
+        "year1": 12400,
+        "year2": 19800,
+        "year3": 11900,
+        "year4Plus": 7160,
+        "note": "Annual luxury auto limits. Apply business-use % to these caps."
+      }
+    },
+    "augustaRule": {
+      "code": "IRC Section 280A(g)",
+      "maxDays": 14,
+      "taxTreatment": "Rental income from personal residence is excluded from gross income (not reported). Business deducts rent as ordinary business expense.",
+      "eligibleEntities": [
+        "S Corporation",
+        "C Corporation",
+        "Partnership/Multi-member LLC"
+      ],
+      "notEligible": [
+        "Sole proprietor",
+        "Single-member LLC taxed as disregarded entity"
+      ],
+      "requirements": [
+        "Must be fair market rate (document with Peerspace, hotel, coworking comparables)",
+        "Must have written rental agreement between you and the entity",
+        "Must have documented business purpose (board meeting, retreat, planning session)",
+        "Must have meeting agenda",
+        "Cannot also deduct home office for same space on same days",
+        "Cannot be primary place of business"
+      ],
+      "maxTaxFreeSavings": "Days x FMR daily rate (up to 14 days). Tax-free to owner. Deductible to entity."
+    },
+    "selfEmployedHealthInsurance": {
+      "deductionPct": 1.0,
+      "covers": [
+        "Medical",
+        "Dental",
+        "Vision",
+        "Long-term care (limits apply)"
+      ],
+      "limit": "Cannot exceed net SE profit",
+      "notAvailableIf": "Eligible for employer-subsidized plan through spouse's employer",
+      "sCorpNote": "S Corp owner-employees include health insurance in W-2 Box 1 wages, then deduct as SE health insurance on 1040."
+    },
+    "mealsDeduction": {
+      "rate": 0.5,
+      "requirements": [
+        "Business purpose",
+        "Document: who, what, where, business discussed"
+      ],
+      "note": "100% deductible for food at a restaurant provided to employee on employer premises (company cafeteria). 50% for client meals and business meals away."
+    },
+    "businessTravel": {
+      "airfareDeductible": 1.0,
+      "hotelDeductible": 1.0,
+      "mealsDeductible": 0.5,
+      "groundTransportDeductible": 1.0,
+      "perDiemAlternative": true,
+      "truckDriverPerDiem": {
+        "rate": 80,
+        "deductiblePct": 0.8,
+        "note": "$80/day for OTR truck drivers (DOT regulated). 80% deductible. $64/day net deduction."
+      },
+      "spouseTravelRule": "Spouse travel deductible ONLY if spouse is employee of business and travel has bona fide business purpose."
+    },
+    "phoneAndInternet": {
+      "method": "Business-use percentage of total cost",
+      "typicalBusinessPct": {
+        "gig_driver": 0.8,
+        "content_creator": 0.9,
+        "remote_professional": 0.7,
+        "mixed_use": 0.5
+      }
+    },
+    "qualifiedBusinessIncomeDeduction": {
+      "code": "IRC Section 199A",
+      "rate": 0.2,
+      "permanentUnderOBBBA": true,
+      "phaseoutSingle": 201775,
+      "phaseoutMFJ": 403500,
+      "phaseoutRangeSingle": 75000,
+      "phaseoutRangeMFJ": 150000,
+      "sstbNote": "Specified Service Trades or Businesses (health, law, consulting, athletics, financial services, performing arts) \u2014 QBI fully phases out for SSTBs above phaseout range.",
+      "wageLimit": "At higher incomes, QBI limited to greater of: 50% of W-2 wages paid, or 25% of W-2 wages + 2.5% of qualified property",
+      "note": "QBI deduction applies to sole props, partnerships, S corps, trusts. Does NOT apply to C corps or employee wages."
+    },
+    "familyEmployment": {
+      "hireChildren": {
+        "ficaExemptUnder18": true,
+        "ficaExemptAppliesTo": "Sole proprietor and husband/wife partnership only",
+        "standardDeduction2026": 14600,
+        "effectiveTaxFreeWagesPerChild": 14600,
+        "maxReasonableWages": "Must be real work at fair market rate",
+        "bestPractices": [
+          "Job description",
+          "Timesheets",
+          "Separate bank account for child",
+          "Regular pay schedule"
+        ],
+        "ficaAppliesAge18plus": true
+      },
+      "hireSpouse": {
+        "ficaApplies": true,
+        "benefits": [
+          "Spouse eligible for employer retirement plan",
+          "Wages deductible business expense",
+          "Spouse builds own Social Security credits"
+        ],
+        "sole_prop_note": "Sole prop employing spouse: FUTA does NOT apply to spouse wages. State unemployment varies."
+      }
+    },
+    "otherCommonDeductions": [
+      {
+        "name": "Professional development",
+        "deductible": 1.0,
+        "note": "Must maintain/improve current business skills. Not qualifying for new career."
+      },
+      {
+        "name": "Professional fees (CPA, attorney, consultant)",
+        "deductible": 1.0,
+        "note": ""
+      },
+      {
+        "name": "Software and subscriptions",
+        "deductible": 1.0,
+        "note": "R&D software can be fully expensed in year of cost under OBBBA."
+      },
+      {
+        "name": "Advertising and marketing",
+        "deductible": 1.0,
+        "note": ""
+      },
+      {
+        "name": "Bank and merchant processing fees",
+        "deductible": 1.0,
+        "note": ""
+      },
+      {
+        "name": "Business insurance",
+        "deductible": 1.0,
+        "note": ""
+      },
+      {
+        "name": "Rent for office or workspace",
+        "deductible": 1.0,
+        "note": ""
+      },
+      {
+        "name": "Startup costs",
+        "deductible": 5000,
+        "note": "$5,000 deductible in year 1. Remainder amortized over 180 months."
+      },
+      {
+        "name": "Qualified retirement plan contributions",
+        "deductible": 1.0,
+        "note": "Solo 401k, SEP-IRA, SIMPLE. See retirement section."
+      },
+      {
+        "name": "Uniforms/protective clothing",
+        "deductible": 1.0,
+        "note": "Must not be suitable for everyday wear. Work boots, hard hats, lab coats OK. Business casual not deductible."
+      },
+      {
+        "name": "Tools and equipment (under Section 179)",
+        "deductible": 1.0,
+        "note": "Up to $1,220,000. Must be >50% business use."
+      },
+      {
+        "name": "Charitable contributions",
+        "deductible": 0.0,
+        "note": "NOT deductible on Schedule C. Deductible only as itemized deduction on Schedule A."
+      }
+    ],
+    "_deductionSchema": "All deduction arrays use: { name:string, deductible:number (1.0=100%, 0.5=50%, 0=not deductible, dollar_amount=capped), note:string }. Access as item.deductible ?? 1.0 and item.note ?? '' to handle legacy entries safely."
+  },
+  "entityTypes": {
+    "soleProprietorship": {
+      "taxForm": "Schedule C (Form 1040)",
+      "seTaxApplies": true,
+      "passThrough": true,
+      "qbiEligible": true,
+      "ownerSalaryRequired": false,
+      "setup": "None required. Auto-created by doing business.",
+      "annualCost": 0,
+      "bestFor": "Net profit under $60,000. Testing a business idea. Very low compliance burden.",
+      "drawback": "Highest effective tax rate. No liability protection."
+    },
+    "singleMemberLLC": {
+      "taxForm": "Schedule C (default, disregarded entity)",
+      "seTaxApplies": true,
+      "passThrough": true,
+      "qbiEligible": true,
+      "canElectSCorp": true,
+      "canElectCCorp": true,
+      "setup": "File Articles of Organization with state. EIN recommended.",
+      "annualCost": "50\u2013300 (state annual report/franchise fee)",
+      "bestFor": "Sole proprietor wanting liability protection. Same tax as sole prop until election.",
+      "note": "Disregarded for federal tax but treated as separate legal entity for liability."
+    },
+    "multiMemberLLC": {
+      "taxForm": "Form 1065 + Schedule K-1 to each member",
+      "seTaxApplies": "On each member's distributive share (general partners)",
+      "passThrough": true,
+      "qbiEligible": true,
+      "setup": "Articles of Organization + Operating Agreement required",
+      "annualCost": "200\u2013800",
+      "bestFor": "Two or more owners. Flexible profit/loss allocation in operating agreement."
+    },
+    "llcElectingScorp": {
+      "taxForm": "Form 1120-S + Schedule K-1",
+      "seTaxApplies": "Only on W-2 salary, not distributions",
+      "passThrough": true,
+      "qbiEligible": true,
+      "ownerSalaryRequired": true,
+      "electionForm": "Form 2553 (file by March 15 for current year, or within 75 days of formation)",
+      "setup": "Form LLC + file Form 2553",
+      "annualCost": "1500\u20134000 (payroll processing, accountant, state fees)",
+      "breakEvenNetProfit": 60000,
+      "savingsAt100k": "approx $5,000\u2013$8,000 vs sole prop",
+      "savingsAt200k": "approx $12,000\u2013$18,000 vs sole prop",
+      "bestFor": "Net profit $60,000\u2013$500,000. Single-owner service businesses.",
+      "sCorpSalarySweetSpot": "35\u201345% of net profit as salary. Lower salary = more QBI + less FICA, but IRS audit risk if too low.",
+      "complianceItems": [
+        "Payroll (run actual payroll, not owner draws)",
+        "W-2 to yourself",
+        "Form 1120-S",
+        "State S corp tax",
+        "Accountable plan for reimbursements",
+        "Separate business bank account"
+      ]
+    },
+    "sCorporation": {
+      "taxForm": "Form 1120-S + Schedule K-1",
+      "seTaxApplies": "Only on W-2 salary",
+      "passThrough": true,
+      "qbiEligible": true,
+      "ownerSalaryRequired": true,
+      "note": "Same tax treatment as LLC electing S corp. Different formation path (incorporate first, then elect S corp status).",
+      "maxShareholders": 100,
+      "eligibleShareholders": "US citizens/residents only. No corporate shareholders."
+    },
+    "cCorporation": {
+      "taxForm": "Form 1120",
+      "corporateTaxRate": 0.21,
+      "passThrough": false,
+      "qbiEligible": false,
+      "doubleTaxation": "Corp pays 21% on profits. Dividends paid to shareholders taxed again at 0\u201320% qualified dividend rate.",
+      "bestFor": "VC-backed startups, high retained earnings, benefits-heavy compensation, stock options (ISOs)",
+      "ownerCompensationOptions": [
+        "W-2 salary (deductible to corp)",
+        "Fringe benefits (deductible to corp, tax-free to employee)",
+        "Qualified dividends (after corp tax)",
+        "Deferred compensation"
+      ],
+      "advantages": [
+        "Fringe benefits (health, disability, life) deductible and tax-free to owner",
+        "Retained earnings taxed at only 21%",
+        "ISO stock options",
+        "Investor/VC standard"
+      ],
+      "disadvantages": [
+        "Double taxation on distributions",
+        "21% corporate rate on all profits (even if not needed personally)",
+        "More complex compliance"
+      ]
+    },
+    "delawareCCorp": {
+      "extends": "cCorporation",
+      "incorporationState": "Delaware",
+      "corporateTaxRate_delaware": 0.0,
+      "note": "Delaware C corps pay federal 21% corporate tax. No Delaware income tax on out-of-state income.",
+      "franchiseTax": {
+        "source": "corp.delaware.gov (confirmed)",
+        "filing_deadline": "March 1 each year",
+        "annual_report_fee_nonexempt": 50,
+        "annual_report_fee_exempt": 25,
+        "late_penalty": 200,
+        "late_interest_monthly": 0.015,
+        "authorizedSharesMethod": {
+          "minimum": 175,
+          "maximum_standard": 200000,
+          "maximum_largeCorporateFiler": 250000,
+          "schedule": {
+            "5000_or_fewer_shares": 175,
+            "5001_to_10000_shares": 250,
+            "each_additional_10000_shares": 85,
+            "note": "e.g. 10,005 shares = $335 ($250 + $85). 100,000 shares = $1,015."
+          },
+          "defaultMethod": true,
+          "note": "Default method \u2014 Delaware bills this amount unless you request the Assumed Par Value method. Most startups with millions of authorized shares OVERPAY using this method."
+        },
+        "assumedParValueMethod": {
+          "minimum": 400,
+          "ratePerMillionGrossAssets": 400,
+          "maximum_standard": 200000,
+          "maximum_largeCorporateFiler": 250000,
+          "requiredInputs": [
+            "total issued shares (including treasury)",
+            "total gross assets from Form 1120 Schedule L"
+          ],
+          "note": "Almost always lower for startups with many authorized shares but modest assets. Must request this method explicitly. $400/million of gross assets, minimum $400.",
+          "example": "Company with $2M gross assets and 10M authorized shares: $400 x 2 = $800 tax vs. $85,000+ under Authorized Shares Method."
+        },
+        "quarterlyEstimatedPayments": {
+          "threshold": 5000,
+          "schedule": {
+            "june1": 0.4,
+            "sept1": 0.2,
+            "dec1": 0.2,
+            "march1_remainder": 0.2
+          },
+          "note": "Corporations owing $5,000+ must pay estimated taxes quarterly."
+        },
+        "taxSavingsTip": "Always calculate using BOTH methods and submit the lower amount. The Assumed Par Value Method typically saves startups with many authorized shares $10,000\u2013$80,000+ per year vs. the default Authorized Shares Method.",
+        "_correctionNote": "Confirmed June 2026 directly from corp.delaware.gov. Previous entry had $175 minimum only \u2014 now includes complete fee schedule, Assumed Par Value minimum ($400), filing fee ($50), late penalty ($200 + 1.5%/mo), Large Corporate Filer cap ($250,000)."
+      },
+      "registeredAgentCostPerYear": "50\u2013300",
+      "courtOfChancery": true,
+      "vcFriendly": true,
+      "bestFor": "Raising VC funding, IPO path, companies with many employees needing stock options",
+      "notBestFor": "Solo bootstrapped founders, small businesses, privacy-conscious founders"
+    },
+    "wyomingLLC": {
+      "stateTaxRate": 0.0,
+      "franchiseTax": 0,
+      "annualReportFee": 60,
+      "anonymousOwnership": true,
+      "registeredAgentCostPerYear": "25\u2013150",
+      "note": "Wyoming does not require member names to be public. Strong charging order protection.",
+      "bestFor": "Privacy, low cost, bootstrapped founders wanting C corp or LLC with no franchise tax",
+      "foreignQualificationNote": "If operating in another state, must foreign qualify and pay that state's fees and taxes too."
+    },
+    "wyomingCCorp": {
+      "extends": "cCorporation",
+      "incorporationState": "Wyoming",
+      "corporateTaxRate_wyoming": 0.0,
+      "franchiseTax": 0,
+      "annualMaintenanceCost": "60\u2013500",
+      "anonymousOwnership": true,
+      "vcFriendly": false,
+      "note": "Most VCs require Delaware C Corp. Wyoming C Corp is not standard for institutional investors.",
+      "bestFor": "Bootstrapped founders wanting C corp structure with max privacy and minimum cost"
+    },
+    "professionalLLC": {
+      "taxForm": "Same as LLC (Schedule C or 1065)",
+      "note": "Required in some states for licensed professionals (doctors, lawyers, CPAs, engineers). Same tax treatment as regular LLC.",
+      "states": "Requirements vary by state and profession"
+    },
+    "husbandWifeQualifiedJointVenture": {
+      "taxForm": "Two separate Schedule Cs (one per spouse)",
+      "seTaxApplies": true,
+      "qbiEligible": true,
+      "note": "Married couples operating a business together can elect QJV status to avoid filing Form 1065 as a partnership. Each spouse files their own Schedule C for their ownership share. Both build individual Social Security credits. No K-1 required.",
+      "requirements": [
+        "Only spouses \u2014 no other partners",
+        "Both must materially participate in the business",
+        "Must file MFJ (Married Filing Jointly)",
+        "Business must NOT be incorporated or organized as a state-registered LLC (see llcRestriction below)",
+        "Election is made by filing two separate Schedule Cs \u2014 no formal IRS form required"
+      ],
+      "llcRestriction": {
+        "rule": "If the couple has formed a state-registered LLC, QJV status is ONLY available if they reside in a community property state. In all other states, a spousal LLC must file as a partnership (Form 1065) or elect S corp / C corp status.",
+        "communityPropertyStates": [
+          "AZ",
+          "CA",
+          "ID",
+          "LA",
+          "NM",
+          "NV",
+          "TX",
+          "WA",
+          "WI"
+        ],
+        "communityPropertyNote": "In community property states, a husband-wife LLC that is wholly owned by the spouses may be treated as a disregarded entity (two-owner QJV) for federal tax purposes under Rev. Proc. 2002-69. This is a special IRS accommodation for community property law states only.",
+        "nonCommunityPropertyWarning": "In the 41 non-community-property states (and DC), a registered husband-wife LLC cannot use QJV treatment. The LLC must file Form 1065 as a multi-member LLC partnership, OR elect to be taxed as an S corp (Form 2553) or C corp. Attempting QJV on a registered LLC in a non-CP state is a filing error.",
+        "unregisteredBusinessNote": "If the couple operates as a general partnership WITHOUT forming a state-registered LLC or corporation, QJV election is available in ALL 50 states regardless of community property status."
+      },
+      "stateOverlayValidation": {
+        "trigger": "When user selects husbandWifeQualifiedJointVenture AND has indicated they formed an LLC",
+        "checkField": "user.state",
+        "communityPropertyStates": [
+          "AZ",
+          "CA",
+          "ID",
+          "LA",
+          "NM",
+          "NV",
+          "TX",
+          "WA",
+          "WI"
+        ],
+        "ifCommunityPropertyState": {
+          "qjvAllowed": true,
+          "uiMessage": "Because you are in a community property state, your husband-wife LLC may qualify for QJV treatment under Rev. Proc. 2002-69. Each spouse files a separate Schedule C."
+        },
+        "ifNonCommunityPropertyState": {
+          "qjvAllowed": false,
+          "uiMessage": "Warning: You have indicated you formed an LLC. In {state}, which is not a community property state, a husband-wife LLC cannot use Qualified Joint Venture treatment. Your LLC must file as a partnership (Form 1065) or elect S Corp status. Consider consulting a CPA.",
+          "redirectSuggestion": "multiMemberLLC or llcElectingScorp"
+        },
+        "ifNoLLCFormed": {
+          "qjvAllowed": true,
+          "uiMessage": "Because your business is not a registered LLC or corporation, you can elect QJV treatment in any state. Each spouse reports their share on a separate Schedule C."
+        }
+      },
+      "socialSecurityBenefit": "Each spouse earns individual Social Security credits on their respective Schedule C income. This is a significant long-term retirement planning advantage over a single-owner Schedule C where only one spouse builds credits.",
+      "incomeAllocationNote": "Spouses allocate income and deductions based on their actual ownership percentage or participation share. The split does not have to be 50/50 but must reflect actual contribution. Document the agreed allocation in writing.",
+      "comparisonToPartnership": {
+        "qjvAdvantages": [
+          "No Form 1065 required",
+          "No K-1 distribution",
+          "Simpler filing",
+          "Both spouses build SS credits"
+        ],
+        "partnershipAdvantages": [
+          "More flexible profit/loss allocation",
+          "Can have special allocations",
+          "Required if LLC registered in non-CP state"
+        ]
+      }
+    },
+    "generalPartnership": {
+      "taxForm": "Form 1065 + K-1",
+      "seTaxApplies": true,
+      "note": "Each general partner pays SE tax on their distributive share. Unlimited liability \u2014 rarely advisable without LLC protection."
+    },
+    "sCorpCCorp": {
+      "taxForm": "Form 1120 then Form 1120-S (if S election after C corp formation)",
+      "note": "S Corp election filed after C corp incorporation. Most commonly used via LLC + Form 2553 today."
+    },
+    "scheduleE": {
+      "taxForm": "Schedule E (Form 1040) \u2014 Part I",
+      "seTaxApplies": false,
+      "passiveLossRules": true,
+      "note": "Used for rental income where NO substantial services are provided to tenants. Passive activity loss rules limit ability to deduct losses against non-passive income unless real estate professional."
+    },
+    "scheduleF": {
+      "taxForm": "Schedule F (Form 1040)",
+      "seTaxApplies": true,
+      "note": "Farm income and expenses. Different deduction rules from Schedule C. Unique items: livestock, crop insurance, soil conservation, farm equipment depreciation."
+    },
+    "clergy": {
+      "taxForm": "Schedule SE (unique rules)",
+      "housingAllowance": "Tax-free if designated in advance by employing church. Excluded from income but included in SE tax base.",
+      "seTaxApplies": true,
+      "canOptOut": "Form 4361 \u2014 irrevocable opt-out from SE tax on ministerial earnings if opposed on religious grounds",
+      "note": "Ministers may be employees for income tax but self-employed for SE tax. Complex dual status."
+    },
+    "householdEmployer": {
+      "taxForm": "Schedule H (Form 1040)",
+      "threshold2026": 2800,
+      "ficaRate": 0.153,
+      "note": "If you pay a nanny, housekeeper, or household worker $2,800+ in 2026, you are a household employer. You owe employer FICA + may need to withhold employee FICA and federal income tax. Nanny Tax."
+    },
+    "limitedPartnership": {
+      "taxForm": "Form 1065 + Schedule K-1",
+      "seTaxApplies": "General partners only. Limited partners generally NOT subject to SE tax on their distributive share.",
+      "structure": "1+ general partners (unlimited liability, manage business) + 1+ limited partners (liability limited to investment, passive role)",
+      "bestFor": "Real estate investment funds, private equity, film production partnerships",
+      "keyTaxPoint": "Limited partner K-1 income goes on Schedule E (passive) \u2014 no SE tax. General partner income goes on Schedule E but IS subject to SE tax.",
+      "note": "Limited partners who actively participate in management risk being reclassified as general partners by IRS."
+    },
+    "professionalCorporation": {
+      "taxForm": "Form 1120 (C corp election) or Form 1120-S (S corp election)",
+      "stateRequirement": "Required in many states for licensed professionals: doctors, dentists, attorneys, CPAs, architects, engineers",
+      "personalHoldingCompanyTax": "PC taxed as C corp faces potential personal holding company tax (20%) if too much passive income retained",
+      "bestFor": "Licensed professionals who need liability protection and want employee benefits structure",
+      "corporateTaxNote": "PC can elect S corp status if shareholders are eligible. Most medical/dental PCs use S corp election.",
+      "seoKeywords": [
+        "professional corporation tax calculator",
+        "PC vs PLLC taxes",
+        "medical professional corporation taxes"
+      ]
+    },
+    "familyLLC": {
+      "taxForm": "Form 1065 (partnership) or Schedule C if disregarded",
+      "seTaxApplies": "Managing member typically. Limited member children/family: generally no SE tax on passive distributions.",
+      "purpose": "Estate planning tool. Transfer ownership interests to family members at reduced valuations (valuation discounts for lack of control/marketability).",
+      "incomeShifting": "Distributions to lower-bracket family members taxed at their lower rate. Kiddie tax (unearned income of children) applies to children under 19 (or full-time students under 24).",
+      "kiddie\u7a0eNote": "Kiddie tax: child's unearned income (including LLC distributions) taxed at parents' rate if under age 19. Calculator must model this.",
+      "note": "Must have legitimate business purpose beyond tax avoidance. Charging order protection for creditors.",
+      "seoKeywords": [
+        "family LLC tax calculator",
+        "family limited partnership taxes",
+        "income shifting family business taxes"
+      ]
+    },
+    "holdingCompany": {
+      "taxForm": "Depends on entity type (LLC = Schedule C/1065; Corp = 1120)",
+      "structure": "Parent entity owns one or more subsidiary/operating companies",
+      "taxAdvantages": [
+        "Liability isolation between subsidiaries",
+        "Centralized management",
+        "Can facilitate tax-free intercompany transfers"
+      ],
+      "commonStructures": [
+        {
+          "name": "Wyoming LLC Holding + Operating LLC",
+          "note": "Privacy + liability protection. No franchise tax."
+        },
+        {
+          "name": "Delaware C Corp Holding + Operating LLCs",
+          "note": "Standard for VC-backed companies with multiple product lines."
+        },
+        {
+          "name": "Management Company + Operating Company",
+          "note": "Mgmt company bills operating company for services. Common tax planning structure."
+        }
+      ],
+      "managementCompanyNote": "Management company (owned by operators) charges operating company a management fee. Operating company deducts fee. Management company income distributed to owners. SE tax applies on management fee income.",
+      "seoKeywords": [
+        "holding company tax calculator",
+        "holding company vs operating company taxes",
+        "management company structure taxes"
+      ]
+    },
+    "realEstateHoldingLLC": {
+      "taxForm": "Schedule E (single property, SMLLC disregarded) or Form 1065 (partnership)",
+      "seTaxApplies": false,
+      "purpose": "Hold real estate assets. Separate entity per property recommended for liability isolation.",
+      "keyBenefit": "Liability shield: lawsuit from one property cannot reach assets in other LLCs or personal assets if properly maintained.",
+      "mortgageNote": "Due-on-sale clause: some lenders accelerate loan if property transferred to LLC. Consult attorney. Portfolio lenders more flexible.",
+      "deductions": "Same as landlord Schedule E: depreciation, mortgage interest, taxes, insurance, maintenance",
+      "series_llc_alternative": "Some states allow series LLC \u2014 one LLC with segregated 'series' for each property. Not recognized in all states.",
+      "seoKeywords": [
+        "real estate holding LLC taxes",
+        "rental property LLC tax calculator",
+        "LLC for rental property tax benefits"
+      ]
+    },
+    "seriesLLC": {
+      "taxForm": "Varies by state. IRS has not issued definitive guidance on series LLC federal tax treatment.",
+      "availability": "Available in: Delaware, Texas, Illinois, Nevada, Utah, Iowa, Kansas, Missouri, Montana, North Dakota, Oklahoma, Tennessee, Virginia, Wisconsin",
+      "concept": "One master LLC with 'series' (cells) that are legally separate from each other. Each series can own property, have members, and have separate liability.",
+      "irsUncertainty": "IRS has not fully clarified whether each series is a separate tax entity. Draft regulations pending since 2010. Most practitioners treat each series as separate entity for tax purposes.",
+      "risk": "Not recognized in all states. Courts in non-series states may not honor inter-series liability protection.",
+      "bestFor": "Real estate investors in series-friendly states who want multiple properties with liability isolation but only one annual filing.",
+      "seoKeywords": [
+        "series LLC tax calculator",
+        "series LLC vs multiple LLCs taxes",
+        "series LLC real estate"
+      ]
+    },
+    "statutoryEmployee": {
+      "taxForm": "W-2 (special boxes checked)",
+      "definition": "Worker who is not a common-law employee but is treated as an employee for FICA purposes by statute. Receives W-2 with Box 13 'Statutory Employee' checked.",
+      "categories": [
+        "Drivers who distribute food/beverages, pick up/deliver laundry, or distribute meat/produce",
+        "Full-time life insurance sales agents",
+        "Individuals who work at home on materials supplied by employer",
+        "Full-time traveling or city salespeople"
+      ],
+      "taxTreatment": {
+        "ficaWithheld": "Yes \u2014 on W-2 like regular employees",
+        "incomeTaxWithheld": "No \u2014 unless agreed to by worker",
+        "businessDeductions": "Can deduct business expenses on Schedule C against statutory employee income (Box 1 of W-2)",
+        "netResult": "Report income + deductions on Schedule C but SE tax already handled via FICA"
+      },
+      "seoKeywords": [
+        "statutory employee tax calculator",
+        "statutory employee vs independent contractor taxes",
+        "life insurance agent tax W-2"
+      ]
+    }
+  },
+  "incomeSources": {
+    "w2Employee": {
+      "taxForm": "W-2",
+      "seTaxApplies": false,
+      "ficaSplit": "Employer pays 50%, employee pays 50% (6.2% SS + 1.45% Medicare each)",
+      "quarterlyEstimated": "Generally not required if withholding sufficient"
+    },
+    "1099NEC": {
+      "taxForm": "1099-NEC",
+      "threshold2026": 2000,
+      "priorThreshold": 600,
+      "note": "OBBBA raised threshold from $600 to $2,000 effective 2026. Income still taxable even without 1099-NEC below threshold.",
+      "seTaxApplies": true
+    },
+    "1099K": {
+      "taxForm": "1099-K",
+      "threshold2026": 20000,
+      "transactionThreshold": 200,
+      "note": "Threshold restored to pre-2021 level by OBBBA. Income taxable even if 1099-K not issued. Gross receipts shown \u2014 must subtract fees, refunds, COGS to get taxable amount.",
+      "commonIssuers": [
+        "PayPal",
+        "Venmo",
+        "Cash App",
+        "Etsy",
+        "eBay",
+        "Amazon",
+        "Airbnb",
+        "Poshmark",
+        "Stripe"
+      ]
+    },
+    "1099MISC": {
+      "note": "Used for rents, prizes, awards, and certain other payments. Not for services (that's 1099-NEC)."
+    },
+    "ssdi": {
+      "taxability": {
+        "formula": "Combined income = AGI (excl SS) + tax-exempt interest + 0.5 x annual SSDI benefit",
+        "tiers": {
+          "single": [
+            {
+              "combinedIncomeMax": 25000,
+              "taxablePct": 0.0
+            },
+            {
+              "combinedIncomeMin": 25000,
+              "combinedIncomeMax": 34000,
+              "taxablePct": 0.5
+            },
+            {
+              "combinedIncomeMin": 34000,
+              "taxablePct": 0.85
+            }
+          ],
+          "mfj": [
+            {
+              "combinedIncomeMax": 32000,
+              "taxablePct": 0.0
+            },
+            {
+              "combinedIncomeMin": 32000,
+              "combinedIncomeMax": 44000,
+              "taxablePct": 0.5
+            },
+            {
+              "combinedIncomeMin": 44000,
+              "taxablePct": 0.85
+            }
+          ],
+          "mfs_living_together": {
+            "taxablePct": 0.85,
+            "note": "85% taxable at any income. No threshold benefit."
+          }
+        },
+        "maximumTaxablePct": 0.85,
+        "ssiNote": "SSI (Supplemental Security Income) is NEVER taxable. Completely different program from SSDI.",
+        "statesThatTaxSSBenefits": [
+          "CO",
+          "CT",
+          "KS",
+          "MN",
+          "MO",
+          "MT",
+          "NE",
+          "NM",
+          "RI",
+          "UT",
+          "VT",
+          "WV"
+        ]
+      },
+      "sgaLimit2026": 1690,
+      "sgaLimitBlind2026": 2830,
+      "note": "SGA = Substantial Gainful Activity. Earning above SGA consistently may trigger SSDI eligibility review.",
+      "_sgaCorrectionNote": "Corrected June 2026: previous values ($1,620/$2,700) were 2025 SGA limits. 2026 SGA limits per SSA (2.8% COLA applied): $1,690/mo non-blind, $2,830/mo blind. Source: SSA.gov, Atticus, DisabilityExchange.org, Michael Armstrong Law."
+    },
+    "shortTermDisability": {
+      "typicalBenefit": "60\u201370% of pre-disability salary",
+      "waitingPeriod": "1\u20132 weeks typically",
+      "maxDuration": "3\u20136 months typically",
+      "taxability": {
+        "employerPaid100pct": "100% taxable as ordinary income. W-2 issued.",
+        "employeePaidAfterTax": "100% tax-free.",
+        "employeePaidPreTax": "100% taxable (treated same as employer-paid).",
+        "splitEmployerEmployee": "Taxable proportional to employer's share.",
+        "individualPolicy": "100% tax-free if premiums paid with after-tax dollars."
+      },
+      "note": "No SE tax on disability benefits regardless of taxability."
+    },
+    "longTermDisability": {
+      "typicalBenefit": "60% of pre-disability salary (gross) or 60\u201370% of after-tax salary (individual policies)",
+      "monthlyBenefitCap": "Typically $5,000\u2013$15,000/month",
+      "taxability": "Same rules as STD. Employer-paid = taxable. Employee after-tax = tax-free.",
+      "ssdiBenefitOffset": "Most employer LTD policies offset benefits by SSDI amount received. Net LTD check = gross LTD - SSDI.",
+      "taxOnOffsetNote": "IRS taxes full gross LTD benefit (before SSDI offset reduction). You pay taxes on money your insurer kept.",
+      "openEnrollmentTip": "Electing to pay LTD premiums with after-tax dollars makes all future benefits tax-free. Costs slightly more now, saves significantly if disability occurs."
+    },
+    "rentalIncome": {
+      "scheduleC_if": "You provide substantial services (hotels, B&Bs, short-term with daily cleaning/meals)",
+      "scheduleE_if": "Simple rent \u2014 no substantial services",
+      "augustaRuleExclusion": "Renting personal home 14 days or fewer \u2014 income fully excluded from gross income",
+      "vacancyVsOccupancy": "Mixed-use (personal + rental) requires prorating deductions by days used",
+      "deductions": [
+        "Mortgage interest (rental portion)",
+        "Property taxes (rental portion)",
+        "Depreciation (27.5 years residential)",
+        "Repairs and maintenance",
+        "Property management fees",
+        "Insurance",
+        "Advertising"
+      ],
+      "passiveLossLimit": 25000,
+      "passiveLossPhaseout": {
+        "start": 100000,
+        "end": 150000
+      },
+      "realEstateProfessional": "750+ hours/year in real estate and more hours in RE than any other profession \u2014 losses become non-passive, deductible against all income."
+    },
+    "kIncome": {
+      "taxForm": "Schedule K-1",
+      "types": [
+        "Partnership (Form 1065)",
+        "S Corporation (Form 1120-S)",
+        "Trust/Estate (Form 1041)"
+      ],
+      "seTaxApplies": "General partners and LLC members: SE tax on their distributive share. Limited partners and S corp shareholders: generally no SE tax on K-1 distributions (wages separate).",
+      "note": "K-1 income is not subject to withholding. Quarterly estimated taxes typically required."
+    },
+    "cryptoIncome": {
+      "miningIncome": "Schedule C \u2014 ordinary income + SE tax at fair market value on date received",
+      "stakingIncome": "Treated as ordinary income when received per IRS Rev. Rul. 2023-14",
+      "cryptoSales": "Capital gain/loss. Short-term if held <1 year, long-term if >1 year",
+      "nftSales": "Short-term or long-term capital gain. Creator NFT royalties = ordinary income",
+      "form": "Form 8949 + Schedule D for sales. Schedule C for mining/staking income."
+    }
+  },
+  "acaSubsidy": {
+    "year": 2026,
+    "cliffNote": "OBBBA did NOT extend enhanced subsidies past Dec 31, 2025. Hard 400% FPL cliff returned January 1, 2026.",
+    "eligibilityRange": "100% to 400% of FPL (MAGI-based)",
+    "medicaidExpansionStates": "138% FPL lower bound in states that expanded Medicaid (38 states + DC as of 2026)",
+    "fpl2026": {
+      "persons1": 15960,
+      "persons2": 21540,
+      "persons3": 27120,
+      "persons4": 33000,
+      "persons5": 38880,
+      "persons6": 44760,
+      "persons7": 50640,
+      "persons8": 56520,
+      "additionalPerPerson": 5880,
+      "note": "Based on 2025 HHS poverty guidelines used for 2026 coverage. Alaska and Hawaii higher."
+    },
+    "cliffThresholds400pct": {
+      "persons1": 63840,
+      "persons2": 86160,
+      "persons3": 108480,
+      "persons4": 132000,
+      "persons5": 155520,
+      "persons6": 179040,
+      "note": "Earning $1 above these amounts = $0 premium tax credit. Plan income carefully."
+    },
+    "applicablePercentages2026": [
+      {
+        "fplMin": 1.0,
+        "fplMax": 1.33,
+        "pct": 0.0
+      },
+      {
+        "fplMin": 1.33,
+        "fplMax": 1.5,
+        "pct": 0.02
+      },
+      {
+        "fplMin": 1.5,
+        "fplMax": 2.0,
+        "pct": 0.06
+      },
+      {
+        "fplMin": 2.0,
+        "fplMax": 2.5,
+        "pct": 0.08
+      },
+      {
+        "fplMin": 2.5,
+        "fplMax": 3.0,
+        "pct": 0.085
+      },
+      {
+        "fplMin": 3.0,
+        "fplMax": 4.0,
+        "pct": 0.085
+      },
+      {
+        "fplMin": 4.0,
+        "fplMax": null,
+        "pct": null,
+        "eligible": false
+      }
+    ],
+    "magi_definition": "AGI + tax-exempt interest + nontaxable Social Security + foreign earned income exclusion",
+    "benchmark": "Second Lowest-Cost Silver Plan (SLCSP) in enrollee's rating area",
+    "subsidy_formula": "Monthly subsidy = SLCSP premium - (MAGI x applicable_pct / 12)",
+    "clawback": {
+      "below400pct": "Partial clawback if income underestimated. Capped based on FPL bracket.",
+      "above400pct": "Full repayment of all APTC received. No cap.",
+      "form": "Form 8962"
+    },
+    "incomeReducingStrategies": [
+      "Solo 401(k) employee + employer contributions (up to $72,000)",
+      "Traditional IRA deductible contribution (up to $7,500)",
+      "HSA contribution (up to $4,400 self/$8,750 family)",
+      "Self-employed health insurance deduction (circular interaction \u2014 use Pub 974 method)",
+      "Business deductions on Schedule C reduce net SE income \u2192 AGI \u2192 MAGI",
+      "Avoid Roth conversions in subsidy-eligible years",
+      "Delay taxable account capital gains realization",
+      "Use DAF for charitable giving if itemizing"
+    ],
+    "csrNote": "Cost-Sharing Reductions available at 100\u2013250% FPL on Silver plans. Reduce deductibles and out-of-pocket costs."
+  },
+  "platforms": {
+    "gig_rideshare": {
+      "uber": {
+        "incomeType": "1099-NEC",
+        "platformFee": "varies (Uber keeps % of fare)",
+        "keyDeductions": [
+          "mileage",
+          "phone",
+          "dashcam",
+          "car_washes",
+          "tolls",
+          "parking",
+          "insurance_pct"
+        ]
+      },
+      "lyft": {
+        "incomeType": "1099-NEC",
+        "platformFee": "varies",
+        "keyDeductions": [
+          "mileage",
+          "phone",
+          "tolls",
+          "parking",
+          "car_washes"
+        ]
+      }
+    },
+    "gig_delivery": {
+      "doordash": {
+        "incomeType": "1099-NEC",
+        "platformFee": 0,
+        "keyDeductions": [
+          "mileage",
+          "phone",
+          "insulated_bag",
+          "parking",
+          "tolls"
+        ]
+      },
+      "instacart": {
+        "incomeType": "1099-NEC",
+        "note": "Full-service shopper = SE. In-store shopper = W-2.",
+        "keyDeductions": [
+          "mileage",
+          "insulated_bag",
+          "phone",
+          "parking"
+        ]
+      },
+      "grubhub": {
+        "incomeType": "1099-NEC",
+        "keyDeductions": [
+          "mileage",
+          "phone",
+          "insulated_bag",
+          "parking"
+        ]
+      },
+      "amazon_flex": {
+        "incomeType": "1099-NEC",
+        "keyDeductions": [
+          "mileage",
+          "phone",
+          "dolly",
+          "vehicle_equipment"
+        ]
+      },
+      "spark_walmart": {
+        "incomeType": "1099-NEC",
+        "keyDeductions": [
+          "mileage",
+          "phone",
+          "insulated_bag"
+        ]
+      },
+      "shipt": {
+        "incomeType": "1099-NEC",
+        "keyDeductions": [
+          "mileage",
+          "insulated_bag",
+          "phone"
+        ]
+      }
+    },
+    "gig_services": {
+      "taskrabbit": {
+        "incomeType": "1099-NEC",
+        "platformFee": 0.15,
+        "keyDeductions": [
+          "tools",
+          "mileage",
+          "phone",
+          "protective_clothing",
+          "liability_insurance"
+        ]
+      },
+      "rover": {
+        "incomeType": "1099-NEC",
+        "platformFee": 0.2,
+        "keyDeductions": [
+          "pet_supplies",
+          "mileage",
+          "phone",
+          "first_aid_cert"
+        ]
+      },
+      "thumbtack": {
+        "incomeType": "1099-NEC",
+        "keyDeductions": [
+          "lead_fees",
+          "mileage",
+          "tools",
+          "phone",
+          "liability_insurance"
+        ],
+        "note": "Lead fees are 100% deductible business expense."
+      },
+      "handyman_1099": {
+        "keyDeductions": [
+          "tools_section179",
+          "vehicle_actual",
+          "materials",
+          "mileage",
+          "liability_insurance",
+          "licensing"
+        ]
+      },
+      "cleaning": {
+        "keyDeductions": [
+          "supplies",
+          "equipment",
+          "mileage",
+          "uniform",
+          "liability_insurance"
+        ]
+      },
+      "lawn_care": {
+        "keyDeductions": [
+          "mower_section179",
+          "truck",
+          "fuel",
+          "trailer",
+          "maintenance"
+        ]
+      },
+      "babysitter_nanny_1099": {
+        "incomeType": "1099-NEC",
+        "note": "Critical distinction: nanny working regular hours in employer's home = household employee (W-2, Schedule H). Independent babysitter working for multiple families = 1099 contractor. Calculator must route based on work arrangement.",
+        "householdEmployerThreshold2026": 2800,
+        "ficaNote": "If nanny earns $2,800+ from single employer in 2026, employer owes FICA. File Schedule H with Form 1040.",
+        "keyDeductions_if1099": [
+          "mileage_between_families",
+          "first_aid_cpr_certification",
+          "childcare_supplies",
+          "liability_insurance",
+          "phone"
+        ],
+        "keyDeductions_ifEmployer": [
+          "see_householdEmployer_entity"
+        ],
+        "seoKeywords": [
+          "babysitter tax calculator",
+          "nanny 1099 taxes",
+          "babysitter self employed taxes",
+          "nanny tax calculator"
+        ]
+      }
+    },
+    "creators": {
+      "onlyfans": {
+        "incomeType": "1099-NEC",
+        "platformFee": 0.2,
+        "keyDeductions": [
+          "camera_lighting_section179",
+          "phone",
+          "internet",
+          "props_costumes",
+          "platform_fee_auto"
+        ]
+      },
+      "tiktok": {
+        "incomeType": "1099-NEC",
+        "keyDeductions": [
+          "phone",
+          "ring_light",
+          "props",
+          "editing_software",
+          "platform_fee"
+        ]
+      },
+      "youtube": {
+        "incomeType": "1099-MISC",
+        "keyDeductions": [
+          "camera",
+          "microphone",
+          "editing_software",
+          "home_studio",
+          "travel_for_content"
+        ]
+      },
+      "twitch": {
+        "incomeType": "1099-NEC",
+        "keyDeductions": [
+          "pc_console_section179",
+          "internet",
+          "microphone",
+          "webcam",
+          "streaming_software"
+        ]
+      },
+      "substack": {
+        "platformFee": 0.1,
+        "keyDeductions": [
+          "laptop",
+          "home_office",
+          "internet",
+          "research_subscriptions"
+        ]
+      },
+      "patreon": {
+        "platformFee": 0.08,
+        "keyDeductions": [
+          "creation_costs",
+          "platform_fee",
+          "fulfillment"
+        ]
+      },
+      "instagram": {
+        "note": "Gifted products taxable at FMV",
+        "keyDeductions": [
+          "camera",
+          "phone",
+          "props",
+          "editing_apps",
+          "travel",
+          "agency_fees"
+        ]
+      },
+      "podcast": {
+        "keyDeductions": [
+          "microphone",
+          "recording_software_section179",
+          "hosting_fees",
+          "home_studio",
+          "travel"
+        ]
+      },
+      "affiliate": {
+        "keyDeductions": [
+          "hosting",
+          "domains",
+          "email_platform",
+          "ad_spend",
+          "content_creation"
+        ]
+      },
+      "ugc_creator": {
+        "incomeType": "1099-NEC",
+        "description": "Creates content for brands to use on brand's channels. Does not post on own audience.",
+        "platformFee": 0,
+        "note": "Rising category. Paid per deliverable, not per follower. Brand pays direct or via UGC marketplace (Billo, Insense, JoinBrands).",
+        "keyDeductions": [
+          "camera_phone_section179",
+          "editing_software",
+          "props_staging",
+          "contracts_legal",
+          "internet",
+          "home_studio"
+        ],
+        "seoKeywords": [
+          "UGC creator tax calculator",
+          "UGC creator 1099 taxes",
+          "content creator taxes no audience"
+        ]
+      },
+      "online_course_creator": {
+        "incomeType": "1099-K or 1099-NEC depending on platform",
+        "platformExamples": [
+          "Teachable",
+          "Thinkific",
+          "Kajabi",
+          "Udemy",
+          "Coursera",
+          "Podia",
+          "Maven"
+        ],
+        "platformFeeRange": "0.05\u20130.50 depending on plan and platform",
+        "keyDeductions": [
+          "platform_subscription",
+          "video_equipment_section179",
+          "editing_software",
+          "home_studio",
+          "marketing_spend",
+          "contractor_editors",
+          "course_platform_fee"
+        ],
+        "note": "Udemy courses: revenue share varies (37%\u201397% depending on source). Kajabi: flat monthly fee, no revenue share. Platform fee structure matters for deduction calculation.",
+        "seoKeywords": [
+          "online course creator tax calculator",
+          "Teachable income taxes",
+          "Kajabi taxes",
+          "digital course 1099"
+        ]
+      },
+      "newsletter_business": {
+        "incomeType": "1099-NEC (sponsorships) + 1099-K (subscriptions if threshold met)",
+        "platforms": [
+          "Beehiiv",
+          "ConvertKit",
+          "Substack (if not using Substack profile)",
+          "Ghost",
+          "Mailchimp"
+        ],
+        "revenueStreams": [
+          "Paid subscriptions",
+          "Sponsorships/ads",
+          "Affiliate commissions"
+        ],
+        "keyDeductions": [
+          "esp_cost",
+          "copywriter_contractors",
+          "home_office",
+          "laptop",
+          "research_subscriptions",
+          "design_tools",
+          "list_management_tools"
+        ],
+        "note": "Beehiiv charges flat fee + % on paid subscriptions. Sponsorship income on 1099-NEC above $2,000 threshold.",
+        "seoKeywords": [
+          "newsletter business tax calculator",
+          "Beehiiv income taxes",
+          "newsletter creator 1099",
+          "email newsletter self employed taxes"
+        ]
+      },
+      "sponsorship_income": {
+        "incomeType": "1099-NEC",
+        "threshold2026": 2000,
+        "note": "Any creator receiving paid brand sponsorships. Brand issues 1099-NEC if $2,000+ paid in year. Below threshold: still taxable, just no form issued.",
+        "taxableItems": [
+          "Cash sponsorships",
+          "Gifted products at fair market value (FMV)",
+          "Travel paid by brand",
+          "Free services at FMV"
+        ],
+        "keyDeductions": [
+          "agent_manager_fees_if_applicable",
+          "content_creation_costs",
+          "platform_specific_costs",
+          "phone",
+          "internet_pct"
+        ],
+        "giftedProductsNote": "Gifted products from brands are taxable income at FMV even if never sold. Common mistake: creators don't report PR packages.",
+        "seoKeywords": [
+          "sponsorship income tax calculator",
+          "brand deal taxes",
+          "sponsored content 1099",
+          "influencer sponsorship taxes"
+        ]
+      },
+      "brand_deal_calculator": {
+        "incomeType": "1099-NEC",
+        "description": "Standalone one-page tool: user enters single brand deal amount, sees instant tax breakdown.",
+        "targetUser": "Creator who just got a $5,000 or $10,000 brand deal and wants to know what to set aside.",
+        "keyOutputs": [
+          "SE tax on deal amount",
+          "Federal income tax estimate at their bracket",
+          "State income tax estimate",
+          "Net take-home after taxes",
+          "% to set aside"
+        ],
+        "keyDeductions": [
+          "creation_costs_for_this_deal",
+          "agent_fees",
+          "equipment_used"
+        ],
+        "viralityNote": "Most shareable standalone tool on the site. Creators post these results on social media.",
+        "seoKeywords": [
+          "brand deal tax calculator",
+          "how much tax on $10000 brand deal",
+          "creator brand deal after tax",
+          "influencer deal taxes"
+        ]
+      }
+    },
+    "sellers": {
+      "etsy": {
+        "fees": {
+          "listing": 0.2,
+          "transaction": 0.065,
+          "payment_processing": 0.03
+        },
+        "keyDeductions": [
+          "cogs",
+          "platform_fees",
+          "shipping_supplies",
+          "photography_equipment"
+        ]
+      },
+      "ebay": {
+        "finalValueFee": "varies by category (avg 12.9%)",
+        "keyDeductions": [
+          "cost_basis_items",
+          "ebay_fees",
+          "paypal_fees",
+          "shipping",
+          "packing_supplies"
+        ]
+      },
+      "amazon_fba": {
+        "referralFee": 0.15,
+        "keyDeductions": [
+          "amazon_fees",
+          "fba_fulfillment",
+          "storage",
+          "cogs",
+          "advertising"
+        ]
+      },
+      "shopify": {
+        "subscriptionCost": "varies by plan",
+        "keyDeductions": [
+          "platform_fee",
+          "payment_processing",
+          "cogs",
+          "shipping",
+          "advertising"
+        ]
+      },
+      "poshmark": {
+        "fee": "20% on sales >$15, $2.95 flat under $15",
+        "keyDeductions": [
+          "cost_basis_items",
+          "platform_fees",
+          "shipping_supplies"
+        ]
+      },
+      "mercari": {
+        "sellerFee": 0.1,
+        "keyDeductions": [
+          "cost_basis",
+          "platform_fees",
+          "shipping"
+        ]
+      },
+      "gumroad": {
+        "fee": 0.1,
+        "keyDeductions": [
+          "platform_fee",
+          "email_platform",
+          "software",
+          "home_office"
+        ]
+      },
+      "stan_store": {
+        "fee": 0.05,
+        "keyDeductions": [
+          "platform_fee",
+          "email_platform",
+          "content_creation_tools"
+        ]
+      },
+      "facebook_marketplace": {
+        "incomeType": "1099-K if $20,000+ / 200+ transactions; taxable regardless",
+        "criticalDistinction": {
+          "personalItems_soldAtLoss": "Not taxable. Loss on personal property is not deductible.",
+          "personalItems_soldAtGain": "Taxable as capital gain. Short-term if owned <1 year.",
+          "inventoryForResale": "Schedule C \u2014 ordinary income + SE tax.",
+          "routingQuestion": "Calculator must ask: 'Are you reselling for profit (business) or selling personal belongings?'"
+        },
+        "keyDeductions_ifBusiness": [
+          "cost_basis_items_purchased_for_resale",
+          "shipping_supplies",
+          "mileage_to_pickup_items",
+          "marketplace_selling_fees"
+        ],
+        "note": "Facebook Marketplace introduced selling fees in some categories. Payments via Facebook Pay tracked for 1099-K.",
+        "seoKeywords": [
+          "Facebook Marketplace tax calculator",
+          "selling on Facebook Marketplace taxes",
+          "Facebook Marketplace 1099-K"
+        ]
+      },
+      "stockx_goat": {
+        "incomeType": "1099-K if threshold met",
+        "note": "Sneaker and streetwear resale. StockX charges seller fee (~8\u20139.5% depending on seller level) + transaction fee. GOAT charges commission 15\u201325%.",
+        "keyTaxQuestion": "Business vs investment activity. Frequent flippers = ordinary income (Schedule C). Occasional sellers = capital gain (Schedule D).",
+        "taxTreatment": {
+          "businessReseller": "Schedule C \u2014 ordinary income + SE tax. Can deduct COGS, platform fees, authentication fees, shipping.",
+          "investmentActivity": "Schedule D \u2014 short or long-term capital gain. Cost basis = purchase price + shipping + fees."
+        },
+        "keyDeductions_ifBusiness": [
+          "cost_basis_shoes",
+          "stockx_seller_fee",
+          "authentication_fee",
+          "shipping_costs",
+          "storage"
+        ],
+        "seoKeywords": [
+          "StockX tax calculator",
+          "sneaker reselling taxes",
+          "GOAT seller taxes",
+          "sneaker flip taxes 1099"
+        ]
+      },
+      "printful_printify": {
+        "incomeType": "1099-K (via Etsy/Shopify) or 1099-NEC",
+        "description": "Print-on-demand: designs made by seller, products fulfilled by Printful/Printify. No inventory held.",
+        "cogsNote": "COGS = base cost of each item fulfilled by Printful/Printify. This is the biggest and most important deduction for POD sellers.",
+        "platformFee": "None \u2014 POD supplier charges base product price. Seller sets retail price above base cost.",
+        "keyDeductions": [
+          "printful_printify_base_cost_COGS",
+          "design_software_subscription",
+          "shopify_etsy_fees",
+          "advertising_spend",
+          "photography_mockups"
+        ],
+        "note": "High volume POD sellers: COGS tracking is essential. Printful/Printify monthly statements show total product cost \u2014 this is your COGS.",
+        "seoKeywords": [
+          "Printful tax calculator",
+          "Printify seller taxes",
+          "print on demand 1099 taxes",
+          "POD business taxes"
+        ]
+      }
+    },
+    "rental": {
+      "airbnb": {
+        "incomeType": "1099-K if threshold met",
+        "scheduleUsed": "Schedule C if substantial services; Schedule E if simple rent",
+        "keyDeductions": [
+          "mortgage_interest_pct",
+          "property_taxes_pct",
+          "depreciation",
+          "supplies",
+          "cleaning",
+          "platform_fees",
+          "repairs"
+        ],
+        "augustaRuleApplicable": true,
+        "note": "Airbnb takes approx 3% host fee. Guest pays Airbnb fee separately."
+      },
+      "turo": {
+        "incomeType": "1099-K if threshold met",
+        "scheduleUsed": "Schedule C",
+        "vehicleDeductionMethods": [
+          "standard_mileage",
+          "actual_expense",
+          "special_turo_method"
+        ],
+        "keyDeductions": [
+          "insurance",
+          "depreciation_actual",
+          "maintenance",
+          "platform_fee"
+        ],
+        "note": "Cannot use standard mileage if previously used MACRS depreciation on vehicle."
+      },
+      "vrbo": {
+        "scheduleUsed": "Same as Airbnb \u2014 services test",
+        "keyDeductions": [
+          "same_as_airbnb"
+        ]
+      },
+      "getaround": {
+        "incomeType": "1099-K if threshold met",
+        "scheduleUsed": "Schedule C",
+        "description": "Peer-to-peer car sharing. Getaround takes 40% of each trip. Owner keeps 60%.",
+        "keyDeductions": [
+          "insurance_pct_business_use",
+          "depreciation_actual_method",
+          "maintenance_pct",
+          "getaround_platform_fee_already_netted",
+          "car_wash"
+        ],
+        "note": "Getaround fee already netted from payment. Deduct actual vehicle expenses at business-use percentage.",
+        "seoKeywords": [
+          "Getaround tax calculator",
+          "Getaround income taxes",
+          "car sharing income taxes"
+        ]
+      },
+      "rv_rental": {
+        "incomeType": "1099-K (via RVshare/Outdoorsy) or self-reported",
+        "scheduleUsed": "Schedule C",
+        "platforms": [
+          "RVshare",
+          "Outdoorsy",
+          "Cruise America"
+        ],
+        "keyDeductions": [
+          "rv_depreciation_section179_or_macrs",
+          "insurance_pct",
+          "maintenance_repairs",
+          "campground_fees_if_host_delivered",
+          "platform_fee",
+          "storage"
+        ],
+        "depreciationNote": "RVs depreciate over 5 years (MACRS) for business use. Section 179 may apply if >50% business use.",
+        "seoKeywords": [
+          "RV rental income taxes",
+          "RVshare tax calculator",
+          "Outdoorsy income 1099",
+          "renting your RV taxes"
+        ]
+      },
+      "boat_rental": {
+        "incomeType": "1099-K or self-reported",
+        "scheduleUsed": "Schedule C (with captain services) or Schedule E (bare boat charter)",
+        "platforms": [
+          "Boatsetter",
+          "GetMyBoat",
+          "Sailo"
+        ],
+        "keyDeductions": [
+          "boat_depreciation_section179",
+          "insurance",
+          "marina_storage_fees",
+          "maintenance",
+          "fuel_pct",
+          "platform_fee",
+          "captains_wages_if_applicable"
+        ],
+        "note": "Bare boat charter (no captain) = more likely Schedule E. Charter with captain providing services = Schedule C.",
+        "seoKeywords": [
+          "boat rental income taxes",
+          "Boatsetter tax calculator",
+          "renting your boat taxes"
+        ]
+      },
+      "equipment_rental": {
+        "incomeType": "1099-NEC or self-reported",
+        "scheduleUsed": "Schedule C",
+        "examples": [
+          "Tools",
+          "Photography equipment",
+          "Trailers",
+          "Construction equipment",
+          "Party supplies"
+        ],
+        "platforms": [
+          "Fat Llama",
+          "Rntr",
+          "Sparkfly",
+          "Rentah"
+        ],
+        "keyDeductions": [
+          "equipment_depreciation_section179",
+          "insurance",
+          "maintenance_repairs",
+          "storage",
+          "platform_fee",
+          "mileage_for_delivery"
+        ],
+        "seoKeywords": [
+          "equipment rental income taxes",
+          "renting tools tax calculator",
+          "Fat Llama income taxes"
+        ]
+      },
+      "parking_space_rental": {
+        "incomeType": "1099-K or self-reported",
+        "scheduleUsed": "Schedule E (passive) typically",
+        "platforms": [
+          "SpotHero",
+          "Neighbor",
+          "ParkWhiz"
+        ],
+        "keyDeductions": [
+          "property_taxes_pct",
+          "insurance_pct",
+          "repairs_maintenance",
+          "platform_fee",
+          "advertising"
+        ],
+        "note": "Passive income \u2014 generally no SE tax. Losses subject to passive activity rules.",
+        "seoKeywords": [
+          "parking space rental taxes",
+          "SpotHero income taxes",
+          "renting parking space tax calculator"
+        ]
+      },
+      "storage_rental": {
+        "incomeType": "1099-K or self-reported",
+        "scheduleUsed": "Schedule E (passive)",
+        "platforms": [
+          "Neighbor",
+          "SpareFoot"
+        ],
+        "keyDeductions": [
+          "property_taxes_pct",
+          "insurance",
+          "platform_fee",
+          "repairs"
+        ],
+        "note": "Renting storage space in home, garage, or outbuilding. Generally Schedule E passive income.",
+        "seoKeywords": [
+          "storage rental income taxes",
+          "Neighbor app income taxes",
+          "renting garage storage taxes"
+        ]
+      },
+      "short_vs_long_term_rental": {
+        "description": "Comparison calculator: same property modeled as STR vs LTR",
+        "shortTermRental": {
+          "scheduleUsed": "Schedule C if substantial services; Schedule E if simple",
+          "avgNightly": "Higher nightly rate",
+          "seTaxRisk": "If Schedule C applies, SE tax on net profit",
+          "vacancyRisk": "Higher",
+          "deductions": "All STR expenses prorated by days rented"
+        },
+        "longTermRental": {
+          "scheduleUsed": "Schedule E \u2014 passive",
+          "seTaxRisk": "None (passive)",
+          "stabilityAdvantage": "Predictable monthly income",
+          "deductions": [
+            "Mortgage interest",
+            "Property taxes",
+            "Depreciation 27.5yr",
+            "Insurance",
+            "Maintenance",
+            "Management fees"
+          ]
+        },
+        "keystoneQuestion": "7-day average rental period test: average rental \u22647 days = not passive (Schedule C rules). >7 days average = passive (Schedule E).",
+        "seoKeywords": [
+          "short term vs long term rental tax comparison",
+          "Airbnb vs long term rental taxes",
+          "STR vs LTR tax calculator"
+        ]
+      },
+      "landlord": {
+        "incomeType": "Rental income \u2014 Schedule E",
+        "scheduleUsed": "Schedule E Part I",
+        "seTaxApplies": false,
+        "passiveLossRule": {
+          "allowedLossIfActiveParticipation": 25000,
+          "phaseoutStartMAGI": 100000,
+          "phaseoutEndMAGI": 150000,
+          "realEstateProfessionalException": "750+ hours AND more hours in RE than any other activity \u2014 losses become non-passive"
+        },
+        "keyDeductions": [
+          "mortgage_interest",
+          "property_taxes",
+          "depreciation_27_5_years",
+          "insurance",
+          "repairs_maintenance",
+          "property_management_fees",
+          "advertising_vacancy",
+          "legal_accounting_fees",
+          "travel_to_property"
+        ],
+        "depreciationNote": "Residential property depreciates over 27.5 years. Land is NOT depreciable. Cost segregation study can accelerate depreciation for commercial.",
+        "note1031Exchange": "Like-kind exchange: defer capital gain taxes by reinvesting sale proceeds into a new property within 45/180 day deadlines.",
+        "seoKeywords": [
+          "landlord tax calculator",
+          "rental property tax calculator",
+          "Schedule E rental income taxes",
+          "how much tax on rental income"
+        ]
+      },
+      "real_estate_agent_rental": {
+        "note": "Real estate agents who also own rental properties have a unique advantage: if they qualify as real estate professionals (750+ hours, majority of work time in RE), passive loss rules don't apply \u2014 rental losses can offset all income.",
+        "scheduleUsed": "Schedule C for agent commissions. Schedule E for rental income.",
+        "seoKeywords": [
+          "real estate agent rental income taxes",
+          "realtor rental property taxes",
+          "real estate professional tax status"
+        ]
+      }
+    }
+  },
+  "states": {
+    "AL": {
+      "name": "Alabama",
+      "type": "graduated",
+      "topRate": 0.05,
+      "brackets_single": [
+        [
+          0,
+          500,
+          0.02
+        ],
+        [
+          500,
+          3000,
+          0.04
+        ],
+        [
+          3000,
+          null,
+          0.05
+        ]
+      ],
+      "localTaxNote": "Some cities have local taxes (Birmingham 1%)"
+    },
+    "AK": {
+      "name": "Alaska",
+      "type": "none",
+      "topRate": 0,
+      "noIncomeTax": true
+    },
+    "AZ": {
+      "name": "Arizona",
+      "type": "flat",
+      "topRate": 0.025,
+      "rate": 0.025
+    },
+    "AR": {
+      "name": "Arkansas",
+      "type": "graduated",
+      "topRate": 0.039,
+      "brackets_single": [
+        [
+          0,
+          4300,
+          0.02
+        ],
+        [
+          4300,
+          8500,
+          0.04
+        ],
+        [
+          8500,
+          null,
+          0.039
+        ]
+      ]
+    },
+    "CA": {
+      "name": "California",
+      "type": "graduated",
+      "topRate": 0.133,
+      "mentalHealthSurcharge": 0.01,
+      "mentalHealthThreshold": 1000000,
+      "brackets_single": [
+        [
+          0,
+          10099,
+          0.01
+        ],
+        [
+          10099,
+          23942,
+          0.02
+        ],
+        [
+          23942,
+          37788,
+          0.04
+        ],
+        [
+          37788,
+          52455,
+          0.06
+        ],
+        [
+          52455,
+          66295,
+          0.08
+        ],
+        [
+          66295,
+          338639,
+          0.093
+        ],
+        [
+          338639,
+          406364,
+          0.103
+        ],
+        [
+          406364,
+          677275,
+          0.113
+        ],
+        [
+          677275,
+          1000000,
+          0.123
+        ],
+        [
+          1000000,
+          null,
+          0.133
+        ]
+      ],
+      "sdiRate": 0.009,
+      "note": "CA SDI applies to SE income. 9 income tax brackets. Highest top rate in US."
+    },
+    "CO": {
+      "name": "Colorado",
+      "type": "flat",
+      "topRate": 0.04,
+      "rate": 0.04
+    },
+    "CT": {
+      "name": "Connecticut",
+      "type": "graduated",
+      "topRate": 0.069,
+      "brackets_single": [
+        [
+          0,
+          10000,
+          0.02
+        ],
+        [
+          10000,
+          50000,
+          0.045
+        ],
+        [
+          50000,
+          100000,
+          0.055
+        ],
+        [
+          100000,
+          200000,
+          0.06
+        ],
+        [
+          200000,
+          250000,
+          0.065
+        ],
+        [
+          250000,
+          500000,
+          0.069
+        ],
+        [
+          500000,
+          null,
+          0.069
+        ]
+      ]
+    },
+    "DE": {
+      "name": "Delaware",
+      "type": "graduated",
+      "topRate": 0.066,
+      "brackets_single": [
+        [
+          0,
+          2000,
+          0.0
+        ],
+        [
+          2000,
+          5000,
+          0.022
+        ],
+        [
+          5000,
+          10000,
+          0.039
+        ],
+        [
+          10000,
+          20000,
+          0.048
+        ],
+        [
+          20000,
+          25000,
+          0.052
+        ],
+        [
+          25000,
+          60000,
+          0.055
+        ],
+        [
+          60000,
+          null,
+          0.066
+        ]
+      ]
+    },
+    "FL": {
+      "name": "Florida",
+      "type": "none",
+      "topRate": 0,
+      "noIncomeTax": true
+    },
+    "GA": {
+      "name": "Georgia",
+      "type": "flat",
+      "topRate": 0.0519,
+      "rate": 0.0519,
+      "note": "Rate was 5.39%, reduced to 5.19% mid-2025. Further phasedowns planned."
+    },
+    "HI": {
+      "name": "Hawaii",
+      "type": "graduated",
+      "topRate": 0.11,
+      "brackets_single": [
+        [
+          0,
+          2400,
+          0.014
+        ],
+        [
+          2400,
+          4800,
+          0.032
+        ],
+        [
+          4800,
+          9600,
+          0.055
+        ],
+        [
+          9600,
+          14400,
+          0.064
+        ],
+        [
+          14400,
+          19200,
+          0.068
+        ],
+        [
+          19200,
+          24000,
+          0.072
+        ],
+        [
+          24000,
+          36000,
+          0.076
+        ],
+        [
+          36000,
+          48000,
+          0.079
+        ],
+        [
+          48000,
+          150000,
+          0.0825
+        ],
+        [
+          150000,
+          175000,
+          0.09
+        ],
+        [
+          175000,
+          200000,
+          0.1
+        ],
+        [
+          200000,
+          null,
+          0.11
+        ]
+      ]
+    },
+    "ID": {
+      "name": "Idaho",
+      "type": "flat",
+      "topRate": 0.053,
+      "rate": 0.053
+    },
+    "IL": {
+      "name": "Illinois",
+      "type": "flat",
+      "topRate": 0.0495,
+      "rate": 0.0495
+    },
+    "IN": {
+      "name": "Indiana",
+      "type": "flat",
+      "topRate": 0.03,
+      "rate": 0.03,
+      "note": "Rate has been decreasing. Some counties add local income tax."
+    },
+    "IA": {
+      "name": "Iowa",
+      "type": "flat",
+      "topRate": 0.038,
+      "rate": 0.038
+    },
+    "KS": {
+      "name": "Kansas",
+      "type": "graduated",
+      "topRate": 0.057,
+      "brackets_single": [
+        [
+          0,
+          15000,
+          0.031
+        ],
+        [
+          15000,
+          null,
+          0.057
+        ]
+      ]
+    },
+    "KY": {
+      "name": "Kentucky",
+      "type": "flat",
+      "topRate": 0.035,
+      "rate": 0.035,
+      "note": "Reduced from 4% to 3.5% on Jan 1, 2026."
+    },
+    "LA": {
+      "name": "Louisiana",
+      "type": "graduated",
+      "topRate": 0.03,
+      "brackets_single": [
+        [
+          0,
+          12500,
+          0.01
+        ],
+        [
+          12500,
+          50000,
+          0.02
+        ],
+        [
+          50000,
+          null,
+          0.03
+        ]
+      ]
+    },
+    "ME": {
+      "name": "Maine",
+      "type": "graduated",
+      "topRate": 0.075,
+      "brackets_single": [
+        [
+          0,
+          24500,
+          0.058
+        ],
+        [
+          24500,
+          58050,
+          0.0675
+        ],
+        [
+          58050,
+          null,
+          0.075
+        ]
+      ]
+    },
+    "MD": {
+      "name": "Maryland",
+      "type": "graduated",
+      "topRate": 0.065,
+      "localTaxRequired": true,
+      "localTaxRange": "0.0250\u20130.0320",
+      "note": "New 6.25% and 6.5% high-income brackets added in 2025 BRF Act, effective retroactively."
+    },
+    "MA": {
+      "name": "Massachusetts",
+      "type": "flat",
+      "topRate": 0.05,
+      "rate": 0.05,
+      "millionairesSurtax": 0.04,
+      "millionairesThreshold": 1000000
+    },
+    "MI": {
+      "name": "Michigan",
+      "type": "flat",
+      "topRate": 0.0425,
+      "rate": 0.0425
+    },
+    "MN": {
+      "name": "Minnesota",
+      "type": "graduated",
+      "topRate": 0.0985,
+      "brackets_single": [
+        [
+          0,
+          32260,
+          0.0535
+        ],
+        [
+          32260,
+          106070,
+          0.068
+        ],
+        [
+          106070,
+          196880,
+          0.0785
+        ],
+        [
+          196880,
+          null,
+          0.0985
+        ]
+      ]
+    },
+    "MS": {
+      "name": "Mississippi",
+      "type": "flat",
+      "topRate": 0.04,
+      "rate": 0.04,
+      "note": "Phasing down toward 0% if revenue triggers met."
+    },
+    "MO": {
+      "name": "Missouri",
+      "type": "graduated",
+      "topRate": 0.048,
+      "brackets_single": [
+        [
+          0,
+          1207,
+          0.0
+        ],
+        [
+          1207,
+          2414,
+          0.02
+        ],
+        [
+          2414,
+          3621,
+          0.025
+        ],
+        [
+          3621,
+          4828,
+          0.03
+        ],
+        [
+          4828,
+          6035,
+          0.035
+        ],
+        [
+          6035,
+          7242,
+          0.04
+        ],
+        [
+          7242,
+          8432,
+          0.045
+        ],
+        [
+          8432,
+          null,
+          0.048
+        ]
+      ]
+    },
+    "MT": {
+      "name": "Montana",
+      "type": "graduated",
+      "topRate": 0.0565,
+      "note": "Top rate reduced from 5.9% in 2025."
+    },
+    "NE": {
+      "name": "Nebraska",
+      "type": "graduated",
+      "topRate": 0.0455,
+      "note": "Top rate reduced from 5.2% to 4.55% in 2026. Further reductions to 3.99% by 2027."
+    },
+    "NV": {
+      "name": "Nevada",
+      "type": "none",
+      "topRate": 0,
+      "noIncomeTax": true
+    },
+    "NH": {
+      "name": "New Hampshire",
+      "type": "none",
+      "topRate": 0,
+      "noIncomeTax": true,
+      "note": "Dividend/interest tax fully eliminated effective Jan 1, 2025."
+    },
+    "NJ": {
+      "name": "New Jersey",
+      "type": "graduated",
+      "topRate": 0.1075,
+      "brackets_single": [
+        [
+          0,
+          20000,
+          0.014
+        ],
+        [
+          20000,
+          35000,
+          0.0175
+        ],
+        [
+          35000,
+          40000,
+          0.035
+        ],
+        [
+          40000,
+          75000,
+          0.0553
+        ],
+        [
+          75000,
+          500000,
+          0.0637
+        ],
+        [
+          500000,
+          1000000,
+          0.0897
+        ],
+        [
+          1000000,
+          null,
+          0.1075
+        ]
+      ]
+    },
+    "NM": {
+      "name": "New Mexico",
+      "type": "graduated",
+      "topRate": 0.059,
+      "brackets_single": [
+        [
+          0,
+          5500,
+          0.015
+        ],
+        [
+          5500,
+          11000,
+          0.032
+        ],
+        [
+          11000,
+          16000,
+          0.047
+        ],
+        [
+          16000,
+          210000,
+          0.049
+        ],
+        [
+          210000,
+          null,
+          0.059
+        ]
+      ]
+    },
+    "NY": {
+      "name": "New York",
+      "type": "graduated",
+      "topRate": 0.109,
+      "nycLocalTax": 0.03876,
+      "yonkersLocalTax": 0.01477,
+      "brackets_single": [
+        [
+          0,
+          17150,
+          0.04
+        ],
+        [
+          17150,
+          23600,
+          0.045
+        ],
+        [
+          23600,
+          27900,
+          0.0525
+        ],
+        [
+          27900,
+          161550,
+          0.0585
+        ],
+        [
+          161550,
+          323200,
+          0.0625
+        ],
+        [
+          323200,
+          2155350,
+          0.0685
+        ],
+        [
+          2155350,
+          5000000,
+          0.0965
+        ],
+        [
+          5000000,
+          25000000,
+          0.103
+        ],
+        [
+          25000000,
+          null,
+          0.109
+        ]
+      ]
+    },
+    "NC": {
+      "name": "North Carolina",
+      "type": "flat",
+      "topRate": 0.0399,
+      "rate": 0.0399,
+      "note": "Final reduction in phased plan. Rate was 4.25% in 2025."
+    },
+    "ND": {
+      "name": "North Dakota",
+      "type": "graduated",
+      "topRate": 0.02,
+      "brackets_single": [
+        [
+          0,
+          44725,
+          0.0
+        ],
+        [
+          44725,
+          225975,
+          0.0185
+        ],
+        [
+          225975,
+          null,
+          0.02
+        ]
+      ]
+    },
+    "OH": {
+      "name": "Ohio",
+      "type": "flat",
+      "topRate": 0.0275,
+      "rate": 0.0275,
+      "exemptBelow": 26050,
+      "note": "Converted to flat tax in 2026. Income at or below $26,050 is exempt."
+    },
+    "OK": {
+      "name": "Oklahoma",
+      "type": "graduated",
+      "topRate": 0.045,
+      "brackets_single": [
+        [
+          0,
+          1000,
+          0.025
+        ],
+        [
+          1000,
+          2500,
+          0.035
+        ],
+        [
+          2500,
+          null,
+          0.045
+        ]
+      ],
+      "note": "Simplified to 3 brackets in 2026, top rate reduced from 4.75% to 4.5%."
+    },
+    "OR": {
+      "name": "Oregon",
+      "type": "graduated",
+      "topRate": 0.099,
+      "brackets_single": [
+        [
+          0,
+          18400,
+          0.0475
+        ],
+        [
+          18400,
+          46200,
+          0.0675
+        ],
+        [
+          46200,
+          250000,
+          0.0875
+        ],
+        [
+          250000,
+          null,
+          0.099
+        ]
+      ]
+    },
+    "PA": {
+      "name": "Pennsylvania",
+      "type": "flat",
+      "topRate": 0.0307,
+      "rate": 0.0307
+    },
+    "RI": {
+      "name": "Rhode Island",
+      "type": "graduated",
+      "topRate": 0.0599,
+      "brackets_single": [
+        [
+          0,
+          73450,
+          0.0375
+        ],
+        [
+          73450,
+          166950,
+          0.0475
+        ],
+        [
+          166950,
+          null,
+          0.0599
+        ]
+      ]
+    },
+    "SC": {
+      "name": "South Carolina",
+      "type": "graduated",
+      "topRate": 0.0521,
+      "note": "Two-bracket system starting 2026: 1.99% and 5.21%."
+    },
+    "SD": {
+      "name": "South Dakota",
+      "type": "none",
+      "topRate": 0,
+      "noIncomeTax": true
+    },
+    "TN": {
+      "name": "Tennessee",
+      "type": "none",
+      "topRate": 0,
+      "noIncomeTax": true
+    },
+    "TX": {
+      "name": "Texas",
+      "type": "none",
+      "topRate": 0,
+      "noIncomeTax": true
+    },
+    "UT": {
+      "name": "Utah",
+      "type": "flat",
+      "topRate": 0.045,
+      "rate": 0.045
+    },
+    "VT": {
+      "name": "Vermont",
+      "type": "graduated",
+      "topRate": 0.0875,
+      "brackets_single": [
+        [
+          0,
+          45400,
+          0.0335
+        ],
+        [
+          45400,
+          110050,
+          0.066
+        ],
+        [
+          110050,
+          229550,
+          0.076
+        ],
+        [
+          229550,
+          null,
+          0.0875
+        ]
+      ]
+    },
+    "VA": {
+      "name": "Virginia",
+      "type": "graduated",
+      "topRate": 0.0575,
+      "brackets_single": [
+        [
+          0,
+          3000,
+          0.02
+        ],
+        [
+          3000,
+          5000,
+          0.03
+        ],
+        [
+          5000,
+          17000,
+          0.05
+        ],
+        [
+          17000,
+          null,
+          0.0575
+        ]
+      ]
+    },
+    "WA": {
+      "name": "Washington",
+      "type": "none",
+      "topRate": 0,
+      "noIncomeTax": true,
+      "note": "No general income tax. Capital gains tax 7% on gains >$262,000 (2026), 9.9% on gains >$1M."
+    },
+    "WV": {
+      "name": "West Virginia",
+      "type": "graduated",
+      "topRate": 0.0482,
+      "note": "Phased rate reductions in progress."
+    },
+    "WI": {
+      "name": "Wisconsin",
+      "type": "graduated",
+      "topRate": 0.0765,
+      "brackets_single": [
+        [
+          0,
+          14320,
+          0.035
+        ],
+        [
+          14320,
+          28640,
+          0.044
+        ],
+        [
+          28640,
+          315310,
+          0.053
+        ],
+        [
+          315310,
+          null,
+          0.0765
+        ]
+      ]
+    },
+    "WY": {
+      "name": "Wyoming",
+      "type": "none",
+      "topRate": 0,
+      "noIncomeTax": true
+    },
+    "DC": {
+      "name": "Washington DC",
+      "type": "graduated",
+      "topRate": 0.1075,
+      "brackets_single": [
+        [
+          0,
+          10000,
+          0.04
+        ],
+        [
+          10000,
+          40000,
+          0.06
+        ],
+        [
+          40000,
+          60000,
+          0.065
+        ],
+        [
+          60000,
+          350000,
+          0.085
+        ],
+        [
+          350000,
+          1000000,
+          0.0925
+        ],
+        [
+          1000000,
+          null,
+          0.1075
+        ]
+      ]
+    }
+  },
+  "filingStatuses": {
+    "single": {
+      "code": "S",
+      "label": "Single",
+      "standardDeduction": 16100
+    },
+    "mfj": {
+      "code": "MFJ",
+      "label": "Married Filing Jointly",
+      "standardDeduction": 32200
+    },
+    "mfs": {
+      "code": "MFS",
+      "label": "Married Filing Separately",
+      "standardDeduction": 16100,
+      "note": "Rarely beneficial. Ineligible for QBI, EITC, education credits, ACA subsidy, most deductions."
+    },
+    "hoh": {
+      "code": "HOH",
+      "label": "Head of Household",
+      "standardDeduction": 24150,
+      "note": "Must be unmarried, paid >50% of household costs, and have qualifying person."
+    },
+    "qsw": {
+      "code": "QSW",
+      "label": "Qualifying Surviving Spouse",
+      "standardDeduction": 32200,
+      "note": "Use for 2 years after spouse's death if dependent child."
+    }
+  },
+  "mixedHouseholdScenarios": [
+    {
+      "id": "w2_plus_gig",
+      "label": "W-2 job + gig side income",
+      "note": "W-2 withholding may not cover SE tax on gig income. Check if quarterly payments needed. Gap = SE tax on net gig profit."
+    },
+    {
+      "id": "w2_plus_etsy",
+      "label": "W-2 job + Etsy/seller income",
+      "note": "Same as above. COGS and platform fees reduce taxable seller income."
+    },
+    {
+      "id": "w2_plus_1099",
+      "label": "W-2 job + 1099 consulting",
+      "note": "SE tax owed on 1099 net income. May be able to use W-2 withholding to cover via extra withholding (W-4 line 4c)."
+    },
+    {
+      "id": "mfj_w2_plus_se",
+      "label": "W-2 spouse + self-employed spouse",
+      "note": "Combined income may push into higher brackets. SE spouse pays SE tax. W-2 spouse withholding may be insufficient."
+    },
+    {
+      "id": "two_1099_spouses",
+      "label": "Two 1099 spouses",
+      "note": "Both pay SE tax. Both need quarterly payments. Joint filing usually better than MFS."
+    },
+    {
+      "id": "scorp_plus_w2",
+      "label": "S Corp owner + W-2 spouse",
+      "note": "S Corp salary + distributions. Spouse W-2 withholding separate. Model joint vs separate comparison."
+    },
+    {
+      "id": "ssdi_plus_gig",
+      "label": "SSDI + gig income",
+      "note": "Dual complexity: SE tax on gig income + SSDI taxability from combined income formula + SGA limit monitoring."
+    },
+    {
+      "id": "ssdi_plus_w2_spouse",
+      "label": "SSDI + W-2 spouse income",
+      "note": "Spouse W-2 may push combined income above $44K MFJ threshold, making up to 85% of SSDI taxable."
+    },
+    {
+      "id": "ltd_plus_parttime",
+      "label": "LTD benefits + part-time W-2",
+      "note": "LTD taxability + W-2 withholding. Check if LTD payer withheld enough."
+    },
+    {
+      "id": "retiree_plus_gig",
+      "label": "Retiree (Social Security) + gig",
+      "note": "SS combined income formula applies. Gig income can trigger SS taxation."
+    },
+    {
+      "id": "student_plus_gig",
+      "label": "Student + gig income",
+      "note": "Gig income creates SE tax obligation. Parents' return may still claim student as dependent if dependency test met."
+    },
+    {
+      "id": "w2_plus_airbnb",
+      "label": "W-2 + Airbnb/rental income",
+      "note": "Rental usually Schedule E (passive). Losses limited unless real estate professional."
+    },
+    {
+      "id": "parent_hiring_child",
+      "label": "Parent hiring child in business",
+      "note": "Sole prop/SMLLC: child wages exempt from FICA under 18. Real work, fair wages, documentation required."
+    }
+  ],
+  "professionals": {
+    "software_dev": {
+      "keyDeductions": [
+        "home_office",
+        "computer_monitors",
+        "cloud_services",
+        "pro_development",
+        "internet",
+        "phone"
+      ]
+    },
+    "ai_consultant": {
+      "keyDeductions": [
+        "compute_costs",
+        "ai_software_subscriptions",
+        "home_office",
+        "conferences",
+        "research"
+      ]
+    },
+    "designer": {
+      "keyDeductions": [
+        "adobe_cc",
+        "figma",
+        "monitor_ipad_section179",
+        "home_office",
+        "stock_assets"
+      ]
+    },
+    "copywriter": {
+      "keyDeductions": [
+        "grammarly",
+        "research_subscriptions",
+        "home_office",
+        "internet",
+        "pro_development"
+      ]
+    },
+    "realtor": {
+      "keyDeductions": [
+        "mls_fees",
+        "eo_insurance",
+        "client_gifts_limit_25",
+        "marketing",
+        "vehicle",
+        "staging_costs"
+      ]
+    },
+    "travel_nurse": {
+      "keyDeductions": [
+        "licensing_fees",
+        "per_diem",
+        "travel",
+        "scrubs",
+        "ceus",
+        "malpractice_insurance"
+      ]
+    },
+    "truck_driver_otr": {
+      "keyDeductions": [
+        "per_diem_80_per_day",
+        "truck_depreciation",
+        "fuel",
+        "dot_fees",
+        "maintenance"
+      ]
+    },
+    "photographer": {
+      "keyDeductions": [
+        "camera_lenses_section179",
+        "lighting",
+        "editing_software",
+        "travel",
+        "studio_rent"
+      ]
+    },
+    "hair_stylist": {
+      "keyDeductions": [
+        "booth_rent",
+        "tools",
+        "supplies",
+        "continuing_education",
+        "liability_insurance"
+      ]
+    },
+    "personal_trainer": {
+      "keyDeductions": [
+        "certification_fees",
+        "equipment",
+        "liability_insurance",
+        "marketing",
+        "gym_membership_business_pct"
+      ]
+    },
+    "therapist": {
+      "keyDeductions": [
+        "malpractice_insurance",
+        "ceus",
+        "ehr_software",
+        "office_rent_or_home_office",
+        "supervision_costs"
+      ]
+    },
+    "nurse_contractor": {
+      "keyDeductions": [
+        "malpractice_insurance",
+        "licensing_fees",
+        "scrubs",
+        "ceus",
+        "mileage_or_travel"
+      ]
+    },
+    "massage_therapist": {
+      "keyDeductions": [
+        "massage_table_section179",
+        "oils_supplies",
+        "liability_insurance",
+        "ce_credits",
+        "booth_rent"
+      ]
+    },
+    "bookkeeper_accountant": {
+      "keyDeductions": [
+        "quickbooks_xero_software",
+        "continuing_education_cpe",
+        "eo_insurance",
+        "home_office",
+        "professional_memberships_aicpa",
+        "phone",
+        "internet_pct"
+      ],
+      "note": "CPAs and EAs (Enrolled Agents) have additional licensing fees deductible as professional expenses.",
+      "seoKeywords": [
+        "bookkeeper 1099 tax calculator",
+        "self employed accountant taxes",
+        "CPA freelance taxes"
+      ]
+    },
+    "virtual_assistant": {
+      "keyDeductions": [
+        "home_office",
+        "computer",
+        "internet_pct",
+        "software_subscriptions",
+        "phone",
+        "professional_development",
+        "contractor_subcontractors"
+      ],
+      "note": "VA services are highly deductible-friendly \u2014 almost all expenses are home-office and tech based. High S Corp potential at $80K+.",
+      "seoKeywords": [
+        "virtual assistant tax calculator",
+        "VA 1099 taxes",
+        "freelance VA taxes"
+      ]
+    },
+    "coach": {
+      "types": [
+        "Business coach",
+        "Life coach",
+        "Health coach",
+        "Executive coach",
+        "Relationship coach"
+      ],
+      "keyDeductions": [
+        "coaching_certification_fees",
+        "zoom_video_platform",
+        "home_office",
+        "professional_development",
+        "website",
+        "crm_software",
+        "marketing"
+      ],
+      "note": "Coaching certification costs are deductible as professional development (must be maintaining/improving current skills, not qualifying for new career).",
+      "seoKeywords": [
+        "life coach tax calculator",
+        "business coach 1099 taxes",
+        "executive coach self employed taxes"
+      ]
+    },
+    "insurance_agent": {
+      "types": [
+        "Independent agent (1099)",
+        "Captive agent (W-2 or 1099)"
+      ],
+      "keyDeductions": [
+        "licensing_fees_state",
+        "eo_insurance",
+        "crm_software",
+        "lead_generation_costs",
+        "vehicle",
+        "professional_development_ce_credits",
+        "office_rent_or_home_office"
+      ],
+      "note": "Captive agents may be W-2. Independent agents are typically 1099. Commissions are SE income.",
+      "seoKeywords": [
+        "insurance agent tax calculator",
+        "independent insurance agent 1099 taxes",
+        "insurance broker self employed taxes"
+      ]
+    },
+    "notary_signing_agent": {
+      "keyDeductions": [
+        "notary_bond",
+        "notary_commission_fees",
+        "supplies_stamps_seals",
+        "mileage_to_signings",
+        "errors_omissions_insurance",
+        "background_check_fees",
+        "notary_software"
+      ],
+      "note": "Mobile notary and loan signing agents: mileage between appointments is the largest deduction. Track every signing trip.",
+      "seoKeywords": [
+        "notary signing agent tax calculator",
+        "mobile notary 1099 taxes",
+        "loan signing agent taxes"
+      ]
+    },
+    "tutor": {
+      "keyDeductions": [
+        "home_office_or_tutoring_space",
+        "educational_materials_books",
+        "laptop",
+        "zoom_subscription",
+        "marketing",
+        "mileage_if_in_person"
+      ],
+      "note": "Online tutors: home office is key deduction. In-person tutors: mileage between student locations is #1 deduction.",
+      "seoKeywords": [
+        "tutor tax calculator",
+        "online tutor 1099 taxes",
+        "self employed tutor taxes"
+      ]
+    },
+    "wedding_event_planner": {
+      "keyDeductions": [
+        "vendor_deposits_if_direct_billed",
+        "event_software_honeybook_aisle",
+        "vehicle_mileage",
+        "marketing_photography",
+        "professional_attire_if_required",
+        "liability_insurance",
+        "phone",
+        "home_office"
+      ],
+      "note": "Deposits collected on behalf of clients are not income until earned. Vendor payments passed through to client are not deductible if reimbursed.",
+      "seoKeywords": [
+        "wedding planner tax calculator",
+        "event planner 1099 taxes",
+        "wedding coordinator self employed taxes"
+      ]
+    },
+    "qa_tester_contractor": {
+      "keyDeductions": [
+        "device_testing_setup_section179",
+        "home_office",
+        "software_tools",
+        "vpn_subscriptions",
+        "professional_development",
+        "internet_pct"
+      ],
+      "note": "Common in tech as contract workers. Devices used for testing (phones, tablets) qualify for Section 179 deduction at business-use percentage.",
+      "seoKeywords": [
+        "QA tester contractor taxes",
+        "software tester 1099 tax calculator",
+        "QA engineer freelance taxes"
+      ]
+    },
+    "clergy_minister": {
+      "uniqueRules": {
+        "housingAllowance": {
+          "taxTreatment": "Excludable from federal income tax if designated in advance by church. Amount limited to: lesser of (a) designated amount, (b) actual housing expenses, (c) fair rental value of home furnished + utilities.",
+          "seTaxNote": "Housing allowance IS included in SE tax base even though excluded from income tax. This surprises many ministers.",
+          "form": "No separate form \u2014 designated in church board minutes before year begins"
+        },
+        "seOptOut": {
+          "form": "Form 4361",
+          "note": "Irrevocable election to opt out of SE tax on ministerial earnings if conscientiously opposed on religious grounds. Cannot opt back in.",
+          "deadline": "Due date of return for second year with net ministerial earnings of $400+"
+        },
+        "dualStatus": "Ministers are employees for income tax purposes but self-employed for SE tax on ministerial income. Unique in US tax code."
+      },
+      "keyDeductions": [
+        "ministry_expenses",
+        "vehicle_for_ministry",
+        "books_religious_materials",
+        "continuing_education_seminary",
+        "home_office_for_study"
+      ],
+      "seoKeywords": [
+        "clergy tax calculator",
+        "minister self employment tax",
+        "pastor housing allowance calculator",
+        "Form 4361 clergy"
+      ]
+    },
+    "farm_schedule_f": {
+      "taxForm": "Schedule F (Form 1040)",
+      "seTaxApplies": true,
+      "uniqueDeductions": [
+        {
+          "name": "Feed",
+          "deductible": 1.0,
+          "note": "Livestock feed purchased and consumed in tax year. Cannot deduct feed purchased but not yet used (inventory rules apply for some farms)."
+        },
+        {
+          "name": "Seeds and plants",
+          "deductible": 1.0,
+          "note": "Purchased for planting, not for consumption. Ornamental seeds for personal use are not deductible."
+        },
+        {
+          "name": "Fertilizers and lime",
+          "deductible": 1.0,
+          "note": "Soil conditioners and crop nutrients applied in the tax year. Purchased but unused inventory may need to be deducted in future year."
+        },
+        {
+          "name": "Livestock purchased for resale",
+          "deductible": 1.0,
+          "note": "Cost of animals purchased during the year and sold in the same year. Treated as COGS on Schedule F. Livestock raised on farm has $0 basis."
+        },
+        {
+          "name": "Breeding livestock depreciation",
+          "deductible": 1.0,
+          "note": "Breeding animals are depreciable assets (not expensed as feed). Cattle and horses: 5\u20137 years MACRS. Section 179 or bonus depreciation may apply."
+        },
+        {
+          "name": "Farm equipment",
+          "deductible": 1.0,
+          "note": "Tractors, combines, irrigation systems, planting/harvesting equipment. Section 179 up to $1,220,000 (2026). 100% bonus depreciation available under OBBBA."
+        },
+        {
+          "name": "Crop insurance proceeds deferral",
+          "deductible": 0.0,
+          "note": "Crop insurance is income, not a deduction. However, farmers can elect to defer crop insurance proceeds to the following tax year if the crop would normally be sold in a different year. Elective deferral, not automatic."
+        },
+        {
+          "name": "Fuel for farm equipment",
+          "deductible": 1.0,
+          "note": "100% deductible for off-highway business use. Also qualifies for federal fuel tax credit (Form 4136) \u2014 separate from the deduction."
+        },
+        {
+          "name": "Repairs and maintenance of farm buildings",
+          "deductible": 1.0,
+          "note": "Routine repairs are an operating expense. Improvements that add value or extend useful life must be capitalized and depreciated. Tangible property regulations (Repair Regs) govern the distinction."
+        }
+      ],
+      "specialProvisions": {
+        "farmingLossCarryback": "Net farming losses can be carried back 2 years (vs 0 years for most businesses).",
+        "incomeAveraging": "Schedule J \u2014 farmers can average income over 3 years to reduce tax on boom years.",
+        "soilConservation": "Deductible up to 25% of gross farming income",
+        "fuelTaxCredit": "Form 4136 \u2014 credit for non-highway fuel used in farming operations"
+      },
+      "seoKeywords": [
+        "farm income tax calculator",
+        "Schedule F tax calculator",
+        "farmer self employment tax",
+        "agricultural income taxes"
+      ],
+      "_deductionSchema": "name:string, deductible:number (0\u20131 or dollar cap), note:string \u2014 matches selfEmploymentDeductions.otherCommonDeductions schema"
+    }
+  },
+  "entityRecommender": {
+    "breakpoints": {
+      "staysSoleProprietor": {
+        "netProfitBelow": 40000,
+        "reason": "S Corp compliance cost ($1,500\u2013$4,000) exceeds FICA savings at this level."
+      },
+      "considerSCorp": {
+        "netProfitAbove": 60000,
+        "reason": "FICA savings on distributions begin to outpace compliance costs."
+      },
+      "strongSCorp": {
+        "netProfitAbove": 80000,
+        "reason": "Clear positive ROI. Savings typically $5,000\u2013$15,000+ vs sole prop."
+      },
+      "considerCCorp": {
+        "netProfitAbove": 500000,
+        "reason": "21% corporate rate on retained earnings may beat personal rate. Benefits structure."
+      },
+      "delawareCCorp": {
+        "trigger": "Raising VC or angel investment. Need startup-standard equity structure."
+      },
+      "wyomingLLC": {
+        "trigger": "Want C Corp or LLC structure, no investors, maximum privacy, lowest cost."
+      }
+    },
+    "scorp_election_timing": "File Form 2553 by March 15 for current calendar year. Or file within 75 days of formation for new entities.",
+    "california_note": "California S Corps pay minimum franchise tax of $800/year even if no profit. Changes S Corp breakeven point upward in CA."
+  },
+  "quarterlyDates2026": [
+    {
+      "q": 1,
+      "incomePeriod": "2026-01-01/2026-03-31",
+      "dueDate": "2026-04-15"
+    },
+    {
+      "q": 2,
+      "incomePeriod": "2026-04-01/2026-05-31",
+      "dueDate": "2026-06-16"
+    },
+    {
+      "q": 3,
+      "incomePeriod": "2026-06-01/2026-08-31",
+      "dueDate": "2026-09-15"
+    },
+    {
+      "q": 4,
+      "incomePeriod": "2026-09-01/2026-12-31",
+      "dueDate": "2027-01-15"
+    }
+  ],
+  "importantForms": {
+    "1040": "US Individual Income Tax Return",
+    "1040ES": "Estimated Tax for Individuals (quarterly payments)",
+    "1040X": "Amended US Individual Income Tax Return",
+    "1120": "US Corporation Income Tax Return (C Corp)",
+    "1120S": "US Income Tax Return for an S Corporation",
+    "1065": "US Return of Partnership Income",
+    "K1_1065": "Schedule K-1 (Form 1065) \u2014 Partner's Share of Income",
+    "K1_1120S": "Schedule K-1 (Form 1120-S) \u2014 Shareholder's Share",
+    "ScheduleC": "Profit or Loss from Business (Sole Proprietorship)",
+    "ScheduleE": "Supplemental Income and Loss (Rental, K-1, etc.)",
+    "ScheduleF": "Profit or Loss from Farming",
+    "ScheduleSE": "Self-Employment Tax",
+    "2553": "Election by a Small Business Corporation (S Corp election)",
+    "8829": "Expenses for Business Use of Your Home",
+    "4562": "Depreciation and Amortization",
+    "8949": "Sales and Other Dispositions of Capital Assets",
+    "8962": "Premium Tax Credit (ACA subsidy reconciliation)",
+    "W2": "Wage and Tax Statement",
+    "W4": "Employee's Withholding Certificate",
+    "W4V": "Voluntary Withholding Request (for SS/SSDI benefits)",
+    "1099NEC": "Nonemployee Compensation ($2,000+ threshold 2026)",
+    "1099K": "Payment Card and Third Party Network Transactions ($20,000/200 transactions threshold 2026)",
+    "1099MISC": "Miscellaneous Income (rents, prizes, etc.)",
+    "1099G": "Certain Government Payments (unemployment compensation)",
+    "SSA1099": "Social Security Benefit Statement",
+    "ScheduleH": "Household Employment Taxes (Nanny Tax)",
+    "4361": "Application for Exemption from SE Tax for Clergy",
+    "8960": "Net Investment Income Tax"
+  },
+  "seoMetadata": {
+    "primaryKeywords": [
+      "self employment tax calculator 2026",
+      "1099 tax calculator",
+      "gig worker tax calculator",
+      "freelance tax calculator",
+      "quarterly estimated tax calculator",
+      "LLC vs S Corp tax calculator",
+      "S Corp salary calculator",
+      "ACA subsidy calculator 2026",
+      "SSDI taxable income calculator",
+      "long term disability tax calculator",
+      "DoorDash tax calculator",
+      "Uber driver tax calculator",
+      "OnlyFans tax calculator",
+      "Etsy seller tax calculator",
+      "Airbnb host tax calculator",
+      "how much to set aside for taxes 1099",
+      "RSU tax calculator 2026",
+      "ISO stock option AMT calculator",
+      "NSO exercise tax calculator",
+      "ESPP qualifying disposition calculator",
+      "ESPP disqualifying disposition tax",
+      "QSBS Section 1202 exclusion calculator",
+      "stock option tax calculator 2026",
+      "W-2 plus RSU combined tax calculator",
+      "tech employee compensation tax calculator",
+      "startup founder QSBS calculator",
+      "equity compensation basis Form 8949",
+      "W-4 withholding calculator equity compensation"
+    ],
+    "platformPages": [
+      "doordash",
+      "uber",
+      "lyft",
+      "instacart",
+      "grubhub",
+      "amazon-flex",
+      "spark-driver",
+      "taskrabbit",
+      "rover",
+      "shipt",
+      "thumbtack",
+      "handyman",
+      "onlyfans",
+      "tiktok",
+      "youtube",
+      "twitch",
+      "substack",
+      "patreon",
+      "instagram",
+      "podcast",
+      "etsy",
+      "ebay",
+      "amazon-seller",
+      "shopify",
+      "poshmark",
+      "mercari",
+      "gumroad",
+      "stan-store",
+      "airbnb",
+      "vrbo",
+      "turo"
+    ],
+    "statePages": [
+      "AL",
+      "AK",
+      "AZ",
+      "AR",
+      "CA",
+      "CO",
+      "CT",
+      "DE",
+      "FL",
+      "GA",
+      "HI",
+      "ID",
+      "IL",
+      "IN",
+      "IA",
+      "KS",
+      "KY",
+      "LA",
+      "ME",
+      "MD",
+      "MA",
+      "MI",
+      "MN",
+      "MS",
+      "MO",
+      "MT",
+      "NE",
+      "NV",
+      "NH",
+      "NJ",
+      "NM",
+      "NY",
+      "NC",
+      "ND",
+      "OH",
+      "OK",
+      "OR",
+      "PA",
+      "RI",
+      "SC",
+      "SD",
+      "TN",
+      "TX",
+      "UT",
+      "VT",
+      "VA",
+      "WA",
+      "WV",
+      "WI",
+      "WY",
+      "DC"
+    ],
+    "programmaticPagePatterns": [
+      "/[platform]-tax-calculator/",
+      "/[platform]-tax-calculator/[state]/",
+      "/[platform]-tax-deductions/",
+      "/[state]/self-employment-tax/",
+      "/[state]/s-corp-calculator/",
+      "/[state]/quarterly-tax-calculator/",
+      "/[profession]/tax-calculator/",
+      "/how-much-tax-on-[amount]-1099/",
+      "/[entity]-vs-[entity]-calculator/",
+      "/aca-subsidy-calculator/[state]/[household-size]/",
+      "/ssdi-tax-calculator/[state]/",
+      "/long-term-disability-tax-calculator/[state]/"
+    ],
+    "equityCompensationPages": [
+      "/rsu-tax-calculator/",
+      "/iso-tax-calculator/",
+      "/nso-tax-calculator/",
+      "/espp-tax-calculator/",
+      "/qsbs-tax-calculator/",
+      "/stock-options-tax-calculator/",
+      "/equity-compensation-tax-calculator/",
+      "/rsu-tax-calculator/[state]/",
+      "/espp-qualifying-vs-disqualifying/",
+      "/iso-amt-calculator/",
+      "/w2-rsu-combined-tax-calculator/",
+      "/tech-employee-total-compensation-tax/",
+      "/combined-salary-tax-calculator/",
+      "/family-tax-calculator-all-income-types/"
+    ]
+  },
+  "legalDisclaimer": "This configuration file is for educational and calculator tool purposes only. Tax laws change frequently. Always verify current rates with IRS.gov, SSA.gov, or a qualified CPA or tax attorney before making financial decisions. Numbers reflect best available information as of June 2026 based on IRS Revenue Procedure 2025-32, IRS Notice 2025-67, IRS Notice IR-2025-128, HHS 2026 FPL guidelines, and OBBBA provisions signed July 4, 2025.",
+  "stateMetadata": {
+    "communityPropertyStates": [
+      "AZ",
+      "CA",
+      "ID",
+      "LA",
+      "NM",
+      "NV",
+      "TX",
+      "WA",
+      "WI"
+    ],
+    "communityPropertyNote": "In community property states, income earned during marriage is generally owned equally by both spouses. This affects QJV eligibility, MFS filing strategies, and retirement account contribution rules.",
+    "noIncomeTaxStates": [
+      "AK",
+      "FL",
+      "NV",
+      "NH",
+      "SD",
+      "TN",
+      "TX",
+      "WA",
+      "WY"
+    ],
+    "statesThatTaxSocialSecurity": [
+      "CO",
+      "CT",
+      "KS",
+      "MN",
+      "MO",
+      "MT",
+      "NE",
+      "NM",
+      "RI",
+      "UT",
+      "VT",
+      "WV"
+    ],
+    "statesWithLocalIncomeTax": {
+      "NY": [
+        "New York City (3.876%)",
+        "Yonkers (1.477% resident, 0.50% non-resident)"
+      ],
+      "MD": [
+        "All counties require local tax filing (2.25%\u20133.20% depending on county)"
+      ],
+      "OH": [
+        "Many municipalities levy local income tax (0%\u20133%). RITA and CCA administer most."
+      ],
+      "PA": [
+        "Many municipalities levy earned income tax. Philadelphia: 3.75% resident."
+      ],
+      "IN": [
+        "All 92 counties levy local income tax (0.50%\u20132.90%)."
+      ],
+      "KY": [
+        "Many cities/counties levy occupational tax."
+      ],
+      "AL": [
+        "Some cities: Birmingham 1%, etc."
+      ]
+    },
+    "statesWithNoSalesTax": [
+      "AK",
+      "DE",
+      "MT",
+      "NH",
+      "OR"
+    ],
+    "statesWithSDI": {
+      "CA": {
+        "rate": 0.009,
+        "wageBase": "unlimited",
+        "note": "CA SDI applies to self-employed who voluntarily elect coverage. Mandatory for W-2 employees."
+      },
+      "NJ": {
+        "rate": 0.006,
+        "wageBase": 161400,
+        "note": "NJ SDI mandatory for employees. SE may not be subject."
+      },
+      "NY": {
+        "rate": "varies",
+        "note": "NY DBL (statutory disability) mandatory for employees. SE not required."
+      },
+      "HI": {
+        "rate": "varies",
+        "note": "Hawaii TDI mandatory for employees."
+      },
+      "RI": {
+        "rate": 0.013,
+        "wageBase": 84000,
+        "note": "RI TDI mandatory for employees."
+      }
+    },
+    "passthroughEntityTaxStates": {
+      "note": "Many states now allow pass-through entities (partnerships, S corps) to pay state income tax at the entity level, providing a workaround to the federal SALT cap. Known as PTET or SALT workaround.",
+      "statesWithPTET": [
+        "AL",
+        "AZ",
+        "AR",
+        "CA",
+        "CO",
+        "CT",
+        "GA",
+        "ID",
+        "IL",
+        "IN",
+        "KS",
+        "LA",
+        "MD",
+        "MA",
+        "MI",
+        "MN",
+        "MO",
+        "MT",
+        "NJ",
+        "NM",
+        "NY",
+        "NC",
+        "OH",
+        "OK",
+        "OR",
+        "PA",
+        "RI",
+        "SC",
+        "UT",
+        "VA",
+        "WI"
+      ],
+      "howItWorks": "Entity pays state tax on behalf of owners. Owners get state tax credit on their personal return. The entity-level payment is deductible as a business expense, bypassing the $40,400 SALT cap."
+    }
+  },
+  "equityCompensation": {
+    "_schema": "All equity objects share: incomeEvent, taxEvent, form1099B_basisTrap, quarterlyNote",
+    "_overview": "Equity compensation creates two taxable events: (1) ordinary income when shares vest or options are exercised, (2) capital gain/loss when shares are sold. Misunderstanding this two-layer structure is the most expensive equity tax mistake.",
+    "rsu": {
+      "label": "Restricted Stock Units",
+      "taxEvent1_vesting": {
+        "trigger": "Shares vest",
+        "incomeType": "Ordinary income \u2014 W-2 wages",
+        "amountTaxable": "FMV on vesting date \u00d7 shares vested",
+        "ficaApplies": true,
+        "ficaSS_wageBase2026": 184500,
+        "additionalMedicareTrigger_single": 200000,
+        "additionalMedicareTrigger_mfj": 250000,
+        "withholdingRate_supplemental_under1M": 0.22,
+        "withholdingRate_supplemental_over1M": 0.37,
+        "withholdingRisk": "22% under-withholds for anyone in 32%+ bracket. Gap = (marginal_rate - 0.22) x RSU_income. Fix via increased W-4 withholding or quarterly payments.",
+        "form": "W-2 Box 1"
+      },
+      "taxEvent2_sale": {
+        "costBasis": "FMV at vesting (already reported as W-2 income)",
+        "shortTerm": "Sold within 1 year of vesting \u2192 ordinary income rates",
+        "longTerm": "Sold more than 1 year after vesting \u2192 LTCG rates 0/15/20%",
+        "form1099B_basisTrap": "Broker may report $0 or purchase price instead of FMV at vesting. Adjust on Form 8949 to avoid double taxation.",
+        "form": "Form 1099-B \u2192 Form 8949 \u2192 Schedule D"
+      },
+      "quarterlyRequired": "If withholding gap > $1,000 after W-4 optimization",
+      "seoKeywords": [
+        "RSU tax calculator 2026",
+        "restricted stock unit tax calculator",
+        "RSU withholding gap calculator"
+      ]
+    },
+    "iso": {
+      "label": "Incentive Stock Options",
+      "taxEvent1_exercise": {
+        "regularTaxAtExercise": "None",
+        "amtAtExercise": {
+          "applies": true,
+          "bargainElement": "FMV at exercise minus strike price = AMT preference item",
+          "amtExemption2026_single": 90100,
+          "amtExemption2026_mfj": 140200,
+          "amtPhaseoutStart_single": 500000,
+          "amtPhaseoutStart_mfj": 1000000,
+          "amtRate_tier1": 0.26,
+          "amtRate_tier2": 0.28,
+          "amtRate_tier2_threshold": 244500,
+          "amtTrap": "Large ISO exercise in single year can trigger AMT even without selling shares. Strategy: exercise in tranches across multiple years to stay below AMT exemption phaseout.",
+          "amtCreditCarryforward": "AMT paid generates Form 8801 credit to offset future regular tax"
+        },
+        "form": "Form 3921 (employer reports). No W-2."
+      },
+      "taxEvent2_sale": {
+        "qualifyingDisposition": {
+          "holdingFromExercise": "More than 1 year",
+          "holdingFromGrant": "More than 2 years",
+          "bothRequired": true,
+          "taxTreatment": "Entire gain (sale price minus strike price) as LONG-TERM capital gain",
+          "ordinaryIncome": 0,
+          "californiaWarning": "California taxes ISO qualifying dispositions at ordinary income state rates \u2014 no preferential CA treatment"
+        },
+        "disqualifyingDisposition": {
+          "trigger": "Either holding requirement not met",
+          "ordinaryIncome": "Bargain element at exercise \u2014 added to W-2",
+          "capitalGain": "Sale price minus FMV at exercise \u2014 STCG or LTCG depending on holding from exercise to sale",
+          "basisTrap": "Verify Form 1099-B basis on Form 8949"
+        }
+      },
+      "annualLimit_isoVsNso": {
+        "maxExercisablePerYear_iso": 100000,
+        "note": "Aggregate FMV at grant date exceeding $100,000 exercisable in one year \u2014 excess treated as NSOs"
+      },
+      "quarterlyRequired": "If projected AMT liability exceeds withholding by more than $1,000",
+      "seoKeywords": [
+        "ISO stock option tax calculator 2026",
+        "incentive stock option AMT calculator",
+        "ISO qualifying disposition LTCG calculator"
+      ]
+    },
+    "nso": {
+      "label": "Non-Qualified Stock Options",
+      "taxEvent1_exercise": {
+        "trigger": "Options exercised",
+        "incomeType": "Ordinary income on spread",
+        "spread": "FMV at exercise minus strike price",
+        "ficaApplies_employee": true,
+        "ficaApplies_contractor": "SE tax on spread",
+        "withholding_employee": "Employer withholds from payroll",
+        "withholding_contractor": "Must pay via quarterly estimated taxes",
+        "form_employee": "W-2 Box 1",
+        "form_contractor": "1099-NEC",
+        "cashNeeded": "Tax owed at exercise even if shares not sold. Cashless same-day sale covers obligation but triggers immediate sale."
+      },
+      "taxEvent2_sale": {
+        "costBasis": "FMV at exercise",
+        "shortTerm": "Sold within 1 year of exercise",
+        "longTerm": "Sold more than 1 year after exercise",
+        "basisTrap": "1099-B often shows wrong basis \u2014 adjust on Form 8949"
+      },
+      "quarterlyRequired": "Contractors always. Employees if withholding insufficient.",
+      "seoKeywords": [
+        "NSO tax calculator",
+        "non-qualified stock option exercise tax",
+        "NSO contractor 1099 taxes"
+      ]
+    },
+    "espp": {
+      "label": "Employee Stock Purchase Plan (Section 423 Qualified)",
+      "annualPurchaseLimit": 25000,
+      "maxDiscount": 0.15,
+      "ficaExempt_qualified423": true,
+      "ficaNote": "Section 423 qualified ESPP shares: NO FICA on either qualifying or disqualifying dispositions. Non-qualified ESPPs ARE subject to FICA at purchase.",
+      "holdingRequirements": {
+        "qualifyingDisposition": {
+          "fromOfferingDate": "More than 2 years",
+          "fromPurchaseDate": "More than 1 year",
+          "bothRequired": true
+        },
+        "disqualifyingDisposition": "Fails either requirement"
+      },
+      "qualifyingDispositionTax": {
+        "ordinaryIncome": "LESSER of: (a) 15% x FMV at offering date, or (b) actual gain (sale price minus purchase price)",
+        "ltcg": "Remaining gain above ordinary income portion",
+        "withholdingNote": "Qualifying disposition ordinary income NOT subject to federal withholding. Must pay via estimated taxes or W-4 adjustment.",
+        "basisAdjusted": "Purchase price + ordinary income per share"
+      },
+      "disqualifyingDispositionTax": {
+        "ordinaryIncome": "FMV at purchase date minus purchase price (full spread on purchase date)",
+        "capitalGain": "Sale price minus FMV at purchase date",
+        "capitalGainType": "STCG if held under 1 year from purchase; LTCG if over 1 year",
+        "form": "W-2 (employer adds ordinary income); 1099-B for proceeds"
+      },
+      "basisTrap": {
+        "description": "Broker 1099-B reports purchase price as basis \u2014 not adjusted basis. Adjusted basis = purchase price + ordinary income already on W-2. Failing to adjust = paying tax twice.",
+        "form8949Code": "Adjust Column E with correct adjusted basis"
+      },
+      "form3922": "Employer files Form 3922 at transfer. Use to verify offering date FMV, purchase date FMV, and purchase price.",
+      "quarterlyRequired": "For qualifying dispositions where ordinary income not withheld",
+      "seoKeywords": [
+        "ESPP tax calculator 2026",
+        "ESPP qualifying disposition tax calculator",
+        "ESPP disqualifying disposition calculator",
+        "Section 423 ESPP basis calculator"
+      ]
+    },
+    "qsbs": {
+      "label": "Qualified Small Business Stock (Section 1202)",
+      "overview": "Founders and early investors in qualifying C corps can exclude up to 100% of capital gains. Most powerful wealth-building provision in the tax code for startup equity.",
+      "obbbaChanges": {
+        "effectiveDate": "Stock issued after July 4, 2025",
+        "exclusionLimit_new": 15000000,
+        "exclusionLimit_old": 10000000,
+        "inflationIndexedFrom": 2027,
+        "tieredHolding_newStock": {
+          "3_years": 0.5,
+          "4_years": 0.75,
+          "5_years_plus": 1.0
+        },
+        "priorStock_5yearRequired": true
+      },
+      "exclusionCapCalc": "Greater of ($15M post-July-2025 stock / $10M pre-July-2025 stock) OR (10 x adjusted basis). Use higher.",
+      "amtTreatment": "Post-Sept 27, 2010 QSBS: no AMT preference. Full exclusion from AMT, NIIT, and regular capital gains tax.",
+      "niitTreatment": "Excluded gain NOT subject to 3.8% NIIT.",
+      "qualifyingRequirements": [
+        "Original issuance from domestic C corporation",
+        "Gross assets under $50M at time of issuance",
+        "Qualifying trade or business (excludes professional services, finance, hospitality, farming, mining)",
+        "Acquired for cash, property, or services \u2014 not purchased from existing shareholders",
+        "Held for required period"
+      ],
+      "stateConformity": {
+        "nonConforming_fullTax": [
+          "CA",
+          "AL",
+          "MS",
+          "PA"
+        ],
+        "partialConformity": [
+          "HI \u2014 50% exclusion only"
+        ],
+        "note": "California taxes QSBS gains at full state rate (up to 13.3%) even when 100% excluded federally."
+      },
+      "qsbsStacking": "Gifting QSBS to family members before sale multiplies the per-person $15M exclusion cap. Each recipient (spouse, children, trusts) gets own cap.",
+      "section1045Rollover": "If QSBS sold before holding period: defer gain by reinvesting in new QSBS within 60 days.",
+      "quarterlyRequired": "State estimated tax in non-conforming states on excluded gain. Federal: no quarterly on excluded portion.",
+      "seoKeywords": [
+        "QSBS tax calculator 2026",
+        "Section 1202 exclusion calculator",
+        "startup equity QSBS calculator",
+        "founder stock tax calculator"
+      ]
+    },
+    "phantomStock_SAR": {
+      "label": "Phantom Stock and Stock Appreciation Rights",
+      "taxTreatment": "Ordinary income when paid or settled \u2014 no LTCG treatment",
+      "ficaApplies": true,
+      "form_employee": "W-2",
+      "form_contractor": "1099-NEC",
+      "note": "Common in S corps (which cannot have two stock classes) and LLCs. Tax treatment mirrors a cash bonus.",
+      "seoKeywords": [
+        "phantom stock tax calculator",
+        "SAR stock appreciation rights taxes"
+      ]
+    },
+    "form1099B_basisReconciliation": {
+      "_purpose": "The #1 equity tax filing error: paying tax twice due to under-reported cost basis on Form 1099-B",
+      "affectedTypes": [
+        "RSU",
+        "NSO exercise",
+        "ISO disqualifying disposition",
+        "ESPP any disposition"
+      ],
+      "problem": "Broker 1099-B shows $0 or purchase price as basis \u2014 not the adjusted basis that includes income already on W-2",
+      "rsuAdjustment": "Correct basis = FMV at vesting date. If 1099-B shows $0, enter FMV at vesting in Form 8949 Column E.",
+      "esppQualifyingAdjustment": "Correct basis = purchase price + ordinary income per share already on W-2",
+      "esppDisqualifyingAdjustment": "Correct basis = FMV at purchase date",
+      "isoDisqualifyingAdjustment": "Correct basis = FMV at exercise date (spread already taxed as W-2)",
+      "form8949Codes": "Code B (STCG with 1099-B) or Code E (LTCG with 1099-B), then correct in Column E",
+      "irsCP2000Risk": "Failing to adjust basis is the most common cause of IRS CP2000 notices for equity compensation",
+      "seoKeywords": [
+        "RSU adjusted cost basis calculator",
+        "ESPP Form 8949 basis adjustment",
+        "stock compensation double tax calculator"
+      ]
+    },
+    "multiStateAllocation": {
+      "note": "Employees working in multiple states during vesting period must allocate equity income by state",
+      "rsuMethod": "Days worked in each state / total days in vesting period x RSU income = each state's allocation",
+      "isoNsoMethod": "Same proration applied to ordinary income at exercise",
+      "remoteWorkTrap": "California employee who moved to Texas before vesting may still owe CA tax on CA-period portion",
+      "aggressiveSourceingStates": [
+        "CA",
+        "NY",
+        "MA"
+      ],
+      "seoKeywords": [
+        "RSU multi-state tax",
+        "equity compensation state allocation",
+        "California RSU taxes remote work"
+      ]
+    }
+  },
+  "combinedSalaryCalculator": {
+    "_purpose": "Single calculator that models total household tax burden across all income types simultaneously. Produces one unified tax bill, quarterly payment schedule, and withholding optimization recommendation.",
+    "supportedIncomeTypes": [
+      "w2_salary",
+      "rsu_vesting",
+      "iso_exercise",
+      "nso_exercise",
+      "espp_sale",
+      "qsbs_sale",
+      "capital_gains_sale",
+      "se_income_1099",
+      "rental_schedule_e",
+      "ssdi_benefits",
+      "ltd_std_benefits",
+      "dividend_income",
+      "pension_annuity",
+      "unemployment_1099g",
+      "alimony_pre2019",
+      "k1_partnership_scorp"
+    ],
+    "incomeTypeDefinitions": {
+      "w2_salary": {
+        "inputs": [
+          "gross_annual_salary",
+          "federal_withholding_ytd",
+          "state_withholding_ytd",
+          "payPeriodsRemaining",
+          "filingStatus",
+          "state"
+        ],
+        "taxTreatment": "Ordinary income. FICA withheld by employer.",
+        "outputs": [
+          "effective_rate",
+          "marginal_rate",
+          "annual_tax",
+          "withholding_gap"
+        ]
+      },
+      "rsu_vesting": {
+        "inputs": [
+          "shares_vesting",
+          "fmv_at_vest",
+          "shares_withheld_for_tax",
+          "ytd_w2_wages_pre_rsu"
+        ],
+        "taxTreatment": "W-2 ordinary income at FMV on vest date. Supplemental withholding 22% (under $1M)",
+        "withholdingGapFormula": "(marginal_rate - 0.22) x rsu_income",
+        "outputs": [
+          "ordinary_income",
+          "tax_withheld",
+          "withholding_gap",
+          "quarterly_topup_needed",
+          "stcg_if_sold_now",
+          "ltcg_if_held_1yr"
+        ]
+      },
+      "iso_exercise": {
+        "inputs": [
+          "shares_exercised",
+          "strike_price",
+          "fmv_at_exercise",
+          "grant_date",
+          "exercise_date",
+          "intended_sale_date",
+          "ytd_all_income"
+        ],
+        "taxTreatment": "No regular income tax. AMT preference = bargain element.",
+        "outputs": [
+          "bargain_element",
+          "amt_liability_projected",
+          "amt_credit_carryforward",
+          "qualifying_disposition_ltcg",
+          "disqualifying_disposition_tax",
+          "breakeven_holding_analysis"
+        ]
+      },
+      "nso_exercise": {
+        "inputs": [
+          "shares_exercised",
+          "strike_price",
+          "fmv_at_exercise",
+          "employee_or_contractor"
+        ],
+        "taxTreatment": "Spread = ordinary income. W-2 if employee, SE tax if contractor.",
+        "outputs": [
+          "ordinary_income",
+          "fica_owed",
+          "income_tax",
+          "state_tax",
+          "quarterly_payment",
+          "net_after_tax_value"
+        ]
+      },
+      "espp_sale": {
+        "inputs": [
+          "offering_date",
+          "purchase_date",
+          "sale_date",
+          "fmv_at_offering",
+          "fmv_at_purchase",
+          "purchase_price",
+          "sale_price",
+          "shares_sold"
+        ],
+        "dispositionTest": "sale_date > offering_date + 730days AND sale_date > purchase_date + 365days",
+        "qualifyingOrdinaryIncome": "min(0.15 x fmv_at_offering, sale_price - purchase_price) x shares",
+        "qualifyingLTCG": "(sale_price - purchase_price - ordinary_per_share) x shares",
+        "disqualifyingOrdinaryIncome": "(fmv_at_purchase - purchase_price) x shares",
+        "disqualifyingCG": "(sale_price - fmv_at_purchase) x shares",
+        "outputs": [
+          "disposition_type",
+          "ordinary_income",
+          "capital_gain_type_and_amount",
+          "total_tax",
+          "adjusted_basis",
+          "quarterly_payment_needed"
+        ]
+      },
+      "qsbs_sale": {
+        "inputs": [
+          "issuance_date",
+          "sale_date",
+          "adjusted_basis",
+          "gross_proceeds",
+          "state",
+          "prior_exclusion_used_this_issuer"
+        ],
+        "exclusionPctNewStock": {
+          "3yr": 0.5,
+          "4yr": 0.75,
+          "5yr_plus": 1.0
+        },
+        "exclusionPctOldStock": {
+          "5yr_plus": 1.0
+        },
+        "exclusionCap": "max(15000000 if post-July-2025 else 10000000, 10 x adjusted_basis)",
+        "outputs": [
+          "exclusion_pct",
+          "excluded_gain",
+          "federal_taxable_gain",
+          "federal_tax",
+          "state_taxable_gain",
+          "state_tax",
+          "effective_total_rate",
+          "qsbs_stacking_opportunity"
+        ]
+      },
+      "capital_gains_sale": {
+        "inputs": [
+          "purchase_date",
+          "sale_date",
+          "cost_basis",
+          "gross_proceeds",
+          "state"
+        ],
+        "shortTermRate": "Ordinary income marginal rate",
+        "longTermRates2026": {
+          "0pct_single_max": 49450,
+          "0pct_mfj_max": 98900,
+          "15pct_single_max": 545500,
+          "15pct_mfj_max": 613700,
+          "20pct_above": true
+        },
+        "niitRate": 0.038,
+        "niitThreshold_single": 200000,
+        "niitThreshold_mfj": 250000,
+        "outputs": [
+          "gain_or_loss",
+          "holding_period",
+          "federal_tax",
+          "niit",
+          "state_tax",
+          "total_tax",
+          "effective_rate_on_gain"
+        ]
+      },
+      "se_income_1099": {
+        "inputs": [
+          "gross_1099",
+          "business_deductions",
+          "state",
+          "ytd_w2_wages"
+        ],
+        "seTax": "net_se x 0.9235 x 0.153",
+        "seDeduction": "se_tax x 0.5",
+        "outputs": [
+          "net_se_income",
+          "se_tax",
+          "income_tax",
+          "quarterly_amounts_x4",
+          "savings_rate_pct"
+        ]
+      },
+      "dividend_income": {
+        "inputs": [
+          "qualified_dividends",
+          "ordinary_dividends",
+          "ytd_total_income"
+        ],
+        "qualifiedRate": "Same as LTCG \u2014 0/15/20%",
+        "ordinaryRate": "Marginal ordinary income rate",
+        "outputs": [
+          "tax_on_qualified",
+          "tax_on_ordinary",
+          "niit_check",
+          "total_tax"
+        ]
+      }
+    },
+    "quarterlyEstimatedEngine": {
+      "_purpose": "Compute quarterly payment amounts for combined household income \u2014 all sources aggregated",
+      "inputs": [
+        "all_income_sources_with_amounts",
+        "total_deductions",
+        "prior_year_tax",
+        "ytd_withholding_all_sources",
+        "filing_status",
+        "state"
+      ],
+      "safeHarborCalc": {
+        "rule1_90pctCurrentYear": "0.90 x projected_current_year_tax",
+        "rule2_100pctPriorYear": "1.00 x prior_year_tax",
+        "rule2_highIncome_110pct": "1.10 x prior_year_tax if prior_year_AGI > $150,000",
+        "useSmaller": true
+      },
+      "paymentCalc": {
+        "annualRequired": "max(rule1, rule2)",
+        "lessWithholdingYTD": "subtract all W-2 withholding year-to-date",
+        "remainingRequired": "annualRequired minus withholdingYTD",
+        "perQuarterPayment": "remainingRequired divided by remaining quarters"
+      },
+      "annualizedIncomeMethod": {
+        "description": "For lumpy income (large RSU vest in Q3, QSBS sale in Q4) use Form 2210 Schedule AI \u2014 base each quarter's payment on actual income earned that quarter",
+        "useWhen": "Income is not evenly distributed across quarters",
+        "benefit": "Avoids overpaying early quarters when income materializes late in year"
+      },
+      "quarterlyDueDates2026": [
+        {
+          "q": 1,
+          "due": "2026-04-15",
+          "period": "Jan 1 - Mar 31"
+        },
+        {
+          "q": 2,
+          "due": "2026-06-16",
+          "period": "Apr 1 - May 31"
+        },
+        {
+          "q": 3,
+          "due": "2026-09-15",
+          "period": "Jun 1 - Aug 31"
+        },
+        {
+          "q": 4,
+          "due": "2027-01-15",
+          "period": "Sep 1 - Dec 31"
+        }
+      ],
+      "underpaymentPenalty": {
+        "approxRate2026": "~8% annualized (federal short-term AFR + 3%)",
+        "avoidedBy": "Meet either safe harbor rule OR pay 90% of actual current-year tax"
+      }
+    },
+    "familyScenarios": {
+      "tech_couple_MFJ": {
+        "label": "Tech couple: dual W-2 + RSU + ISO exercise + ESPP",
+        "spouse1_income": [
+          "w2_salary",
+          "rsu_vesting",
+          "iso_exercise"
+        ],
+        "spouse2_income": [
+          "w2_salary",
+          "espp_sale"
+        ],
+        "filingStatus": "mfj",
+        "keyRisks": [
+          "SS wage base tracked per W-2 but Additional Medicare applies on combined MFJ income over $250K",
+          "ISO AMT modeled on combined MFJ return \u2014 not individual spouse income",
+          "ESPP qualifying disposition ordinary income not withheld \u2014 add to quarterly payment",
+          "RSU withholding at 22% under-covers 32%+ bracket \u2014 calculate gap per paycheck"
+        ],
+        "quarterlyStrategy": "Increase RSU spouse W-4 additional withholding by gap divided by remaining pay periods. ESPP gap paid as one-time Q3 estimated payment."
+      },
+      "founder_MFJ_QSBS": {
+        "label": "Founder: moderate salary + QSBS sale event",
+        "income": [
+          "modest_w2_salary",
+          "qsbs_sale"
+        ],
+        "filingStatus": "mfj",
+        "keyRisks": [
+          "Federal: QSBS gain 100% excluded \u2014 effective federal rate near 0% on gain",
+          "California: 13.3% on full gain amount \u2014 no CA conformity. $15M gain = $1,995,000 CA tax.",
+          "CA quarterly payments required \u2014 cannot defer to April",
+          "QSBS stacking: gifting shares to spouse and children before sale multiplies exclusion caps"
+        ],
+        "quarterlyStrategy": "Pay California estimated tax on gain in quarter of sale. Federal: no quarterly on excluded amount."
+      },
+      "w2_plus_gig_family": {
+        "label": "W-2 spouse + 1099 gig spouse + children employed in business",
+        "spouse1_income": [
+          "w2_salary"
+        ],
+        "spouse2_income": [
+          "doordash_income",
+          "etsy_income"
+        ],
+        "children_wages": 12000,
+        "numChildren": 2,
+        "filingStatus": "mfj",
+        "keyRisks": [
+          "SE spouse owes SE tax on net gig income \u2014 not covered by spouse1 W-2 withholding",
+          "Children wages FICA-exempt if sole prop or SMLLC under age 18",
+          "Child wages up to $14,600 sheltered by standard deduction \u2014 near-zero tax on child income",
+          "QBI deduction applies to SE spouse net income if under threshold"
+        ],
+        "quarterlyStrategy": "SE spouse pays quarterly estimated taxes independently. Model W-2 spouse increasing W-4 withholding to cover SE spouse gap if easier administratively."
+      },
+      "w2_rsu_rental_ssdi_family": {
+        "label": "W-2 + RSU + rental + SSDI family member",
+        "incomes": [
+          "w2_salary",
+          "rsu_vesting",
+          "rental_schedule_e",
+          "ssdi_benefits"
+        ],
+        "filingStatus": "mfj",
+        "keyRisks": [
+          "SSDI: half of SSDI + other income = combined income. If above $44K MFJ \u2192 up to 85% of SSDI taxable",
+          "RSU: 22% withheld vs 32% actual bracket \u2192 withholding gap per vest",
+          "Rental: passive income on Schedule E, no SE tax, passive loss limits apply",
+          "Additional Medicare: total W-2 + RSU + SSDI taxable portion may exceed $250K MFJ threshold"
+        ],
+        "quarterlyStrategy": "Increase W-4 withholding to cover RSU gap. Verify rental and SSDI income not creating underpayment."
+      },
+      "allIncomeTypes_complex": {
+        "label": "Complex family: W-2 + RSU + 1099 consulting + ESPP + rental + crypto",
+        "incomes": [
+          "w2_salary",
+          "rsu_vesting",
+          "se_consulting_income",
+          "espp_qualifying_sale",
+          "rental_schedule_e",
+          "crypto_staking_income"
+        ],
+        "filingStatus": "mfj",
+        "note": "Most complex scenario \u2014 calculator provides estimate. Recommend CPA for actual filing due to interaction of multiple income types on NIIT threshold, AMT, passive loss rules, and SE tax.",
+        "quarterlyStrategy": "Annualized income method (Form 2210 AI) recommended. Model each quarter separately as equity and consulting income materializes."
+      }
+    },
+    "withholdingOptimizationTool": {
+      "_purpose": "Help households eliminate both underpayment penalty risk and large April surprise by calibrating W-4 and quarterly payments to expected total tax",
+      "inputs": [
+        "all_income_sources_projected_annual",
+        "expected_deductions",
+        "current_w4_additional_withholding",
+        "pay_periods_remaining",
+        "prior_year_total_tax",
+        "ytd_withholding"
+      ],
+      "outputs": [
+        "projected_annual_tax_all_sources",
+        "projected_withholding_at_current_rate",
+        "gap_or_overpayment",
+        "recommended_w4_additional_per_paycheck",
+        "recommended_quarterly_payments_by_quarter",
+        "safe_harbor_target",
+        "penalty_risk_flag"
+      ],
+      "seoKeywords": [
+        "W-4 withholding calculator 2026",
+        "how much to withhold W-4 RSU",
+        "quarterly estimated tax calculator combined income",
+        "avoid underpayment penalty equity"
+      ]
+    },
+    "seoKeywords": [
+      "combined income tax calculator W-2 1099 RSU 2026",
+      "tech employee total compensation tax calculator",
+      "RSU and salary tax calculator",
+      "stock options W-2 combined tax calculator",
+      "quarterly estimated tax calculator all income types",
+      "family tax calculator W-2 self-employed",
+      "ESPP RSU combined tax calculator",
+      "startup equity and salary tax calculator",
+      "withholding calculator stock options salary",
+      "how much tax on RSU plus salary"
+    ]
+  }
+}

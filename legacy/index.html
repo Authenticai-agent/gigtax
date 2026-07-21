@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 1. SEO & Social Sharing (Open Graph) -->
+<meta name="description" content="Free tax calculators for 2026: W-2, 1099, gig apps (Uber, DoorDash), creators (OnlyFans, YouTube), sellers (Etsy, Amazon FBA), rentals (Airbnb, Turo), and business entities. Estimate what you owe and what to set aside.">
+<meta property="og:title" content="MoneyScopeCalculators - Every Way People Make Money">
+<meta property="og:description" content="Free 2026 tax calculators for W-2, 1099, gig workers, creators, and online sellers.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.gigtaxcalculator.com/">
+<!-- Replace with an actual URL to a screenshot of your app for social sharing -->
+<!-- <meta property="og:image" content="https://www.gigtaxcalculator.com/social-share.jpg"> -->
+
+<!-- 2. Baseline Canonical (Your JS updates this dynamically, but a fallback is required) -->
+<link rel="canonical" href="https://www.gigtaxcalculator.com/">
+
+<!-- 3. Performance: Preconnect to Google Fonts for faster load times -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Literata:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+<title>MoneyScopeCalculators - Every Way People Make Money</title>
+
+<!-- 4. UI/UX: Mobile browser theme color and favicon -->
+<meta name="theme-color" content="#2c5aa0"> <!-- Update this hex code to match your CSS var(--accent) -->
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div id="app">
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo"><span class="logo-accent">MoneyScope</span>Calculators</a>
+      <nav class="main-nav" id="main-nav">
+        <a href="/calculators">Calculators</a>
+        <a href="/entities">Entities</a>
+        <a href="/deductions">Deductions</a>
+        <a href="/about">About</a>
+      </nav>
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <!-- 5. Fallback for disabled JavaScript -->
+  <noscript>
+    <div style="padding: 4rem 1rem; text-align: center; font-family: sans-serif; color: #c94a1e;">
+      <h2>JavaScript Required</h2>
+      <p>MoneyScopeCalculators relies on localized browser scripts to calculate your taxes securely. Please enable JavaScript to use these tools.</p>
+    </div>
+  </noscript>
+
+  <main id="main-content">
+    <!-- Views are injected here by JavaScript -->
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="disclaimer">For informational purposes only. Not tax advice. Verify with IRS.gov or a qualified tax professional before filing.</p>
+      <p class="footer-meta">MoneyScopeCalculators · 2026 Tax Year</p>
+    </div>
+  </footer>
+</div>
+
+<script src="/js/tax-engine.js?v=2"></script>
+<script src="/js/app.js?v=9"></script>
+</body>
+</html>
