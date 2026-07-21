@@ -135,6 +135,41 @@ for (const [section, group] of bySection) {
   for (const p of group) delete p.grams;
 }
 
+/* ---- 1b. absolute unique content ------------------------------------------ */
+
+/**
+ * How much of a page exists nowhere else in its section.
+ *
+ * The similarity ratio above is a proportion, and a proportion flatters a short
+ * page: the state-pair pages sat at 75% similar while carrying a median of 17
+ * trigrams that no sibling had, against 98-152 for the state pages. One of them
+ * had two. A ratio punishes shared scaffolding, which is normal and fine; what
+ * actually matters is whether there is enough substance here that exists
+ * nowhere else. This measures that directly.
+ *
+ * Calibrated from the sections that pass on merit: the thinnest 1099 page has
+ * 50, the thinnest quarterly 63, the thinnest paycheck 39.
+ */
+const MIN_UNIQUE = 40;
+
+for (const [section, group] of bySection) {
+  if (group.length < MIN_SECTION_SIZE) continue;
+  const counts = new Map();
+  const grams = group.map((p) => trigrams(p.text));
+  for (const g of grams) for (const t of g) counts.set(t, (counts.get(t) ?? 0) + 1);
+  group.forEach((p, i) => {
+    let unique = 0;
+    for (const t of grams[i]) if (counts.get(t) === 1) unique++;
+    p.unique = unique;
+    if (unique < MIN_UNIQUE) {
+      failures.push(
+        `thin: ${p.url} has only ${unique} trigram(s) no sibling has (of ${grams[i].size}); ` +
+          `section "${section}" needs ${MIN_UNIQUE}`,
+      );
+    }
+  });
+}
+
 /* ---- 2. duplicate titles and descriptions -------------------------------- */
 
 for (const field of ['title', 'desc']) {
@@ -228,6 +263,19 @@ for (const w of worst) if (!perSection.has(w.section)) perSection.set(w.section,
 for (const [section, w] of perSection) {
   const flag = w.sim >= FAIL_AT ? 'FAIL' : w.sim >= WARN_AT ? 'warn' : 'ok  ';
   console.log(`  ${flag}  ${(w.sim * 100).toFixed(0).padStart(3)}%  ${section}  (${w.url} vs ${w.against})`);
+}
+
+console.log('\nUnique content per page (trigrams no sibling has):');
+for (const [section, group] of bySection) {
+  if (group.length < MIN_SECTION_SIZE) continue;
+  const u = group.map((p) => p.unique ?? 0).sort((a, b) => a - b);
+  const median = u[Math.floor(u.length / 2)];
+  const thin = u.filter((n) => n < MIN_UNIQUE).length;
+  const flag = thin ? 'FAIL' : 'ok  ';
+  console.log(
+    `  ${flag}  ${section.padEnd(38)} min ${String(u[0]).padStart(4)}  median ${String(median).padStart(4)}` +
+      (thin ? `  — ${thin} of ${group.length} page(s) under ${MIN_UNIQUE}` : ''),
+  );
 }
 
 if (report) {
