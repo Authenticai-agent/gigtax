@@ -64,7 +64,12 @@ const description = `Estimate 2026 self-employment, federal, and ${state.name} s
     <p class="tagline" data-source={`data/states.ts → ${code}`}>{describeStateTax(state)}</p>
   </section>
 
-  <QuickEstimator client:load presetState={code} defaultSeIncome={EXAMPLE_INCOME} />
+  <QuickEstimator
+    client:load
+    presetState={code}
+    defaultSeIncome={EXAMPLE_INCOME}
+    stateHrefBase="/1099-tax-calculator/"
+  />
 
   <h2>How 1099 tax works in {state.name}</h2>
   <p data-source="data/federal.ts → federal.selfEmployment">{describeSelfEmploymentTax()}</p>

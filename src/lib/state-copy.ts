@@ -28,10 +28,7 @@ export interface WorkedExample {
   lines: Array<{ label: string; value: string }>;
 }
 
-/** URL slug for a state: "District of Columbia" -> "district-of-columbia". */
-export function stateSlug(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
+export { stateSlug } from './slug';
 
 /** Percent with no trailing zeros: 0.0275 -> "2.75%", 0.05 -> "5%". */
 export function pct(rate: number): string {
