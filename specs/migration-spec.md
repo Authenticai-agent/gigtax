@@ -9,7 +9,8 @@ Purpose: rebuild the MoneyScope tax calculator suite from a client-rendered Reac
 3. Every generated page must contain its full unique content (title, meta description, H1, explanation, worked example, assumptions, FAQs, related links) in the built HTML file. JavaScript is an enhancement layer for the calculator widget only.
 4. Site URL is centralized in one config constant (`SITE_URL`). Canonicals, sitemap, and Open Graph URLs all derive from it. Currently set to the netlify.app URL; will flip to the custom domain at cutover.
 5. Do not cross more than two content axes. Calculator × state and calculator × platform are allowed. Calculator × state × platform is not — it produces near-duplicate pages at a scale that risks a quality classification.
-6. Plain, specific writing on pages. No filler sentences that could apply to any state or platform. If a paragraph survives find-and-replace of "Ohio" with "Georgia", rewrite it with state-specific facts or delete it.
+6. Nothing is deleted without the owner asking for it in that session. `legacy/` in particular is permanent source material, not scaffolding to be cleared away.
+7. Plain, specific writing on pages. No filler sentences that could apply to any state or platform. If a paragraph survives find-and-replace of "Ohio" with "Georgia", rewrite it with state-specific facts or delete it.
 
 ## Site architecture
 
@@ -81,7 +82,7 @@ Tier 3 template and pages per the approved platform list. Deduction profiles pre
 Done when: all approved platform pages build and pass the raw-HTML test; each links to its hub and 3–4 related platforms.
 
 ### Phase 6 — technical SEO and deploy readiness
-Sitemap, robots, 404, Open Graph tags, JSON-LD (Organization + WebApplication on hubs only — no FAQ markup unless owner asks), redirect map from any old URLs worth preserving, Lighthouse run on 3 sample pages, and a netlify.toml with build settings. Delete `legacy/`.
+Sitemap, robots, 404, Open Graph tags, JSON-LD (Organization + WebApplication on hubs only — no FAQ markup unless owner asks), redirect map from any old URLs worth preserving, Lighthouse run on 3 sample pages, and a netlify.toml with build settings. `legacy/` stays — it holds ~115 calculators that have not been ported, and nothing is deleted without the owner asking.
 Done when: full build passes all checks in this spec; `specs/cutover-checklist.md` written for the domain switch.
 
 ## Session protocol for Claude Code
