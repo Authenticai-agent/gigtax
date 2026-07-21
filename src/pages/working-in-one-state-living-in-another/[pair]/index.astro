@@ -1,0 +1,88 @@
+---
+/**
+ * PILOT — "live in one state, work in another" pages.
+ *
+ * Currently a curated handful of pairs (one per arrangement type) so the content
+ * quality can be reviewed before generating the full home×work matrix. Each page
+ * is genuinely unique: real 2026 rates for both states, the correct arrangement
+ * (reciprocity / credit / Arizona WEC / single-state), and a computed worked
+ * example — all present in the HTML before any JavaScript.
+ */
+import Base from '../../../layouts/Base.astro';
+import { states } from '../../../data/states';
+import { pairOutcome, stateSlug } from '../../../lib/state-pair';
+import { formatMoney } from '../../../lib/tax-engine';
+
+export function getStaticPaths() {
+  // Curated pilot pairs [homeCode, workCode] — covers every arrangement type.
+  const PILOT: Array<[string, string]> = [
+    ['NJ', 'PA'], // reciprocity
+    ['PA', 'NJ'], // reciprocity (reverse)
+    ['NJ', 'NY'], // credit (no agreement)
+    ['CA', 'AZ'], // Arizona WEC (credit-based, not reciprocity)
+    ['TX', 'CA'], // single-state: home has no income tax
+    ['CA', 'TX'], // single-state: work has no income tax
+    ['TX', 'FL'], // neither state taxes wages
+  ];
+  return PILOT.map(([homeCode, workCode]) => {
+    const pair = `living-in-${stateSlug(states[homeCode].name)}-working-in-${stateSlug(states[workCode].name)}`;
+    return { params: { pair }, props: { homeCode, workCode } };
+  });
+}
+
+interface Props { homeCode: string; workCode: string; }
+const { homeCode, workCode } = Astro.props as Props;
+const o = pairOutcome(homeCode, workCode);
+
+const title = `Living in ${o.home.name}, working in ${o.work.name} — 2026 state tax guide`;
+const description = `How state income tax works if you live in ${o.home.name} and work in ${o.work.name} in 2026: ${o.type === 'reciprocity' ? 'reciprocity agreement' : o.type === 'credit' || o.type === 'az-wec' ? 'nonresident return and credit for taxes paid' : 'which state taxes your wages'}, with a worked example.`;
+---
+
+<Base title={title} description={description}>
+  <div class="breadcrumbs">
+    <a href="/1099-tax-calculator/">MoneyScope</a> / Living in {o.home.name}, working in {o.work.name}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year · cross-border wages</p>
+    <h1>Living in {o.home.name}, working in {o.work.name}</h1>
+    <p class="tagline">{o.headline}</p>
+  </section>
+
+  <p>{o.explanation}</p>
+
+  {o.exemptionForm && (
+    <div class="callout">
+      <strong>Exemption form</strong>
+      File <strong>{o.exemptionForm}</strong> with your employer to stop {o.work.name} withholding on your wages.
+    </div>
+  )}
+
+  <h2>Worked example: {formatMoney(o.income)} of wages</h2>
+  <p>A single filer living in {o.home.name} and working in {o.work.name}, earning {formatMoney(o.income)}, owes an estimated:</p>
+  <table class="data-table">
+    <tbody>
+      <tr><td>{o.work.name} tax (work state)</td><td>{formatMoney(o.workTax)}</td></tr>
+      <tr><td>{o.home.name} tax before credit (home state)</td><td>{formatMoney(o.homeTaxBeforeCredit)}</td></tr>
+      {o.credit > 0 && <tr><td>Credit for taxes paid to {o.work.name}</td><td>−{formatMoney(o.credit)}</td></tr>}
+      <tr class="total"><td>Total state income tax</td><td>{formatMoney(o.totalStateTax)}</td></tr>
+    </tbody>
+  </table>
+  <p style="font-family: var(--mono); font-size: .78rem; color: var(--muted);">
+    Estimate of state income tax on wages only, using 2026 state rates. Excludes federal
+    tax, local/municipal taxes, and personal exemptions beyond each state's standard
+    deduction. Not tax advice.
+  </p>
+
+  <h2>The short version</h2>
+  <ul>
+    {o.type === 'reciprocity' && <li>{o.work.name} will not tax these wages — file {o.exemptionForm} and report everything to {o.home.name}.</li>}
+    {o.type === 'reciprocity' && <li>No {o.work.name} nonresident return for your wages.</li>}
+    {(o.type === 'credit' || o.type === 'az-wec') && <li>File a {o.work.name} nonresident return, then claim a credit on your {o.home.name} return.</li>}
+    {(o.type === 'credit' || o.type === 'az-wec') && <li>Your combined state tax is about the higher of the two states' rates — not both stacked.</li>}
+    {o.type === 'az-wec' && <li>As a {o.home.name} resident you may file Arizona Form WEC to skip withholding, but Arizona tax still applies.</li>}
+    {o.type === 'single-state' && <li>Only one of the two states taxes wage income, so you file in that state only.</li>}
+    {o.type === 'no-tax-either' && <li>No state income tax applies in either state — federal tax still does.</li>}
+    <li>Reciprocity and credits cover wages, not necessarily local taxes or self-employment income.</li>
+  </ul>
+</Base>
