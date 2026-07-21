@@ -35,8 +35,20 @@ export function calcFederalTax(taxableIncome: number, status = 'single', data: a
   return Math.max(0, tax);
 }
 
-/* Self-Employment Tax */
-export function calcSETax(netSEIncome: number, data: any = taxData, w2WagesAlreadyTaxed = 0) {
+/* Additional Medicare Tax threshold (Form 8959), by filing status. */
+function additionalMedicareThreshold(am: any, status: string): number {
+  if (!am) return Infinity;
+  if (status === 'mfj') return am.thresholdMFJ;
+  if (status === 'mfs') return am.thresholdMFS;
+  return am.thresholdSingle; // single / hoh / qsw
+}
+
+/* Self-Employment Tax
+ * Bugfix: the deductible half is computed on the regular SE tax only; the 0.9%
+ * Additional Medicare Tax (Form 8959) is added to totalSE but is not deductible.
+ * For earnings below the status threshold, additionalMedicareTax is 0, so totalSE
+ * is identical to the pre-fix value. */
+export function calcSETax(netSEIncome: number, data: any = taxData, w2WagesAlreadyTaxed = 0, status = 'single') {
   const se = data.federal.selfEmployment;
   const netEarnings = netSEIncome * se.netEarningsMultiplier;
   const remainingSSWageBase = Math.max(0, se.socialSecurityWageBase - w2WagesAlreadyTaxed);
@@ -44,21 +56,32 @@ export function calcSETax(netSEIncome: number, data: any = taxData, w2WagesAlrea
   const medicareTaxable = netEarnings;
   const socialSecurityTax = ssTaxable * se.socialSecurityRate;
   const medicareTax = medicareTaxable * se.medicareRate;
-  const totalSE = socialSecurityTax + medicareTax;
-  const deductibleHalf = totalSE * se.selfDeductionRate;
-  return { totalSE, deductibleHalf, socialSecurityTax, medicareTax, netEarnings };
+  const regularSE = socialSecurityTax + medicareTax;
+  const deductibleHalf = regularSE * se.selfDeductionRate;
+  // Additional Medicare Tax: 0.9% on SE earnings above the threshold left after W-2 wages.
+  const am = se.additionalMedicare;
+  const reducedThreshold = Math.max(0, additionalMedicareThreshold(am, status) - w2WagesAlreadyTaxed);
+  const additionalMedicareTax = am ? am.rate * Math.max(0, netEarnings - reducedThreshold) : 0;
+  const totalSE = regularSE + additionalMedicareTax;
+  return { totalSE, deductibleHalf, socialSecurityTax, medicareTax, additionalMedicareTax, netEarnings };
 }
 
-/* FICA Payroll Tax (W-2 salary, S-Corp) - no 92.35% multiplier, no deductible half */
-export function calcFICA(wages: number, data: any = taxData, w2WagesAlreadyTaxed = 0) {
+/* FICA Payroll Tax (W-2 salary, S-Corp) - no 92.35% multiplier, no deductible half
+ * Bugfix: the employee side now includes the 0.9% Additional Medicare Tax on wages
+ * above the status threshold. Below threshold this is 0, so totalFICA is unchanged. */
+export function calcFICA(wages: number, data: any = taxData, w2WagesAlreadyTaxed = 0, status = 'single') {
   const se = data.federal.selfEmployment;
   const remainingSSWageBase = Math.max(0, se.socialSecurityWageBase - w2WagesAlreadyTaxed);
   const ssTaxable = Math.min(wages, remainingSSWageBase);
   const medicareTaxable = wages;
   const socialSecurityTax = ssTaxable * se.socialSecurityRate;
   const medicareTax = medicareTaxable * se.medicareRate;
-  const totalFICA = socialSecurityTax + medicareTax;
-  return { totalFICA, employeeFICA: totalFICA * 0.5, employerFICA: totalFICA * 0.5, socialSecurityTax, medicareTax };
+  const regularFICA = socialSecurityTax + medicareTax;
+  const am = se.additionalMedicare;
+  const reducedThreshold = Math.max(0, additionalMedicareThreshold(am, status) - w2WagesAlreadyTaxed);
+  const additionalMedicareTax = am ? am.rate * Math.max(0, wages - reducedThreshold) : 0;
+  const totalFICA = regularFICA + additionalMedicareTax;
+  return { totalFICA, employeeFICA: regularFICA * 0.5 + additionalMedicareTax, employerFICA: regularFICA * 0.5, additionalMedicareTax, socialSecurityTax, medicareTax };
 }
 
 /* OBBBA Senior Deduction (separate from standard deduction additional amount) */
@@ -151,7 +174,11 @@ export function calcStateTax(income: number, stateCode: string, data: any = taxD
   const stateStd = state.standardDeduction ? (state.standardDeduction[status] || 0) : 0;
   const stateTaxable = Math.max(0, income - stateStd);
   if (state.type === 'flat') {
-    let tax = stateTaxable * state.rate;
+    // Bugfix: honor a state's exempt-below threshold (e.g. Ohio exempts income
+    // at/below $26,050 and taxes only the excess). exemptBelow defaults to 0.
+    const exemptBelow = state.exemptBelow || 0;
+    const flatTaxable = Math.max(0, stateTaxable - exemptBelow);
+    let tax = flatTaxable * state.rate;
     if (state.mentalHealthSurcharge && stateTaxable > state.mentalHealthThreshold) {
       tax += (stateTaxable - state.mentalHealthThreshold) * state.mentalHealthSurcharge;
     }
@@ -215,7 +242,7 @@ export function compareEntities(netProfit: number, w2Income: number, status: str
   const stdDed = getStandardDeduction(status, false, data);
 
   // Sole Prop
-  const se1 = calcSETax(netProfit, data, w2Income);
+  const se1 = calcSETax(netProfit, data, w2Income, status);
   const agi1 = w2Income + netProfit - se1.deductibleHalf;
   const taxableBeforeQBI1 = Math.max(0, agi1 - stdDed);
   const qbi1 = calcQBI(netProfit, taxableBeforeQBI1, status, data);
@@ -230,7 +257,7 @@ export function compareEntities(netProfit: number, w2Income: number, status: str
   // S-Corp
   const salary = Math.max(0, netProfit * 0.4);
   const distribution = Math.max(0, netProfit - salary);
-  const fica3 = calcFICA(salary, data, w2Income);
+  const fica3 = calcFICA(salary, data, w2Income, status);
   const agi3 = w2Income + salary + distribution; // S-Corp: no SE deduction on personal return
   const taxableBeforeQBI3 = Math.max(0, agi3 - stdDed);
   const qbi3 = calcQBI(distribution, taxableBeforeQBI3, status, data);
@@ -324,7 +351,7 @@ export function reconcile1099K(gross1099K: number, platformFees: number, refunds
 /* Brand Deal Calculator */
 export function calcBrandDeal(dealAmount: number, otherIncome: number, deductions: number, status: string, stateCode: string, data: any = taxData) {
   const netSE = dealAmount - deductions;
-  const se = calcSETax(netSE, data);
+  const se = calcSETax(netSE, data, 0, status);
   const agi = otherIncome + netSE - se.deductibleHalf;
   const stdDed = getStandardDeduction(status, false, data);
   const taxableBeforeQBI = Math.max(0, agi - stdDed);
@@ -339,7 +366,7 @@ export function calcBrandDeal(dealAmount: number, otherIncome: number, deduction
 /* Combined W-2 + SE Calculator */
 export function calcCombined(w2Income: number, seGross: number, seDeductions: number, status: string, stateCode: string, data: any = taxData, age65 = false) {
   const netSE = Math.max(0, seGross - seDeductions);
-  const se = calcSETax(netSE, data, w2Income);
+  const se = calcSETax(netSE, data, w2Income, status);
   const totalIncome = w2Income + netSE;
   const agi = totalIncome - se.deductibleHalf;
   const stdDed = getStandardDeduction(status, age65, data);
@@ -374,7 +401,7 @@ export function optimizeSCorpSalary(netProfit: number, w2Income: number, status:
   const stdDed = getStandardDeduction(status, false, data);
   for (let pct = 20; pct <= 60; pct += 5) {
     const salary = netProfit * (pct / 100);
-    const fica = calcFICA(salary, data, w2Income);
+    const fica = calcFICA(salary, data, w2Income, status);
     const dist = Math.max(0, netProfit - salary - fica.employerFICA - payrollAdminCost);
     const agi = w2Income + salary + dist; // S-Corp: no SE deduction on personal return
     const taxableBeforeQBI = Math.max(0, agi - stdDed);
