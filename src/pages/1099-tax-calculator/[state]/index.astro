@@ -2,19 +2,29 @@
 /**
  * Tier-2 SSG page: one static HTML page per state, generated at build time from
  * src/data via getStaticPaths. Unique title, meta, H1, state-specific
- * explanation and a worked example computed from the verified data, all present
- * in the built HTML before any JavaScript runs.
+ * explanation, worked example, assumptions, FAQs and sibling links — all
+ * computed from the verified dataset and present in the built HTML before any
+ * JavaScript runs. Factual claims carry a `data-source` attribute naming the
+ * data-file field they derive from, so review stays traceable.
  */
 import Base from '../../../layouts/Base.astro';
 import QuickEstimator from '../../../components/calculators/QuickEstimator.tsx';
-import { stateList } from '../../../data/states';
-import { calcCombined, formatMoney, formatPct } from '../../../lib/tax-engine';
-import { describeStateTax } from '../../../lib/state-copy';
+import { states, stateList } from '../../../data/states';
+import { siblingStates } from '../../../data/neighbors';
+import { calcCombined, formatMoney, formatPct, getStandardDeduction } from '../../../lib/tax-engine';
+import {
+  describeStateTax,
+  describeSelfEmploymentTax,
+  describeStateLayer,
+  bracketRows,
+  buildStateFaqs,
+  stateSlug,
+} from '../../../lib/state-copy';
 import type { StateData } from '../../../data/types';
 
 export function getStaticPaths() {
   return stateList.map(([code, s]) => ({
-    params: { state: code.toLowerCase() },
+    params: { state: stateSlug(s.name) },
     props: { code, state: s },
   }));
 }
@@ -29,6 +39,16 @@ const { code, state } = Astro.props as Props;
 const EXAMPLE_INCOME = 50000;
 const r = calcCombined(0, EXAMPLE_INCOME, 0, 'single', code);
 
+const stateParas = describeStateLayer(state);
+const brackets = bracketRows(state);
+const faqs = buildStateFaqs(code, state, {
+  income: EXAMPLE_INCOME,
+  stateTax: r.stateTax,
+  totalTax: r.totalTax,
+  effectiveRate: r.effectiveRate,
+});
+const siblings = siblingStates(code, 4).map((c) => [c, states[c]] as const).filter(([, s]) => s);
+
 const title = `1099 tax calculator — ${state.name} (2026)`;
 const description = `Estimate 2026 self-employment, federal, and ${state.name} state income tax on 1099 income. Worked example and free calculator, figures verified from IRS sources.`;
 ---
@@ -41,10 +61,27 @@ const description = `Estimate 2026 self-employment, federal, and ${state.name} s
   <section class="hero">
     <p class="hero-label">2026 tax year · {state.name}</p>
     <h1>1099 tax calculator for {state.name}</h1>
-    <p class="tagline">{describeStateTax(state)}</p>
+    <p class="tagline" data-source={`data/states.ts → ${code}`}>{describeStateTax(state)}</p>
   </section>
 
   <QuickEstimator client:load presetState={code} defaultSeIncome={EXAMPLE_INCOME} />
+
+  <h2>How 1099 tax works in {state.name}</h2>
+  <p data-source="data/federal.ts → federal.selfEmployment">{describeSelfEmploymentTax()}</p>
+  {stateParas.map((p) => <p data-source={`data/states.ts → ${code}`}>{p}</p>)}
+
+  {brackets.length > 0 && (
+    <table class="data-table">
+      <thead>
+        <tr><th>{state.name} taxable income (single)</th><th>2026 rate</th></tr>
+      </thead>
+      <tbody>
+        {brackets.map((b) => (
+          <tr><td>{b.range}</td><td>{b.rate}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  )}
 
   <h2>Worked example: {formatMoney(EXAMPLE_INCOME)} of 1099 income in {state.name}</h2>
   <p>
@@ -73,13 +110,33 @@ const description = `Estimate 2026 self-employment, federal, and ${state.name} s
     income for taxes. Self-employed workers pay this via quarterly estimated payments.
   </div>
 
-  <h2>Nearby states</h2>
+  <h2>What this estimate assumes</h2>
+  <ul>
+    <li>Filing status defaults to single; the calculator supports the other three statuses.</li>
+    <li>The federal standard deduction of {formatMoney(getStandardDeduction('single'))} is taken, not itemized deductions.</li>
+    <li>Net 1099 profit is entered after business expenses — expenses you don't enter aren't deducted.</li>
+    <li>
+      {state.localTaxNote
+        ? `Local income tax is not modelled. ${state.localTaxNote}.`
+        : 'Local income tax is not modelled.'}
+    </li>
+    <li>No credits beyond those in the engine (child tax credit, EIC) and no state-specific credits are applied.</li>
+    <li>Figures are 2026 tax-year amounts from the verified dataset, not a filed-return calculation.</li>
+  </ul>
+
+  <h2>{state.name} 1099 tax questions</h2>
+  {faqs.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-source={f.source}>{f.a}</p>
+    </div>
+  ))}
+
+  <h2>Related tools</h2>
   <ul class="link-columns">
-    {stateList
-      .filter(([c]) => c !== code)
-      .slice(0, 6)
-      .map(([c, s]) => (
-        <li><a href={`/1099-tax-calculator/${c.toLowerCase()}/`}>1099 taxes in {s.name}</a></li>
-      ))}
+    <li><a href="/1099-tax-calculator/">1099 tax calculator (all states)</a></li>
+    {siblings.map(([c, s]) => (
+      <li><a href={`/1099-tax-calculator/${stateSlug(s!.name)}/`}>1099 taxes in {s!.name}</a></li>
+    ))}
   </ul>
 </Base>

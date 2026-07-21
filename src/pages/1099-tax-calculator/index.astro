@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import QuickEstimator from '../../components/calculators/QuickEstimator.tsx';
 import { stateList } from '../../data/states';
+import { stateSlug } from '../../lib/state-copy';
 ---
 
 <Base
@@ -25,7 +26,7 @@ import { stateList } from '../../data/states';
   <p>Each state page is built on that state's 2026 income tax rules with a worked example:</p>
   <ul class="link-columns">
     {stateList.map(([code, s]) => (
-      <li><a href={`/1099-tax-calculator/${code.toLowerCase()}/`}>1099 taxes in {s.name}</a></li>
+      <li><a href={`/1099-tax-calculator/${stateSlug(s.name)}/`}>1099 taxes in {s.name}</a></li>
     ))}
   </ul>
 </Base>
