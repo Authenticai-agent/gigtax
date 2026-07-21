@@ -14,8 +14,22 @@
  */
 import { states } from '../data/states';
 import { hasReciprocity, reciprocity, AZ_WEC_WITHHOLDING_EXEMPTION } from '../data/reciprocity';
+import { adjacency } from '../data/adjacency';
 import { calcStateTax, formatMoney } from './tax-engine';
 import type { StateData } from '../data/types';
+
+/**
+ * High-value home→work pairs to generate: real commuter corridors (bordering
+ * states) plus every reciprocity pair (both directions) plus the Arizona WEC
+ * pairs. Quality-first per the migration plan — no all-pairs matrix.
+ */
+export function highValuePairs(): Array<[string, string]> {
+  const set = new Set<string>();
+  for (const [a, nbrs] of Object.entries(adjacency)) for (const b of nbrs) set.add(`${a}>${b}`);
+  for (const [a, info] of Object.entries(reciprocity)) for (const b of info.partners) { set.add(`${a}>${b}`); set.add(`${b}>${a}`); }
+  for (const h of AZ_WEC_WITHHOLDING_EXEMPTION.eligibleResidentStates) set.add(`${h}>AZ`);
+  return [...set].map((s) => s.split('>') as [string, string]);
+}
 
 export function stateSlug(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

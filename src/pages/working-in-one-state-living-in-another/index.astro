@@ -1,0 +1,54 @@
+---
+/**
+ * Hub for the state-pair pages — groups every generated pair by home state so
+ * none of the 231 pages is orphaned (each is one click from here, and this hub
+ * is linked from the homepage).
+ */
+import Base from '../../layouts/Base.astro';
+import { states } from '../../data/states';
+import { highValuePairs, stateSlug } from '../../lib/state-pair';
+
+// Group pairs by home state, sorted by state name.
+const byHome = new Map<string, string[]>();
+for (const [home, work] of highValuePairs()) {
+  if (!byHome.has(home)) byHome.set(home, []);
+  byHome.get(home)!.push(work);
+}
+const homes = [...byHome.keys()].sort((a, b) => states[a].name.localeCompare(states[b].name));
+const total = highValuePairs().length;
+---
+
+<Base
+  title="Living and working in different states — 2026 state tax guides"
+  description="If you live in one state and work in another, which state taxes your wages in 2026? Reciprocity, nonresident returns, and credits explained for every bordering-state pair."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Living in one state, working in another</h1>
+    <p class="tagline">Which state taxes your wages — and how to avoid being taxed twice.</p>
+  </section>
+
+  <p>
+    Commute across a state line and two tax systems can touch your paycheck. Whether
+    you owe one state or both depends on reciprocity agreements and the credit for
+    taxes paid. These {total} guides cover the common cross-border pairs with the
+    actual 2026 rules and a worked example for each.
+  </p>
+
+  {homes.map((home) => (
+    <>
+      <h2>Living in {states[home].name}</h2>
+      <ul class="link-columns">
+        {byHome.get(home)!
+          .sort((a, b) => states[a].name.localeCompare(states[b].name))
+          .map((work) => (
+            <li>
+              <a href={`/working-in-one-state-living-in-another/living-in-${stateSlug(states[home].name)}-working-in-${stateSlug(states[work].name)}/`}>
+                …working in {states[work].name}
+              </a>
+            </li>
+          ))}
+      </ul>
+    </>
+  ))}
+</Base>

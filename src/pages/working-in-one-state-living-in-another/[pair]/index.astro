@@ -1,30 +1,20 @@
 ---
 /**
- * PILOT — "live in one state, work in another" pages.
+ * "Live in one state, work in another" pages — curated high-value set.
  *
- * Currently a curated handful of pairs (one per arrangement type) so the content
- * quality can be reviewed before generating the full home×work matrix. Each page
- * is genuinely unique: real 2026 rates for both states, the correct arrangement
- * (reciprocity / credit / Arizona WEC / single-state), and a computed worked
- * example — all present in the HTML before any JavaScript.
+ * Generated from highValuePairs(): real commuter corridors (bordering states) +
+ * every reciprocity pair + the Arizona WEC pairs (231 pages), rather than the
+ * full 2,550 matrix. Each page is genuinely unique: real 2026 rates for both
+ * states, the correct arrangement (reciprocity / credit / Arizona WEC /
+ * single-state), and a computed worked example — all present before JavaScript.
  */
 import Base from '../../../layouts/Base.astro';
 import { states } from '../../../data/states';
-import { pairOutcome, stateSlug } from '../../../lib/state-pair';
+import { pairOutcome, stateSlug, highValuePairs } from '../../../lib/state-pair';
 import { formatMoney } from '../../../lib/tax-engine';
 
 export function getStaticPaths() {
-  // Curated pilot pairs [homeCode, workCode] — covers every arrangement type.
-  const PILOT: Array<[string, string]> = [
-    ['NJ', 'PA'], // reciprocity
-    ['PA', 'NJ'], // reciprocity (reverse)
-    ['NJ', 'NY'], // credit (no agreement)
-    ['CA', 'AZ'], // Arizona WEC (credit-based, not reciprocity)
-    ['TX', 'CA'], // single-state: home has no income tax
-    ['CA', 'TX'], // single-state: work has no income tax
-    ['TX', 'FL'], // neither state taxes wages
-  ];
-  return PILOT.map(([homeCode, workCode]) => {
+  return highValuePairs().map(([homeCode, workCode]) => {
     const pair = `living-in-${stateSlug(states[homeCode].name)}-working-in-${stateSlug(states[workCode].name)}`;
     return { params: { pair }, props: { homeCode, workCode } };
   });
@@ -40,7 +30,7 @@ const description = `How state income tax works if you live in ${o.home.name} an
 
 <Base title={title} description={description}>
   <div class="breadcrumbs">
-    <a href="/1099-tax-calculator/">MoneyScope</a> / Living in {o.home.name}, working in {o.work.name}
+    <a href="/">Home</a> / <a href="/working-in-one-state-living-in-another/">Living &amp; working in different states</a> / {o.home.name} → {o.work.name}
   </div>
 
   <section class="hero">
