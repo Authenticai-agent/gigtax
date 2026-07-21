@@ -19,5 +19,8 @@ npm-debug.log*
 dist/
 build/
 
+# Astro
+.astro/
+
 # Local Netlify folder
 .netlify

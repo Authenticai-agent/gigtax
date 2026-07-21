@@ -1,31 +1,30 @@
-/* MoneyScopeCalculators - Core Tax Engine */
-let TAX_DATA = null;
+/**
+ * MoneyScope — core tax engine.
+ *
+ * Ported verbatim from legacy/js/tax-engine.js. The calculation logic is
+ * unchanged; only the module wiring is new: instead of fetching config at
+ * runtime, the verified 2026 dataset is imported directly from src/data.
+ * Every `data` argument defaults to that dataset. Do not alter a formula here
+ * without a corresponding, sourced change in src/data.
+ */
+import { taxData } from '../data';
+import type { TaxData } from '../data/types';
 
-async function loadTaxData() {
-  if (TAX_DATA) return TAX_DATA;
-  try {
-    const res = await fetch('/data/config.json');
-    if (!res.ok) throw new Error('HTTP error! status: ' + res.status);
-    TAX_DATA = await res.json();
-    return TAX_DATA;
-  } catch (error) {
-    console.error('Failed to load tax config:', error);
-    throw new Error('Unable to load 2026 tax data. Please check your connection or turn off aggressive ad-blockers and refresh.');
-  }
-}
+// Preserves the legacy module-global that calcSSDITaxable referenced.
+const TAX_DATA = taxData;
 
-function formatMoney(n) {
+export function formatMoney(n: number | null | undefined): string {
   if (n === undefined || n === null) return '$0';
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 }
 
-function formatPct(n) {
+export function formatPct(n: number | null | undefined): string {
   if (n === undefined || n === null) return '0%';
   return (n * 100).toFixed(1) + '%';
 }
 
 /* Federal Income Tax */
-function calcFederalTax(taxableIncome, status = 'single', data) {
+export function calcFederalTax(taxableIncome: number, status = 'single', data: any = taxData): number {
   const brackets = data.federal.brackets[status] || data.federal.brackets.single;
   let tax = 0;
   for (const b of brackets) {
@@ -37,7 +36,7 @@ function calcFederalTax(taxableIncome, status = 'single', data) {
 }
 
 /* Self-Employment Tax */
-function calcSETax(netSEIncome, data, w2WagesAlreadyTaxed = 0) {
+export function calcSETax(netSEIncome: number, data: any = taxData, w2WagesAlreadyTaxed = 0) {
   const se = data.federal.selfEmployment;
   const netEarnings = netSEIncome * se.netEarningsMultiplier;
   const remainingSSWageBase = Math.max(0, se.socialSecurityWageBase - w2WagesAlreadyTaxed);
@@ -51,7 +50,7 @@ function calcSETax(netSEIncome, data, w2WagesAlreadyTaxed = 0) {
 }
 
 /* FICA Payroll Tax (W-2 salary, S-Corp) - no 92.35% multiplier, no deductible half */
-function calcFICA(wages, data, w2WagesAlreadyTaxed = 0) {
+export function calcFICA(wages: number, data: any = taxData, w2WagesAlreadyTaxed = 0) {
   const se = data.federal.selfEmployment;
   const remainingSSWageBase = Math.max(0, se.socialSecurityWageBase - w2WagesAlreadyTaxed);
   const ssTaxable = Math.min(wages, remainingSSWageBase);
@@ -63,7 +62,7 @@ function calcFICA(wages, data, w2WagesAlreadyTaxed = 0) {
 }
 
 /* OBBBA Senior Deduction (separate from standard deduction additional amount) */
-function calcSeniorDeductionOBBBA(agi, status, data) {
+export function calcSeniorDeductionOBBBA(agi: number, status: string, data: any = taxData): number {
   const sd = data.federal.standardDeduction.seniorDeductionOBBBA;
   if (!sd) return 0;
   const maxAmount = status === 'mfj' ? sd.amountMFJ : sd.amount;
@@ -75,7 +74,7 @@ function calcSeniorDeductionOBBBA(agi, status, data) {
 }
 
 /* Standard Deduction */
-function getStandardDeduction(status, age65Plus = false, data) {
+export function getStandardDeduction(status: string, age65Plus = false, data: any = taxData): number {
   let base = data.federal.standardDeduction[status] || data.federal.standardDeduction.single;
   if (age65Plus) {
     const isMarried = (status === 'mfj' || status === 'mfs');
@@ -85,7 +84,7 @@ function getStandardDeduction(status, age65Plus = false, data) {
 }
 
 /* QBI Deduction */
-function calcQBI(qbiIncome, taxableIncomeBeforeQBI, status, data, isSSTB = false, w2WagesPaid = 0, qualifiedPropertyBasis = 0) {
+export function calcQBI(qbiIncome: number, taxableIncomeBeforeQBI: number, status: string, data: any = taxData, isSSTB = false, w2WagesPaid = 0, qualifiedPropertyBasis = 0): number {
   const qbi = data.selfEmploymentDeductions.qualifiedBusinessIncomeDeduction;
   let deduction = qbiIncome * qbi.rate;
   const phaseoutStart = status === 'mfj' ? qbi.phaseoutMFJ : qbi.phaseoutSingle;
@@ -109,13 +108,13 @@ function calcQBI(qbiIncome, taxableIncomeBeforeQBI, status, data, isSSTB = false
 }
 
 /* Qualified Dividend 0% Rate Threshold */
-function getQDZeroRateThreshold(status, data) {
+export function getQDZeroRateThreshold(status: string, data: any = taxData): number {
   const brackets = data.federal.capitalGains.longTerm[status] || data.federal.capitalGains.longTerm.single;
   return brackets[0].max || 0; // Upper bound of 0% bracket
 }
 
 /* Child Tax Credit with Phaseout */
-function calcChildTaxCredit(childrenCount, agi, status, data) {
+export function calcChildTaxCredit(childrenCount: number, agi: number, status: string, data: any = taxData): number {
   const ctc = data.federal.childTaxCredit;
   let credit = childrenCount * ctc.amountPerChild;
   const phaseoutStart = status === 'mfj' ? ctc.phaseoutStartMFJ : ctc.phaseoutStartSingle;
@@ -128,11 +127,11 @@ function calcChildTaxCredit(childrenCount, agi, status, data) {
 }
 
 /* Earned Income Credit */
-function calcEIC(earnedIncome, investmentIncome, childrenCount, status, data) {
+export function calcEIC(earnedIncome: number, investmentIncome: number, childrenCount: number, status: string, data: any = taxData): number {
   const eic = data.federal.earnedIncomeCredit;
   if (investmentIncome > eic.investmentIncomeLimit) return 0;
   const brackets = eic.brackets;
-  const bracket = brackets.find(b => b.children === childrenCount);
+  const bracket = brackets.find((b: any) => b.children === childrenCount);
   if (!bracket) return 0;
   if (earnedIncome > bracket.incomeLimit) return 0;
   if (earnedIncome <= bracket.phaseoutStart) return bracket.maxCredit;
@@ -144,7 +143,7 @@ function calcEIC(earnedIncome, investmentIncome, childrenCount, status, data) {
 }
 
 /* State Income Tax */
-function calcStateTax(income, stateCode, data, status = 'single') {
+export function calcStateTax(income: number, stateCode: string, data: any = taxData, status = 'single') {
   const state = data.states[stateCode];
   if (!state) return { tax: 0, effectiveRate: 0 };
   if (state.noIncomeTax || state.type === 'none') return { tax: 0, effectiveRate: 0 };
@@ -172,9 +171,9 @@ function calcStateTax(income, stateCode, data, status = 'single') {
 }
 
 /* SSDI Taxability (Pub 915) */
-function calcSSDITaxable(annualSSDI, otherAGI, taxExemptInterest, filingStatus) {
+export function calcSSDITaxable(annualSSDI: number, otherAGI: number, taxExemptInterest: number, filingStatus: string) {
   const combined = otherAGI + (taxExemptInterest || 0) + (annualSSDI * 0.5);
-  const tiers = TAX_DATA.incomeSources.ssdi.taxability.tiers;
+  const tiers = (TAX_DATA as any).incomeSources.ssdi.taxability.tiers;
 
   // MFS living together: always 85% taxable
   if (filingStatus === 'mfs_living_together') return { taxable: annualSSDI * 0.85, combined, tier: '85% always' };
@@ -183,7 +182,7 @@ function calcSSDITaxable(annualSSDI, otherAGI, taxExemptInterest, filingStatus) 
   const statusTiers = tiers[filingStatus] || tiers.single;
   const lower = statusTiers[0].combinedIncomeMax;  // $25K single / $32K MFJ
   const upper = statusTiers[1].combinedIncomeMax;    // $34K single / $44K MFJ
-  const maxPct = TAX_DATA.incomeSources.ssdi.taxability.maximumTaxablePct;
+  const maxPct = (TAX_DATA as any).incomeSources.ssdi.taxability.maximumTaxablePct;
 
   if (combined <= lower) return { taxable: 0, combined, tier: '0%' };
 
@@ -199,11 +198,11 @@ function calcSSDITaxable(annualSSDI, otherAGI, taxExemptInterest, filingStatus) 
 }
 
 /* ACA Subsidy */
-function calcACASubsidy(magi, householdSize, benchmarkPremium, data) {
+export function calcACASubsidy(magi: number, householdSize: number, benchmarkPremium: number, data: any = taxData) {
   const fpl = data.acaSubsidy.fpl2026['persons' + Math.min(householdSize, 8)] || (data.acaSubsidy.fpl2026.persons8 + (householdSize - 8) * data.acaSubsidy.fpl2026.additionalPerPerson);
   const fplPct = magi / fpl;
   if (fplPct > 4.0) return { eligible: false, fplPct, fpl, subsidy: 0, maxPremium: 0, cliffRisk: true };
-  const ap = data.acaSubsidy.applicablePercentages2026.find(a => fplPct >= a.fplMin && (a.fplMax === null || fplPct < a.fplMax));
+  const ap = data.acaSubsidy.applicablePercentages2026.find((a: any) => fplPct >= a.fplMin && (a.fplMax === null || fplPct < a.fplMax));
   if (!ap || ap.pct === null) return { eligible: false, fplPct, fpl, subsidy: 0, maxPremium: 0, cliffRisk: true };
   const maxPremium = magi * ap.pct / 12;
   const subsidy = Math.max(0, benchmarkPremium - maxPremium);
@@ -212,7 +211,7 @@ function calcACASubsidy(magi, householdSize, benchmarkPremium, data) {
 }
 
 /* Entity Comparison: Sole Prop vs LLC vs S-Corp */
-function compareEntities(netProfit, w2Income, status, stateCode, data) {
+export function compareEntities(netProfit: number, w2Income: number, status: string, stateCode: string, data: any = taxData) {
   const stdDed = getStandardDeduction(status, false, data);
 
   // Sole Prop
@@ -248,7 +247,7 @@ function compareEntities(netProfit, w2Income, status, stateCode, data) {
 }
 
 /* Capital Gains Tax (short-term taxed as ordinary, long-term at preferential rates) */
-function calcCapitalGains(shortTermProceeds, shortTermBasis, longTermProceeds, longTermBasis, taxableIncomeBeforeCG, status, data) {
+export function calcCapitalGains(shortTermProceeds: number, shortTermBasis: number, longTermProceeds: number, longTermBasis: number, taxableIncomeBeforeCG: number, status: string, data: any = taxData) {
   const shortTermGain = Math.max(0, shortTermProceeds - shortTermBasis);
   const longTermGain = Math.max(0, longTermProceeds - longTermBasis);
   const totalGain = shortTermGain + longTermGain;
@@ -282,7 +281,7 @@ function calcCapitalGains(shortTermProceeds, shortTermBasis, longTermProceeds, l
 }
 
 /* Long-Term Capital Gains Tax (standalone, given pre-computed LTCG gain) */
-function calcLTCGTax(ltcgGain, taxableOrdinaryIncome, status, data) {
+export function calcLTCGTax(ltcgGain: number, taxableOrdinaryIncome: number, status: string, data: any = taxData): number {
   const brackets = data.federal.capitalGains.longTerm[status] || data.federal.capitalGains.longTerm.single;
   let tax = 0;
   const cgStart = taxableOrdinaryIncome;
@@ -299,20 +298,16 @@ function calcLTCGTax(ltcgGain, taxableOrdinaryIncome, status, data) {
 }
 
 /* Stock Options Tax (simplified) */
-function calcOptionsTax(isoShares, isoExercisePrice, isoFMV, nsoShares, nsoExercisePrice, nsoFMV, status, data) {
+export function calcOptionsTax(isoShares: number, isoExercisePrice: number, isoFMV: number, nsoShares: number, nsoExercisePrice: number, nsoFMV: number, status: string, data: any = taxData) {
   // ISO: No regular tax at exercise, but AMT adjustment = (FMV - exercisePrice) * shares
   const isoBargain = Math.max(0, isoFMV - isoExercisePrice) * isoShares;
   // NSO: Ordinary income at exercise = (FMV - exercisePrice) * shares
   const nsoOrdinary = Math.max(0, nsoFMV - nsoExercisePrice) * nsoShares;
-  // At sale (assuming qualified disposition for ISO after 1+ year hold):
-  // ISO: Long-term capital gain on (salePrice - exercisePrice)
-  // NSO: Capital gain on (salePrice - FMV at exercise)
-  // For this estimator we model the income recognized
   return { isoBargainElement: isoBargain, nsoOrdinaryIncome: nsoOrdinary, totalCompensationIncome: nsoOrdinary };
 }
 
 /* Quarterly Estimated Tax */
-function calcQuarterly(annualTax, priorYearTax, priorYearAGI, data) {
+export function calcQuarterly(annualTax: number, priorYearTax: number, priorYearAGI: number, data: any = taxData) {
   const safeHarbor = (priorYearAGI > 150000) ? priorYearTax * 1.10 : priorYearTax;
   // If no prior year tax (first year filer), use 90% of current year
   const target = priorYearTax > 0 ? Math.min(annualTax * 0.90, safeHarbor) : annualTax * 0.90;
@@ -321,13 +316,13 @@ function calcQuarterly(annualTax, priorYearTax, priorYearAGI, data) {
 }
 
 /* 1099-K Reconciliation */
-function reconcile1099K(gross1099K, platformFees, refunds, shippingCharged, cogs, otherDeductions) {
+export function reconcile1099K(gross1099K: number, platformFees: number, refunds: number, shippingCharged: number, cogs: number, otherDeductions: number) {
   const net = gross1099K - platformFees - refunds - shippingCharged - cogs - otherDeductions;
   return { gross: gross1099K, netTaxable: Math.max(0, net), deductions: platformFees + refunds + shippingCharged + cogs + otherDeductions };
 }
 
 /* Brand Deal Calculator */
-function calcBrandDeal(dealAmount, otherIncome, deductions, status, stateCode, data) {
+export function calcBrandDeal(dealAmount: number, otherIncome: number, deductions: number, status: string, stateCode: string, data: any = taxData) {
   const netSE = dealAmount - deductions;
   const se = calcSETax(netSE, data);
   const agi = otherIncome + netSE - se.deductibleHalf;
@@ -342,7 +337,7 @@ function calcBrandDeal(dealAmount, otherIncome, deductions, status, stateCode, d
 }
 
 /* Combined W-2 + SE Calculator */
-function calcCombined(w2Income, seGross, seDeductions, status, stateCode, data, age65 = false) {
+export function calcCombined(w2Income: number, seGross: number, seDeductions: number, status: string, stateCode: string, data: any = taxData, age65 = false) {
   const netSE = Math.max(0, seGross - seDeductions);
   const se = calcSETax(netSE, data, w2Income);
   const totalIncome = w2Income + netSE;
@@ -359,10 +354,10 @@ function calcCombined(w2Income, seGross, seDeductions, status, stateCode, data, 
 }
 
 /* Deductions Builder */
-function buildDeductionsList(profileKey, data) {
-  const all = [];
+export function buildDeductionsList(profileKey: string, data: any = taxData): string[] {
+  const all: string[] = [];
   const p = data.platforms;
-  for (const cat of Object.values(p)) {
+  for (const cat of Object.values(p) as any[]) {
     if (cat[profileKey]) {
       const item = cat[profileKey];
       if (item.keyDeductions) all.push(...item.keyDeductions);
@@ -374,7 +369,7 @@ function buildDeductionsList(profileKey, data) {
 }
 
 /* S-Corp Salary Optimizer */
-function optimizeSCorpSalary(netProfit, w2Income, status, stateCode, data, payrollAdminCost = 0) {
+export function optimizeSCorpSalary(netProfit: number, w2Income: number, status: string, stateCode: string, data: any = taxData, payrollAdminCost = 0) {
   const results = [];
   const stdDed = getStandardDeduction(status, false, data);
   for (let pct = 20; pct <= 60; pct += 5) {
@@ -396,7 +391,7 @@ function optimizeSCorpSalary(netProfit, w2Income, status, stateCode, data, payro
 }
 
 /* Delaware Franchise Tax */
-function calcDelawareFranchiseTax(authorizedShares, grossAssets, issuedShares, isLargeCorp = false, data = TAX_DATA) {
+export function calcDelawareFranchiseTax(authorizedShares: number, grossAssets: number, issuedShares: number, isLargeCorp = false, data: any = taxData) {
   const ft = data.entityTypes.delawareCCorp.franchiseTax;
   const maxCap = isLargeCorp ? ft.authorizedSharesMethod.maximum_largeCorporateFiler : ft.authorizedSharesMethod.maximum_standard;
   const sched = ft.authorizedSharesMethod.schedule;
@@ -420,13 +415,15 @@ function calcDelawareFranchiseTax(authorizedShares, grossAssets, issuedShares, i
   return { authMethod, parValueMethod: parCapped, best: Math.min(authMethod, parCapped), filingFee: ft.annual_report_fee_nonexempt };
 }
 
-if (typeof window !== 'undefined') window.TaxEngine = {
-  loadTaxData, formatMoney, formatPct,
+export const TaxEngine = {
+  formatMoney, formatPct,
   calcFederalTax, calcSETax, calcFICA, getStandardDeduction, calcQBI,
   calcStateTax, calcSSDITaxable, calcACASubsidy,
   getQDZeroRateThreshold, calcChildTaxCredit, calcSeniorDeductionOBBBA, calcEIC,
   calcCapitalGains, calcLTCGTax, calcOptionsTax,
   compareEntities, calcQuarterly, reconcile1099K,
   calcBrandDeal, calcCombined, buildDeductionsList,
-  optimizeSCorpSalary, calcDelawareFranchiseTax
+  optimizeSCorpSalary, calcDelawareFranchiseTax,
 };
+
+export type { TaxData };
