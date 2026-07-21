@@ -23,7 +23,7 @@ import {
   SAFE_HARBOR_PRIOR,
   PENALTY_RATE,
 } from '../../../lib/quarterly-copy';
-import { describeStateFacts, neighbourComparison, describeNeighbours } from '../../../lib/state-facts';
+import { describeStateFacts, neighbourComparison, describeNeighbours, neighbourSentences } from '../../../lib/state-facts';
 import type { StateData } from '../../../data/types';
 
 export function getStaticPaths() {
@@ -49,6 +49,7 @@ const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);
 const facts = describeStateFacts(code, state);
 const neighbours = neighbourComparison(code, EXAMPLE_INCOME);
 const neighbourSummary = describeNeighbours(code, state, neighbours, EXAMPLE_INCOME);
+const neighbourLines = neighbourSentences(state, neighbours);
 
 const title = `Quarterly tax calculator — ${state.name} (2026)`;
 const description = `What to send each quarter on 1099 income in ${state.name} for 2026: the four 1040-ES due dates, safe harbor targets, and the ${state.name} share.`;
@@ -159,6 +160,11 @@ const description = `What to send each quarter on 1099 income in ${state.name} f
         ))}
       </tbody>
     </table>
+  )}
+  {neighbourLines.length > 0 && (
+    <ul>
+      {neighbourLines.map((l) => <li data-source="lib/tax-engine.ts calcStateTax()">{l}</li>)}
+    </ul>
   )}
 
   <h2>What this schedule assumes</h2>

@@ -19,7 +19,7 @@ import {
   buildStateFaqs,
   stateSlug,
 } from '../../../lib/state-copy';
-import { describeStateFacts, neighbourComparison, describeNeighbours } from '../../../lib/state-facts';
+import { describeStateFacts, neighbourComparison, describeNeighbours, neighbourSentences } from '../../../lib/state-facts';
 import type { StateData } from '../../../data/types';
 
 export function getStaticPaths() {
@@ -52,6 +52,7 @@ const noTax = state.noIncomeTax === true || state.type === 'none';
 const facts = describeStateFacts(code, state);
 const neighbours = neighbourComparison(code, EXAMPLE_INCOME);
 const neighbourSummary = describeNeighbours(code, state, neighbours, EXAMPLE_INCOME);
+const neighbourLines = neighbourSentences(state, neighbours);
 
 const title = `1099 tax calculator — ${state.name} (2026)`;
 const description = `Estimate 2026 self-employment, federal, and ${state.name} state income tax on 1099 income. Worked example and free calculator, figures verified from IRS sources.`;
@@ -137,6 +138,11 @@ const description = `Estimate 2026 self-employment, federal, and ${state.name} s
         ))}
       </tbody>
     </table>
+  )}
+  {neighbourLines.length > 0 && (
+    <ul>
+      {neighbourLines.map((l) => <li data-source="lib/tax-engine.ts calcStateTax()">{l}</li>)}
+    </ul>
   )}
 
   <h2>What this estimate assumes</h2>

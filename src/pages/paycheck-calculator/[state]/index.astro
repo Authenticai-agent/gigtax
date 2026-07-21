@@ -26,7 +26,7 @@ const { code, state } = Astro.props as Props;
 const EXAMPLE = 75000;
 const r = paycheckEstimate(EXAMPLE, code, 'single');
 const ladder = [45000, 75000, 120000].map((g) => paycheckEstimate(g, code, 'single'));
-const facts = describeStateFacts(code, state);
+const facts = describeStateFacts(code, state, 'wages');
 const neighbours = neighbourComparison(code, EXAMPLE);
 const neighbourSummary = describeNeighbours(code, state, neighbours, EXAMPLE);
 const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);

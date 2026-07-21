@@ -56,7 +56,7 @@ export function stateFacts(code: string, state: StateData): StateFacts {
  * 2026 rate-change note. Only facts that are actually true of this state are
  * emitted — no "this state does not have X" filler.
  */
-export function describeStateFacts(code: string, state: StateData): string[] {
+export function describeStateFacts(code: string, state: StateData, incomeNoun = 'self-employment income'): string[] {
   const f = stateFacts(code, state);
   const out: string[] = [];
 
@@ -94,7 +94,7 @@ export function describeStateFacts(code: string, state: StateData): string[] {
   if (f.taxesSocialSecurity) {
     out.push(
       `${state.name} is one of the twelve states that still taxes Social Security benefits, ` +
-        `which matters if you are drawing benefits alongside self-employment income.`,
+        `which matters if you are drawing benefits alongside ${incomeNoun}.`,
     );
   }
 
@@ -159,6 +159,28 @@ export function describeNeighbours(code: string, state: StateData, rows: Neighbo
     `${cheapest.noTax ? 'nothing at all' : formatMoney(cheapest.tax)} and ${dearest.name} the heaviest at ` +
     `${formatMoney(dearest.tax)} — a spread of ${formatMoney(dearest.tax - cheapest.tax)} on the same income.`
   );
+}
+
+/**
+ * One sentence per bordering state, with the actual difference in dollars.
+ * Length and content scale with how many neighbours a state has — Nevada has
+ * five, Washington two — which is real variance rather than padding, and it is
+ * the comparison a reader near a border is actually making.
+ */
+export function neighbourSentences(state: StateData, rows: NeighbourRow[]): string[] {
+  return rows.map((n) => {
+    if (n.delta === 0) {
+      return `${n.name} works out the same as ${state.name} on this income.`;
+    }
+    const cheaper = n.delta < 0;
+    const amount = formatMoney(Math.abs(n.delta));
+    if (n.noTax) {
+      return `${n.name} has no income tax at all, so the same work done there costs ${amount} less in ` +
+        `state tax than it does in ${state.name}.`;
+    }
+    return `${n.name} would take ${cheaper ? `${amount} less` : `${amount} more`} — ` +
+      `${formatMoney(n.tax)} against ${state.name}'s ${formatMoney(n.tax - n.delta)}.`;
+  });
 }
 
 function lowerFirst(s: string): string {

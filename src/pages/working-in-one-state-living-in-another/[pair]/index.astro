@@ -10,9 +10,10 @@
  */
 import Base from '../../../layouts/Base.astro';
 import { states } from '../../../data/states';
-import { pairOutcome, stateSlug, highValuePairs, noTaxWorkPages, noTaxWorkSlug, noTaxHomePages, noTaxHomeSlug } from '../../../lib/state-pair';
+import { pairOutcome, stateSlug, highValuePairs, noTaxWorkPages, noTaxWorkSlug, noTaxHomePages, noTaxHomeSlug, pairLadder, reciprocityWorth } from '../../../lib/state-pair';
 import { formatMoney } from '../../../lib/tax-engine';
-import { stateFacts } from '../../../lib/state-facts';
+import { stateFacts, describeStateFacts } from '../../../lib/state-facts';
+import { describeStateLayer, describeStateTax } from '../../../lib/state-copy';
 
 export function getStaticPaths() {
   const pairs = highValuePairs().map(([homeCode, workCode]) => ({
@@ -41,6 +42,24 @@ const o = pairOutcome(homeCode, workCode);
 // City, or a Delaware resident working in Philadelphia, owes a city tax that
 // no reciprocity agreement and no state-level credit touches.
 const workLocal = stateFacts(workCode, o.work).localIncomeTax;
+const collapsed = Boolean(noTaxWork || noTaxHome);
+const ladder = collapsed ? [] : pairLadder(homeCode, workCode);
+const worth = !collapsed && o.type === 'reciprocity' ? reciprocityWorth(homeCode, workCode, o.income) : null;
+// Home-state detail only. Adding the WORK state's facts made same-work-state
+// pairs more alike, not less (they share it); the home state is what separates
+// two pages pointing at the same work state.
+const detailCode = noTaxHome ? workCode : homeCode;
+const detailState = noTaxHome ? o.work : o.home;
+const homeLayer = describeStateLayer(detailState, 'wages');
+const homeFacts = describeStateFacts(detailCode, detailState, 'wages');
+// The reverse commute. This is the one block that belongs to the PAIR rather
+// than to either state, so it is what separates two pages that share a home
+// state from each other AND two that share a work state.
+const reverse = collapsed ? null : pairOutcome(workCode, homeCode, o.income);
+const reverseSlug = collapsed ? null
+  : `living-in-${stateSlug(o.work.name)}-working-in-${stateSlug(o.home.name)}`;
+const reverseExists = collapsed ? false
+  : highValuePairs().some(([h, w]) => h === workCode && w === homeCode);
 
 const joinList = (names: string[], conj: 'and' | 'or') => names.length > 1
   ? `${names.slice(0, -1).join(', ')} ${conj} ${names[names.length - 1]}`
@@ -141,6 +160,79 @@ const description = noTaxWork
     State income tax on wages only, 2026 rates. Not tax advice —
     <a href="/working-in-one-state-living-in-another/">what this does and doesn't cover</a>.
   </p>
+
+  {homeLayer.length > 0 && (
+    <>
+      <h2>{noTaxHome ? `What ${o.work.name} charges as the work state` : `What ${o.home.name} charges as your home state`}</h2>
+      {homeLayer.map((p) => <p data-source={`data/states.ts → ${detailCode}`}>{p}</p>)}
+      {homeFacts.map((p) => <p data-source={`data/states.ts → stateMetadata, ${detailCode}.note`}>{p}</p>)}
+    </>
+  )}
+
+  {ladder.length > 0 && (
+    <>
+      <h2>The same commute at three salaries</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th>Wages</th><th>{o.work.name}</th><th>{o.home.name}</th><th>Total state tax</th></tr>
+        </thead>
+        <tbody>
+          {ladder.map((row) => (
+            <tr>
+              <td>{formatMoney(row.income)}</td>
+              <td>{formatMoney(row.workTax)}</td>
+              <td>{formatMoney(row.homeTaxAfterCredit)}</td>
+              <td>{formatMoney(row.totalStateTax)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )}
+
+  {worth && (
+    <>
+      <h2>What the {o.home.name}–{o.work.name} agreement is actually worth</h2>
+      <p data-source={`data/states.ts → ${workCode}`}>{describeStateTax(o.work)}</p>
+      <p data-source="lib/tax-engine.ts calcStateTax() + data/reciprocity.ts">
+        Without it you would pay {o.work.name} {formatMoney(worth.workTax)} as a nonresident and then
+        claim a credit on your {o.home.name} return, landing at {formatMoney(worth.withoutAgreement)} —
+        {worth.cashDifference === 0
+          ? ' the same total you pay now.'
+          : ` ${formatMoney(Math.abs(worth.cashDifference))} ${worth.cashDifference > 0 ? 'more' : 'less'} than the ${formatMoney(worth.homeTax)} you pay with it.`}
+        {worth.cashDifference === 0
+          ? ' The agreement saves you the second return and the year-long cash-flow gap, rather than tax.'
+          : ''}
+      </p>
+    </>
+  )}
+
+  {!collapsed && (o.type === 'credit' || o.type === 'az-wec') && (
+    <>
+      <h2>What {o.work.name} charges as the work state</h2>
+      <p data-source={`data/states.ts → ${workCode}`}>{describeStateTax(o.work)}</p>
+      <p data-source="lib/tax-engine.ts calcStateTax()">
+        On {formatMoney(o.income)} that is {formatMoney(o.workTax)} to {o.work.name}, against
+        {' '}{formatMoney(o.homeTaxBeforeCredit)} of {o.home.name} tax before the credit. Because the
+        credit is capped at your {o.home.name} liability, the state that ends up governing what you pay
+        is {o.workTax >= o.homeTaxBeforeCredit ? o.work.name : o.home.name}.
+      </p>
+    </>
+  )}
+
+  {reverse && (
+    <>
+      <h2>The same border, the other way round</h2>
+      <p data-source="lib/tax-engine.ts calcStateTax()">
+        {reverse.totalStateTax === o.totalStateTax
+          ? `Commuting the other way — living in ${o.work.name} and working in ${o.home.name} — comes to the same ${formatMoney(o.totalStateTax)} on ${formatMoney(o.income)}. Which side of the line you sleep on does not change the bill for this pair.`
+          : `Living in ${o.work.name} and working in ${o.home.name} instead would cost ${formatMoney(reverse.totalStateTax)} on the same ${formatMoney(o.income)}, against ${formatMoney(o.totalStateTax)} for this direction — a difference of ${formatMoney(Math.abs(reverse.totalStateTax - o.totalStateTax))}. Your residence, not your workplace, is what drives it.`}
+        {reverseExists && (
+          <> <a href={`/working-in-one-state-living-in-another/${reverseSlug}/`}>See the {o.work.name} → {o.home.name} direction</a>.</>
+        )}
+      </p>
+    </>
+  )}
 
   {workLocal && (
     <div class="callout">

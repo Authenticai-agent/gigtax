@@ -65,13 +65,13 @@ export function bracketRows(state: StateData): Array<{ range: string; rate: stri
  * brackets, standardDeduction, exemptBelow and mentalHealthSurcharge from
  * data/states.ts — nothing here is hand-written per state.
  */
-export function describeStateLayer(state: StateData): string[] {
+export function describeStateLayer(state: StateData, incomeNoun = '1099 profit'): string[] {
   const paras: string[] = [];
   if (state.noIncomeTax || state.type === 'none') {
     paras.push(
       `${state.name} levies no personal income tax for 2026, so the state column of the ` +
-        `estimate above is zero. Federal income tax and self-employment tax still apply in full — ` +
-        `a no-income-tax state does not reduce either.`,
+        `estimate above is zero. The federal layer still applies in full — a no-income-tax ` +
+        `state does not reduce it.`,
     );
     return paras;
   }
@@ -79,14 +79,14 @@ export function describeStateLayer(state: StateData): string[] {
   if (state.type === 'flat' && typeof state.rate === 'number') {
     paras.push(
       `${state.name} applies a single ${pct(state.rate)} rate to taxable income for 2026, ` +
-        `so every extra dollar of 1099 profit is taxed at the same state rate.`,
+        `so every extra dollar of ${incomeNoun} is taxed at the same state rate.`,
     );
   } else {
     const rows = bracketRows(state);
     paras.push(
       `${state.name} taxes income on ${rows.length} graduated brackets for 2026, from ` +
-        `${rows[0]?.rate ?? '—'} up to ${pct(state.topRate)}. Because 1099 profit stacks on top of ` +
-        `any other income, an extra job can push part of it into the next bracket.`,
+        `${rows[0]?.rate ?? '—'} up to ${pct(state.topRate)}. Because ${incomeNoun} stacks on top of ` +
+        `any other income, a second source can push part of it into the next bracket.`,
     );
   }
 

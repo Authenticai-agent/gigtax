@@ -190,6 +190,39 @@ export function pairOutcome(homeCode: string, workCode: string, income = 70000, 
   };
 }
 
+/**
+ * The same pair at three income levels. Two pages that share a work state — say
+ * Virginia→Maryland and West Virginia→Maryland — differ only in the home state,
+ * so the figures that actually separate them are the home-state ones, and they
+ * separate further as income rises through different brackets.
+ */
+export function pairLadder(homeCode: string, workCode: string, incomes = [45000, 70000, 120000]): PairOutcome[] {
+  return incomes.map((income) => pairOutcome(homeCode, workCode, income));
+}
+
+/**
+ * What a reciprocity pair would cost WITHOUT the agreement: the work state
+ * would tax the wages, the home state would credit it back, and the net would
+ * be the higher of the two rates. Quantifies what the agreement is worth, which
+ * is different for every pair and is the question behind "does this matter to
+ * me".
+ */
+export function reciprocityWorth(homeCode: string, workCode: string, income = 70000, status = 'single') {
+  const workTax = calcStateTax(income, workCode, undefined, status).tax;
+  const homeTax = calcStateTax(income, homeCode, undefined, status).tax;
+  const credit = Math.min(workTax, homeTax);
+  const withoutAgreement = workTax + Math.max(0, homeTax - credit);
+  return {
+    workTax,
+    homeTax,
+    withoutAgreement,
+    // What the agreement saves in cash is usually nothing — the credit already
+    // prevents double taxation. What it saves is the second return, plus any
+    // cash-flow gap where the work state withholds at a higher rate all year.
+    cashDifference: withoutAgreement - homeTax,
+  };
+}
+
 /** "a" vs "an" for a state name, so generated prose reads correctly. */
 function article(name: string): string {
   return /^[AEIOU]/.test(name) ? 'an' : 'a';
