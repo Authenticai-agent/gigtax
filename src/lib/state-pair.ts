@@ -16,19 +16,102 @@ import { states } from '../data/states';
 import { hasReciprocity, reciprocity, AZ_WEC_WITHHOLDING_EXEMPTION } from '../data/reciprocity';
 import { adjacency } from '../data/adjacency';
 import { calcStateTax, formatMoney } from './tax-engine';
+import { stateSlug as stateSlugFn } from './slug';
 import type { StateData } from '../data/types';
+
+const noTax = (s: StateData) => s.noIncomeTax === true || s.type === 'none';
 
 /**
  * High-value home→work pairs to generate: real commuter corridors (bordering
  * states) plus every reciprocity pair (both directions) plus the Arizona WEC
  * pairs. Quality-first per the migration plan — no all-pairs matrix.
  */
-export function highValuePairs(): Array<[string, string]> {
+function allCandidatePairs(): Array<[string, string]> {
   const set = new Set<string>();
   for (const [a, nbrs] of Object.entries(adjacency)) for (const b of nbrs) set.add(`${a}>${b}`);
   for (const [a, info] of Object.entries(reciprocity)) for (const b of info.partners) { set.add(`${a}>${b}`); set.add(`${b}>${a}`); }
   for (const h of AZ_WEC_WITHHOLDING_EXEMPTION.eligibleResidentStates) set.add(`${h}>AZ`);
   return [...set].map((s) => s.split('>') as [string, string]);
+}
+
+/**
+ * A pair collapses when one side has no income tax, because that side then
+ * contributes nothing but its name and every pair sharing the other side reads
+ * identically. Both directions collapse, for the same reason:
+ *
+ *  - work state has none  -> Idaho→Nevada == Idaho→Wyoming == Idaho→Washington
+ *  - home state has none  -> Florida→Alabama == Tennessee→Alabama
+ *
+ * Reciprocity pairs never collapse: they carry a form number and conditions.
+ */
+function collapsesOnWork(homeCode: string, workCode: string): boolean {
+  return noTax(states[workCode]) && !hasReciprocity(homeCode, workCode);
+}
+
+function collapsesOnHome(homeCode: string, workCode: string): boolean {
+  return !noTax(states[workCode]) && noTax(states[homeCode]) && !hasReciprocity(homeCode, workCode);
+}
+
+/**
+ * Home→work pairs that deserve their own page.
+ *
+ * Excludes pairs whose work state has no income tax. Those are not distinct
+ * pages: living in Idaho and working in Nevada has the same answer as working in
+ * Wyoming or Washington, because a work state that taxes nothing contributes
+ * nothing but its name. The quality gate scored those at 81–84% against each
+ * other. They are served instead by one `noTaxWorkPages()` entry per home state.
+ *
+ * The mirror case — home state has no income tax, work state does — is KEPT,
+ * because there the work state's rate is the entire answer and it differs for
+ * every work state.
+ */
+export function highValuePairs(): Array<[string, string]> {
+  return allCandidatePairs().filter(([h, w]) => !collapsesOnWork(h, w) && !collapsesOnHome(h, w));
+}
+
+/**
+ * One entry per home state that borders at least one no-income-tax state:
+ * the home state and every no-tax work state it reaches.
+ */
+export function noTaxWorkPages(): Array<{ homeCode: string; workCodes: string[] }> {
+  const byHome = new Map<string, string[]>();
+  for (const [h, w] of allCandidatePairs()) {
+    if (!collapsesOnWork(h, w)) continue;
+    if (!byHome.has(h)) byHome.set(h, []);
+    byHome.get(h)!.push(w);
+  }
+  return [...byHome.entries()]
+    .map(([homeCode, workCodes]) => ({
+      homeCode,
+      workCodes: workCodes.sort((a, b) => states[a].name.localeCompare(states[b].name)),
+    }))
+    .sort((a, b) => states[a.homeCode].name.localeCompare(states[b.homeCode].name));
+}
+
+/** The mirror: one entry per work state reachable from a no-income-tax state. */
+export function noTaxHomePages(): Array<{ workCode: string; homeCodes: string[] }> {
+  const byWork = new Map<string, string[]>();
+  for (const [h, w] of allCandidatePairs()) {
+    if (!collapsesOnHome(h, w)) continue;
+    if (!byWork.has(w)) byWork.set(w, []);
+    byWork.get(w)!.push(h);
+  }
+  return [...byWork.entries()]
+    .map(([workCode, homeCodes]) => ({
+      workCode,
+      homeCodes: homeCodes.sort((a, b) => states[a].name.localeCompare(states[b].name)),
+    }))
+    .sort((a, b) => states[a.workCode].name.localeCompare(states[b.workCode].name));
+}
+
+/** Slug for a collapsed page: living-in-idaho-working-in-a-no-income-tax-state. */
+export function noTaxWorkSlug(homeCode: string): string {
+  return `living-in-${stateSlugFn(states[homeCode].name)}-working-in-a-no-income-tax-state`;
+}
+
+/** Slug for the mirror: living-in-a-no-income-tax-state-working-in-alabama. */
+export function noTaxHomeSlug(workCode: string): string {
+  return `living-in-a-no-income-tax-state-working-in-${stateSlugFn(states[workCode].name)}`;
 }
 
 export { stateSlug } from './slug';
@@ -51,8 +134,6 @@ export interface PairOutcome {
   headline: string;
   explanation: string;
 }
-
-const noTax = (s: StateData) => s.noIncomeTax === true || s.type === 'none';
 
 /** Compute the state-tax outcome for a resident of `homeCode` working in `workCode`. */
 export function pairOutcome(homeCode: string, workCode: string, income = 70000, status = 'single'): PairOutcome {

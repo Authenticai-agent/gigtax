@@ -6,7 +6,11 @@
  */
 import Base from '../../layouts/Base.astro';
 import { states } from '../../data/states';
-import { highValuePairs, stateSlug } from '../../lib/state-pair';
+import {
+  highValuePairs, stateSlug,
+  noTaxWorkPages, noTaxWorkSlug,
+  noTaxHomePages, noTaxHomeSlug,
+} from '../../lib/state-pair';
 
 // Group pairs by home state, sorted by state name.
 const byHome = new Map<string, string[]>();
@@ -14,8 +18,15 @@ for (const [home, work] of highValuePairs()) {
   if (!byHome.has(home)) byHome.set(home, []);
   byHome.get(home)!.push(work);
 }
-const homes = [...byHome.keys()].sort((a, b) => states[a].name.localeCompare(states[b].name));
-const total = highValuePairs().length;
+// Where one side has no income tax the answer does not vary by that side, so
+// those combinations are one page each instead of one per partner state. They
+// are listed here too — nothing generated is left orphaned.
+const collapsedWork = noTaxWorkPages();
+const collapsedHome = noTaxHomePages();
+const noTaxWorkFor = new Map(collapsedWork.map((e) => [e.homeCode, e.workCodes]));
+const homes = [...new Set([...byHome.keys(), ...noTaxWorkFor.keys()])]
+  .sort((a, b) => states[a].name.localeCompare(states[b].name));
+const total = highValuePairs().length + collapsedWork.length + collapsedHome.length;
 ---
 
 <Base
@@ -35,11 +46,30 @@ const total = highValuePairs().length;
     actual 2026 rules and a worked example for each.
   </p>
 
+  {collapsedHome.length > 0 && (
+    <>
+      <h2>Living in a state with no income tax</h2>
+      <p>
+        Nine states levy no personal income tax. If you live in one of them the home-state half of the
+        question disappears entirely, so these are grouped by where you work rather than where you live.
+      </p>
+      <ul class="link-columns">
+        {collapsedHome.map((e) => (
+          <li>
+            <a href={`/working-in-one-state-living-in-another/${noTaxHomeSlug(e.workCode)}/`}>
+              …working in {states[e.workCode].name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
   {homes.map((home) => (
     <>
       <h2>Living in {states[home].name}</h2>
       <ul class="link-columns">
-        {byHome.get(home)!
+        {(byHome.get(home) ?? [])
           .sort((a, b) => states[a].name.localeCompare(states[b].name))
           .map((work) => (
             <li>
@@ -48,6 +78,13 @@ const total = highValuePairs().length;
               </a>
             </li>
           ))}
+        {noTaxWorkFor.has(home) && (
+          <li>
+            <a href={`/working-in-one-state-living-in-another/${noTaxWorkSlug(home)}/`}>
+              …working in a no-income-tax state ({noTaxWorkFor.get(home)!.map((c) => states[c].name).join(', ')})
+            </a>
+          </li>
+        )}
       </ul>
     </>
   ))}

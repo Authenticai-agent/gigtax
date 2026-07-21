@@ -10,19 +10,31 @@
  */
 import Base from '../../../layouts/Base.astro';
 import { states } from '../../../data/states';
-import { pairOutcome, stateSlug, highValuePairs } from '../../../lib/state-pair';
+import { pairOutcome, stateSlug, highValuePairs, noTaxWorkPages, noTaxWorkSlug, noTaxHomePages, noTaxHomeSlug } from '../../../lib/state-pair';
 import { formatMoney } from '../../../lib/tax-engine';
 import { stateFacts } from '../../../lib/state-facts';
 
 export function getStaticPaths() {
-  return highValuePairs().map(([homeCode, workCode]) => {
-    const pair = `living-in-${stateSlug(states[homeCode].name)}-working-in-${stateSlug(states[workCode].name)}`;
-    return { params: { pair }, props: { homeCode, workCode } };
-  });
+  const pairs = highValuePairs().map(([homeCode, workCode]) => ({
+    params: { pair: `living-in-${stateSlug(states[homeCode].name)}-working-in-${stateSlug(states[workCode].name)}` },
+    props: { homeCode, workCode, noTaxWork: null },
+  }));
+  // One collapsed page per home state that borders any no-income-tax state,
+  // standing in for what used to be a separate near-identical page per no-tax
+  // work state. See noTaxWorkPages() for why.
+  const collapsedWork = noTaxWorkPages().map(({ homeCode, workCodes }) => ({
+    params: { pair: noTaxWorkSlug(homeCode) },
+    props: { homeCode, workCode: workCodes[0], noTaxWork: workCodes, noTaxHome: null },
+  }));
+  const collapsedHome = noTaxHomePages().map(({ workCode, homeCodes }) => ({
+    params: { pair: noTaxHomeSlug(workCode) },
+    props: { homeCode: homeCodes[0], workCode, noTaxWork: null, noTaxHome: homeCodes },
+  }));
+  return [...pairs, ...collapsedWork, ...collapsedHome];
 }
 
-interface Props { homeCode: string; workCode: string; }
-const { homeCode, workCode } = Astro.props as Props;
+interface Props { homeCode: string; workCode: string; noTaxWork: string[] | null; noTaxHome: string[] | null; }
+const { homeCode, workCode, noTaxWork, noTaxHome } = Astro.props as Props;
 const o = pairOutcome(homeCode, workCode);
 // The work state's local income tax is the single most consequential thing a
 // cross-border commuter can miss — a New Jersey resident working in New York
@@ -30,22 +42,82 @@ const o = pairOutcome(homeCode, workCode);
 // no reciprocity agreement and no state-level credit touches.
 const workLocal = stateFacts(workCode, o.work).localIncomeTax;
 
-const title = `Living in ${o.home.name}, working in ${o.work.name} — 2026 state tax guide`;
-const description = `How state income tax works if you live in ${o.home.name} and work in ${o.work.name} in 2026: ${o.type === 'reciprocity' ? 'reciprocity agreement' : o.type === 'credit' || o.type === 'az-wec' ? 'nonresident return and credit for taxes paid' : 'which state taxes your wages'}, with a worked example.`;
+const joinList = (names: string[], conj: 'and' | 'or') => names.length > 1
+  ? `${names.slice(0, -1).join(', ')} ${conj} ${names[names.length - 1]}`
+  : names[0] ?? '';
+const andList = (names: string[]) => joinList(names, 'and');
+const orList = (names: string[]) => joinList(names, 'or');
+const noTaxNames = (noTaxWork ?? []).map((c) => states[c].name);
+const noTaxList = andList(noTaxNames);
+const homeNames = (noTaxHome ?? []).map((c) => states[c].name);
+const homeList = andList(homeNames);
+const homeListOr = orList(homeNames);
+const noTaxListOr = orList(noTaxNames);
+
+const title = noTaxWork
+  ? `Living in ${o.home.name}, working in a no-income-tax state (2026)`
+  : noTaxHome
+    ? `Living in a no-income-tax state, working in ${o.work.name} (2026)`
+    : `Living in ${o.home.name}, working in ${o.work.name} — 2026 state tax guide`;
+const description = noTaxWork
+  ? `Live in ${o.home.name} and commute to ${noTaxList}? ${o.home.name} still taxes the wages. What you owe in 2026, with a worked example.`
+  : noTaxHome
+    ? `Live in ${homeList} and work in ${o.work.name}? Only ${o.work.name} taxes the wages, as a nonresident. What you owe in 2026, with a worked example.`
+    : `How state income tax works if you live in ${o.home.name} and work in ${o.work.name} in 2026: ${o.type === 'reciprocity' ? 'reciprocity agreement' : o.type === 'credit' || o.type === 'az-wec' ? 'nonresident return and credit for taxes paid' : 'which state taxes your wages'}, with a worked example.`;
 ---
 
 <Base title={title} description={description}>
   <div class="breadcrumbs">
-    <a href="/">Home</a> / <a href="/working-in-one-state-living-in-another/">Living &amp; working in different states</a> / {o.home.name} → {o.work.name}
+    <a href="/">Home</a> / <a href="/working-in-one-state-living-in-another/">Living &amp; working in different states</a> / {noTaxWork ? `${o.home.name} → a no-income-tax state` : noTaxHome ? `a no-income-tax state → ${o.work.name}` : `${o.home.name} → ${o.work.name}`}
   </div>
 
   <section class="hero">
     <p class="hero-label">2026 tax year · cross-border wages</p>
-    <h1>Living in {o.home.name}, working in {o.work.name}</h1>
-    <p class="tagline">{o.headline}</p>
+    <h1>{noTaxWork
+      ? `Living in ${o.home.name}, working in a state with no income tax`
+      : noTaxHome
+        ? `Living in a state with no income tax, working in ${o.work.name}`
+        : `Living in ${o.home.name}, working in ${o.work.name}`}</h1>
+    <p class="tagline">{noTaxWork
+      ? `${o.home.name} taxes its residents on income earned anywhere, so crossing into ${noTaxList} does not make the tax go away.`
+      : noTaxHome
+        ? `${o.work.name} taxes wages earned inside it whoever earns them, so a resident of ${homeListOr} still files there as a nonresident.`
+        : o.headline}</p>
   </section>
 
-  <p>{o.explanation}</p>
+  {noTaxWork ? (
+    <>
+      <p>
+        {o.home.name} borders {noTaxNames.length} {noTaxNames.length === 1 ? 'state' : 'states'} with no
+        personal income tax — {noTaxList}. The answer is the same for all of them, which is why this is one
+        page rather than {noTaxNames.length}: the work state takes nothing, so there is no nonresident
+        return to file, no exemption certificate, and no credit to claim. {o.home.name} taxes the wages as
+        a resident, exactly as if you had earned them at home.
+      </p>
+      <p>
+        What this does change is withholding. A {noTaxList} employer has no state income tax to withhold,
+        so nothing is taken out for {o.home.name} either — the liability is real but nothing is being set
+        aside against it. That usually means making {o.home.name} estimated payments during the year, or
+        having a spouse's employer withhold extra.
+      </p>
+    </>
+  ) : noTaxHome ? (
+    <>
+      <p>
+        {homeNames.length} of the states bordering {o.work.name} levy no personal income tax —
+        {' '}{homeList}. For a resident of any of them the answer is the same, which is why this is one page:
+        there is no home-state return to file and no credit to claim, because there is no home-state tax.
+        {' '}{o.work.name} taxes the wages earned inside it, and you file there as a nonresident.
+      </p>
+      <p>
+        That makes {o.work.name} the only state in the picture — but it does not make the tax smaller. On
+        {' '}{formatMoney(o.income)} of wages the {o.work.name} bill is {formatMoney(o.workTax)}, and living
+        across a border that charges nothing does not reduce it by a cent.
+      </p>
+    </>
+  ) : (
+    <p>{o.explanation}</p>
+  )}
 
   {o.exemptionForm && (
     <div class="callout">
@@ -56,11 +128,11 @@ const description = `How state income tax works if you live in ${o.home.name} an
   )}
 
   <h2>Worked example: {formatMoney(o.income)} of wages</h2>
-  <p>A single filer living in {o.home.name} and working in {o.work.name}, earning {formatMoney(o.income)}, owes an estimated:</p>
+  <p>A single filer living in {noTaxHome ? homeListOr : o.home.name} and working in {noTaxWork ? noTaxListOr : o.work.name}, earning {formatMoney(o.income)}, owes an estimated:</p>
   <table class="data-table">
     <tbody>
-      <tr><td>{o.work.name} tax (work state)</td><td>{formatMoney(o.workTax)}</td></tr>
-      <tr><td>{o.home.name} tax before credit (home state)</td><td>{formatMoney(o.homeTaxBeforeCredit)}</td></tr>
+      <tr><td>{noTaxWork ? 'Work state tax (no income tax)' : `${o.work.name} tax (work state)`}</td><td>{formatMoney(o.workTax)}</td></tr>
+      <tr><td>{noTaxHome ? 'Home state tax (no income tax)' : `${o.home.name} tax before credit (home state)`}</td><td>{formatMoney(o.homeTaxBeforeCredit)}</td></tr>
       {o.credit > 0 && <tr><td>Credit for taxes paid to {o.work.name}</td><td>−{formatMoney(o.credit)}</td></tr>}
       <tr class="total"><td>Total state income tax</td><td>{formatMoney(o.totalStateTax)}</td></tr>
     </tbody>
