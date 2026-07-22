@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "purpose": "Corrections to federal figures in legacy/data/config.json, verified against primary IRS sources. Same overlay pattern as the state bracket corrections: legacy is read-only, so a researched fix lives here with its provenance attached and is merged at generation time.",
+    "verified": "2026-07"
+  },
+  "selfEmploymentDeductions.qualifiedBusinessIncomeDeduction.phaseoutSingle": {
+    "was": 201775,
+    "now": 201750,
+    "_why": "201,775 is the threshold for MARRIED FILING SEPARATELY. The figure for single and all other returns is 201,750. Rev. Proc. 2025-32 sets three separate thresholds for 2026 — MFJ 403,500, MFS 201,775, all others 201,750 — and the legacy dataset carried the MFS figure in the single-filer field.",
+    "_effect": "A single filer with taxable income between 201,750 and 201,775 was treated as below the threshold and given the full 20% deduction with no wage limitation. The phase-in range of 75,000 is unchanged and correct: 201,750 + 75,000 = 276,750, which matches the published top of the range.",
+    "_authority": "Rev. Proc. 2025-32, section 4.26; Internal Revenue Bulletin 2025-45, 3 November 2025",
+    "_url": "https://www.irs.gov/pub/irs-irbs/irb25-45.pdf",
+    "_confidence": "high"
+  },
+  "selfEmploymentDeductions.mileage.businessRatePerMileFromJul1": {
+    "was": null,
+    "now": 0.76,
+    "_why": "2026 has TWO business mileage rates, not one. Notice 2026-10 set 72.5 cents from 1 January. Announcement 2026-11 modified it and raised the rate to 76 cents for expenses paid or incurred on or after 1 July 2026. The legacy dataset carries only the January figure, so every mileage figure on the site was understating the second half of the year.",
+    "_effect": "A calendar-year mileage claim blends the two rates. 10,000 business miles split evenly across the year is $7,425, not $7,250.",
+    "_authority": "Announcement 2026-11, Internal Revenue Bulletin 2026-29, modifying Notice 2026-10",
+    "_url": "https://www.irs.gov/irb/2026-29_irb",
+    "_confidence": "high"
+  },
+  "selfEmploymentDeductions.mileage.medicalRatePerMileFromJul1": {
+    "was": null,
+    "now": 0.235,
+    "_why": "Medical and moving rose from 20.5 cents to 23.5 cents on the same date and by the same announcement.",
+    "_authority": "Announcement 2026-11, Internal Revenue Bulletin 2026-29",
+    "_url": "https://www.irs.gov/irb/2026-29_irb",
+    "_confidence": "high"
+  },
+  "selfEmploymentDeductions.mileage.note": {
+    "was": "Business rate is 72.5 cents (up from 70 cents in 2025). Cannot use standard mileage if previously claimed MACRS depreciation on vehicle.",
+    "now": "TWO business rates in 2026: 72.5 cents from 1 January (Notice 2026-10), raised to 76 cents for expenses paid or incurred on or after 1 July (Announcement 2026-11). A full calendar year must be split at that date. Cannot use the standard rate at all on a vehicle previously depreciated under MACRS, Section 179 or bonus depreciation.",
+    "_why": "The original note described a single rate for the year and was written before the mid-year increase.",
+    "_authority": "Notice 2026-10; Announcement 2026-11, IRB 2026-29",
+    "_url": "https://www.irs.gov/irb/2026-29_irb",
+    "_confidence": "high"
+  },
+  "selfEmploymentDeductions.mileage.source": {
+    "was": "IRS Notice 2026-10, effective Jan 1 2026",
+    "now": "IRS Notice 2026-10 (from 1 Jan 2026); Announcement 2026-11 (from 1 Jul 2026)",
+    "_why": "Cited only the January notice, which was superseded mid-year.",
+    "_authority": "Announcement 2026-11, IRB 2026-29",
+    "_url": "https://www.irs.gov/irb/2026-29_irb",
+    "_confidence": "high"
+  }
+}

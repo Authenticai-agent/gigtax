@@ -53,6 +53,22 @@ const hsa = RET.hsa;
 
 const money = (n: number) => formatMoney(n);
 
+/**
+ * 2026 has TWO business mileage rates.
+ *
+ * Notice 2026-10 set 72.5 cents from 1 January. Announcement 2026-11 modified it
+ * and raised the rate to 76 cents for expenses paid or incurred on or after
+ * 1 July 2026. Quoting one figure for "the 2026 rate" is wrong for half the
+ * year, so nothing on this site quotes one.
+ */
+export const MILEAGE_2026 = {
+  firstHalf: SED.mileage.businessRatePerMile as number,
+  secondHalf: SED.mileage.businessRatePerMileFromJul1 as number,
+  /** A year split evenly between the two rates. */
+  blended: ((SED.mileage.businessRatePerMile as number) + (SED.mileage.businessRatePerMileFromJul1 as number)) / 2,
+};
+export const cents = (r: number) => `${(r * 100).toFixed(1).replace(/\.0$/, '')} cents`;
+
 export const DEDUCTION_GROUPS: DeductionGroup[] = [
   {
     key: 'big-ones',
@@ -112,7 +128,7 @@ export const DEDUCTION_GROUPS: DeductionGroup[] = [
     items: [
       {
         name: 'Mileage, the standard rate',
-        detail: `${(mile.businessRatePerMile * 100).toFixed(1)} cents a business mile for 2026, up from 70 cents. Simple, needs only a log. You cannot use it at all if you have previously claimed accelerated depreciation on the same vehicle.`,
+        detail: `Two rates this year: ${cents(MILEAGE_2026.firstHalf)} a business mile to 30 June, and ${cents(MILEAGE_2026.secondHalf)} from 1 July when the IRS raised it mid-year. A full-year claim has to be split at that date rather than multiplied by one figure. Needs only a log. You cannot use the standard rate at all on a vehicle you have previously claimed accelerated depreciation, Section 179 or bonus depreciation on — choosing it is treated as electing out of MACRS for that vehicle.`,
       },
       {
         name: 'Actual vehicle costs',
@@ -120,7 +136,7 @@ export const DEDUCTION_GROUPS: DeductionGroup[] = [
       },
       { name: 'Tolls and parking', detail: 'Deductible on top of the mileage rate, which does not include them. Parking fines are not deductible.' },
       { name: 'Vehicle lease payments', detail: 'Deductible at the business-use percentage, with an adjustment on more expensive vehicles.' },
-      { name: 'Commuting', detail: 'Not deductible, ever — travel between home and your regular place of work is personal however far it is. Travel between two work locations is deductible.' },
+      { name: 'Commuting', detail: 'Travel between home and your regular workplace is personal and not deductible, however far it is. Travel between two work locations is deductible. Two exceptions are worth knowing: travel to a temporary work location outside your metropolitan area, and — if your home genuinely is your principal place of business — travel from it to any other location for that business, regular or temporary, at any distance.' },
     ],
   },
   {
@@ -177,7 +193,8 @@ export const DEDUCTION_GROUPS: DeductionGroup[] = [
     lead: 'The rules differ sharply between the two, and between ordinary travel and being away overnight.',
     items: [
       { name: 'Business travel', detail: `Airfare, hotels, taxis and car hire at ${(travel.airfareDeductible * 100).toFixed(0)}% when the trip is primarily for business. Mixed trips are apportioned, and the test is the purpose of the trip rather than how you spent each hour.` },
-      { name: 'Meals while travelling or with clients', detail: `${(meals.rate * 100).toFixed(0)}% deductible. You have to be able to say who was there and what business was discussed, and the meal must not be lavish.` },
+      { name: 'Meals while travelling or with clients', detail: `${(meals.rate * 100).toFixed(0)}% deductible. You have to be able to say who was there and what business was discussed, and the meal must not be lavish. The temporary 100% restaurant deduction ended after 2022 and has not returned.` },
+      { name: 'Meals you provide to your own staff', oftenMissed: true, detail: 'No longer deductible at all from 2026. These were 50% deductible from 2018 to 2025, and 100% before that. Food supplied for your convenience or through a staff canteen now gets nothing, though it remains tax-free to the employee receiving it.' },
       { name: 'Per diem instead of receipts', detail: 'A fixed daily amount can replace itemised meal receipts. Drivers subject to hours-of-service rules use a higher rate at a different percentage — see the truck driver page.' },
     ],
   },

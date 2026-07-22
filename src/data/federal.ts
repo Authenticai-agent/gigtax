@@ -435,8 +435,10 @@ export const selfEmploymentDeductions = {
     "medicalRatePerMile": 0.205,
     "charitableRatePerMile": 0.14,
     "movingRatePerMile": 0.205,
-    "source": "IRS Notice 2026-10, effective Jan 1 2026",
-    "note": "Business rate is 72.5 cents (up from 70 cents in 2025). Cannot use standard mileage if previously claimed MACRS depreciation on vehicle."
+    "source": "IRS Notice 2026-10 (from 1 Jan 2026); Announcement 2026-11 (from 1 Jul 2026)",
+    "note": "TWO business rates in 2026: 72.5 cents from 1 January (Notice 2026-10), raised to 76 cents for expenses paid or incurred on or after 1 July (Announcement 2026-11). A full calendar year must be split at that date. Cannot use the standard rate at all on a vehicle previously depreciated under MACRS, Section 179 or bonus depreciation.",
+    "businessRatePerMileFromJul1": 0.76,
+    "medicalRatePerMileFromJul1": 0.235
   },
   "homeOffice": {
     "simplified": {
@@ -539,7 +541,7 @@ export const selfEmploymentDeductions = {
     "code": "IRC Section 199A",
     "rate": 0.2,
     "permanentUnderOBBBA": true,
-    "phaseoutSingle": 201775,
+    "phaseoutSingle": 201750,
     "phaseoutMFJ": 403500,
     "phaseoutRangeSingle": 75000,
     "phaseoutRangeMFJ": 150000,

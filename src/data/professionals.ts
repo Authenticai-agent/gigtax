@@ -51,6 +51,14 @@ export const professionals = {
       "marketing",
       "vehicle",
       "staging_costs"
+    ],
+    "sources": [
+      {
+        "claim": "Real estate agents and brokers are excluded from 'brokerage services'",
+        "authority": "Reg. 1.199A-5(b)(2)(x)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      }
     ]
   },
   "travel_nurse": {
@@ -70,6 +78,20 @@ export const professionals = {
       "fuel",
       "dot_fees",
       "maintenance"
+    ],
+    "sources": [
+      {
+        "claim": "Meal expenses of individuals subject to DOT hours-of-service limits are 80% deductible",
+        "authority": "IRC 274(n)(3)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/274",
+        "confidence": "high"
+      },
+      {
+        "claim": "Employee drivers cannot deduct it: the bar on miscellaneous itemised deductions was made permanent",
+        "authority": "IRC 67(g), as amended by P.L. 119-21 sec. 70110",
+        "url": "https://www.law.cornell.edu/uscode/text/26/67",
+        "confidence": "high"
+      }
     ]
   },
   "photographer": {
@@ -203,6 +225,14 @@ export const professionals = {
       "insurance agent tax calculator",
       "independent insurance agent 1099 taxes",
       "insurance broker self employed taxes"
+    ],
+    "sources": [
+      {
+        "claim": "Insurance agents are excluded from 'brokerage services', but wealth or retirement advice is financial services",
+        "authority": "Reg. 1.199A-5(b)(2)(ix)-(x)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      }
     ]
   },
   "notary_signing_agent": {
@@ -600,7 +630,21 @@ export const professionals = {
       "professional_memberships",
       "billing_service"
     ],
-    "note": "Medicine is a specified service trade, so the qualified business income deduction is withdrawn above an income threshold rather than continuing. That single rule is worth more than most of the equipment on this list."
+    "note": "Medicine is a specified service trade, so the qualified business income deduction is withdrawn above an income threshold rather than continuing. That single rule is worth more than most of the equipment on this list.",
+    "sources": [
+      {
+        "claim": "Health is a specified service trade, so the deduction is withdrawn above the income threshold",
+        "authority": "Reg. 1.199A-5(b)(2)(ii)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      },
+      {
+        "claim": "2026 thresholds: $201,750 single, $403,500 joint, phasing out over $75,000 and $150,000",
+        "authority": "Rev. Proc. 2025-32 sec. 4.26",
+        "url": "https://www.irs.gov/pub/irs-irbs/irb25-45.pdf",
+        "confidence": "high"
+      }
+    ]
   },
   "dentist": {
     "keyDeductions": [
@@ -614,7 +658,21 @@ export const professionals = {
       "continuing_education_cpe",
       "practice_software"
     ],
-    "note": "Dentistry is capital-heavy in a way most professional practices are not — chairs, imaging and a fit-out run to hundreds of thousands, and nearly all of it can be expensed rather than depreciated."
+    "note": "Dentistry is capital-heavy in a way most professional practices are not — chairs, imaging and a fit-out run to hundreds of thousands, and nearly all of it can be expensed rather than depreciated.",
+    "sources": [
+      {
+        "claim": "Health is a specified service trade, so the deduction is withdrawn above the income threshold",
+        "authority": "Reg. 1.199A-5(b)(2)(ii)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      },
+      {
+        "claim": "2026 thresholds: $201,750 single, $403,500 joint, phasing out over $75,000 and $150,000",
+        "authority": "Rev. Proc. 2025-32 sec. 4.26",
+        "url": "https://www.irs.gov/pub/irs-irbs/irb25-45.pdf",
+        "confidence": "high"
+      }
+    ]
   },
   "veterinarian": {
     "keyDeductions": [
@@ -628,7 +686,15 @@ export const professionals = {
       "practice_software",
       "waste_disposal"
     ],
-    "note": "A veterinary practice sells goods as well as services — drugs, food and products are inventory with cost of goods sold against them, and that is a different calculation from an overhead."
+    "note": "A veterinary practice sells goods as well as services — drugs, food and products are inventory with cost of goods sold against them, and that is a different calculation from an overhead.",
+    "sources": [
+      {
+        "claim": "Veterinarians are within the health field for the qualified business income deduction",
+        "authority": "Reg. 1.199A-5(b)(2)(ii)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      }
+    ]
   },
   "chiropractor": {
     "keyDeductions": [
@@ -668,7 +734,15 @@ export const professionals = {
       "background_check_fees",
       "training_costs"
     ],
-    "note": "Caregiver payroll is nearly the whole cost base, and home care has overtime rules of its own that decide what that payroll actually costs."
+    "note": "Caregiver payroll is nearly the whole cost base, and home care has overtime rules of its own that decide what that payroll actually costs.",
+    "sources": [
+      {
+        "claim": "The rule barring agencies from the companionship exemption is in force but unenforced pending a proposed rescission",
+        "authority": "29 CFR 552.109; DOL FAB 2025-4; 90 FR 28976",
+        "url": "https://www.federalregister.gov/documents/2025/07/02/2025-12316/application-of-the-fair-labor-standards-act-to-domestic-service",
+        "confidence": "medium"
+      }
+    ]
   },
   "staffing_agency": {
     "keyDeductions": [
@@ -682,7 +756,15 @@ export const professionals = {
       "background_check_fees",
       "professional_fees"
     ],
-    "note": "You are the employer of record for people who work somewhere else entirely, which puts payroll, unemployment and workers' compensation on your return rather than the client's."
+    "note": "You are the employer of record for people who work somewhere else entirely, which puts payroll, unemployment and workers' compensation on your return rather than the client's.",
+    "sources": [
+      {
+        "claim": "A staffing firm that sources and refers candidates is not in the field of consulting",
+        "authority": "Reg. 1.199A-5(b)(3) Example 9",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "medium"
+      }
+    ]
   },
   "attorney": {
     "keyDeductions": [
@@ -696,7 +778,21 @@ export const professionals = {
       "professional_memberships",
       "filing_fees"
     ],
-    "note": "Client trust money is the line that matters most, and it is not income. Everything else on a law firm return is ordinary."
+    "note": "Client trust money is the line that matters most, and it is not income. Everything else on a law firm return is ordinary.",
+    "sources": [
+      {
+        "claim": "Law is a specified service trade",
+        "authority": "Reg. 1.199A-5(b)(2)(iii)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      },
+      {
+        "claim": "2026 thresholds: $201,750 single, $403,500 joint, phasing out over $75,000 and $150,000",
+        "authority": "Rev. Proc. 2025-32 sec. 4.26",
+        "url": "https://www.irs.gov/pub/irs-irbs/irb25-45.pdf",
+        "confidence": "high"
+      }
+    ]
   },
   "tax_preparer": {
     "keyDeductions": [
@@ -709,7 +805,21 @@ export const professionals = {
       "marketing",
       "phone"
     ],
-    "note": "Income arrives in four months and the costs run for twelve, which makes quarterly estimates awkward in a way that catches out the people who prepare them for everyone else."
+    "note": "Income arrives in four months and the costs run for twelve, which makes quarterly estimates awkward in a way that catches out the people who prepare them for everyone else.",
+    "sources": [
+      {
+        "claim": "Accounting is a specified service trade",
+        "authority": "Reg. 1.199A-5(b)(2)(iv)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      },
+      {
+        "claim": "2026 thresholds: $201,750 single, $403,500 joint, phasing out over $75,000 and $150,000",
+        "authority": "Rev. Proc. 2025-32 sec. 4.26",
+        "url": "https://www.irs.gov/pub/irs-irbs/irb25-45.pdf",
+        "confidence": "high"
+      }
+    ]
   },
   "financial_advisor": {
     "keyDeductions": [
@@ -723,7 +833,21 @@ export const professionals = {
       "professional_memberships",
       "staff_wages"
     ],
-    "note": "Compliance is the cost that has no equivalent in other professions — registration, audits, archiving and supervision are all deductible and none of them are optional."
+    "note": "Compliance is the cost that has no equivalent in other professions — registration, audits, archiving and supervision are all deductible and none of them are optional.",
+    "sources": [
+      {
+        "claim": "Financial services, including wealth and retirement advice, is a specified service trade",
+        "authority": "Reg. 1.199A-5(b)(2)(ix)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      },
+      {
+        "claim": "2026 thresholds: $201,750 single, $403,500 joint, phasing out over $75,000 and $150,000",
+        "authority": "Rev. Proc. 2025-32 sec. 4.26",
+        "url": "https://www.irs.gov/pub/irs-irbs/irb25-45.pdf",
+        "confidence": "high"
+      }
+    ]
   },
   "medical_billing": {
     "keyDeductions": [
@@ -736,7 +860,15 @@ export const professionals = {
       "phone",
       "internet_pct"
     ],
-    "note": "You handle protected health information for other people's patients, which brings security obligations that are both mandatory and deductible."
+    "note": "You handle protected health information for other people's patients, which brings security obligations that are both mandatory and deductible.",
+    "sources": [
+      {
+        "claim": "Health excludes services not directly related to a medical field, naming payment processing",
+        "authority": "Reg. 1.199A-5(b)(2)(ii)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "medium"
+      }
+    ]
   },
   "architect": {
     "keyDeductions": [
@@ -749,7 +881,15 @@ export const professionals = {
       "professional_memberships",
       "site_travel"
     ],
-    "note": "Architecture is specifically excluded from the trades that lose the 20% business profit deduction at higher incomes — unlike law, accounting or medicine, it keeps it."
+    "note": "Architecture is specifically excluded from the trades that lose the 20% business profit deduction at higher incomes — unlike law, accounting or medicine, it keeps it.",
+    "sources": [
+      {
+        "claim": "Architecture is excluded from the specified service trades that lose the deduction at higher incomes",
+        "authority": "IRC 199A(d)(2)(A); Reg. 1.199A-5(b)(1)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/199A",
+        "confidence": "high"
+      }
+    ]
   },
   "engineer": {
     "keyDeductions": [
@@ -762,7 +902,15 @@ export const professionals = {
       "continuing_education_cpe",
       "site_travel"
     ],
-    "note": "Engineering shares architecture's statutory exception: it keeps the 20% business profit deduction at incomes where most professional practices lose it."
+    "note": "Engineering shares architecture's statutory exception: it keeps the 20% business profit deduction at incomes where most professional practices lose it.",
+    "sources": [
+      {
+        "claim": "Engineering is excluded from the specified service trades that lose the deduction at higher incomes",
+        "authority": "IRC 199A(d)(2)(A); Reg. 1.199A-5(b)(1)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/199A",
+        "confidence": "high"
+      }
+    ]
   },
   "interior_designer": {
     "keyDeductions": [
@@ -800,7 +948,15 @@ export const professionals = {
       "professional_development",
       "marketing"
     ],
-    "note": "Client ad spend passing through your account is the number that makes an agency look ten times its size, and it is both income and a deduction."
+    "note": "Client ad spend passing through your account is the number that makes an agency look ten times its size, and it is both income and a deduction.",
+    "sources": [
+      {
+        "claim": "Consulting means providing professional advice and counsel; the reputation catch-all is narrow",
+        "authority": "Reg. 1.199A-5(b)(2)(vii), (b)(2)(xiv)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "medium"
+      }
+    ]
   },
   "seo_consultant": {
     "keyDeductions": [
@@ -813,7 +969,15 @@ export const professionals = {
       "marketing",
       "contractor_subcontractors"
     ],
-    "note": "Tooling is the whole overhead, and it is unusually expensive — enterprise SEO platforms cost more per month than most consultants' rent."
+    "note": "Tooling is the whole overhead, and it is unusually expensive — enterprise SEO platforms cost more per month than most consultants' rent.",
+    "sources": [
+      {
+        "claim": "Consulting means providing professional advice and counsel",
+        "authority": "Reg. 1.199A-5(b)(2)(vii)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "medium"
+      }
+    ]
   },
   "podcaster": {
     "keyDeductions": [
@@ -839,7 +1003,15 @@ export const professionals = {
       "professional_fees",
       "software_subscriptions"
     ],
-    "note": "Royalties and advances are taxed differently from a fee for work, and an advance is income when you receive it rather than when the book earns out."
+    "note": "Royalties and advances are taxed differently from a fee for work, and an advance is income when you receive it rather than when the book earns out.",
+    "sources": [
+      {
+        "claim": "Qualified creative expenses of an individual are exempt from uniform capitalisation, but printing, plates and film are not",
+        "authority": "IRC 263A(h)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/263A",
+        "confidence": "high"
+      }
+    ]
   },
   "actor_performer": {
     "keyDeductions": [
@@ -852,7 +1024,15 @@ export const professionals = {
       "professional_memberships",
       "marketing"
     ],
-    "note": "Agent and manager commissions come off the top and are fully deductible, and classes are deductible once you are working rather than training to start."
+    "note": "Agent and manager commissions come off the top and are fully deductible, and classes are deductible once you are working rather than training to start.",
+    "sources": [
+      {
+        "claim": "The qualified performing artist deduction is above the line, with a $16,000 AGI limit that is not indexed",
+        "authority": "IRC 62(a)(2)(B), 62(b)",
+        "url": "https://www.irs.gov/instructions/i2106",
+        "confidence": "medium"
+      }
+    ]
   },
   "professional_speaker": {
     "keyDeductions": [
@@ -865,7 +1045,15 @@ export const professionals = {
       "professional_development",
       "contractor_subcontractors"
     ],
-    "note": "Speaking in many states creates tax obligations in many states, and some withhold from the fee before it reaches you."
+    "note": "Speaking in many states creates tax obligations in many states, and some withhold from the fee before it reaches you.",
+    "sources": [
+      {
+        "claim": "The reputation-or-skill rule reaches endorsement fees, appearance fees and licensing your name or likeness — not fees generally",
+        "authority": "Reg. 1.199A-5(b)(2)(xiv)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      }
+    ]
   },
   "conference_organizer": {
     "keyDeductions": [
@@ -918,7 +1106,21 @@ export const professionals = {
       "utilities",
       "marketing"
     ],
-    "note": "Tips create a payroll tax credit most owners never claim, and food is cost of goods rather than an ordinary expense."
+    "note": "Tips create a payroll tax credit most owners never claim, and food is cost of goods rather than an ordinary expense.",
+    "sources": [
+      {
+        "claim": "Employers may claim a credit for FICA paid on reported tips, on Form 8846",
+        "authority": "IRC 45B",
+        "url": "https://www.law.cornell.edu/uscode/text/26/45B",
+        "confidence": "high"
+      },
+      {
+        "claim": "Meals furnished to employees for the employer's convenience are not deductible from 2026",
+        "authority": "IRC 274(o)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/274",
+        "confidence": "high"
+      }
+    ]
   },
   "food_truck": {
     "keyDeductions": [
@@ -931,7 +1133,15 @@ export const professionals = {
       "liability_insurance",
       "staff_wages"
     ],
-    "note": "The truck is both your vehicle and your kitchen, and the two halves are deducted in completely different ways."
+    "note": "The truck is both your vehicle and your kitchen, and the two halves are deducted in completely different ways.",
+    "sources": [
+      {
+        "claim": "Meals furnished to employees for the employer's convenience are not deductible from 2026",
+        "authority": "IRC 274(o)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/274",
+        "confidence": "high"
+      }
+    ]
   },
   "hotel_owner": {
     "keyDeductions": [
@@ -945,7 +1155,21 @@ export const professionals = {
       "software_subscriptions",
       "supplies"
     ],
-    "note": "The building is the asset, and a cost segregation study can move millions of its cost into far shorter depreciation lives."
+    "note": "The building is the asset, and a cost segregation study can move millions of its cost into far shorter depreciation lives.",
+    "sources": [
+      {
+        "claim": "Bonus depreciation is 100% for property placed in service in 2026, on components with recovery periods of 20 years or less",
+        "authority": "IRC 168(k), as amended by P.L. 119-21 sec. 70301",
+        "url": "https://www.law.cornell.edu/uscode/text/26/168",
+        "confidence": "high"
+      },
+      {
+        "claim": "Nonresidential real property depreciates over 39 years",
+        "authority": "IRC 168(c)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/168",
+        "confidence": "high"
+      }
+    ]
   },
   "str_host_business": {
     "keyDeductions": [
@@ -959,7 +1183,21 @@ export const professionals = {
       "repairs_and_maintenance",
       "software_subscriptions"
     ],
-    "note": "Average stays of seven days or less take a rental outside the passive rules, which is the difference between losses you can use now and losses you cannot."
+    "note": "Average stays of seven days or less take a rental outside the passive rules, which is the difference between losses you can use now and losses you cannot.",
+    "sources": [
+      {
+        "claim": "Average guest stays of seven days or fewer take the activity outside the passive rental rules",
+        "authority": "Reg. 1.469-1T(e)(3)(ii)(A)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.469-1T",
+        "confidence": "high"
+      },
+      {
+        "claim": "Being non-passive does not by itself make the income subject to self-employment tax",
+        "authority": "IRC 1402(a)(1); Reg. 1.1402(a)-4(c)(2)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/1402",
+        "confidence": "high"
+      }
+    ]
   },
   "ecommerce_seller": {
     "keyDeductions": [
@@ -1024,7 +1262,15 @@ export const professionals = {
       "booking_software",
       "detailing"
     ],
-    "note": "Passenger vehicles carry heavier insurance and licensing than freight, and the annual depreciation caps that hobble ordinary cars do not apply to the larger vehicles."
+    "note": "Passenger vehicles carry heavier insurance and licensing than freight, and the annual depreciation caps that hobble ordinary cars do not apply to the larger vehicles.",
+    "sources": [
+      {
+        "claim": "The passenger-automobile depreciation caps apply only to vehicles rated at 6,000 lb or less, and not to vehicles used in the business of transporting people for hire",
+        "authority": "IRC 280F(d)(5)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/280F",
+        "confidence": "high"
+      }
+    ]
   },
   "property_flipper": {
     "keyDeductions": [
@@ -1037,7 +1283,21 @@ export const professionals = {
       "permits_and_licences",
       "marketing"
     ],
-    "note": "Flipping is a trade, not an investment: the profit is ordinary income with self-employment tax on it, and none of the capital gains treatment applies."
+    "note": "Flipping is a trade, not an investment: the profit is ordinary income with self-employment tax on it, and none of the capital gains treatment applies.",
+    "sources": [
+      {
+        "claim": "Property held for sale to customers is not a capital asset, so no long-term rates and no like-kind exchange",
+        "authority": "IRC 1221(a)(1); IRC 1031(a)(2)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/1221",
+        "confidence": "high"
+      },
+      {
+        "claim": "Dealer status is decided property by property on the facts",
+        "authority": "Malat v. Riddell, 383 U.S. 569 (1966)",
+        "url": "https://www.law.cornell.edu/supremecourt/text/383/569",
+        "confidence": "high"
+      }
+    ]
   },
   "car_dealership": {
     "keyDeductions": [
@@ -1050,7 +1310,15 @@ export const professionals = {
       "advertising",
       "licensing_fees_state"
     ],
-    "note": "Floor plan interest has a statutory carve-out from the limit on deducting business interest, which no other inventory-financed business gets."
+    "note": "Floor plan interest has a statutory carve-out from the limit on deducting business interest, which no other inventory-financed business gets.",
+    "sources": [
+      {
+        "claim": "Floor plan financing interest is added to the business interest limitation, but taking it denies bonus depreciation",
+        "authority": "IRC 163(j)(1)(C), 163(j)(9); IRC 168(k)(9)(B)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/163",
+        "confidence": "high"
+      }
+    ]
   },
   "body_shop": {
     "keyDeductions": [
@@ -1104,7 +1372,21 @@ export const professionals = {
       "tasting_room_costs",
       "marketing"
     ],
-    "note": "Federal excise tax is owed on what you produce, separately from income tax, and a reduced rate applies to smaller producers."
+    "note": "Federal excise tax is owed on what you produce, separately from income tax, and a reduced rate applies to smaller producers.",
+    "sources": [
+      {
+        "claim": "Excise tax is determined on removal from bonded premises, not on production",
+        "authority": "IRC 5054(a)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/5054",
+        "confidence": "medium"
+      },
+      {
+        "claim": "Reduced beer rates and wine tax credits by production volume",
+        "authority": "IRC 5051(a); IRC 5041(b)-(c)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/5051",
+        "confidence": "medium"
+      }
+    ]
   },
   "cannabis_business": {
     "keyDeductions": [
@@ -1117,7 +1399,27 @@ export const professionals = {
       "utilities",
       "equipment"
     ],
-    "note": "Section 280E denies every ordinary business deduction to a cannabis business. Only cost of goods sold survives, which makes this the most punitive tax position in the code."
+    "note": "Section 280E denies every ordinary business deduction to a cannabis business. Only cost of goods sold survives, which makes this the most punitive tax position in the code.",
+    "sources": [
+      {
+        "claim": "Marijuana under a state medical licence, and in FDA-approved products, moved to Schedule III on 28 April 2026",
+        "authority": "21 CFR 1308.13(g); 91 FR 22714",
+        "url": "https://www.federalregister.gov/documents/full_text/text/2026/04/28/2026-08176.txt",
+        "confidence": "high"
+      },
+      {
+        "claim": "Section 280E denies deductions and credits, but not cost of goods sold, and reaches Schedule I and II only",
+        "authority": "IRC 280E",
+        "url": "https://www.law.cornell.edu/uscode/text/26/280E",
+        "confidence": "high"
+      },
+      {
+        "claim": "New York, California and Colorado decouple from 280E on the state return",
+        "authority": "NY Tax Law 612(c)(46); Cal. Rev. & Tax. Code 17209; Colo. Rev. Stat. 39-22-104(4)(t)",
+        "url": "https://www.tax.ny.gov/forms/html-instructions/2025/ct/ct225-225ai-2025.htm",
+        "confidence": "high"
+      }
+    ]
   },
   "mining_operator": {
     "keyDeductions": [
@@ -1130,7 +1432,21 @@ export const professionals = {
       "liability_insurance",
       "exploration_costs"
     ],
-    "note": "Depletion has no equivalent in any other industry: you deduct a share of revenue for the resource itself, sometimes beyond what you paid for it."
+    "note": "Depletion has no equivalent in any other industry: you deduct a share of revenue for the resource itself, sometimes beyond what you paid for it.",
+    "sources": [
+      {
+        "claim": "Percentage depletion is computed on gross income from the property, capped at 50% of taxable income from it",
+        "authority": "IRC 613(a), 613(b)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/613",
+        "confidence": "high"
+      },
+      {
+        "claim": "The exploration election cannot be revoked without IRS consent, and is recaptured when the mine reaches producing stage",
+        "authority": "IRC 617(a)-(d)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/617",
+        "confidence": "high"
+      }
+    ]
   },
   "print_shop": {
     "keyDeductions": [
