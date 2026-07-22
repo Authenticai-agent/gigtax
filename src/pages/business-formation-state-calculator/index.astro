@@ -18,6 +18,7 @@ import FormationComparisonCalculator from '../../components/calculators/Formatio
 import { compareFormationStates, rankByFiveYear, AGENT_TIERS } from '../../lib/formation-compare';
 import { formatMoney } from '../../lib/tax-engine';
 import { states } from '../../data/states';
+import { SPOKES } from '../../lib/formation-spokes';
 
 // The worked example from the specification, computed rather than written.
 const example = compareFormationStates({
@@ -171,6 +172,14 @@ const wyExtra = wy.fiveYearTotal - oh.fiveYearTotal;
     and a plausible guess is worse than an admission, so those rows stay empty and the column is marked
     unquantified.
   </p>
+
+  <h2>The states people are usually sent to</h2>
+  <p>Each of these has a page of its own, with what its own fee schedule does not tell you:</p>
+  <ul class="link-columns">
+    {SPOKES.map((s) => (
+      <li><a href={`/business-formation-state-calculator/${s.slug}/`}>{s.h1}</a> — {s.tagline}</li>
+    ))}
+  </ul>
 
   <h2>Related</h2>
   <ul class="link-columns">

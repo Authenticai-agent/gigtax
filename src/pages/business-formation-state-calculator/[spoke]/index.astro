@@ -1,0 +1,151 @@
+---
+/**
+ * A formation spoke: Delaware, Wyoming, or Montana and South Dakota.
+ *
+ * Every figure on the page is read from the formation dataset at build time —
+ * none is written into the copy. Each spoke carries the myth warning in full,
+ * because a reader arriving here from a search has not seen the hub's version
+ * and is precisely the person who needs it.
+ */
+import Base from '../../../layouts/Base.astro';
+import { SPOKES } from '../../../lib/formation-spokes';
+import formationFees from '../../../data/formation-fees';
+import { states } from '../../../data/states';
+import { formatMoney } from '../../../lib/tax-engine';
+import { compareFormationStates } from '../../../lib/formation-compare';
+
+export function getStaticPaths() {
+  return SPOKES.map((s) => ({ params: { spoke: s.slug }, props: { s } }));
+}
+const { s } = Astro.props as { s: (typeof SPOKES)[number] };
+const fees = formationFees as Record<string, any>;
+
+/** What it costs an Ohio consultant to use this state instead of their own. */
+const example = compareFormationStates({
+  homeState: 'OH', workState: 'OH', entity: 'llc',
+  annualRevenue: 150_000, annualProfit: 110_000,
+  ownerSalary: 0, ownerDistributions: 110_000,
+  numberOfOwners: 1, numberOfEmployees: 0,
+  agentTier: 'standard', filingStatus: 'single',
+});
+const home = example.columns.find((c) => c.state === 'OH')!;
+const shown = s.codes
+  .map((code) => example.columns.find((c) => c.state === code))
+  .filter(Boolean) as typeof example.columns;
+
+const money = (n: number | null | undefined) =>
+  n === null || n === undefined ? 'not established' : formatMoney(n);
+---
+
+<Base title={s.title} description={s.description}>
+  <div class="breadcrumbs">
+    <a href="/business-formation-state-calculator/">Where to form</a> / {s.h1}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>{s.h1}</h1>
+    <p class="tagline">{s.tagline}</p>
+  </section>
+
+  <div class="callout" data-review="legal">
+    <strong>Before anything else</strong>
+    <p>
+      Forming in Wyoming, Delaware or Nevada does not remove tax or registration obligations in the state
+      where your business actually operates. An out-of-state entity doing business in its owner's state
+      must usually register there as a foreign entity and pay that state's taxes anyway.
+    </p>
+  </div>
+
+  {s.body.map((p) => <p>{p}</p>)}
+
+  <h2>What {s.codes.length > 1 ? 'these states charge' : `${states[s.codes[0]].name} charges`}</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>State</th><th>Entity</th><th>Formation</th><th>Foreign registration</th><th>Annual report</th><th>Annual tax</th></tr>
+    </thead>
+    <tbody>
+      {s.codes.flatMap((code) => (['llc', 'corp'] as const).map((kind) => {
+        const r = fees[code]?.[kind] ?? {};
+        return (
+          <tr>
+            <td>{states[code].name}</td>
+            <td>{kind === 'llc' ? 'LLC' : 'Corporation'}</td>
+            <td>{money(r.formationFee)}{r.feeVaries ? ' minimum' : ''}</td>
+            <td>{money(r.foreignQualificationFee)}</td>
+            <td>{r.annualReport?.frequency === 'none' ? 'none required' : money(r.annualReport?.amount)}</td>
+            <td>{money(r.annualTax?.amount)}</td>
+          </tr>
+        );
+      }))}
+    </tbody>
+  </table>
+  {s.codes.some((c) => fees[c]?.llc?.legacyLead || fees[c]?.corp?.legacyLead) && (
+    <p class="field-note">
+      A figure above is marked as not established because it came from an older version of this site and
+      has not been confirmed against the state's own fee schedule. It is excluded from every total.
+    </p>
+  )}
+
+  <h2>{s.catchHeading}</h2>
+  {s.catch.map((p) => <p>{p}</p>)}
+
+  <h2>What it costs an Ohio consultant to use {s.codes.length > 1 ? 'these states' : states[s.codes[0]].name}</h2>
+  <p>
+    An LLC on {formatMoney(150000)} of revenue and {formatMoney(110000)} of profit, with the work
+    happening in Ohio. Ohio's own obligations do not go away, so they are added to every column:
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Form in</th><th>Formation</th><th>Ohio foreign registration</th><th>Annual</th><th>Five-year total</th></tr>
+    </thead>
+    <tbody>
+      <tr class="total">
+        <td>Ohio — where the work happens</td>
+        <td>{money(home.formationFee.amount)}</td>
+        <td>{formatMoney(0)}</td>
+        <td>{formatMoney(home.annualTotal)}</td>
+        <td>{formatMoney(home.fiveYearTotal)}</td>
+      </tr>
+      {shown.map((c) => (
+        <tr>
+          <td>{c.stateName}</td>
+          <td>{money(c.formationFee.amount)}</td>
+          <td>{money(c.foreignRegistration.oneTime)}</td>
+          <td>{formatMoney(c.annualTotal)}</td>
+          <td>{formatMoney(c.fiveYearTotal)}{c.unquantified.length > 0 ? ' +' : ''}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p>
+    {shown.every((c) => c.fiveYearTotal > home.fiveYearTotal)
+      ? `Every one of these costs more than simply forming in Ohio, once Ohio's own requirements are counted — and they are counted, because they do not go away.`
+      : `Read the unquantified markers before drawing a conclusion from these totals.`}
+  </p>
+
+  <p><a href="/business-formation-state-calculator/">Run this on your own state and figures →</a></p>
+
+  <h2>Questions</h2>
+  {s.faqs.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review={f.review ? 'legal' : undefined}>{f.a}</p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/business-formation-state-calculator/">Compare every state</a></li>
+    {SPOKES.filter((o) => o.slug !== s.slug).map((o) => (
+      <li><a href={`/business-formation-state-calculator/${o.slug}/`}>{o.h1}</a></li>
+    ))}
+    <li><a href="/incorporation-tax-calculator/">Delaware franchise tax calculator</a></li>
+    <li><a href="/entity-tax-calculator/">Sole proprietor, S corp or C corp?</a></li>
+  </ul>
+
+  <p class="disclaimer" data-review="legal">
+    General information about what states charge, not tax advice — and not legal advice either. Choosing
+    where and how to form a business involves legal questions beyond cost. Take advice before filing.
+  </p>
+</Base>
