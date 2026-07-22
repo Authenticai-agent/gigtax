@@ -1148,5 +1148,1172 @@
         "confidence": "high"
       }
     ]
+  },
+  "locksmith": {
+    "keyDeductions": [
+      "tools",
+      "vehicle",
+      "materials_and_supplies",
+      "licensing_fees_state",
+      "liability_insurance",
+      "equipment",
+      "phone",
+      "background_check_fees"
+    ],
+    "note": "Key stock and blanks are inventory rather than an expense, and licensing plus a background check is a condition of trading in most states."
+  },
+  "pest_control": {
+    "keyDeductions": [
+      "materials_and_supplies",
+      "vehicle",
+      "licensing_fees_state",
+      "liability_insurance",
+      "equipment",
+      "continuing_education",
+      "uniforms",
+      "waste_disposal"
+    ],
+    "note": "Chemicals are regulated and so is the applicator, so licensing and continuing education are recurring deductible costs rather than one-offs."
+  },
+  "pool_service": {
+    "keyDeductions": [
+      "materials_and_supplies",
+      "vehicle",
+      "equipment",
+      "liability_insurance",
+      "licensing_fees_state",
+      "phone",
+      "routing_software",
+      "uniforms"
+    ],
+    "note": "Chemicals are supplies, route density decides profitability, and in most of the country the work is seasonal enough to distort quarterly estimates."
+  },
+  "tree_service": {
+    "keyDeductions": [
+      "equipment",
+      "vehicle",
+      "liability_insurance",
+      "workers_comp",
+      "safety_gear",
+      "certification_fees",
+      "equipment_rental",
+      "waste_disposal"
+    ],
+    "note": "Insurance is the dominant cost and the barrier to entry, and the equipment is expensive enough that Section 179 changes the tax on a good year."
+  },
+  "snow_removal": {
+    "keyDeductions": [
+      "equipment",
+      "vehicle",
+      "fuel",
+      "liability_insurance",
+      "materials_and_supplies",
+      "seasonal_labour",
+      "storage_yard_rent",
+      "maintenance"
+    ],
+    "note": "Seasonal contracts are often paid before it snows, which puts the income and the work in different tax years."
+  },
+  "junk_removal": {
+    "keyDeductions": [
+      "vehicle",
+      "fuel",
+      "waste_disposal",
+      "staff_wages",
+      "liability_insurance",
+      "equipment",
+      "marketing",
+      "permits_and_licences"
+    ],
+    "note": "Tipping fees are the largest variable cost and are deductible in full; anything you resell instead of dumping is income."
+  },
+  "moving_company": {
+    "keyDeductions": [
+      "vehicle",
+      "fuel",
+      "staff_wages",
+      "liability_insurance",
+      "workers_comp",
+      "equipment",
+      "permits_and_licences",
+      "packing_materials"
+    ],
+    "note": "Interstate moving is federally regulated, and valuation coverage you sell to customers is income rather than a pass-through."
+  },
+  "tow_truck": {
+    "keyDeductions": [
+      "vehicle",
+      "fuel",
+      "liability_insurance",
+      "maintenance",
+      "permits_and_licences",
+      "storage_yard_rent",
+      "staff_wages",
+      "equipment"
+    ],
+    "note": "Storage fees on impounded vehicles accrue as income before anyone pays them, and the truck is heavy enough to escape the passenger-car depreciation caps."
+  },
+  "auto_detailer": {
+    "keyDeductions": [
+      "materials_and_supplies",
+      "equipment",
+      "vehicle",
+      "liability_insurance",
+      "marketing",
+      "water_and_utilities",
+      "booking_software",
+      "uniforms"
+    ],
+    "note": "Mobile and shop detailing have different cost shapes, and the chemicals are supplies rather than inventory in most operations."
+  },
+  "marine_mechanic": {
+    "keyDeductions": [
+      "tools",
+      "equipment",
+      "vehicle",
+      "materials_and_supplies",
+      "liability_insurance",
+      "certification_fees",
+      "shop_rent",
+      "waste_disposal"
+    ],
+    "note": "Seasonality is extreme in most of the country, and marine environmental rules make waste handling a real cost."
+  },
+  "rv_repair": {
+    "keyDeductions": [
+      "tools",
+      "equipment",
+      "vehicle",
+      "materials_and_supplies",
+      "liability_insurance",
+      "certification_fees",
+      "shop_rent",
+      "training_costs"
+    ],
+    "note": "An RV is a vehicle, a building and a set of appliances at once, which means certifications in several trades and parts inventory across all of them."
+  },
+  "small_engine_repair": {
+    "keyDeductions": [
+      "tools",
+      "equipment",
+      "materials_and_supplies",
+      "shop_rent",
+      "liability_insurance",
+      "vehicle",
+      "waste_disposal",
+      "marketing"
+    ],
+    "note": "Parts inventory across many manufacturers is the working capital, and it is not deductible until it is fitted."
+  },
+  "bike_shop": {
+    "keyDeductions": [
+      "inventory_cogs",
+      "shop_rent",
+      "staff_wages",
+      "tools",
+      "liability_insurance",
+      "marketing",
+      "software_subscriptions",
+      "utilities"
+    ],
+    "note": "Bikes are inventory with a long shelf life and model-year obsolescence, and the service side is a different business from the sales side."
+  },
+  "motorcycle_repair": {
+    "keyDeductions": [
+      "tools",
+      "equipment",
+      "materials_and_supplies",
+      "shop_rent",
+      "liability_insurance",
+      "certification_fees",
+      "waste_disposal",
+      "marketing"
+    ],
+    "note": "Specialist tooling per manufacturer is expensive and deductible in the year bought, and the season is short in most states."
+  },
+  "upholsterer": {
+    "keyDeductions": [
+      "materials_and_supplies",
+      "equipment",
+      "shop_rent",
+      "tools",
+      "vehicle",
+      "liability_insurance",
+      "marketing",
+      "inventory_cogs"
+    ],
+    "note": "Fabric bought for a specific job is cost of goods; fabric bought for stock is inventory until used."
+  },
+  "tailor": {
+    "keyDeductions": [
+      "materials_and_supplies",
+      "equipment",
+      "shop_rent",
+      "home_office",
+      "marketing",
+      "inventory_cogs",
+      "software_subscriptions",
+      "professional_development"
+    ],
+    "note": "Alterations are almost pure service with negligible stock; making garments makes you a manufacturer with inventory."
+  },
+  "dry_cleaner": {
+    "keyDeductions": [
+      "equipment",
+      "materials_and_supplies",
+      "shop_rent",
+      "staff_wages",
+      "utilities",
+      "liability_insurance",
+      "waste_disposal",
+      "environmental_compliance"
+    ],
+    "note": "Solvent handling is an environmental compliance cost with its own permits, and the machines are the capital."
+  },
+  "laundromat": {
+    "keyDeductions": [
+      "equipment",
+      "utilities",
+      "shop_rent",
+      "maintenance",
+      "liability_insurance",
+      "staff_wages",
+      "marketing",
+      "software_subscriptions"
+    ],
+    "note": "It is an equipment business with almost no stock — the washers are the asset and the utilities are the cost."
+  },
+  "car_wash": {
+    "keyDeductions": [
+      "equipment",
+      "utilities",
+      "materials_and_supplies",
+      "staff_wages",
+      "shop_rent",
+      "maintenance",
+      "liability_insurance",
+      "marketing"
+    ],
+    "note": "The tunnel and the water reclamation plant are the capital, and a great deal of it depreciates much faster than the building."
+  },
+  "home_inspector": {
+    "keyDeductions": [
+      "eo_insurance",
+      "equipment",
+      "vehicle",
+      "licensing_fees_state",
+      "software_subscriptions",
+      "continuing_education",
+      "marketing",
+      "professional_memberships"
+    ],
+    "note": "Professional indemnity cover is effectively mandatory and the tail on it matters, because claims arrive years after the inspection."
+  },
+  "land_surveyor": {
+    "keyDeductions": [
+      "equipment",
+      "professional_liability_insurance",
+      "vehicle",
+      "cad_software",
+      "licensing_fees_state",
+      "staff_wages",
+      "continuing_education",
+      "site_travel"
+    ],
+    "note": "Instruments are extremely expensive and are Section 179 property, and licensing is per state for anyone working near a border."
+  },
+  "appraiser": {
+    "keyDeductions": [
+      "eo_insurance",
+      "software_subscriptions",
+      "vehicle",
+      "licensing_fees_state",
+      "continuing_education",
+      "home_office",
+      "marketing",
+      "research_subscriptions"
+    ],
+    "note": "Almost pure service with a home office and a car, and licensing that runs per state with continuing education attached."
+  },
+  "mortgage_broker": {
+    "keyDeductions": [
+      "crm_software",
+      "marketing",
+      "licensing_fees_state",
+      "eo_insurance",
+      "home_office",
+      "lead_generation_costs",
+      "continuing_education",
+      "professional_memberships"
+    ],
+    "note": "Commission arrives at closing rather than at application, and lead spend is the largest thing you control."
+  },
+  "title_agent": {
+    "keyDeductions": [
+      "eo_insurance",
+      "software_subscriptions",
+      "staff_wages",
+      "office_rent_or_home_office",
+      "licensing_fees_state",
+      "research_subscriptions",
+      "marketing",
+      "bond_costs"
+    ],
+    "note": "Escrow money is never yours and never touches your return, and the underwriter's share of the premium is not your income either."
+  },
+  "property_manager": {
+    "keyDeductions": [
+      "software_subscriptions",
+      "staff_wages",
+      "eo_insurance",
+      "vehicle",
+      "licensing_fees_state",
+      "marketing",
+      "office_rent_or_home_office",
+      "professional_memberships"
+    ],
+    "note": "Rent you collect is the owner's money, not yours — only the management fee is income, and mixing the two is both a tax and a licensing problem."
+  },
+  "grant_writer": {
+    "keyDeductions": [
+      "research_subscriptions",
+      "home_office",
+      "computer",
+      "professional_development",
+      "professional_memberships",
+      "software_subscriptions",
+      "marketing",
+      "internet_pct"
+    ],
+    "note": "Success fees on grant applications are prohibited by most funders, which shapes how you can be paid and therefore when you are taxed."
+  },
+  "technical_writer": {
+    "keyDeductions": [
+      "software_subscriptions",
+      "computer",
+      "home_office",
+      "professional_development",
+      "professional_memberships",
+      "internet_pct",
+      "research_subscriptions",
+      "marketing"
+    ],
+    "note": "Nearly all overhead is software and a home office, and long contracts make the employee-or-contractor question live."
+  },
+  "college_consultant": {
+    "keyDeductions": [
+      "software_subscriptions",
+      "home_office",
+      "professional_development",
+      "professional_memberships",
+      "marketing",
+      "travel",
+      "research_subscriptions",
+      "phone"
+    ],
+    "note": "Packages sold for a whole application cycle are income when paid, even though the work runs across two tax years."
+  },
+  "music_teacher": {
+    "keyDeductions": [
+      "instruments_section179",
+      "home_office_or_tutoring_space",
+      "educational_materials_books",
+      "marketing",
+      "professional_memberships",
+      "software_subscriptions",
+      "mileage_if_in_person",
+      "equipment"
+    ],
+    "note": "Teaching from home makes the studio the largest deduction; travelling to students makes it mileage instead."
+  },
+  "dj": {
+    "keyDeductions": [
+      "equipment",
+      "music_subscriptions",
+      "vehicle",
+      "liability_insurance",
+      "marketing",
+      "software_subscriptions",
+      "travel",
+      "insurance"
+    ],
+    "note": "Equipment is Section 179 property and music licensing is an ongoing subscription rather than a purchase."
+  },
+  "wedding_officiant": {
+    "keyDeductions": [
+      "travel",
+      "marketing",
+      "professional_development",
+      "home_office",
+      "licensing_fees_state",
+      "professional_memberships",
+      "phone",
+      "software_subscriptions"
+    ],
+    "note": "A small, high-margin business with almost no overhead, where travel and registration are most of the deduction."
+  },
+  "personal_chef": {
+    "keyDeductions": [
+      "food_and_ingredients",
+      "equipment",
+      "vehicle",
+      "liability_insurance",
+      "permits_and_licences",
+      "marketing",
+      "uniforms",
+      "software_subscriptions"
+    ],
+    "note": "Groceries bought for a client are cost of goods, not the 50% meals limit — that limit is about meals you eat."
+  },
+  "drone_operator": {
+    "keyDeductions": [
+      "equipment",
+      "software_subscriptions",
+      "liability_insurance",
+      "licensing_fees_state",
+      "training_costs",
+      "vehicle",
+      "marketing",
+      "computer"
+    ],
+    "note": "The aircraft is Section 179 property and commercial flight requires a federal certificate that is deductible to obtain and renew."
+  },
+  "it_consultant": {
+    "keyDeductions": [
+      "software_subscriptions",
+      "equipment",
+      "staff_wages",
+      "cyber_insurance",
+      "home_office",
+      "professional_development",
+      "marketing",
+      "contractor_subcontractors"
+    ],
+    "note": "Software you resell to clients is income before it is a deduction, and it can make a small business look several times its size."
+  },
+  "cybersecurity_consultant": {
+    "keyDeductions": [
+      "software_subscriptions",
+      "equipment",
+      "professional_development",
+      "certification_fees",
+      "eo_insurance",
+      "home_office",
+      "travel",
+      "research_subscriptions"
+    ],
+    "note": "Certifications are the credential and they expire, so renewal and the education behind it is a recurring deductible cost."
+  },
+  "court_reporter": {
+    "keyDeductions": [
+      "equipment",
+      "software_subscriptions",
+      "certification_fees",
+      "home_office",
+      "continuing_education",
+      "vehicle",
+      "professional_memberships",
+      "materials_and_supplies"
+    ],
+    "note": "The stenotype and CAT software are the capital, and transcript income arrives long after the proceeding."
+  },
+  "sign_language_interpreter": {
+    "keyDeductions": [
+      "certification_fees",
+      "continuing_education",
+      "vehicle",
+      "professional_memberships",
+      "home_office",
+      "software_subscriptions",
+      "phone",
+      "professional_development"
+    ],
+    "note": "Assignments are scattered, so mileage is a much larger deduction than the low overhead suggests."
+  },
+  "process_server": {
+    "keyDeductions": [
+      "vehicle",
+      "licensing_fees_state",
+      "liability_insurance",
+      "database_subscriptions",
+      "equipment",
+      "phone",
+      "software_subscriptions",
+      "bond_costs"
+    ],
+    "note": "Mileage is the business, and skip-trace databases are the overhead nobody outside the trade expects."
+  },
+  "bail_bondsman": {
+    "keyDeductions": [
+      "licensing_fees_state",
+      "liability_insurance",
+      "staff_wages",
+      "software_subscriptions",
+      "vehicle",
+      "marketing",
+      "professional_fees",
+      "database_subscriptions"
+    ],
+    "note": "Collateral held is not income, and forfeitures are deductible when paid rather than when the defendant fails to appear."
+  },
+  "auctioneer": {
+    "keyDeductions": [
+      "licensing_fees_state",
+      "marketing",
+      "staff_wages",
+      "venue_costs",
+      "software_subscriptions",
+      "liability_insurance",
+      "vehicle",
+      "equipment"
+    ],
+    "note": "Hammer price collected for a consignor is not your income — only commission and buyer's premium are."
+  },
+  "jeweler": {
+    "keyDeductions": [
+      "inventory_cogs",
+      "equipment",
+      "shop_rent",
+      "liability_insurance",
+      "materials_and_supplies",
+      "marketing",
+      "staff_wages",
+      "security_costs"
+    ],
+    "note": "Stock is capital tied up in metal and stones, and none of it is deductible until it sells."
+  },
+  "printing_3d": {
+    "keyDeductions": [
+      "equipment",
+      "materials_and_supplies",
+      "software_subscriptions",
+      "shop_rent",
+      "utilities",
+      "marketing",
+      "computer",
+      "waste_disposal"
+    ],
+    "note": "Printers are Section 179 property and resin and filament are supplies, but a print that fails is a cost with nothing to show for it."
+  },
+  "landlord_residential": {
+    "keyDeductions": [
+      "mortgage_interest",
+      "property_tax",
+      "repairs_and_maintenance",
+      "property_insurance",
+      "depreciation",
+      "property_manager_fees",
+      "utilities",
+      "legal_and_professional"
+    ],
+    "note": "Rental losses are passive by default and cannot offset wages, with two exits: a $25,000 allowance that phases out, and real estate professional status.",
+    "sources": [
+      {
+        "claim": "Passive losses: the $25,000 allowance, active participation, and the $100,000 to $150,000 phase-out",
+        "authority": "IRC 469(i)(1)-(3)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/469",
+        "confidence": "high"
+      },
+      {
+        "claim": "Real estate professional status: over half your personal services and more than 750 hours, with material participation still tested per property",
+        "authority": "IRC 469(c)(7); Reg. 1.469-9(e), (g)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/469",
+        "confidence": "high"
+      },
+      {
+        "claim": "Residential rental property depreciates over 27.5 years",
+        "authority": "IRC 168(c)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/168",
+        "confidence": "high"
+      }
+    ]
+  },
+  "daycare_provider": {
+    "keyDeductions": [
+      "home_office_or_tutoring_space",
+      "food_and_ingredients",
+      "materials_and_supplies",
+      "licensing_fees_state",
+      "liability_insurance",
+      "training_costs",
+      "equipment",
+      "background_check_fees"
+    ],
+    "note": "Daycare is the one business exempted from the exclusive-use rule for a home office, and it can use standard meal rates instead of food receipts.",
+    "sources": [
+      {
+        "claim": "Daycare is exempt from the exclusive-use requirement, computed on space and hours, and conditional on state licensing",
+        "authority": "IRC 280A(c)(4)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/280A",
+        "confidence": "high"
+      },
+      {
+        "claim": "Standard meal and snack rates may replace actual food costs",
+        "authority": "Rev. Proc. 2003-22; IRS Pub. 587",
+        "url": "https://www.irs.gov/publications/p587",
+        "confidence": "medium"
+      }
+    ]
+  },
+  "household_employer": {
+    "keyDeductions": [
+      "staff_wages",
+      "payroll_taxes",
+      "payroll_service",
+      "workers_comp",
+      "background_check_fees",
+      "recruitment_costs",
+      "insurance",
+      "professional_fees"
+    ],
+    "note": "Paying someone to work in your home makes you an employer with payroll obligations, filed on your own tax return rather than a business one.",
+    "sources": [
+      {
+        "claim": "Household employment: the 2026 cash wage threshold, the rates and Schedule H",
+        "authority": "IRC 3121(a)(7)(B), (x); IRS Pub. 926",
+        "url": "https://www.irs.gov/publications/p926",
+        "confidence": "high"
+      }
+    ]
+  },
+  "horse_business": {
+    "keyDeductions": [
+      "feed_and_bedding",
+      "veterinary_costs",
+      "equipment",
+      "facility_rent",
+      "staff_wages",
+      "liability_insurance",
+      "vehicle",
+      "training_costs"
+    ],
+    "note": "Horses get their own hobby-loss test — two profitable years in seven rather than three in five — because the tax code expects them to lose money for longer.",
+    "sources": [
+      {
+        "claim": "The profit presumption is 3 years in 5, and 2 in 7 for breeding, training, showing or racing horses",
+        "authority": "IRC 183(d)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/183",
+        "confidence": "high"
+      }
+    ]
+  },
+  "oil_gas_operator": {
+    "keyDeductions": [
+      "idc_costs",
+      "depletion",
+      "equipment",
+      "liability_insurance",
+      "operating_costs",
+      "professional_fees",
+      "permits_and_licences",
+      "reclamation_costs"
+    ],
+    "note": "A working interest is excluded from the passive loss rules entirely, which no other investment of comparable passivity is.",
+    "sources": [
+      {
+        "claim": "A working interest is not a passive activity where the form of ownership does not limit liability",
+        "authority": "IRC 469(c)(3)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/469",
+        "confidence": "high"
+      },
+      {
+        "claim": "Intangible drilling costs may be expensed by election, made on the first return and binding thereafter",
+        "authority": "IRC 263(c); Reg. 1.612-4",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.612-4",
+        "confidence": "high"
+      },
+      {
+        "claim": "Percentage depletion is computed on gross income from the property",
+        "authority": "IRC 613",
+        "url": "https://www.law.cornell.edu/uscode/text/26/613",
+        "confidence": "high"
+      }
+    ]
+  },
+  "day_trader": {
+    "keyDeductions": [
+      "software_subscriptions",
+      "data_feeds",
+      "computer",
+      "home_office",
+      "research_subscriptions",
+      "professional_development",
+      "internet_pct",
+      "professional_fees"
+    ],
+    "note": "Trading is the rare business whose profits escape self-employment tax entirely, and the mark-to-market election has to be made a year in advance.",
+    "sources": [
+      {
+        "claim": "Mark-to-market election: year-end positions treated as sold, gains and losses become ordinary",
+        "authority": "IRC 475(f)(1)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/475",
+        "confidence": "high"
+      },
+      {
+        "claim": "Trading gains are excluded from net earnings from self-employment even with the election in force",
+        "authority": "IRC 1402(a)(3)(A); IRC 475(f)(1)(D)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/1402",
+        "confidence": "high"
+      }
+    ]
+  },
+  "professional_gambler": {
+    "keyDeductions": [
+      "travel",
+      "data_feeds",
+      "research_subscriptions",
+      "home_office",
+      "professional_development",
+      "software_subscriptions",
+      "phone",
+      "professional_fees"
+    ],
+    "note": "From 2026 only 90% of wagering losses are deductible, which can leave a break-even gambler owing tax on money they never made.",
+    "sources": [
+      {
+        "claim": "Only 90% of wagering losses are deductible for tax years beginning after 2025, and losses still cannot exceed winnings",
+        "authority": "IRC 165(d), as amended by P.L. 119-21 sec. 70114",
+        "url": "https://www.law.cornell.edu/uscode/text/26/165",
+        "confidence": "high"
+      },
+      {
+        "claim": "Full-time gambling pursued for a livelihood is a trade or business",
+        "authority": "Commissioner v. Groetzinger, 480 U.S. 23 (1987)",
+        "url": "https://www.law.cornell.edu/supremecourt/text/480/23",
+        "confidence": "high"
+      }
+    ]
+  },
+  "antiques_dealer": {
+    "keyDeductions": [
+      "inventory_cogs",
+      "shop_rent",
+      "liability_insurance",
+      "marketing",
+      "travel",
+      "software_subscriptions",
+      "staff_wages",
+      "security_costs"
+    ],
+    "note": "Dealers pay ordinary rates plus self-employment tax; the 28% collectibles ceiling belongs to investors and never applies to stock.",
+    "sources": [
+      {
+        "claim": "Property held primarily for sale to customers is not a capital asset, so no collectibles rate",
+        "authority": "IRC 1221(a)(1)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/1221",
+        "confidence": "high"
+      },
+      {
+        "claim": "The 28% maximum rate on collectibles applies to long-term capital gain, and is a ceiling rather than a flat rate",
+        "authority": "IRC 1(h)(4)-(5)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/1",
+        "confidence": "high"
+      }
+    ]
+  },
+  "franchise_owner": {
+    "keyDeductions": [
+      "franchise_fee",
+      "royalties",
+      "rent",
+      "staff_wages",
+      "marketing",
+      "equipment",
+      "inventory_cogs",
+      "liability_insurance"
+    ],
+    "note": "The initial franchise fee is amortised over fifteen years however long the agreement runs, while ongoing royalties are deducted as paid.",
+    "sources": [
+      {
+        "claim": "A franchise is a section 197 intangible amortised ratably over 15 years from acquisition",
+        "authority": "IRC 197(a), 197(d)(1)(F)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/197",
+        "confidence": "high"
+      },
+      {
+        "claim": "Contingent serial payments are deducted currently rather than amortised",
+        "authority": "IRC 1253(d)(1)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/1253",
+        "confidence": "high"
+      }
+    ]
+  },
+  "game_developer": {
+    "keyDeductions": [
+      "software_subscriptions",
+      "computer",
+      "equipment",
+      "contractor_subcontractors",
+      "home_office",
+      "professional_development",
+      "marketing",
+      "platform_fees"
+    ],
+    "note": "Development costs are deductible again in the year you incur them, provided the work is done in the United States.",
+    "sources": [
+      {
+        "claim": "Domestic research and experimental expenditures are deductible when paid or incurred, with an election to amortise over at least 60 months",
+        "authority": "IRC 174A",
+        "url": "https://www.law.cornell.edu/uscode/text/26/174A",
+        "confidence": "high"
+      },
+      {
+        "claim": "Foreign research and experimental expenditures remain capitalised over 15 years",
+        "authority": "IRC 174, as amended by P.L. 119-21 sec. 70302",
+        "url": "https://www.law.cornell.edu/uscode/text/26/174",
+        "confidence": "high"
+      }
+    ]
+  },
+  "barber": {
+    "keyDeductions": [
+      "booth_rent",
+      "tools",
+      "supplies",
+      "liability_insurance",
+      "licensing_fees_state",
+      "continuing_education",
+      "marketing",
+      "uniforms"
+    ],
+    "note": "Two 2026 changes land directly on this trade: tips became partly deductible, and the employer tip credit was extended to beauty services.",
+    "sources": [
+      {
+        "claim": "Up to $25,000 of qualified tips is deductible for 2026, self-employed included, capped at the business's net income and barred for specified service trades",
+        "authority": "IRC 224; 26 CFR 1.224-1",
+        "url": "https://www.law.cornell.edu/uscode/text/26/224",
+        "confidence": "high"
+      },
+      {
+        "claim": "Treasury's list of tipped occupations is exhaustive; personal appearance and wellness roles are category 6",
+        "authority": "26 CFR 1.224-1; IRS list of tipped occupations",
+        "url": "https://www.irs.gov/forms-pubs/occupations-that-customarily-and-regularly-received-tips-on-or-before-dec-31-2024",
+        "confidence": "high"
+      },
+      {
+        "claim": "The employer credit for FICA on tips now covers beauty services, using the current $7.25 minimum rather than the frozen $5.15 used for food and drink",
+        "authority": "IRC 45B(b)(1)(B), 45B(b)(2)(B)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/45B",
+        "confidence": "high"
+      }
+    ]
+  },
+  "nail_technician": {
+    "keyDeductions": [
+      "booth_rent",
+      "supplies",
+      "tools",
+      "liability_insurance",
+      "licensing_fees_state",
+      "continuing_education",
+      "marketing",
+      "equipment"
+    ],
+    "note": "Nail care is named in the 2026 extension of the employer tip credit and in Treasury's list of tipped occupations.",
+    "sources": [
+      {
+        "claim": "Up to $25,000 of qualified tips is deductible for 2026, self-employed included, capped at the business's net income and barred for specified service trades",
+        "authority": "IRC 224; 26 CFR 1.224-1",
+        "url": "https://www.law.cornell.edu/uscode/text/26/224",
+        "confidence": "high"
+      },
+      {
+        "claim": "Treasury's list of tipped occupations is exhaustive; personal appearance and wellness roles are category 6",
+        "authority": "26 CFR 1.224-1; IRS list of tipped occupations",
+        "url": "https://www.irs.gov/forms-pubs/occupations-that-customarily-and-regularly-received-tips-on-or-before-dec-31-2024",
+        "confidence": "high"
+      },
+      {
+        "claim": "The employer credit for FICA on tips now covers beauty services, using the current $7.25 minimum rather than the frozen $5.15 used for food and drink",
+        "authority": "IRC 45B(b)(1)(B), 45B(b)(2)(B)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/45B",
+        "confidence": "high"
+      }
+    ]
+  },
+  "esthetician": {
+    "keyDeductions": [
+      "supplies",
+      "equipment",
+      "booth_rent",
+      "liability_insurance",
+      "licensing_fees_state",
+      "continuing_education",
+      "marketing",
+      "inventory_cogs"
+    ],
+    "note": "Esthetics is inside the 2026 tip changes, and devices are Section 179 property with training attached that is deductible separately.",
+    "sources": [
+      {
+        "claim": "Up to $25,000 of qualified tips is deductible for 2026, self-employed included, capped at the business's net income and barred for specified service trades",
+        "authority": "IRC 224; 26 CFR 1.224-1",
+        "url": "https://www.law.cornell.edu/uscode/text/26/224",
+        "confidence": "high"
+      },
+      {
+        "claim": "Treasury's list of tipped occupations is exhaustive; personal appearance and wellness roles are category 6",
+        "authority": "26 CFR 1.224-1; IRS list of tipped occupations",
+        "url": "https://www.irs.gov/forms-pubs/occupations-that-customarily-and-regularly-received-tips-on-or-before-dec-31-2024",
+        "confidence": "high"
+      },
+      {
+        "claim": "The employer credit for FICA on tips now covers beauty services, using the current $7.25 minimum rather than the frozen $5.15 used for food and drink",
+        "authority": "IRC 45B(b)(1)(B), 45B(b)(2)(B)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/45B",
+        "confidence": "high"
+      }
+    ]
+  },
+  "tattoo_artist": {
+    "keyDeductions": [
+      "booth_rent",
+      "supplies",
+      "equipment",
+      "liability_insurance",
+      "licensing_fees_state",
+      "marketing",
+      "training_costs",
+      "waste_disposal"
+    ],
+    "note": "Tattooing is on Treasury's list of tipped occupations, and sharps and bloodborne-pathogen compliance are recurring deductible costs.",
+    "sources": [
+      {
+        "claim": "Up to $25,000 of qualified tips is deductible for 2026, self-employed included, capped at the business's net income and barred for specified service trades",
+        "authority": "IRC 224; 26 CFR 1.224-1",
+        "url": "https://www.law.cornell.edu/uscode/text/26/224",
+        "confidence": "high"
+      },
+      {
+        "claim": "Treasury's list of tipped occupations is exhaustive; personal appearance and wellness roles are category 6",
+        "authority": "26 CFR 1.224-1; IRS list of tipped occupations",
+        "url": "https://www.irs.gov/forms-pubs/occupations-that-customarily-and-regularly-received-tips-on-or-before-dec-31-2024",
+        "confidence": "high"
+      }
+    ]
+  },
+  "gym_owner": {
+    "keyDeductions": [
+      "equipment",
+      "rent",
+      "staff_wages",
+      "utilities",
+      "liability_insurance",
+      "marketing",
+      "software_subscriptions",
+      "maintenance"
+    ],
+    "note": "A gym is not a specified service business, so it keeps the 20% deduction at incomes where a coaching practice loses it.",
+    "sources": [
+      {
+        "claim": "Athletics as a specified service field covers competitors and coaches, not operating equipment or facilities",
+        "authority": "Reg. 1.199A-5(b)(2)(viii)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      },
+      {
+        "claim": "Health clubs and spas providing exercise or conditioning are not within the health field",
+        "authority": "Reg. 1.199A-5(b)(2)(ii)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      }
+    ]
+  },
+  "streamer": {
+    "keyDeductions": [
+      "equipment",
+      "software_subscriptions",
+      "home_office",
+      "internet_pct",
+      "marketing",
+      "computer",
+      "professional_development",
+      "platform_fees"
+    ],
+    "note": "Viewer donations are almost never gifts, and broadcasting is expressly outside the performing arts category for the 20% deduction.",
+    "sources": [
+      {
+        "claim": "Viewer payments made in exchange for content are income, not gifts",
+        "authority": "IRC 61(a); IRC 102(a); Commissioner v. Duberstein, 363 U.S. 278 (1960)",
+        "url": "https://www.law.cornell.edu/supremecourt/text/363/278",
+        "confidence": "high"
+      },
+      {
+        "claim": "Performing arts expressly excludes persons who broadcast or disseminate video or audio to the public",
+        "authority": "Reg. 1.199A-5(b)(2)(vi)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      }
+    ]
+  },
+  "commercial_fisherman": {
+    "keyDeductions": [
+      "vessel_costs",
+      "fuel",
+      "gear_and_equipment",
+      "permits_and_licences",
+      "insurance",
+      "crew_shares",
+      "maintenance",
+      "moorage"
+    ],
+    "note": "A crew share on a small boat is self-employment income rather than wages, and fishing income can be averaged back three years.",
+    "sources": [
+      {
+        "claim": "A crew share on a boat with a normal operating crew of fewer than 10 is not FICA employment and is self-employment income",
+        "authority": "IRC 3121(b)(20); IRC 1402(c)(2)(F)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/3121",
+        "confidence": "high"
+      },
+      {
+        "claim": "Farm and fishing income may be averaged back over three base years on Schedule J",
+        "authority": "IRC 1301",
+        "url": "https://www.law.cornell.edu/uscode/text/26/1301",
+        "confidence": "high"
+      }
+    ]
+  },
+  "logger_timber": {
+    "keyDeductions": [
+      "equipment",
+      "fuel",
+      "staff_wages",
+      "liability_insurance",
+      "permits_and_licences",
+      "maintenance",
+      "depletion",
+      "site_travel"
+    ],
+    "note": "Standing timber can be taken at capital gain rates rather than as ordinary income, through one of two routes with different consequences.",
+    "sources": [
+      {
+        "claim": "Two routes to capital treatment: electing to treat cutting as a sale, or disposal with a retained economic interest",
+        "authority": "IRC 631(a), 631(b)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/631",
+        "confidence": "high"
+      },
+      {
+        "claim": "Timber uses cost depletion computed as a unit rate against volume cut",
+        "authority": "IRC 611, 612; Reg. 1.611-3",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.611-3",
+        "confidence": "high"
+      }
+    ]
+  },
+  "beekeeper": {
+    "keyDeductions": [
+      "equipment",
+      "materials_and_supplies",
+      "vehicle",
+      "liability_insurance",
+      "staff_wages",
+      "permits_and_licences",
+      "inventory_cogs",
+      "training_costs"
+    ],
+    "note": "Beekeeping is farming, so it goes on Schedule F with the farm rules — including income averaging and the fuel credit.",
+    "sources": [
+      {
+        "claim": "Care and management of bees is within the definition of farming purposes",
+        "authority": "IRC 6420(c)(3)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/6420",
+        "confidence": "medium"
+      },
+      {
+        "claim": "Farm income may be averaged back over three base years on Schedule J",
+        "authority": "IRC 1301",
+        "url": "https://www.law.cornell.edu/uscode/text/26/1301",
+        "confidence": "high"
+      },
+      {
+        "claim": "The profit presumption is three profitable years in five",
+        "authority": "IRC 183(d)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/183",
+        "confidence": "high"
+      }
+    ]
+  },
+  "voice_actor": {
+    "keyDeductions": [
+      "recording_equipment",
+      "studio_rent",
+      "editing_software",
+      "agent_commission",
+      "professional_development",
+      "home_office",
+      "marketing",
+      "equipment"
+    ],
+    "note": "Voice work generally sits inside performing arts for the 20% deduction, and licensing your voice is its own separate category.",
+    "sources": [
+      {
+        "claim": "Performing arts covers actors, entertainers and similar professionals performing in that capacity",
+        "authority": "Reg. 1.199A-5(b)(2)(vi)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "medium"
+      },
+      {
+        "claim": "Licensing an individual's voice, image or likeness for a fee is a specified service in its own right",
+        "authority": "Reg. 1.199A-5(b)(2)(xiv)",
+        "url": "https://www.law.cornell.edu/cfr/text/26/1.199A-5",
+        "confidence": "high"
+      }
+    ]
+  },
+  "hair_stylist": {
+    "_sourcesOnly": true,
+    "sources": [
+      {
+        "claim": "Up to $25,000 of qualified tips is deductible for 2026, self-employed included, capped at the business's net income and barred for specified service trades",
+        "authority": "IRC 224; 26 CFR 1.224-1",
+        "url": "https://www.law.cornell.edu/uscode/text/26/224",
+        "confidence": "high"
+      },
+      {
+        "claim": "Treasury's list of tipped occupations is exhaustive; personal appearance and wellness roles are category 6",
+        "authority": "26 CFR 1.224-1; IRS list of tipped occupations",
+        "url": "https://www.irs.gov/forms-pubs/occupations-that-customarily-and-regularly-received-tips-on-or-before-dec-31-2024",
+        "confidence": "high"
+      },
+      {
+        "claim": "The employer credit for FICA on tips now covers beauty services, using the current $7.25 minimum rather than the frozen $5.15",
+        "authority": "IRC 45B(b)(1)(B), 45B(b)(2)(B)",
+        "url": "https://www.law.cornell.edu/uscode/text/26/45B",
+        "confidence": "high"
+      }
+    ]
+  },
+  "massage_therapist": {
+    "_sourcesOnly": true,
+    "sources": [
+      {
+        "claim": "Up to $25,000 of qualified tips is deductible for 2026, self-employed included, capped at the business's net income and barred for specified service trades",
+        "authority": "IRC 224; 26 CFR 1.224-1",
+        "url": "https://www.law.cornell.edu/uscode/text/26/224",
+        "confidence": "high"
+      },
+      {
+        "claim": "Treasury's list of tipped occupations is exhaustive; personal appearance and wellness roles are category 6",
+        "authority": "26 CFR 1.224-1; IRS list of tipped occupations",
+        "url": "https://www.irs.gov/forms-pubs/occupations-that-customarily-and-regularly-received-tips-on-or-before-dec-31-2024",
+        "confidence": "high"
+      }
+    ]
+  },
+  "personal_trainer": {
+    "_sourcesOnly": true,
+    "sources": [
+      {
+        "claim": "Up to $25,000 of qualified tips is deductible for 2026, self-employed included, capped at the business's net income and barred for specified service trades",
+        "authority": "IRC 224; 26 CFR 1.224-1",
+        "url": "https://www.law.cornell.edu/uscode/text/26/224",
+        "confidence": "high"
+      },
+      {
+        "claim": "Treasury's list of tipped occupations is exhaustive; personal appearance and wellness roles are category 6",
+        "authority": "26 CFR 1.224-1; IRS list of tipped occupations",
+        "url": "https://www.irs.gov/forms-pubs/occupations-that-customarily-and-regularly-received-tips-on-or-before-dec-31-2024",
+        "confidence": "high"
+      }
+    ]
   }
 }
