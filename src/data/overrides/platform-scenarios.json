@@ -6,7 +6,10 @@
       "Round, obviously-illustrative numbers. These are not survey data and must never be presented as typical earnings.",
       "Pages must describe them as an example, never as what a worker on this platform earns.",
       "Any figure that is a tax rate, threshold or limit belongs in the verified dataset, not here."
-    ]
+    ],
+    "coverage": "15 platforms. Driving platforms carry a mileage figure; selling and creator platforms do not, because their deduction stack is fees, cost of goods and equipment rather than the car. Every scenario is a round illustrative shape chosen to sit in a plausible range \u2014 none of it is survey data and pages must never present it as typical earnings.",
+    "sellerNote": "cogsPct is an illustrative share of gross that goes on inventory or materials \u2014 a business shape, not a tax figure. homeOfficeSqFt feeds the verified simplified-method rate of $5 per square foot up to 300, from selfEmploymentDeductions.homeOffice.",
+    "categoryNote": "Scenarios are chosen so each CATEGORY has a distinct deduction shape, because that is what the category pages are about: mileage-led for drivers, tools and materials for services, equipment and workspace for creators, cost of goods and fees for sellers, cleaning and repairs for hosts."
   },
   "doordash": {
     "grossEarnings": 42000,
@@ -33,5 +36,357 @@
       }
     ],
     "_ladder": "Three illustrative volumes. Miles scale with gross because delivery pay is roughly per-drop; the ratio is held near the base scenario's rather than modelled."
+  },
+  "uber": {
+    "grossEarnings": 48000,
+    "businessMiles": 22000,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 220,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 16000,
+        "miles": 7000
+      },
+      {
+        "label": "Steady side income",
+        "gross": 48000,
+        "miles": 22000
+      },
+      {
+        "label": "Full-time",
+        "gross": 78000,
+        "miles": 34000
+      }
+    ]
+  },
+  "lyft": {
+    "grossEarnings": 41000,
+    "businessMiles": 19000,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 180,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 14000,
+        "miles": 6500
+      },
+      {
+        "label": "Steady side income",
+        "gross": 41000,
+        "miles": 19000
+      },
+      {
+        "label": "Full-time",
+        "gross": 66000,
+        "miles": 30000
+      }
+    ]
+  },
+  "instacart": {
+    "grossEarnings": 36000,
+    "businessMiles": 14000,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 150,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 12000,
+        "miles": 4800
+      },
+      {
+        "label": "Steady side income",
+        "gross": 36000,
+        "miles": 14000
+      },
+      {
+        "label": "Full-time",
+        "gross": 58000,
+        "miles": 22000
+      }
+    ]
+  },
+  "grubhub": {
+    "grossEarnings": 38000,
+    "businessMiles": 16000,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 160,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 13000,
+        "miles": 5500
+      },
+      {
+        "label": "Steady side income",
+        "gross": 38000,
+        "miles": 16000
+      },
+      {
+        "label": "Full-time",
+        "gross": 61000,
+        "miles": 25000
+      }
+    ]
+  },
+  "amazon-flex": {
+    "grossEarnings": 35000,
+    "businessMiles": 15000,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 140,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 12000,
+        "miles": 5200
+      },
+      {
+        "label": "Steady side income",
+        "gross": 35000,
+        "miles": 15000
+      },
+      {
+        "label": "Full-time",
+        "gross": 56000,
+        "miles": 24000
+      }
+    ]
+  },
+  "shipt": {
+    "grossEarnings": 33000,
+    "businessMiles": 13000,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 150,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 11000,
+        "miles": 4400
+      },
+      {
+        "label": "Steady side income",
+        "gross": 33000,
+        "miles": 13000
+      },
+      {
+        "label": "Full-time",
+        "gross": 53000,
+        "miles": 21000
+      }
+    ]
+  },
+  "taskrabbit": {
+    "grossEarnings": 34000,
+    "businessMiles": 4000,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 900,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 11000,
+        "miles": 2000
+      },
+      {
+        "label": "Steady side income",
+        "gross": 34000,
+        "miles": 6000
+      },
+      {
+        "label": "Full-time",
+        "gross": 55000,
+        "miles": 10000
+      }
+    ],
+    "materialsCost": 4200,
+    "homeOfficeSqFt": 80
+  },
+  "rover": {
+    "grossEarnings": 26000,
+    "businessMiles": 3500,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 900,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 9000,
+        "miles": 1500
+      },
+      {
+        "label": "Steady side income",
+        "gross": 26000,
+        "miles": 4500
+      },
+      {
+        "label": "Full-time",
+        "gross": 42000,
+        "miles": 7500
+      }
+    ],
+    "homeOfficeSqFt": 60
+  },
+  "etsy": {
+    "grossEarnings": 45000,
+    "phoneAnnualCost": 900,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 15000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 45000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 72000,
+        "miles": 0
+      }
+    ],
+    "cogsPct": 0.3,
+    "homeOfficeSqFt": 120
+  },
+  "ebay": {
+    "grossEarnings": 52000,
+    "phoneAnnualCost": 900,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 17000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 52000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 84000,
+        "miles": 0
+      }
+    ],
+    "cogsPct": 0.45,
+    "homeOfficeSqFt": 150
+  },
+  "shopify": {
+    "grossEarnings": 68000,
+    "phoneAnnualCost": 900,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 22000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 68000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 110000,
+        "miles": 0
+      }
+    ],
+    "cogsPct": 0.4,
+    "homeOfficeSqFt": 150
+  },
+  "airbnb": {
+    "grossEarnings": 39000,
+    "phoneAnnualCost": 600,
+    "suppliesCost": 2100,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 13000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 39000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 63000,
+        "miles": 0
+      }
+    ],
+    "cleaningCost": 4800,
+    "repairsCost": 3200,
+    "homeOfficeSqFt": 0
+  },
+  "turo": {
+    "grossEarnings": 31000,
+    "businessMiles": 5000,
+    "phoneAnnualCost": 600,
+    "suppliesCost": 1200,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 10000,
+        "miles": 1700
+      },
+      {
+        "label": "Steady side income",
+        "gross": 31000,
+        "miles": 5000
+      },
+      {
+        "label": "Full-time",
+        "gross": 50000,
+        "miles": 8000
+      }
+    ],
+    "cleaningCost": 1900,
+    "repairsCost": 4100
+  },
+  "onlyfans": {
+    "grossEarnings": 58000,
+    "phoneAnnualCost": 1400,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 19000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 58000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 94000,
+        "miles": 0
+      }
+    ],
+    "homeOfficeSqFt": 150,
+    "equipmentCost": 2200
+  },
+  "youtube": {
+    "grossEarnings": 44000,
+    "phoneAnnualCost": 1400,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 15000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 44000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 71000,
+        "miles": 0
+      }
+    ],
+    "homeOfficeSqFt": 180,
+    "equipmentCost": 3800
   }
 }
