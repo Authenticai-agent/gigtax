@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PaycheckCalculator from '../../components/calculators/PaycheckCalculator.tsx';
+import { stateSlug } from '../../lib/slug';
 import { stateList } from '../../data/states';
 ---
 
@@ -29,7 +30,7 @@ import { stateList } from '../../data/states';
   <p>Each state page is preset to that state's 2026 income tax rules with a worked example:</p>
   <ul class="link-columns">
     {stateList.map(([code, s]) => (
-      <li><a href={`/paycheck-calculator/${code.toLowerCase()}/`}>{s.name} paycheck calculator</a></li>
+      <li><a href={`/paycheck-calculator/${stateSlug(s.name)}/`}>{s.name} paycheck calculator</a></li>
     ))}
   </ul>
 </Base>

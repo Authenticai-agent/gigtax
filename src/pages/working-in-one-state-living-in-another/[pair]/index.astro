@@ -1,78 +1,248 @@
 ---
 /**
- * "Live in one state, work in another" pages — curated high-value set.
+ * "Live in one state, work in another" — two page shapes, grouped so each page
+ * carries substance no sibling has.
  *
- * Generated from highValuePairs(): real commuter corridors (bordering states) +
- * every reciprocity pair + the Arizona WEC pairs (231 pages), rather than the
- * full 2,550 matrix. Each page is genuinely unique: real 2026 rates for both
- * states, the correct arrangement (reciprocity / credit / Arizona WEC /
- * single-state), and a computed worked example — all present before JavaScript.
+ *   living-in-ohio-working-in-another-state          one per taxing home state
+ *   living-in-a-no-income-tax-state-working-in-ohio  one per taxing work state
+ *
+ * This used to be one page per home/work pair, 231 of them. They measured a
+ * median of 17 trigrams that no sibling had, against 98-152 for the state
+ * pages, and the thinnest had two: a pair page is half about the home state and
+ * half about the work state, so it shares one half with its row and the other
+ * with its column. Splitting a home state across three collapsed pages made it
+ * worse still, because its own rules then appeared on all three and counted as
+ * unique to none. Grouping by home state puts each state's rules, facts and
+ * figures on exactly one page, where they count — and it is the better unit for
+ * a reader, who wants one answer rather than three pages to guess between.
+ *
+ * Every figure comes from the engine and the verified dataset.
  */
 import Base from '../../../layouts/Base.astro';
 import { states } from '../../../data/states';
-import { pairOutcome, stateSlug, highValuePairs } from '../../../lib/state-pair';
+import {
+  pairOutcome, stateSlug,
+  homeCommutePages, homeCommuteSlug,
+  noTaxHomePages, noTaxHomeSlug,
+} from '../../../lib/state-pair';
+import { reciprocity } from '../../../data/reciprocity';
 import { formatMoney } from '../../../lib/tax-engine';
+import { stateFacts, describeStateFacts } from '../../../lib/state-facts';
+import { describeStateLayer } from '../../../lib/state-copy';
+
+const INCOME = 70000;
 
 export function getStaticPaths() {
-  return highValuePairs().map(([homeCode, workCode]) => {
-    const pair = `living-in-${stateSlug(states[homeCode].name)}-working-in-${stateSlug(states[workCode].name)}`;
-    return { params: { pair }, props: { homeCode, workCode } };
-  });
+  const inbound = new Map(noTaxHomePages().map((e) => [e.workCode, e.homeCodes]));
+  return homeCommutePages().map((e) => ({
+    params: { pair: homeCommuteSlug(e.homeCode) },
+    props: { homeCode: e.homeCode, entry: e, inboundFrom: inbound.get(e.homeCode) ?? null },
+  }));
 }
 
-interface Props { homeCode: string; workCode: string; }
-const { homeCode, workCode } = Astro.props as Props;
-const o = pairOutcome(homeCode, workCode);
+interface Props { homeCode: string; entry: any; inboundFrom: string[] | null; }
+const { homeCode, entry, inboundFrom } = Astro.props as Props;
 
-const title = `Living in ${o.home.name}, working in ${o.work.name} — 2026 state tax guide`;
-const description = `How state income tax works if you live in ${o.home.name} and work in ${o.work.name} in 2026: ${o.type === 'reciprocity' ? 'reciprocity agreement' : o.type === 'credit' || o.type === 'az-wec' ? 'nonresident return and credit for taxes paid' : 'which state taxes your wages'}, with a worked example.`;
+const andList = (n: string[]) => (n.length > 1 ? `${n.slice(0, -1).join(', ')} and ${n[n.length - 1]}` : n[0] ?? '');
+const orList = (n: string[]) => (n.length > 1 ? `${n.slice(0, -1).join(', ')} or ${n[n.length - 1]}` : n[0] ?? '');
+const name = (c: string) => states[c].name;
+const a = (n: string) => (/^[AEIOU]/.test(n) ? 'an' : 'a');
+
+const home = states[homeCode];
+const recip: string[] = entry.reciprocity;
+const credit: string[] = entry.credit;
+const noTaxNbrs: string[] = entry.noTax;
+const creditRows = credit.map((w) => pairOutcome(homeCode, w, INCOME));
+const dearest = creditRows.length ? creditRows.reduce((a, b) => (b.totalStateTax > a.totalStateTax ? b : a)) : null;
+const cheapest = creditRows.length ? creditRows.reduce((a, b) => (b.totalStateTax < a.totalStateTax ? b : a)) : null;
+
+// The inbound direction: people who live in a no-income-tax state and commute
+// INTO this one. Their answer is that this state takes everything, with no
+// home-state return and no credit.
+const inboundNames = (inboundFrom ?? []).map((c) => states[c].name);
+const inboundTax = inboundFrom ? pairOutcome(inboundFrom[0], homeCode, INCOME).workTax : 0;
+
+const detailCode = homeCode;
+const detailState = states[detailCode];
+const layer = describeStateLayer(detailState, 'wages');
+const facts = describeStateFacts(detailCode, detailState, 'wages');
+const localTax = stateFacts(detailCode, detailState).localIncomeTax;
+const situations = [recip.length, credit.length, noTaxNbrs.length].filter(Boolean).length;
+const homeLadder = [45000, 70000, 120000].map((i) => ({ income: i, tax: pairOutcome(homeCode, homeCode, i).homeTaxBeforeCredit }));
+// Whether the WORK state has agreements of its own is the natural question on a
+// mirror page, and the answer differs for every work state.
+
+
+const title = `${home.name} cross-border wages — which state taxes you (2026)`;
+const description = `Commuting into or out of ${home.name}? Which state taxes your wages in 2026 — reciprocity, nonresident returns and credits, with figures for every neighbour.`;
 ---
 
 <Base title={title} description={description}>
   <div class="breadcrumbs">
-    <a href="/">Home</a> / <a href="/working-in-one-state-living-in-another/">Living &amp; working in different states</a> / {o.home.name} → {o.work.name}
+    <a href="/">Home</a> / <a href="/working-in-one-state-living-in-another/">Living &amp; working in different states</a> /
+    {home.name}
   </div>
 
   <section class="hero">
     <p class="hero-label">2026 tax year · cross-border wages</p>
-    <h1>Living in {o.home.name}, working in {o.work.name}</h1>
-    <p class="tagline">{o.headline}</p>
+    <h1>Crossing a state line into or out of {home.name}</h1>
+    <p class="tagline">
+      {home.name} taxes its residents on income earned anywhere, and taxes non-residents on work done
+      inside it. Which return you file depends on which direction you commute.
+    </p>
   </section>
 
-  <p>{o.explanation}</p>
+  <p>
+    {home.name} borders {recip.length + credit.length + noTaxNbrs.length} states.
+    {situations === 1
+      ? ' All of them work the same way for a commuter, so there is one rule to learn.'
+      : ` They fall into ${situations} different situations, and which one applies decides whether you file one return or two.`}
+  </p>
 
-  {o.exemptionForm && (
+  {recip.length > 0 && (
+    <>
+      <h2>Where {home.name} has a reciprocity agreement</h2>
+      <p data-source={`data/reciprocity.ts → ${homeCode}.partners`}>
+        {home.name} has wage reciprocity with {andList(recip.map(name))}. Work in one of these and it will
+        not tax your wages at all: you file its exemption certificate with your employer there, which stops
+        its withholding, and report everything to {home.name}. There is no nonresident return.
+      </p>
+      <table class="data-table">
+        <thead><tr><th>Work state</th><th>Exemption certificate</th><th>Its tax on your wages</th></tr></thead>
+        <tbody>
+          {recip.map((w) => (
+            <tr>
+              <td>{name(w)}</td>
+              <td>{reciprocity[w]?.exemptionForm ?? 'not in the 2026 dataset — ask the state'}</td>
+              <td>$0</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {recip.filter((w) => reciprocity[w]?.note).map((w) => (
+        <p data-source={`data/reciprocity.ts → ${w}.note`}>
+          <strong>{name(w)} attaches conditions to its agreements</strong>, not all of which apply to every
+          partner state: {reciprocity[w]!.note} Check which clause covers {a(home.name)} {home.name} resident before
+          relying on it.
+        </p>
+      ))}
+      <p>
+        Reciprocity covers wages paid by an employer. It does not cover self-employment income, so a
+        {' '}<a href={`/1099-tax-calculator/${stateSlug(home.name)}/`}>1099 worker in {home.name}</a> generally
+        still sources income to where the work was done.
+      </p>
+    </>
+  )}
+
+  {creditRows.length > 0 && (
+    <>
+      <h2>Where you file a nonresident return and claim a credit</h2>
+      <p data-source="lib/tax-engine.ts calcStateTax()">
+        {home.name} has no agreement with {andList(credit.map(name))}. Work in one of these and you file a
+        nonresident return there, report the same income again to {home.name}, and claim a credit for what
+        you already paid. The credit is capped at your {home.name} liability, so you are not taxed twice —
+        the combined bill lands at roughly the higher of the two rates.
+        {dearest && cheapest && dearest.workCode !== cheapest.workCode && (
+          <> On {formatMoney(INCOME)}, {dearest.work.name} costs the most at {formatMoney(dearest.totalStateTax)}
+          {' '}and {cheapest.work.name} the least at {formatMoney(cheapest.totalStateTax)} —
+          {' '}{formatMoney(dearest.totalStateTax - cheapest.totalStateTax)} between them.</>
+        )}
+      </p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Work state</th><th>Its tax</th><th>{home.name} after credit</th><th>Total</th><th>Rate that governs</th></tr>
+        </thead>
+        <tbody>
+          {creditRows.map((r) => (
+            <tr>
+              <td>{r.work.name}</td>
+              <td>{formatMoney(r.workTax)}</td>
+              <td>{formatMoney(r.homeTaxAfterCredit)}</td>
+              <td>{formatMoney(r.totalStateTax)}</td>
+              <td>{r.workTax >= r.homeTaxBeforeCredit ? r.work.name : home.name}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )}
+
+  {noTaxNbrs.length > 0 && (
+    <>
+      <h2>Where the work state takes nothing</h2>
+      <p data-source="data/states.ts → noIncomeTax">
+        {andList(noTaxNbrs.map(name))} {noTaxNbrs.length === 1 ? 'levies' : 'levy'} no personal income tax,
+        so there is no return to file there and no credit to claim — but {home.name} still taxes the wages
+        as a resident. The catch is withholding: an employer in {orList(noTaxNbrs.map(name))} has no state
+        income tax to withhold, so nothing is taken out for {home.name} either. The liability is real and
+        nothing is being set aside against it, which usually means
+        {' '}<a href={`/quarterly-tax-calculator/${stateSlug(home.name)}/`}>{home.name} estimated payments</a>.
+      </p>
+    </>
+  )}
+
+  {homeLadder.length > 0 && (
+    <>
+      <h2>What {home.name} itself takes across a salary range</h2>
+      <p>
+        This is the figure every arrangement above is measured against — the tax {home.name} charges a
+        resident, whether the work happened inside the state or over a line:
+      </p>
+      <table class="data-table">
+        <thead><tr><th>Wages</th><th>{home.name} tax</th><th>Effective rate</th></tr></thead>
+        <tbody>
+          {homeLadder.map((r) => (
+            <tr>
+              <td>{formatMoney(r.income)}</td>
+              <td>{formatMoney(r.tax)}</td>
+              <td>{((r.tax / r.income) * 100).toFixed(2)}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )}
+
+  {inboundNames.length > 0 && (
+    <>
+      <h2>Coming the other way: living in a no-income-tax state, working in {home.name}</h2>
+      <p data-source={`data/states.ts → ${homeCode}`}>
+        {andList(inboundNames)} border {home.name} and levy no personal income tax of their own. A
+        resident of {orList(inboundNames)} who works in {home.name} has the simplest arrangement on this
+        page and the least room to improve it: {home.name} taxes the wages earned inside it —
+        {' '}{formatMoney(inboundTax)} on {formatMoney(INCOME)} — there is no home-state return, and so
+        there is nothing to claim a credit against. Living across a border that charges nothing does not
+        reduce the {home.name} bill by a cent.
+      </p>
+      <p>
+        Reciprocity cannot help either, even where {home.name} has agreements: reciprocity shifts the
+        income to the home state's return, and a state with no income tax has no return to shift it to.
+      </p>
+    </>
+  )}
+
+  <h2>What {home.name} charges as your home state</h2>
+  {layer.map((p) => <p data-source={`data/states.ts → ${detailCode}`}>{p}</p>)}
+  {facts.map((p) => <p data-source={`data/states.ts → stateMetadata, ${detailCode}.note`}>{p}</p>)}
+
+  {localTax && (
     <div class="callout">
-      <strong>Exemption form</strong>
-      File <strong>{o.exemptionForm}</strong> with your employer to stop {o.work.name} withholding on your wages.
+      <strong>Local tax in {detailState.name}</strong>
+      Everything above is state income tax only. {detailState.name} also has local income tax —
+      {' '}{localTax.join('; ')} — and a local tax is generally owed where the work is performed, whatever
+      the two states have agreed between themselves.
     </div>
   )}
 
-  <h2>Worked example: {formatMoney(o.income)} of wages</h2>
-  <p>A single filer living in {o.home.name} and working in {o.work.name}, earning {formatMoney(o.income)}, owes an estimated:</p>
-  <table class="data-table">
-    <tbody>
-      <tr><td>{o.work.name} tax (work state)</td><td>{formatMoney(o.workTax)}</td></tr>
-      <tr><td>{o.home.name} tax before credit (home state)</td><td>{formatMoney(o.homeTaxBeforeCredit)}</td></tr>
-      {o.credit > 0 && <tr><td>Credit for taxes paid to {o.work.name}</td><td>−{formatMoney(o.credit)}</td></tr>}
-      <tr class="total"><td>Total state income tax</td><td>{formatMoney(o.totalStateTax)}</td></tr>
-    </tbody>
-  </table>
   <p style="font-family: var(--mono); font-size: .78rem; color: var(--muted);">
-    Estimate of state income tax on wages only, using 2026 state rates. Excludes federal
-    tax, local/municipal taxes, and personal exemptions beyond each state's standard
-    deduction. Not tax advice.
+    State income tax on wages only, 2026 rates. Not tax advice —
+    <a href="/working-in-one-state-living-in-another/">what this does and doesn't cover</a>.
   </p>
 
-  <h2>The short version</h2>
-  <ul>
-    {o.type === 'reciprocity' && <li>{o.work.name} will not tax these wages — file {o.exemptionForm} and report everything to {o.home.name}.</li>}
-    {o.type === 'reciprocity' && <li>No {o.work.name} nonresident return for your wages.</li>}
-    {(o.type === 'credit' || o.type === 'az-wec') && <li>File a {o.work.name} nonresident return, then claim a credit on your {o.home.name} return.</li>}
-    {(o.type === 'credit' || o.type === 'az-wec') && <li>Your combined state tax is about the higher of the two states' rates — not both stacked.</li>}
-    {o.type === 'az-wec' && <li>As a {o.home.name} resident you may file Arizona Form WEC to skip withholding, but Arizona tax still applies.</li>}
-    {o.type === 'single-state' && <li>Only one of the two states taxes wage income, so you file in that state only.</li>}
-    {o.type === 'no-tax-either' && <li>No state income tax applies in either state — federal tax still does.</li>}
-    <li>Reciprocity and credits cover wages, not necessarily local taxes or self-employment income.</li>
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/working-in-one-state-living-in-another/">All cross-border guides</a></li>
+    <li><a href={`/paycheck-calculator/${stateSlug(detailState.name)}/`}>{detailState.name} paycheck calculator</a></li>
+    <li><a href={`/1099-tax-calculator/${stateSlug(detailState.name)}/`}>1099 taxes in {detailState.name}</a></li>
   </ul>
 </Base>

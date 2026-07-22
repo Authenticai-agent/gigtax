@@ -1,0 +1,37 @@
+{
+  "_meta": {
+    "purpose": "Illustrative scenarios for platform worked examples: how much a worker grossed and what they spent earning it. These are NOT tax figures. Every rate applied to them \u2014 the 72.5c mileage rate, the 80% gig-driver phone business-use share, SE tax, brackets \u2014 comes from the verified dataset. What lives here is only the shape of the example.",
+    "why": "The platform entries in legacy/data/config.json carry incomeType, fees and a list of deduction categories, but no example income and no usage figures. A worked example needs both. Inventing a tax rate would break ground rule 2; choosing a plausible scenario to apply verified rates to does not \u2014 but it is a choice, so it is recorded here in the open rather than buried in a template.",
+    "rules": [
+      "Round, obviously-illustrative numbers. These are not survey data and must never be presented as typical earnings.",
+      "Pages must describe them as an example, never as what a worker on this platform earns.",
+      "Any figure that is a tax rate, threshold or limit belongs in the verified dataset, not here."
+    ]
+  },
+  "doordash": {
+    "grossEarnings": 42000,
+    "businessMiles": 18000,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 180,
+    "_supplies": "insulated bags and phone mounts \u2014 the platform's keyDeductions list names insulated_bag",
+    "_note": "Delivery driving is mileage-dominated: at the 2026 business rate the mileage deduction alone is the single largest number on the page, which is the point the page makes.",
+    "ladder": [
+      {
+        "label": "Part-time, a few evenings",
+        "gross": 15000,
+        "miles": 6500
+      },
+      {
+        "label": "Steady side income",
+        "gross": 42000,
+        "miles": 18000
+      },
+      {
+        "label": "Full-time dashing",
+        "gross": 68000,
+        "miles": 30000
+      }
+    ],
+    "_ladder": "Three illustrative volumes. Miles scale with gross because delivery pay is roughly per-drop; the ratio is held near the base scenario's rather than modelled."
+  }
+}

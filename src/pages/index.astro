@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import QuickEstimator from '../components/calculators/QuickEstimator.tsx';
 import { VERIFIED, LAST_VERIFIED } from '../data/federal';
 import { stateList } from '../data/states';
+import { stateSlug } from '../lib/slug';
 ---
 
 <Base
@@ -21,7 +22,7 @@ import { stateList } from '../data/states';
   </p>
 
   <p class="section-label">Quick estimate</p>
-  <QuickEstimator client:load defaultSeIncome={50000} />
+  <QuickEstimator client:load defaultSeIncome={50000} stateHrefBase="/1099-tax-calculator/" />
 
   <h2>Living and working in different states</h2>
   <p>
@@ -33,8 +34,8 @@ import { stateList } from '../data/states';
   <h2>1099 tax calculator by state</h2>
   <p>Pick your state for a page built on that state's 2026 income tax rules:</p>
   <ul class="link-columns">
-    {stateList.map(([code, s]) => (
-      <li><a href={`/1099-tax-calculator/${code.toLowerCase()}/`}>{s.name}</a></li>
+    {stateList.map(([, s]) => (
+      <li><a href={`/1099-tax-calculator/${stateSlug(s.name)}/`}>{s.name}</a></li>
     ))}
   </ul>
 </Base>

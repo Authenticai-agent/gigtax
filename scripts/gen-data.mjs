@@ -42,11 +42,34 @@ const federalTs =
 writeFileSync(join(outDir, 'federal.ts'), federalTs);
 
 // ---- states.ts ----
+/**
+ * Four states (MD, NE, SC, WV) reached us with a `type` and a `topRate` but no
+ * bracket array, so the engine computed $0 of state income tax for them on every
+ * page. legacy/ is read-only and states.ts is generated, so the researched
+ * brackets live in their own reviewed overlay and are merged in here — that
+ * keeps generation reproducible and keeps the sourcing next to the figures.
+ */
+const overridesPath = join(root, 'src/data/overrides/state-brackets-2026.json');
+const overrides = JSON.parse(readFileSync(overridesPath, 'utf8'));
+const patchedStates = structuredClone(cfg.states);
+const patched = [];
+for (const [code, patch] of Object.entries(overrides)) {
+  if (code === '_meta') continue;
+  if (!patchedStates[code]) throw new Error(`override for unknown state ${code}`);
+  for (const [field, value] of Object.entries(patch)) {
+    if (field.startsWith('_')) continue; // provenance notes, not data
+    patchedStates[code][field] = value;
+  }
+  patchedStates[code].bracketSource = `overrides/state-brackets-2026.json (${overrides._meta.verified})`;
+  patched.push(code);
+}
+console.log(`  bracket overrides applied: ${patched.join(', ')}`);
+
 const statesTs =
-  banner() +
+  banner(`Bracket overrides from src/data/overrides/state-brackets-2026.json applied to: ${patched.join(', ')}.`) +
   `import type { StateData } from './types';\n\n` +
   `export const VERIFIED = ${j(VERIFIED)} as const;\n\n` +
-  `export const states: Record<string, StateData> = ${j(cfg.states)};\n\n` +
+  `export const states: Record<string, StateData> = ${j(patchedStates)};\n\n` +
   `export const stateMetadata = ${j(cfg.stateMetadata)};\n\n` +
   `/** Alphabetical [code, StateData] pairs — convenient for getStaticPaths. */\n` +
   `export const stateList = Object.entries(states).sort((a, b) => a[1].name.localeCompare(b[1].name));\n`;
