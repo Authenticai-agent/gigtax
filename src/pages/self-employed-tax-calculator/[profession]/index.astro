@@ -1,0 +1,156 @@
+---
+/**
+ * One profession's deduction profile.
+ *
+ * The page's whole reason to exist is the deduction table: the trade's own
+ * lines, with the statutory rule attached to the ones that have a figure behind
+ * them. Everything generic about Schedule C lives on the hub, because repeating
+ * it twenty-three times is how these pages would become each other.
+ */
+import Base from '../../../layouts/Base.astro';
+import { PROFESSIONS, professionFor, professionData, deductionsFor, uniqueRules, worthLadder } from '../../../lib/professions';
+import { formatMoney } from '../../../lib/tax-engine';
+
+export function getStaticPaths() {
+  return PROFESSIONS.map((p) => ({ params: { profession: p.slug }, props: { p } }));
+}
+
+const { p } = Astro.props as { p: (typeof PROFESSIONS)[number] };
+const data = professionData(p.key);
+const deductions = deductionsFor(p.key);
+const withRules = deductions.filter((d) => d.rule);
+const plain = deductions.filter((d) => !d.rule);
+const rules = uniqueRules(p.key);
+const ladder = worthLadder('TX');
+const mid = ladder[1];
+// "OTR truck driver".toLowerCase() gives "otr truck driver". Lowercase the first
+// letter only when the name does not open with an acronym — the same mangling
+// that once produced "cA SDI".
+const lowerName = /^[A-Z]{2,}\b/.test(p.name) ? p.name : p.name.charAt(0).toLowerCase() + p.name.slice(1);
+
+const title = `${p.name} tax calculator (2026) — deductions and self-employment tax`;
+const description = `What a self-employed ${p.name.toLowerCase()} can deduct in 2026, the rules that limit each one, and what a dollar of deduction is worth against self-employment tax.`;
+---
+
+<Base title={title} description={description}>
+  <div class="breadcrumbs">
+    <a href="/self-employed-tax-calculator/">By profession</a> / {p.name}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>{p.name} taxes and deductions</h1>
+    <p class="tagline">{p.lead}</p>
+  </section>
+
+  <p>{p.watch}</p>
+
+  {data.types && (
+    <p data-source={`professionals → ${p.key}.types`}>
+      This covers {(data.types as string[]).join(', ').toLowerCase()}.
+    </p>
+  )}
+
+  {data.taxForm && (
+    <div class="callout">
+      <strong>Not Schedule C</strong>
+      A {lowerName} files on <strong>{data.taxForm}</strong>.
+      {data.seTaxApplies ? ' Self-employment tax still applies to the profit on it.' : ''}
+    </div>
+  )}
+
+  {withRules.length > 0 && (
+    <>
+      <h2>The deductions with a rule attached</h2>
+      <p>
+        These are the lines where the answer is not simply "keep the receipt" — each has a cap, a
+        percentage or a test that decides how much of the spend you actually get:
+      </p>
+      <dl class="rule-list">
+        {withRules.map((d) => (
+          <>
+            <dt data-source={`professionals → ${p.key}.keyDeductions`}>{d.label}</dt>
+            <dd data-source="selfEmploymentDeductions">{d.rule}</dd>
+          </>
+        ))}
+      </dl>
+    </>
+  )}
+
+  {plain.length > 0 && (
+    <>
+      <h2>The rest of the {lowerName} deduction list</h2>
+      <p>
+        Ordinary and necessary business expenses, deductible in full in the year you pay them, provided
+        they are genuinely for the business:
+      </p>
+      <ul class="link-columns" data-source={`professionals → ${p.key}.keyDeductions`}>
+        {plain.map((d) => <li>{d.label}</li>)}
+      </ul>
+    </>
+  )}
+
+  {data.note && (
+    <>
+      <h2>Worth knowing</h2>
+      <p data-source={`professionals → ${p.key}.note`}>{data.note}</p>
+    </>
+  )}
+
+  {rules.length > 0 && (
+    <>
+      <h2>Rules specific to this work</h2>
+      <dl class="rule-list">
+        {rules.map((r) => (
+          <>
+            <dt data-source={`professionals → ${p.key}`}>{r.title}</dt>
+            <dd>{r.body}</dd>
+          </>
+        ))}
+      </dl>
+    </>
+  )}
+
+  <h2>What each deduction is worth to you</h2>
+  <p>
+    On {formatMoney(mid.profit)} of profit with no state income tax, {formatMoney(1000)} deducted saves
+    {' '}{formatMoney(mid.per1000)} — {(mid.effectiveRate * 100).toFixed(1)}%, because it comes off
+    self-employment tax and income tax together:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Net profit</th><th>Saved per $1,000 deducted</th><th>Effective</th></tr></thead>
+    <tbody>
+      {ladder.map((w) => (
+        <tr>
+          <td>{formatMoney(w.profit)}</td>
+          <td>{formatMoney(w.per1000)}</td>
+          <td>{(w.effectiveRate * 100).toFixed(1)}%</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p>
+    The last row is worth less than the one above it, and that is not a mistake: past the Social Security
+    wage base the self-employment part of the saving drops from 15.3% to 2.9%, and the higher income-tax
+    bracket does not quite make up the difference. A deduction is worth most in the middle.
+  </p>
+  <p>
+    Add a state income tax and every row rises. The
+    {' '}<a href="/1099-tax-calculator/">1099 calculator</a> applies that layer.
+  </p>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/self-employed-tax-calculator/">Every profession</a></li>
+    <li><a href="/1099-tax-calculator/">1099 taxes by state</a></li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly payments</a></li>
+    <li><a href="/s-corp-tax-calculator/">Is an S-corp worth it?</a></li>
+    <li><a href="/local-income-tax/">Local income tax</a></li>
+  </ul>
+
+  <p class="disclaimer">
+    General information about how these deductions work, not tax advice. Whether a particular expense is
+    deductible for you depends on facts this page does not have — check with a tax professional before
+    claiming anything listed here.
+  </p>
+</Base>

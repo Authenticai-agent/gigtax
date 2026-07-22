@@ -1,0 +1,94 @@
+---
+/**
+ * Profession hub. The organising idea is that Schedule C is the same form for
+ * everyone and the deductions on it are not — so this page is a directory of
+ * what each trade actually gets to write off, not a re-explanation of the form.
+ */
+import Base from '../../layouts/Base.astro';
+import { PROFESSIONS, deductionsFor, worthLadder } from '../../lib/professions';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ladder = worthLadder('TX'); // no state tax, so this is the federal floor
+const rows = PROFESSIONS.map((p) => ({ ...p, count: deductionsFor(p.key).length }));
+---
+
+<Base
+  title="Self-employed tax by profession (2026) — what your trade can deduct"
+  description="Schedule C is the same form for everyone; the deductions are not. What 23 self-employed professions can write off in 2026, and what each dollar of deduction is worth."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>What your profession can deduct</h1>
+    <p class="tagline">Schedule C is one form. The deductions that fill it are not the same for a notary and a nurse.</p>
+  </section>
+
+  <p>
+    Most self-employment tax advice stops at the form. The form is the easy part — one page, and the same
+    page whether you shoot weddings or drive a truck. What differs is what legitimately goes on it, and
+    that is where the money is: a signing agent's mileage, a driver's per diem, a photographer's Section
+    179 gear, a minister's housing allowance that is exempt from income tax and taxable for
+    self-employment tax at the same time.
+  </p>
+
+  <h2>What a deduction is actually worth</h2>
+  <p>
+    More than people expect. A business deduction comes off self-employment tax, income tax and state tax
+    at once — and then shrinks the QBI deduction, which quietly claws back a fifth of it. In a state with
+    no income tax, every $1,000 you legitimately deduct is worth:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Net profit</th><th>Tax saved per $1,000 deducted</th><th>Effective</th></tr></thead>
+    <tbody>
+      {ladder.map((w) => (
+        <tr>
+          <td>{formatMoney(w.profit)}</td>
+          <td>{formatMoney(w.per1000)}</td>
+          <td>{(w.effectiveRate * 100).toFixed(1)}%</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p>
+    The middle row is the peak, and the fall after it is real: past the Social Security wage base the
+    self-employment part of the saving drops from 15.3% to 2.9%, and the higher income-tax bracket does
+    not quite cover the gap. A deduction is worth most to a middling earner.
+  </p>
+  <p>
+    That is the federal floor — add a state income tax and every figure rises. It is also why the reverse
+    hurts: an expense you cannot substantiate is not a small problem, because the deduction you lose was
+    worth about a third of itself.
+  </p>
+
+  <h2>By profession</h2>
+  <ul class="link-columns">
+    {rows.map((p) => (
+      <li><a href={`/self-employed-tax-calculator/${p.slug}/`}>{p.name}</a> — {p.count} key deductions</li>
+    ))}
+  </ul>
+
+  <h2>Two rules that catch nearly everyone</h2>
+  <p>
+    <strong>Education that qualifies you for a new trade is not deductible.</strong> Education that
+    maintains or improves the skills of a business you already run is. The same certification is
+    deductible for a working coach and not deductible for someone about to become one.
+  </p>
+  <p>
+    <strong>Money that passes through you is not yours in either direction.</strong> Deposits you collect
+    for vendors are not income, and vendor payments you pass on are not deductions. Booking both inflates
+    a business several times over, which matters the moment anyone looks at gross receipts.
+  </p>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator by state</a></li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly payments</a></li>
+    <li><a href="/s-corp-tax-calculator/">S-corp election</a></li>
+    <li><a href="/local-income-tax/">Local income tax</a></li>
+  </ul>
+
+  <p class="disclaimer">
+    General information about how these deductions work, not tax advice. Whether a particular expense is
+    deductible depends on facts this page does not have — check with a tax professional before claiming
+    anything here.
+  </p>
+</Base>
