@@ -294,44 +294,58 @@
   },
   "CA": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 70,
+      "foreignQualificationFee": 70,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
-        "dueDate": null,
-        "note": null
+        "amount": 20,
+        "frequency": "biennial",
+        "dueDate": "within 90 days of registration, then biennially by the end of the anniversary month",
+        "note": "Statement of Information LLC-12, $20. FTB collects a $250 penalty for failure to file."
       },
       "annualTax": {
-        "amount": null,
-        "note": null
+        "amount": 800,
+        "note": "$800 annual LLC tax, due the 15th day of the 4th month, payable even with no activity until the LLC is cancelled. THE FIRST-YEAR EXEMPTION IS DEAD FOR 2026 — it covered only tax years 2021 to 2023."
       },
-      "source": null,
-      "confidence": null
+      "source": "https://bpd.cdn.sos.ca.gov/pdf/be-fee-schedule-062018.pdf",
+      "confidence": "high",
+      "allSources": [
+        "https://bpd.cdn.sos.ca.gov/pdf/be-fee-schedule-062018.pdf",
+        "https://www.ftb.ca.gov/file/business/types/limited-liability-company/index.html",
+        "https://www.ftb.ca.gov/file/business/doing-business-in-california.html"
+      ],
+      "provenance": "research",
+      "researchNote": "THE MYTH-WARNING FACT: an out-of-state LLC doing business in California owes the $800 whether or not it registers with the Secretary of State. FTB treats you as doing business if you transact for financial gain in California, are commercially domiciled there, or exceed the 2025 thresholds — California sales $757,070, property $75,707, payroll $75,707, or 25% of total."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 100,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
-        "dueDate": null,
-        "note": null
+        "amount": 25,
+        "frequency": "annual",
+        "dueDate": "within 90 days of incorporation, then annually",
+        "note": "Statement of Information SI-550: $20 filing plus $5 disclosure."
       },
       "annualTax": {
-        "amount": null,
-        "note": null
+        "amount": 800,
+        "note": "$800 minimum franchise tax for every corporation incorporated, registered OR DOING BUSINESS in California. Newly incorporated corporations are exempt in their first taxable year and that exemption IS still live in 2026 — unlike the LLC one."
       },
-      "source": null,
-      "confidence": null
+      "source": "https://bpd.cdn.sos.ca.gov/pdf/be-fee-schedule-062018.pdf",
+      "confidence": "high",
+      "allSources": [
+        "https://bpd.cdn.sos.ca.gov/pdf/be-fee-schedule-062018.pdf",
+        "https://www.ftb.ca.gov/file/business/types/limited-liability-company/index.html",
+        "https://www.ftb.ca.gov/file/business/doing-business-in-california.html"
+      ],
+      "provenance": "research",
+      "researchNote": "THE MYTH-WARNING FACT: an out-of-state LLC doing business in California owes the $800 whether or not it registers with the Secretary of State. FTB treats you as doing business if you transact for financial gain in California, are commercially domiciled there, or exceed the 2025 thresholds — California sales $757,070, property $75,707, payroll $75,707, or 25% of total."
     },
     "grossReceiptsTax": {
-      "applies": null,
+      "applies": true,
       "rate": null,
-      "threshold": null,
-      "base": null,
-      "note": null,
-      "source": null
+      "threshold": 250000,
+      "base": "gross_receipts",
+      "note": "LLC fee on total California income, SEPARATE FROM AND IN ADDITION TO the $800: $0 under $250,000; $900 to $499,999; $2,500 to $999,999; $6,000 to $4,999,999; $11,790 at $5,000,000 or more. Tiered, so no single rate.",
+      "source": "https://bpd.cdn.sos.ca.gov/pdf/be-fee-schedule-062018.pdf"
     },
     "franchiseTax": {
       "structured": null,
@@ -532,36 +546,50 @@
   },
   "DC": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 99,
+      "foreignQualificationFee": 220,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 300,
+        "frequency": "biennial",
         "dueDate": null,
-        "note": null
+        "note": "BRA-25 biennial report $300 plus $100 late fee. First due 1 April of the year after registration."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://dlcp.dc.gov/node/1621921",
+      "confidence": "high",
+      "allSources": [
+        "https://dlcp.dc.gov/node/1621921",
+        "https://otr.cfo.dc.gov/page/dc-business-franchise-tax-rates"
+      ],
+      "provenance": "research",
+      "researchNote": "Corp formation $99 covers authorised capital to $100,000, rising to $550, $1,100 and $1,650. SEPARATE mandatory DC franchise tax: D-20 and D-30 both carry a $250 minimum, $1,000 above $1M of DC gross receipts."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 99,
+      "foreignQualificationFee": 220,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 300,
+        "frequency": "biennial",
         "dueDate": null,
-        "note": null
+        "note": "BRA-25 $300 biennially."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://dlcp.dc.gov/node/1621921",
+      "confidence": "high",
+      "allSources": [
+        "https://dlcp.dc.gov/node/1621921",
+        "https://otr.cfo.dc.gov/page/dc-business-franchise-tax-rates"
+      ],
+      "provenance": "research",
+      "researchNote": "Corp formation $99 covers authorised capital to $100,000, rising to $550, $1,100 and $1,650. SEPARATE mandatory DC franchise tax: D-20 and D-30 both carry a $250 minimum, $1,000 above $1M of DC gross receipts.",
+      "feeVaries": true,
+      "feeVariesNote": "DC incorporation is $99 for authorized capital to $100,000, then $550, $1,100 and $1,650 by tier. The stored figure is the minimum."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -580,44 +608,56 @@
   },
   "FL": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 125,
+      "foreignQualificationFee": 125,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
-        "dueDate": null,
-        "note": null
+        "amount": 138.75,
+        "frequency": "annual",
+        "dueDate": "January 1 to May 1",
+        "note": "$538.75 if received after May 1 — a $400 late fee. Administrative dissolution the fourth Friday of September."
       },
       "annualTax": {
         "amount": null,
-        "note": null
+        "note": "No entity-level annual tax; an LLC not electing corporate treatment is outside Florida corporate income tax."
       },
-      "source": null,
-      "confidence": null
+      "source": "https://dos.fl.gov/sunbiz/forms/fees/",
+      "confidence": "high",
+      "allSources": [
+        "https://dos.fl.gov/sunbiz/forms/fees/",
+        "https://floridarevenue.com/taxes/taxesfees/Pages/corporate.aspx"
+      ],
+      "provenance": "research",
+      "researchNote": "FORMATION FIGURES ARE REQUIRED COMPONENTS: LLC $100 filing plus $25 agent designation; corp $35 plus $35. Sunbiz's headline $160 / $87.50 totals BUNDLE OPTIONAL extras (certified copy, certificate of status) — copying those totals overstates the cost."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 70,
+      "foreignQualificationFee": 70,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
-        "dueDate": null,
-        "note": null
+        "amount": 150,
+        "frequency": "annual",
+        "dueDate": "January 1 to May 1",
+        "note": "$550 if received after May 1."
       },
       "annualTax": {
         "amount": null,
-        "note": null
+        "note": "No flat annual tax; corporate income tax 5.5% of Florida net income after a $50,000 exemption."
       },
-      "source": null,
-      "confidence": null
+      "source": "https://dos.fl.gov/sunbiz/forms/fees/",
+      "confidence": "high",
+      "allSources": [
+        "https://dos.fl.gov/sunbiz/forms/fees/",
+        "https://floridarevenue.com/taxes/taxesfees/Pages/corporate.aspx"
+      ],
+      "provenance": "research",
+      "researchNote": "FORMATION FIGURES ARE REQUIRED COMPONENTS: LLC $100 filing plus $25 agent designation; corp $35 plus $35. Sunbiz's headline $160 / $87.50 totals BUNDLE OPTIONAL extras (certified copy, certificate of status) — copying those totals overstates the cost."
     },
     "grossReceiptsTax": {
-      "applies": null,
+      "applies": false,
       "rate": null,
       "threshold": null,
-      "base": null,
-      "note": null,
-      "source": null
+      "base": "gross_receipts",
+      "note": "No general gross receipts tax. Corporate income tax 5.5% on net income after a $50,000 exemption; S corporations paying federal tax on Form 1120S line 23c are subject to it.",
+      "source": "https://dos.fl.gov/sunbiz/forms/fees/"
     },
     "franchiseTax": {
       "structured": null,
@@ -820,36 +860,48 @@
   },
   "IN": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 125,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 32,
+        "frequency": "biennial",
         "dueDate": null,
-        "note": null
+        "note": "Business Entity Report every other year: $32 online, $50 paper."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://forms.in.gov/Download.aspx?id=16989",
+      "confidence": "medium",
+      "allSources": [
+        "https://forms.in.gov/Download.aspx?id=16989",
+        "https://inbiz.in.gov/business-filings/business-entityreport"
+      ],
+      "provenance": "research",
+      "researchNote": "Formation $100 from the 01-2026 paper forms. A lower INBiz online formation fee could not be confirmed on a .gov page."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 125,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 32,
+        "frequency": "biennial",
         "dueDate": null,
-        "note": null
+        "note": "Same biennial report."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://forms.in.gov/Download.aspx?id=16989",
+      "confidence": "medium",
+      "allSources": [
+        "https://forms.in.gov/Download.aspx?id=16989",
+        "https://inbiz.in.gov/business-filings/business-entityreport"
+      ],
+      "provenance": "research",
+      "researchNote": "Formation $100 from the 01-2026 paper forms. A lower INBiz online formation fee could not be confirmed on a .gov page."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -868,36 +920,46 @@
   },
   "IA": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 50,
+      "foreignQualificationFee": 100,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 30,
+        "frequency": "biennial",
         "dueDate": null,
-        "note": null
+        "note": "Biennial, odd years, due 1 April: $30 online, $45 paper."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.iowa.gov/businesses/business-entity-forms-and-fees",
+      "confidence": "high",
+      "allSources": [
+        "https://sos.iowa.gov/businesses/business-entity-forms-and-fees"
+      ],
+      "provenance": "research",
+      "researchNote": "LLCs and corporations file in opposite years, which the five-year projection must handle rather than assuming both file together."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 50,
+      "foreignQualificationFee": 100,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 60,
+        "frequency": "biennial",
         "dueDate": null,
-        "note": null
+        "note": "Profit corporations file in EVEN years, due 1 April: $60."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.iowa.gov/businesses/business-entity-forms-and-fees",
+      "confidence": "high",
+      "allSources": [
+        "https://sos.iowa.gov/businesses/business-entity-forms-and-fees"
+      ],
+      "provenance": "research",
+      "researchNote": "LLCs and corporations file in opposite years, which the five-year projection must handle rather than assuming both file together."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -916,36 +978,48 @@
   },
   "KS": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 85,
+      "foreignQualificationFee": 115,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 90,
+        "frequency": "biennial",
         "dueDate": null,
-        "note": null
+        "note": "Biennial information report $90 online, $110 paper."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.ks.gov/publications/Register/Volume-45/Issues/Issue-07/02-12-26-53865.html",
+      "confidence": "medium",
+      "allSources": [
+        "https://sos.ks.gov/publications/Register/Volume-45/Issues/Issue-07/02-12-26-53865.html",
+        "https://sos.ks.gov/forms/business_services/FA.pdf"
+      ],
+      "provenance": "research",
+      "researchNote": "Fees REDUCED effective 27 February 2026 — figures are post-reduction. Foreign filings are paper only; form FA states $115 for all entity types though the regulation implies less for foreign LLCs."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 85,
+      "foreignQualificationFee": 115,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 90,
+        "frequency": "biennial",
         "dueDate": null,
-        "note": null
+        "note": "Same."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.ks.gov/publications/Register/Volume-45/Issues/Issue-07/02-12-26-53865.html",
+      "confidence": "medium",
+      "allSources": [
+        "https://sos.ks.gov/publications/Register/Volume-45/Issues/Issue-07/02-12-26-53865.html",
+        "https://sos.ks.gov/forms/business_services/FA.pdf"
+      ],
+      "provenance": "research",
+      "researchNote": "Fees REDUCED effective 27 February 2026 — figures are post-reduction. Foreign filings are paper only; form FA states $115 for all entity types though the regulation implies less for foreign LLCs."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -964,36 +1038,48 @@
   },
   "KY": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 40,
+      "foreignQualificationFee": 90,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 15,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Due 1 Jan to 30 June, $15."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://www.sos.ky.gov/bus/business-filings/Pages/Fees.aspx",
+      "confidence": "high",
+      "allSources": [
+        "https://www.sos.ky.gov/bus/business-filings/Pages/Fees.aspx",
+        "https://revenue.ky.gov/Business/Corporation-Income-and-Limited-Liability-Entity-Tax/Pages/default.aspx"
+      ],
+      "provenance": "research",
+      "researchNote": "Separate mandatory Limited Liability Entity Tax on LLCs and corporations alike: $175 minimum at or below $3 million of gross receipts. The cheap filing fee is misleading without it."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 40,
+      "foreignQualificationFee": 90,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 15,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Same."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://www.sos.ky.gov/bus/business-filings/Pages/Fees.aspx",
+      "confidence": "high",
+      "allSources": [
+        "https://www.sos.ky.gov/bus/business-filings/Pages/Fees.aspx",
+        "https://revenue.ky.gov/Business/Corporation-Income-and-Limited-Liability-Entity-Tax/Pages/default.aspx"
+      ],
+      "provenance": "research",
+      "researchNote": "Separate mandatory Limited Liability Entity Tax on LLCs and corporations alike: $175 minimum at or below $3 million of gross receipts. The cheap filing fee is misleading without it."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -1012,36 +1098,48 @@
   },
   "LA": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 150,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 30,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "$30; a domestic LLC Initial Report is filed with the Articles."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://www.sos.la.gov/business-services/forms-fee-schedule",
+      "confidence": "medium",
+      "allSources": [
+        "https://www.sos.la.gov/business-services/forms-fee-schedule",
+        "https://revenue.louisiana.gov/tax-education-and-faqs/faqs/income-tax-reform/is-the-corporation-franchise-tax-repealed/"
+      ],
+      "provenance": "research",
+      "researchNote": "FEES RISE 1 OCTOBER 2026 under Act 921 (2026) — these are pre-increase figures and will be stale within the year. Corporation franchise tax repealed for periods from 1 January 2026."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 75,
+      "foreignQualificationFee": 125,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 30,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "$30."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://www.sos.la.gov/business-services/forms-fee-schedule",
+      "confidence": "medium",
+      "allSources": [
+        "https://www.sos.la.gov/business-services/forms-fee-schedule",
+        "https://revenue.louisiana.gov/tax-education-and-faqs/faqs/income-tax-reform/is-the-corporation-franchise-tax-repealed/"
+      ],
+      "provenance": "research",
+      "researchNote": "FEES RISE 1 OCTOBER 2026 under Act 921 (2026) — these are pre-increase figures and will be stale within the year. Corporation franchise tax repealed for periods from 1 January 2026."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -1997,44 +2095,60 @@
   },
   "OH": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 99,
+      "foreignQualificationFee": 99,
       "annualReport": {
         "amount": null,
-        "frequency": null,
+        "frequency": "none",
         "dueDate": null,
-        "note": null
+        "note": "Ohio requires NO annual or biennial report for LLCs. The statutory schedule lists periodic reports only for LLPs and professional associations."
       },
       "annualTax": {
         "amount": null,
-        "note": null
+        "note": "None."
       },
-      "source": null,
-      "confidence": null
+      "source": "https://codes.ohio.gov/ohio-revised-code/section-111.16",
+      "confidence": "high",
+      "allSources": [
+        "https://codes.ohio.gov/ohio-revised-code/section-111.16",
+        "https://tax.ohio.gov/business/commercial-activity-tax",
+        "https://www.lsc.ohio.gov/assets/organizations/legislative-service-commission/files/2026-state-agency-fees-sos.pdf"
+      ],
+      "provenance": "research",
+      "researchNote": "CONFLICT FLAGGED: ORC 111.16 (effective 3 April 2025) sets $0.10 per share with a $99 minimum, and SOS Form 532A charges $99, but the Legislative Service Commission fee table dated 30 January 2026 still prints a $125 minimum. $99 used. Ohio's no-annual-report position is verified negatively — the statutory schedule lists none — because ohiosos.gov serves a JavaScript-only shell."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 99,
+      "foreignQualificationFee": 99,
       "annualReport": {
         "amount": null,
-        "frequency": null,
+        "frequency": "none",
         "dueDate": null,
-        "note": null
+        "note": "No annual report for domestic or foreign for-profit corporations."
       },
       "annualTax": {
         "amount": null,
-        "note": null
+        "note": "None."
       },
-      "source": null,
-      "confidence": null
+      "source": "https://codes.ohio.gov/ohio-revised-code/section-111.16",
+      "confidence": "high",
+      "allSources": [
+        "https://codes.ohio.gov/ohio-revised-code/section-111.16",
+        "https://tax.ohio.gov/business/commercial-activity-tax",
+        "https://www.lsc.ohio.gov/assets/organizations/legislative-service-commission/files/2026-state-agency-fees-sos.pdf"
+      ],
+      "provenance": "research",
+      "researchNote": "CONFLICT FLAGGED: ORC 111.16 (effective 3 April 2025) sets $0.10 per share with a $99 minimum, and SOS Form 532A charges $99, but the Legislative Service Commission fee table dated 30 January 2026 still prints a $125 minimum. $99 used. Ohio's no-annual-report position is verified negatively — the statutory schedule lists none — because ohiosos.gov serves a JavaScript-only shell.",
+      "feeVaries": true,
+      "feeVariesNote": "Ohio incorporation is $0.10 per authorized share with a $99 floor, so $99 covers 990 shares or fewer. The stored figure is the minimum."
     },
     "grossReceiptsTax": {
-      "applies": null,
-      "rate": null,
-      "threshold": null,
-      "base": null,
-      "note": null,
-      "source": null
+      "applies": true,
+      "rate": 0.0026,
+      "threshold": 6000000,
+      "base": "gross_receipts",
+      "note": "Commercial Activity Tax. From tax year 2025: $6,000,000 exclusion, 0.26% above it. Registration required within 30 days of exceeding $6 million.",
+      "source": "https://codes.ohio.gov/ohio-revised-code/section-111.16"
     },
     "franchiseTax": {
       "structured": null,
@@ -2352,43 +2466,55 @@
   "SD": {
     "llc": {
       "formationFee": 150,
-      "foreignQualificationFee": null,
+      "foreignQualificationFee": 750,
       "annualReport": {
-        "amount": 50,
+        "amount": 55,
         "frequency": "annual",
-        "dueDate": null,
-        "note": "Legacy figure. The S-corp dataset separately records $55 electronic / $70 paper — these disagree and the owner must resolve which is current."
+        "dueDate": "first day of the anniversary month",
+        "note": "$55 electronic, $70 paper. $50 late fee once delinquent, two months after the due date."
       },
       "annualTax": {
         "amount": null,
-        "note": null
+        "note": "None."
       },
-      "source": "legacy/js/app.js mtSdEntityView (UNVERIFIED — CONFLICTS with state-scorp-tax-2026.json SD note)",
-      "confidence": "low"
+      "source": "https://sdsos.gov/general-information/filing-fees.aspx",
+      "confidence": "high",
+      "allSources": [
+        "https://sdsos.gov/general-information/filing-fees.aspx",
+        "https://dor.sd.gov/businesses/taxes/bank-franchise-tax/"
+      ],
+      "provenance": "research",
+      "researchNote": "RESOLVES THE LEGACY CONFLICT: annual report is $55 electronic / $70 paper, NOT the $50 legacy recorded. Paper adds a flat $15 to anything filable online. Foreign registration is $750 electronic, $765 paper."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 150,
+      "foreignQualificationFee": 750,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
-        "dueDate": null,
-        "note": null
+        "amount": 55,
+        "frequency": "annual",
+        "dueDate": "first day of the anniversary month",
+        "note": "$55 electronic, $70 paper."
       },
       "annualTax": {
         "amount": null,
-        "note": null
+        "note": "None."
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sdsos.gov/general-information/filing-fees.aspx",
+      "confidence": "high",
+      "allSources": [
+        "https://sdsos.gov/general-information/filing-fees.aspx",
+        "https://dor.sd.gov/businesses/taxes/bank-franchise-tax/"
+      ],
+      "provenance": "research",
+      "researchNote": "RESOLVES THE LEGACY CONFLICT: annual report is $55 electronic / $70 paper, NOT the $50 legacy recorded. Paper adds a flat $15 to anything filable online. Foreign registration is $750 electronic, $765 paper."
     },
     "grossReceiptsTax": {
-      "applies": null,
+      "applies": false,
       "rate": null,
       "threshold": null,
-      "base": null,
-      "note": null,
-      "source": null
+      "base": "gross_receipts",
+      "note": "No corporate or personal income tax. The bank franchise tax reaches financial institutions only.",
+      "source": "https://sdsos.gov/general-information/filing-fees.aspx"
     },
     "franchiseTax": {
       "structured": null,
@@ -2399,36 +2525,50 @@
   },
   "TN": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 300,
+      "foreignQualificationFee": 300,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 300,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "VARIES: $50 per member, $300 minimum, $3,000 maximum."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.tn.gov/businesses/services/business-forms-fees",
+      "confidence": "high",
+      "allSources": [
+        "https://sos.tn.gov/businesses/services/business-forms-fees",
+        "https://www.tn.gov/revenue/taxes/franchise---excise-tax.html"
+      ],
+      "provenance": "research",
+      "researchNote": "LLC formation and foreign qualification are BOTH per-member: $50 a member, $300 minimum, $3,000 maximum. Corp fees flat. Separate franchise and excise tax with a $100 minimum.",
+      "feeVaries": true,
+      "feeVariesNote": "LLC formation and foreign qualification are $50 per member, minimum $300, maximum $3,000. The stored figure is the minimum."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 600,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 20,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Flat $20; extra $20 if the agent is changed on the report."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.tn.gov/businesses/services/business-forms-fees",
+      "confidence": "high",
+      "allSources": [
+        "https://sos.tn.gov/businesses/services/business-forms-fees",
+        "https://www.tn.gov/revenue/taxes/franchise---excise-tax.html"
+      ],
+      "provenance": "research",
+      "researchNote": "LLC formation and foreign qualification are BOTH per-member: $50 a member, $300 minimum, $3,000 maximum. Corp fees flat. Separate franchise and excise tax with a $100 minimum."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -2447,44 +2587,58 @@
   },
   "TX": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 300,
+      "foreignQualificationFee": 750,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
-        "dueDate": null,
-        "note": null
+        "amount": 0,
+        "frequency": "annual",
+        "dueDate": "May 15",
+        "note": "No SOS annual report. Comptroller requires an annual Public Information Report with the franchise report; no filing fee."
       },
       "annualTax": {
         "amount": null,
-        "note": null
+        "note": "Franchise (margin) tax, no flat minimum. $0 due at or below $2,650,000 annualized revenue for report year 2026, but the report must still be filed."
       },
-      "source": null,
-      "confidence": null
+      "source": "https://direct.sos.state.tx.us/help/help-corp.asp?pg=fee",
+      "confidence": "high",
+      "allSources": [
+        "https://direct.sos.state.tx.us/help/help-corp.asp?pg=fee",
+        "https://comptroller.texas.gov/taxes/franchise/",
+        "https://comptroller.texas.gov/taxes/franchise/filing-requirements.php"
+      ],
+      "provenance": "research",
+      "researchNote": "No personal income tax. The $750 foreign registration is among the highest in the country and is exactly the cost the myth warning exists to surface."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 300,
+      "foreignQualificationFee": 750,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
-        "dueDate": null,
-        "note": null
+        "amount": 0,
+        "frequency": "annual",
+        "dueDate": "May 15",
+        "note": "No SOS annual report; Public Information Report to the Comptroller, no fee."
       },
       "annualTax": {
         "amount": null,
-        "note": null
+        "note": "Same margin tax as LLCs."
       },
-      "source": null,
-      "confidence": null
+      "source": "https://direct.sos.state.tx.us/help/help-corp.asp?pg=fee",
+      "confidence": "high",
+      "allSources": [
+        "https://direct.sos.state.tx.us/help/help-corp.asp?pg=fee",
+        "https://comptroller.texas.gov/taxes/franchise/",
+        "https://comptroller.texas.gov/taxes/franchise/filing-requirements.php"
+      ],
+      "provenance": "research",
+      "researchNote": "No personal income tax. The $750 foreign registration is among the highest in the country and is exactly the cost the myth warning exists to surface."
     },
     "grossReceiptsTax": {
-      "applies": null,
-      "rate": null,
-      "threshold": null,
-      "base": null,
-      "note": null,
-      "source": null
+      "applies": true,
+      "rate": 0.0075,
+      "threshold": 2650000,
+      "base": "margin",
+      "note": "Report year 2026: no-tax-due threshold $2,650,000. Standard 0.75%, retail/wholesale 0.375%, EZ computation 0.331% under $20M revenue. A report is required even below the threshold.",
+      "source": "https://direct.sos.state.tx.us/help/help-corp.asp?pg=fee"
     },
     "franchiseTax": {
       "structured": null,
@@ -2495,36 +2649,46 @@
   },
   "UT": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 59,
+      "foreignQualificationFee": 59,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 18,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Annual renewal $18 including a $5 portal surcharge; $10 late fee."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://commerce.utah.gov/wp-content/uploads/2023/04/currentfees.pdf",
+      "confidence": "medium",
+      "allSources": [
+        "https://commerce.utah.gov/wp-content/uploads/2023/04/currentfees.pdf"
+      ],
+      "provenance": "research",
+      "researchNote": "Schedule is headed Fiscal Year 2026, effective 1 July 2025. No FY2027 schedule found on the .gov site."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 59,
+      "foreignQualificationFee": 59,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 18,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Annual renewal, same figures."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://commerce.utah.gov/wp-content/uploads/2023/04/currentfees.pdf",
+      "confidence": "medium",
+      "allSources": [
+        "https://commerce.utah.gov/wp-content/uploads/2023/04/currentfees.pdf"
+      ],
+      "provenance": "research",
+      "researchNote": "Schedule is headed Fiscal Year 2026, effective 1 July 2025. No FY2027 schedule found on the .gov site."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -2543,36 +2707,48 @@
   },
   "VT": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 155,
+      "foreignQualificationFee": 155,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 45,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Domestic LLC $45; FOREIGN LLC annual report is $170."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.vermont.gov/business-services/fees-statutes",
+      "confidence": "high",
+      "allSources": [
+        "https://sos.vermont.gov/business-services/fees-statutes",
+        "https://tax.vermont.gov/business/corporate-income-tax"
+      ],
+      "provenance": "research",
+      "researchNote": "Formation and foreign qualification $155 for both types, but the ANNUAL report is far higher for foreign entities — $170 LLC and $250 corp against $45 and $60 domestic. Minimum corporate income tax from $100."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 155,
+      "foreignQualificationFee": 155,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 60,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Domestic corporation $60; FOREIGN corporation annual report is $250."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.vermont.gov/business-services/fees-statutes",
+      "confidence": "high",
+      "allSources": [
+        "https://sos.vermont.gov/business-services/fees-statutes",
+        "https://tax.vermont.gov/business/corporate-income-tax"
+      ],
+      "provenance": "research",
+      "researchNote": "Formation and foreign qualification $155 for both types, but the ANNUAL report is far higher for foreign entities — $170 LLC and $250 corp against $45 and $60 domestic. Minimum corporate income tax from $100."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -2591,36 +2767,50 @@
   },
   "VA": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 100,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 50,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Flat $50 annual registration fee; no report content. $25 late penalty."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://www.scc.virginia.gov/businesses/forms-and-fees/virginia-limited-liability-companies/",
+      "confidence": "high",
+      "allSources": [
+        "https://www.scc.virginia.gov/businesses/forms-and-fees/virginia-limited-liability-companies/",
+        "https://www.scc.virginia.gov/businesses/business-faqs/annual-registration-fees/"
+      ],
+      "provenance": "research",
+      "researchNote": "Stock corporation charter fee VARIES: $25 filing plus $50 per 25,000 authorized shares, $75 minimum, $2,525 maximum. Same schedule for the foreign entrance fee."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 75,
+      "foreignQualificationFee": 75,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 100,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "VARIES by authorized shares: $100 for 1-5,000, rising $30 per additional 5,000. Nonstock $25."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://www.scc.virginia.gov/businesses/forms-and-fees/virginia-limited-liability-companies/",
+      "confidence": "high",
+      "allSources": [
+        "https://www.scc.virginia.gov/businesses/forms-and-fees/virginia-limited-liability-companies/",
+        "https://www.scc.virginia.gov/businesses/business-faqs/annual-registration-fees/"
+      ],
+      "provenance": "research",
+      "researchNote": "Stock corporation charter fee VARIES: $25 filing plus $50 per 25,000 authorized shares, $75 minimum, $2,525 maximum. Same schedule for the foreign entrance fee.",
+      "feeVaries": true,
+      "feeVariesNote": "Stock corporation charter fee is $25 plus $50 per 25,000 authorized shares, minimum $75, maximum $2,525. The annual registration fee also scales. Stored figures are minimums."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -2639,44 +2829,56 @@
   },
   "WA": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 180,
+      "foreignQualificationFee": 180,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 70,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Initial report within 120 days: free with formation, otherwise $10. Annual report $70, $95 delinquent."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://www.sos.wa.gov/corporations-charities/frequently-asked-questions-faqs/fee-scheduleexpedited-service",
+      "confidence": "high",
+      "allSources": [
+        "https://www.sos.wa.gov/corporations-charities/frequently-asked-questions-faqs/fee-scheduleexpedited-service",
+        "https://dor.wa.gov/taxes-rates/business-occupation-tax"
+      ],
+      "provenance": "research",
+      "researchNote": "No corporate income tax, but B&O is on gross receipts with no cost deduction — a loss-making business still owes it."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 180,
+      "foreignQualificationFee": 180,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 70,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Same as LLC."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://www.sos.wa.gov/corporations-charities/frequently-asked-questions-faqs/fee-scheduleexpedited-service",
+      "confidence": "high",
+      "allSources": [
+        "https://www.sos.wa.gov/corporations-charities/frequently-asked-questions-faqs/fee-scheduleexpedited-service",
+        "https://dor.wa.gov/taxes-rates/business-occupation-tax"
+      ],
+      "provenance": "research",
+      "researchNote": "No corporate income tax, but B&O is on gross receipts with no cost deduction — a loss-making business still owes it."
     },
     "grossReceiptsTax": {
-      "applies": null,
+      "applies": true,
       "rate": null,
       "threshold": null,
-      "base": null,
-      "note": null,
-      "source": null
+      "base": "gross_receipts",
+      "note": "Business & Occupation tax on GROSS receipts with NO deduction for costs. Rates vary across more than 50 classifications, so no single rate is stored and the engine must compute null.",
+      "source": "https://www.sos.wa.gov/corporations-charities/frequently-asked-questions-faqs/fee-scheduleexpedited-service"
     },
     "franchiseTax": {
       "structured": null,
@@ -2687,36 +2889,48 @@
   },
   "WV": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 150,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 25,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Due 1 Jan to 30 June; $50 late fee for profit entities."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.wv.gov/media/335/download?inline=",
+      "confidence": "high",
+      "allSources": [
+        "https://sos.wv.gov/media/335/download?inline=",
+        "https://sos.wv.gov/annual-reports"
+      ],
+      "provenance": "research",
+      "researchNote": "Business Registration Certificate is $30 per location, not the $100 often quoted. $1 portal fee on online filings."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 100,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 25,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Same window and late fee."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.wv.gov/media/335/download?inline=",
+      "confidence": "high",
+      "allSources": [
+        "https://sos.wv.gov/media/335/download?inline=",
+        "https://sos.wv.gov/annual-reports"
+      ],
+      "provenance": "research",
+      "researchNote": "Business Registration Certificate is $30 per location, not the $100 often quoted. $1 portal fee on online filings."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -2735,36 +2949,46 @@
   },
   "WI": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 170,
+      "foreignQualificationFee": 100,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 25,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Domestic LLC $25; FOREIGN LLC $80. $15 paper surcharge since March 2024."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://dfi.wi.gov/Pages/BusinessServices/BusinessEntities/Fees.aspx",
+      "confidence": "medium",
+      "allSources": [
+        "https://dfi.wi.gov/Pages/BusinessServices/BusinessEntities/Fees.aspx"
+      ],
+      "provenance": "research",
+      "researchNote": "The domestic LLC annual report figure ($25 against $40) could not be read cleanly off the DFI table and needs a human check. Corp $40 and foreign $80 are confirmed."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 100,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 40,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Domestic stock corporation $40; foreign corporation $80."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://dfi.wi.gov/Pages/BusinessServices/BusinessEntities/Fees.aspx",
+      "confidence": "medium",
+      "allSources": [
+        "https://dfi.wi.gov/Pages/BusinessServices/BusinessEntities/Fees.aspx"
+      ],
+      "provenance": "research",
+      "researchNote": "The domestic LLC annual report figure ($25 against $40) could not be read cleanly off the DFI table and needs a human check. Corp $40 and foreign $80 are confirmed."
     },
     "grossReceiptsTax": {
       "applies": null,

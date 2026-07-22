@@ -54,9 +54,12 @@ Per jurisdiction (51), per entity type (LLC and corporation separately):
 
 Plus structured replacements for the 9 prose gross-receipts regimes, and the Texas margin-tax and Nevada Commerce-Tax parameters.
 
-## 5. Conflicts already found
+## 5. Conflicts
 
-- **South Dakota.** The legacy harvest says $150 formation and $50 a year. `state-scorp-tax-2026.json` says the annual report is $55 electronic / $70 paper. These disagree and the owner must resolve which is current before either is used.
+- **South Dakota — RESOLVED.** Legacy said $150 formation and $50 a year. The state fee schedule confirms $150 formation but the annual report is **$55 electronic / $70 paper**; legacy's $50 was wrong. Also found: South Dakota foreign qualification is **$750**, which nothing in the repo had.
+- **Ohio corporation formation — OPEN.** ORC 111.16, effective 3 April 2025, sets $0.10 per share with a **$99** minimum, and SOS Form 532A charges $99. The Legislative Service Commission fee table dated 30 January 2026 still prints **$125**. $99 is stored. A state disagreeing with itself needs a human decision.
+- **New Jersey — OPEN.** The registry schedule shows **$100** formation and $100 foreign. The widely cited $125 does not appear anywhere on nj.gov. Worth confirming before use.
+- **Wisconsin — OPEN.** The domestic LLC annual report reads as either $25 or $40 on the DFI table and could not be resolved. Stored as $25.
 - **Delaware LLC vs corporation.** Legacy records $300 annual tax for the LLC and a $50 report for the corporation. Both are seeded, both unverified. A calculator that applied the corporation figure to an LLC would understate Delaware by $250 a year.
 
 ## 6. Research in flight
@@ -80,6 +83,27 @@ Research ran against state `.gov` sources only. Findings that matter beyond fill
 **Two sourcing caveats to carry forward.** Nevada's Secretary of State blocks automated fetching, so all Nevada figures come from the statutes on `leg.state.nv.us` rather than the fee-schedule PDF. New Hampshire's site also blocked fetching and its figures came from indexed pages. Both are state sources; both deserve a human look.
 
 **One state stayed empty on purpose.** New Mexico publishes no current online fee schedule, so its formation and foreign fees are null. That is the correct outcome.
+
+**Two states will be stale within the year.** Louisiana's fees rise on 1 October 2026 under Act 921; the stored figures are pre-increase. Kansas reduced its fees on 27 February 2026; the stored figures are post-reduction. Both need a `verified` date the reader can see.
+
+### Where the file stands
+
+| | |
+|---|---|
+| LLC formation fee | 42 of 51 jurisdictions |
+| **Foreign qualification fee** | **82 of 102 rows — was 0** |
+| Rows flagged `feeVaries` | 14 |
+| Still empty | CT, GA, HI, ID, IL, MN, MO, MS, NM |
+
+The honesty row now exists for most of the country, which is the single thing that had to happen before the engine could be honest.
+
+### Costs the marketing never mentions, now visible in the data
+
+- **Nevada:** $200 (LLC) or $500 (corp) State Business Licence **every year**, on top of the $150 annual list.
+- **Texas and South Dakota:** **$750** to register as a foreign entity. Delaware corp is $245, Oregon $275, Tennessee corp $600.
+- **Vermont:** foreign annual reports are $170 (LLC) and $250 (corp) against $45 and $60 domestic.
+- **Kentucky:** a $40 filing fee alongside a $175 minimum Limited Liability Entity Tax.
+- **California:** the LLC first-year $800 exemption **expired after 2023** and does not apply in 2026, while the corporation first-year exemption is permanent and does. Two entity types, opposite answers, in the same state.
 
 ## 7. What S2 must not do
 
