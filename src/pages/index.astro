@@ -9,7 +9,7 @@
  */
 import Base from '../layouts/Base.astro';
 import QuickEstimator from '../components/calculators/QuickEstimator.tsx';
-import { VERIFIED, LAST_VERIFIED } from '../data/federal';
+import { LAST_VERIFIED } from '../data/federal';
 import { stateList } from '../data/states';
 import { stateSlug } from '../lib/slug';
 import { PROFESSIONS } from '../lib/professions';
@@ -52,8 +52,9 @@ const PLATFORMS = [
   </section>
 
   <p>
-    Every figure comes from the verified 2026 dataset (<code>{VERIFIED}</code>) — the same
-    numbers that drive the worked examples on each page.
+    Every rate, bracket and threshold on this site is checked against IRS and state revenue sources
+    before it goes up, and the worked examples are calculated from those same figures rather than
+    written by hand. Where a number could not be confirmed, the page says so instead of guessing.
   </p>
 
   <p class="section-label">Quick estimate</p>

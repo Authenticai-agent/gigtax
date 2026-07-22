@@ -9,6 +9,7 @@ import { states } from '../../data/states';
 import { stateSlug } from '../../lib/slug';
 import { formatMoney } from '../../lib/tax-engine';
 import { localTaxStates, localTaxFor, localRange, ohioCreditTraps, reachesSelfEmployment } from '../../lib/local-tax';
+import { localCopyFor } from '../../data/local-tax-copy';
 
 const EXAMPLE = 80000;
 const codes = localTaxStates();
@@ -20,6 +21,7 @@ const rows = codes.map((code) => {
     code,
     name: states[code].name,
     reachesSE: reachesSelfEmployment(code),
+    headline: localCopyFor(code)?.headline ?? '',
     range,
   };
 });
@@ -93,12 +95,26 @@ const traps = ohioCreditTraps();
     marked "not confirmed" it means exactly that, never that the answer is no.
   </div>
 
-  <h2>The Ohio credit trap</h2>
+  <h2>The trap in each of the twelve</h2>
   <p>
-    If you live in one Ohio city and work in another, your home city gives you a credit for the tax your
-    work city already took. Most people assume that credit is full, and in {20 - traps.length} of the twenty largest
-    cities it is. In {traps.length} it is not — the credit is capped below the city's own rate, so a
-    resident who works elsewhere and owes nothing on paper still gets a bill:
+    None of these states is straightforward, and the thing that catches people is different in every one:
+  </p>
+  <dl class="rule-list">
+    {rows.filter((r) => r.headline).map((r) => (
+      <>
+        <dt><a href={`/local-income-tax/${stateSlug(r.name)}/`}>{r.name}</a></dt>
+        <dd>{r.headline}</dd>
+      </>
+    ))}
+  </dl>
+
+  <h2>Ohio's credit cap, in numbers</h2>
+  <p>
+    Ohio's is the only one that changes the answer by direction rather than amount, so it is worth showing
+    in full. If you live in one Ohio city and work in another, your home city credits the tax your work
+    city already took. Most people assume that credit is full, and in {20 - traps.length} of the twenty
+    largest cities it is. In {traps.length} it is not — the credit is capped below the city's own rate, so
+    a resident who works elsewhere and owes nothing on paper still gets a bill:
   </p>
   <table class="data-table">
     <thead>

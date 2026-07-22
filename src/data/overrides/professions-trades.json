@@ -227,5 +227,601 @@
       "uniforms"
     ],
     "note": "Food bought for a job is cost of goods sold rather than a general expense, which matters for how it appears on your return. The 50% limit on business meals does not apply to it — that limit is about meals you eat, not food you sell."
+  },
+  "physician_practice": {
+    "keyDeductions": [
+      "malpractice_insurance",
+      "medical_equipment",
+      "office_rent_or_home_office",
+      "staff_wages",
+      "ehr_software",
+      "licensing_fees_state",
+      "continuing_education_cpe",
+      "professional_memberships",
+      "billing_service"
+    ],
+    "note": "Medicine is a specified service trade, so the qualified business income deduction is withdrawn above an income threshold rather than continuing. That single rule is worth more than most of the equipment on this list."
+  },
+  "dentist": {
+    "keyDeductions": [
+      "medical_equipment",
+      "office_rent_or_home_office",
+      "staff_wages",
+      "malpractice_insurance",
+      "lab_fees",
+      "materials_and_supplies",
+      "licensing_fees_state",
+      "continuing_education_cpe",
+      "practice_software"
+    ],
+    "note": "Dentistry is capital-heavy in a way most professional practices are not — chairs, imaging and a fit-out run to hundreds of thousands, and nearly all of it can be expensed rather than depreciated."
+  },
+  "veterinarian": {
+    "keyDeductions": [
+      "medical_equipment",
+      "office_rent_or_home_office",
+      "staff_wages",
+      "malpractice_insurance",
+      "drugs_and_supplies",
+      "licensing_fees_state",
+      "continuing_education_cpe",
+      "practice_software",
+      "waste_disposal"
+    ],
+    "note": "A veterinary practice sells goods as well as services — drugs, food and products are inventory with cost of goods sold against them, and that is a different calculation from an overhead."
+  },
+  "chiropractor": {
+    "keyDeductions": [
+      "medical_equipment",
+      "office_rent_or_home_office",
+      "malpractice_insurance",
+      "staff_wages",
+      "licensing_fees_state",
+      "continuing_education_cpe",
+      "practice_software",
+      "marketing"
+    ],
+    "note": "Small premises, expensive tables and a large marketing spend — chiropractic has a different cost shape from other health practices and the marketing is usually the biggest controllable line."
+  },
+  "aba_provider": {
+    "keyDeductions": [
+      "staff_wages",
+      "malpractice_insurance",
+      "office_rent_or_home_office",
+      "ehr_software",
+      "credentialing_fees",
+      "materials_and_supplies",
+      "mileage_or_travel",
+      "continuing_education_cpe"
+    ],
+    "note": "Insurance credentialing and staff are the whole cost base, and clinicians who work in clients' homes make mileage a much larger deduction than in a clinic-based practice."
+  },
+  "home_health_agency": {
+    "keyDeductions": [
+      "staff_wages",
+      "payroll_taxes",
+      "liability_insurance",
+      "workers_comp",
+      "mileage_or_travel",
+      "scheduling_software",
+      "licensing_fees_state",
+      "background_check_fees",
+      "training_costs"
+    ],
+    "note": "Caregiver payroll is nearly the whole cost base, and home care has overtime rules of its own that decide what that payroll actually costs."
+  },
+  "staffing_agency": {
+    "keyDeductions": [
+      "staff_wages",
+      "payroll_taxes",
+      "workers_comp",
+      "liability_insurance",
+      "recruitment_costs",
+      "ats_software",
+      "marketing",
+      "background_check_fees",
+      "professional_fees"
+    ],
+    "note": "You are the employer of record for people who work somewhere else entirely, which puts payroll, unemployment and workers' compensation on your return rather than the client's."
+  },
+  "attorney": {
+    "keyDeductions": [
+      "malpractice_insurance",
+      "office_rent_or_home_office",
+      "staff_wages",
+      "research_subscriptions",
+      "bar_dues",
+      "continuing_education_cpe",
+      "practice_software",
+      "professional_memberships",
+      "filing_fees"
+    ],
+    "note": "Client trust money is the line that matters most, and it is not income. Everything else on a law firm return is ordinary."
+  },
+  "tax_preparer": {
+    "keyDeductions": [
+      "practice_software",
+      "professional_memberships",
+      "continuing_education_cpe",
+      "eo_insurance",
+      "home_office",
+      "licensing_fees_state",
+      "marketing",
+      "phone"
+    ],
+    "note": "Income arrives in four months and the costs run for twelve, which makes quarterly estimates awkward in a way that catches out the people who prepare them for everyone else."
+  },
+  "financial_advisor": {
+    "keyDeductions": [
+      "compliance_costs",
+      "eo_insurance",
+      "crm_software",
+      "research_subscriptions",
+      "office_rent_or_home_office",
+      "licensing_fees_state",
+      "marketing",
+      "professional_memberships",
+      "staff_wages"
+    ],
+    "note": "Compliance is the cost that has no equivalent in other professions — registration, audits, archiving and supervision are all deductible and none of them are optional."
+  },
+  "medical_billing": {
+    "keyDeductions": [
+      "practice_software",
+      "staff_wages",
+      "eo_insurance",
+      "cyber_insurance",
+      "home_office",
+      "compliance_costs",
+      "phone",
+      "internet_pct"
+    ],
+    "note": "You handle protected health information for other people's patients, which brings security obligations that are both mandatory and deductible."
+  },
+  "architect": {
+    "keyDeductions": [
+      "professional_liability_insurance",
+      "cad_software",
+      "office_rent_or_home_office",
+      "staff_wages",
+      "licensing_fees_state",
+      "continuing_education_cpe",
+      "professional_memberships",
+      "site_travel"
+    ],
+    "note": "Architecture is specifically excluded from the trades that lose the 20% business profit deduction at higher incomes — unlike law, accounting or medicine, it keeps it."
+  },
+  "engineer": {
+    "keyDeductions": [
+      "professional_liability_insurance",
+      "cad_software",
+      "equipment",
+      "office_rent_or_home_office",
+      "staff_wages",
+      "licensing_fees_state",
+      "continuing_education_cpe",
+      "site_travel"
+    ],
+    "note": "Engineering shares architecture's statutory exception: it keeps the 20% business profit deduction at incomes where most professional practices lose it."
+  },
+  "interior_designer": {
+    "keyDeductions": [
+      "design_software",
+      "materials_and_supplies",
+      "vehicle",
+      "marketing_photography",
+      "liability_insurance",
+      "home_office",
+      "trade_show_travel",
+      "staff_wages"
+    ],
+    "note": "Whether you buy furnishings and resell them or take a commission changes the whole shape of the return, and most designers do both without separating them."
+  },
+  "home_stager": {
+    "keyDeductions": [
+      "furniture_inventory",
+      "storage_yard_rent",
+      "vehicle",
+      "liability_insurance",
+      "marketing_photography",
+      "staff_wages",
+      "equipment_rental",
+      "insurance"
+    ],
+    "note": "The furniture is the business, and whether it is inventory or a depreciable asset depends on whether you rent it out or sell it."
+  },
+  "marketing_agency": {
+    "keyDeductions": [
+      "advertising_spend_passthrough",
+      "software_subscriptions",
+      "staff_wages",
+      "contractor_subcontractors",
+      "office_rent_or_home_office",
+      "professional_development",
+      "marketing"
+    ],
+    "note": "Client ad spend passing through your account is the number that makes an agency look ten times its size, and it is both income and a deduction."
+  },
+  "seo_consultant": {
+    "keyDeductions": [
+      "software_subscriptions",
+      "research_subscriptions",
+      "home_office",
+      "computer",
+      "professional_development",
+      "internet_pct",
+      "marketing",
+      "contractor_subcontractors"
+    ],
+    "note": "Tooling is the whole overhead, and it is unusually expensive — enterprise SEO platforms cost more per month than most consultants' rent."
+  },
+  "podcaster": {
+    "keyDeductions": [
+      "recording_equipment",
+      "editing_software",
+      "studio_rent",
+      "hosting_fees",
+      "marketing",
+      "contractor_subcontractors",
+      "travel",
+      "home_office"
+    ],
+    "note": "Sponsorship income arrives before the episodes run, and the equipment is Section 179 property at the business-use percentage."
+  },
+  "writer_author": {
+    "keyDeductions": [
+      "research_subscriptions",
+      "home_office",
+      "computer",
+      "professional_memberships",
+      "travel",
+      "marketing",
+      "professional_fees",
+      "software_subscriptions"
+    ],
+    "note": "Royalties and advances are taxed differently from a fee for work, and an advance is income when you receive it rather than when the book earns out."
+  },
+  "actor_performer": {
+    "keyDeductions": [
+      "agent_commission",
+      "headshots",
+      "training_classes",
+      "union_dues",
+      "travel",
+      "wardrobe_if_required",
+      "professional_memberships",
+      "marketing"
+    ],
+    "note": "Agent and manager commissions come off the top and are fully deductible, and classes are deductible once you are working rather than training to start."
+  },
+  "professional_speaker": {
+    "keyDeductions": [
+      "travel",
+      "marketing_photography",
+      "website",
+      "professional_memberships",
+      "home_office",
+      "equipment",
+      "professional_development",
+      "contractor_subcontractors"
+    ],
+    "note": "Speaking in many states creates tax obligations in many states, and some withhold from the fee before it reaches you."
+  },
+  "conference_organizer": {
+    "keyDeductions": [
+      "venue_costs",
+      "vendor_deposits_if_direct_billed",
+      "marketing",
+      "staff_wages",
+      "equipment_rental",
+      "insurance",
+      "software_subscriptions",
+      "travel"
+    ],
+    "note": "Tickets sell a year ahead and costs land in one week, so the money and the event routinely fall in different tax years."
+  },
+  "travel_agent": {
+    "keyDeductions": [
+      "host_agency_fees",
+      "crm_software",
+      "marketing",
+      "professional_memberships",
+      "travel",
+      "home_office",
+      "errors_omissions_insurance",
+      "phone"
+    ],
+    "note": "Client money for trips is not your income — only the commission is, and it is often paid long after the booking."
+  },
+  "tour_operator": {
+    "keyDeductions": [
+      "vendor_deposits_if_direct_billed",
+      "liability_insurance",
+      "guides_and_staff",
+      "equipment",
+      "vehicle",
+      "permits_and_licences",
+      "marketing",
+      "training_costs"
+    ],
+    "note": "You carry the liability and the deposits, which makes insurance the defining cost and deferred money the defining trap."
+  },
+  "restaurant_owner": {
+    "keyDeductions": [
+      "food_and_ingredients",
+      "staff_wages",
+      "payroll_taxes",
+      "rent",
+      "equipment",
+      "liability_insurance",
+      "permits_and_licences",
+      "utilities",
+      "marketing"
+    ],
+    "note": "Tips create a payroll tax credit most owners never claim, and food is cost of goods rather than an ordinary expense."
+  },
+  "food_truck": {
+    "keyDeductions": [
+      "food_and_ingredients",
+      "fuel",
+      "vehicle",
+      "permits_and_licences",
+      "equipment",
+      "commissary_rent",
+      "liability_insurance",
+      "staff_wages"
+    ],
+    "note": "The truck is both your vehicle and your kitchen, and the two halves are deducted in completely different ways."
+  },
+  "hotel_owner": {
+    "keyDeductions": [
+      "staff_wages",
+      "utilities",
+      "property_insurance",
+      "repairs_and_maintenance",
+      "furnishings",
+      "property_tax",
+      "marketing",
+      "software_subscriptions",
+      "supplies"
+    ],
+    "note": "The building is the asset, and a cost segregation study can move millions of its cost into far shorter depreciation lives."
+  },
+  "str_host_business": {
+    "keyDeductions": [
+      "mortgage_interest",
+      "property_tax",
+      "cleaning_and_turnover",
+      "furnishings",
+      "property_insurance",
+      "utilities",
+      "platform_fees",
+      "repairs_and_maintenance",
+      "software_subscriptions"
+    ],
+    "note": "Average stays of seven days or less take a rental outside the passive rules, which is the difference between losses you can use now and losses you cannot."
+  },
+  "ecommerce_seller": {
+    "keyDeductions": [
+      "inventory_cogs",
+      "platform_fees",
+      "shipping_costs",
+      "advertising_spend_passthrough",
+      "software_subscriptions",
+      "storage_warehousing",
+      "packaging",
+      "returns_and_refunds"
+    ],
+    "note": "Your 1099-K reports what came in, not what you made, and the gap between the two is most of the return."
+  },
+  "import_export": {
+    "keyDeductions": [
+      "inventory_cogs",
+      "customs_duties",
+      "freight_costs",
+      "warehousing",
+      "liability_insurance",
+      "customs_broker_fees",
+      "currency_costs",
+      "travel"
+    ],
+    "note": "Duties and freight are part of what the goods cost you, not a separate expense, and that changes when you get relief for them."
+  },
+  "freight_broker": {
+    "keyDeductions": [
+      "carrier_payments",
+      "bond_costs",
+      "liability_insurance",
+      "tms_software",
+      "staff_wages",
+      "marketing",
+      "factoring_fees",
+      "licensing_fees_state"
+    ],
+    "note": "Carrier payments run through your books at close to the value of the freight, so gross receipts look nothing like the margin."
+  },
+  "courier_service": {
+    "keyDeductions": [
+      "vehicle",
+      "fuel",
+      "liability_insurance",
+      "driver_wages",
+      "maintenance",
+      "phone",
+      "routing_software",
+      "permits_and_licences"
+    ],
+    "note": "Once you have more than one van the drivers are almost certainly employees, and that decides most of the return."
+  },
+  "limo_service": {
+    "keyDeductions": [
+      "vehicle",
+      "fuel",
+      "driver_wages",
+      "liability_insurance",
+      "maintenance",
+      "permits_and_licences",
+      "booking_software",
+      "detailing"
+    ],
+    "note": "Passenger vehicles carry heavier insurance and licensing than freight, and the annual depreciation caps that hobble ordinary cars do not apply to the larger vehicles."
+  },
+  "property_flipper": {
+    "keyDeductions": [
+      "purchase_cogs",
+      "renovation_costs",
+      "holding_costs",
+      "loan_interest",
+      "liability_insurance",
+      "contractor_payments",
+      "permits_and_licences",
+      "marketing"
+    ],
+    "note": "Flipping is a trade, not an investment: the profit is ordinary income with self-employment tax on it, and none of the capital gains treatment applies."
+  },
+  "car_dealership": {
+    "keyDeductions": [
+      "inventory_cogs",
+      "floor_plan_interest",
+      "lot_rent",
+      "staff_wages",
+      "liability_insurance",
+      "reconditioning",
+      "advertising",
+      "licensing_fees_state"
+    ],
+    "note": "Floor plan interest has a statutory carve-out from the limit on deducting business interest, which no other inventory-financed business gets."
+  },
+  "body_shop": {
+    "keyDeductions": [
+      "equipment",
+      "materials_and_supplies",
+      "shop_rent",
+      "staff_wages",
+      "liability_insurance",
+      "waste_disposal",
+      "certification_fees",
+      "paint_and_consumables"
+    ],
+    "note": "Insurance pays most of your invoices, and equipment certification is what keeps you on the approved lists that generate the work."
+  },
+  "security_company": {
+    "keyDeductions": [
+      "guard_wages",
+      "payroll_taxes",
+      "workers_comp",
+      "liability_insurance",
+      "uniforms",
+      "vehicle",
+      "licensing_fees_state",
+      "training_costs",
+      "equipment"
+    ],
+    "note": "Guard payroll is the business, and armed work carries insurance and licensing costs that unarmed work does not."
+  },
+  "private_investigator": {
+    "keyDeductions": [
+      "licensing_fees_state",
+      "liability_insurance",
+      "surveillance_equipment",
+      "vehicle",
+      "database_subscriptions",
+      "home_office",
+      "phone",
+      "professional_development"
+    ],
+    "note": "Database subscriptions and a surveillance vehicle are the two costs that have no equivalent in other service businesses."
+  },
+  "winery_brewery": {
+    "keyDeductions": [
+      "equipment",
+      "inventory_cogs",
+      "excise_tax",
+      "licensing_fees_state",
+      "staff_wages",
+      "packaging",
+      "utilities",
+      "tasting_room_costs",
+      "marketing"
+    ],
+    "note": "Federal excise tax is owed on what you produce, separately from income tax, and a reduced rate applies to smaller producers."
+  },
+  "cannabis_business": {
+    "keyDeductions": [
+      "inventory_cogs",
+      "staff_wages",
+      "licensing_fees_state",
+      "security_costs",
+      "compliance_costs",
+      "rent",
+      "utilities",
+      "equipment"
+    ],
+    "note": "Section 280E denies every ordinary business deduction to a cannabis business. Only cost of goods sold survives, which makes this the most punitive tax position in the code."
+  },
+  "mining_operator": {
+    "keyDeductions": [
+      "equipment",
+      "depletion",
+      "permits_and_licences",
+      "staff_wages",
+      "fuel",
+      "reclamation_costs",
+      "liability_insurance",
+      "exploration_costs"
+    ],
+    "note": "Depletion has no equivalent in any other industry: you deduct a share of revenue for the resource itself, sometimes beyond what you paid for it."
+  },
+  "print_shop": {
+    "keyDeductions": [
+      "equipment",
+      "inventory_cogs",
+      "materials_and_supplies",
+      "staff_wages",
+      "shop_rent",
+      "software_subscriptions",
+      "waste_disposal",
+      "vehicle"
+    ],
+    "note": "Presses and wide-format machines are the capital, and the substrate stock behind them is inventory rather than an expense."
+  },
+  "event_rental": {
+    "keyDeductions": [
+      "equipment",
+      "storage_yard_rent",
+      "vehicle",
+      "liability_insurance",
+      "staff_wages",
+      "maintenance",
+      "repairs_and_maintenance",
+      "software_subscriptions"
+    ],
+    "note": "Your stock is not sold, it is hired out repeatedly — so it is depreciable equipment rather than inventory."
+  },
+  "mobile_mechanic": {
+    "keyDeductions": [
+      "tools",
+      "vehicle",
+      "materials_and_supplies",
+      "liability_insurance",
+      "phone",
+      "equipment",
+      "certification_fees",
+      "fuel"
+    ],
+    "note": "The van is a workshop that drives, which makes both the vehicle rules and Section 179 apply to the same asset in different parts."
+  },
+  "nursing_agency": {
+    "keyDeductions": [
+      "staff_wages",
+      "payroll_taxes",
+      "workers_comp",
+      "malpractice_insurance",
+      "credentialing_fees",
+      "background_check_fees",
+      "scheduling_software",
+      "recruitment_costs"
+    ],
+    "note": "You carry the payroll and the malpractice exposure for clinicians working in someone else's facility."
   }
 }
