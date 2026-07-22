@@ -221,8 +221,8 @@ export interface SplitRow {
 
 /**
  * Every salary split from 20% to 60%, with what each costs. Shown as a range
- * because the choice is a judgement about defensible compensation, not an
- * optimisation — the cheapest row is always the riskiest one.
+ * because the choice is a judgment about defensible compensation, not an
+ * optimization — the cheapest row is always the riskiest one.
  */
 export function salarySplits(netProfit: number, stateCode: string, status = 'single'): SplitRow[] {
   const soleProp = compareEntities(netProfit, 0, status, stateCode).soleProp.totalTax;

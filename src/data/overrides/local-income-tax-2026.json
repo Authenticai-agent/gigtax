@@ -229,9 +229,9 @@
     ],
     "appliesToSelfEmploymentNetProfit": true,
     "nonresidentsPay": true,
-    "nonresidentRule": "County is fixed as of 1 January. An out-of-state resident on 1 January whose principal place of work or business is in an Indiana county pays that county's FULL rate — there is no longer a reduced nonresident rate.",
+    "nonresidentRule": "County is fixed as of January 1. An out-of-state resident on January 1 whose principal place of work or business is in an Indiana county pays that county's FULL rate — there is no longer a reduced nonresident rate.",
     "confidence": "high",
-    "source": "in.gov/dor Departmental Notice #1, effective 1 January 2026 (R46/01-26)",
+    "source": "in.gov/dor Departmental Notice #1, effective January 1, 2026 (R46/01-26)",
     "rates": {
       "Adams": 0.016,
       "Allen": 0.0159,
@@ -326,7 +326,7 @@
       "White": 0.0232,
       "Whitley": 0.016829
     },
-    "_notes": "All 92 counties levy it, on the same base as the state tax, so it reaches self-employment profit in full. Porter is the cheapest at 0.5% and Randolph the dearest at 3.0% — a six-fold spread between neighbouring counties. Six counties changed rates effective 1 January 2026: Carroll, Grant, Greene, Howard, Shelby, Union. The odd non-round values (Brown 0.025234, Carroll 0.024733, Jasper 0.02864, Whitley 0.016829) are exact as published and must not be rounded. Re-pull dn01.pdf each January. Confirmed twice, independently, from the same DOR notice.",
+    "_notes": "All 92 counties levy it, on the same base as the state tax, so it reaches self-employment profit in full. Porter is the cheapest at 0.5% and Randolph the dearest at 3.0% — a six-fold spread between neighbouring counties. Six counties changed rates effective January 1, 2026: Carroll, Grant, Greene, Howard, Shelby, Union. The odd non-round values (Brown 0.025234, Carroll 0.024733, Jasper 0.02864, Whitley 0.016829) are exact as published and must not be rounded. Re-pull dn01.pdf each January. Confirmed twice, independently, from the same DOR notice.",
     "rateChanges2026": [
       "Carroll",
       "Grant",
@@ -337,7 +337,7 @@
     ]
   },
   "KY": {
-    "shape": "occupational licence fee on gross wages AND net profits, levied by cities, counties and some school districts",
+    "shape": "occupational license fee on gross wages AND net profits, levied by cities, counties and some school districts",
     "appliesToSelfEmploymentNetProfit": true,
     "nonresidentsPay": true,
     "typicalRange": [
@@ -362,7 +362,7 @@
         "rate": 0.0225,
         "annualMinimumLicenceFee": 100,
         "confidence": "high",
-        "source": "lexingtonky.gov occupational licence fee rates",
+        "source": "lexingtonky.gov occupational license fee rates",
         "schoolDistrictOLT": 0.005,
         "combinedRate": 0.0275
       }
@@ -510,7 +510,7 @@
         0.005
       ]
     },
-    "_notes": "24 cities levy a city income tax, ALL NOW VERIFIED from the city's own page or form. Statutory default is 1% resident / 0.5% nonresident (MCL 141.611), with the nonresident rate never exceeding half the resident rate. Four exceptions, each with its own population-gated statutory hook: Detroit 2.4/1.2, Highland Park 2.0/1.0, Grand Rapids 1.5/0.75, Saginaw 1.5/0.75. None of the other 20 qualifies for a higher-rate provision, so 1%/0.5% is their ceiling as well as their rate. SELF-EMPLOYMENT: taxed both ways. MCL 141.612(b) taxes a resident owner's distributive share of unincorporated business profits WHEREVER CONDUCTED; MCL 141.613(b) taxes a nonresident's only to the extent CONDUCTED IN THE CITY, apportioned by the city's business allocation formula. Pensions, annuities and Social Security are not subject. EAST LANSING SUNSETS after tax year 2030 — its tax was authorised for 12 years from January 2019 and is the only one here with an expiry, so it cannot be treated as permanent.",
+    "_notes": "24 cities levy a city income tax, ALL NOW VERIFIED from the city's own page or form. Statutory default is 1% resident / 0.5% nonresident (MCL 141.611), with the nonresident rate never exceeding half the resident rate. Four exceptions, each with its own population-gated statutory hook: Detroit 2.4/1.2, Highland Park 2.0/1.0, Grand Rapids 1.5/0.75, Saginaw 1.5/0.75. None of the other 20 qualifies for a higher-rate provision, so 1%/0.5% is their ceiling as well as their rate. SELF-EMPLOYMENT: taxed both ways. MCL 141.612(b) taxes a resident owner's distributive share of unincorporated business profits WHEREVER CONDUCTED; MCL 141.613(b) taxes a nonresident's only to the extent CONDUCTED IN THE CITY, apportioned by the city's business allocation formula. Pensions, annuities and Social Security are not subject. EAST LANSING SUNSETS after tax year 2030 — its tax was authorized for 12 years from January 2019 and is the only one here with an expiry, so it cannot be treated as permanent.",
     "verifiedFromOwnSource": "all 24",
     "statutoryDefault": {
       "resident": 0.01,
@@ -548,7 +548,7 @@
         "employerPayrollExpenseTax": 0.005
       }
     },
-    "_notes": "Both were renewed by voters on 7 April 2026 for a further five years, so both are confirmed in force. Residents pay on all earnings wherever performed; nonresidents pay on work actually performed inside the city and can claim a refund for out-of-city days. Both explicitly reach net profits, so a sole proprietor pays 1% on city-attributable profit. St. Louis's 0.5% payroll expense tax is employer-side and is not part of an individual's calculation."
+    "_notes": "Both were renewed by voters on April 7, 2026 for a further five years, so both are confirmed in force. Residents pay on all earnings wherever performed; nonresidents pay on work actually performed inside the city and can claim a refund for out-of-city days. Both explicitly reach net profits, so a sole proprietor pays 1% on city-attributable profit. St. Louis's 0.5% payroll expense tax is employer-side and is not part of an individual's calculation."
   },
   "DE": {
     "shape": "flat percentage on gross wages, plus a parallel net profits tax at the same rate",
@@ -566,7 +566,7 @@
     "_notes": "Wilmington is Delaware's only municipal wage tax, confirmed from the City's own FY2027 budget tax-rate sheet and unchanged across FY2025-FY2027. 1.25% on gross earned income, paid at the SAME rate by residents and by nonresidents working in the city — unlike Michigan there is no half-rate for nonresidents. A separate Net Profits Tax, also 1.25%, covers sole proprietors and partnerships. The rate is set by the Delaware General Assembly, not the city."
   },
   "WV": {
-    "shape": "flat dollars per week worked — NOT a percentage, and must never be modelled as one",
+    "shape": "flat dollars per week worked — NOT a percentage, and must never be modeled as one",
     "isPercentage": false,
     "appliesToSelfEmploymentNetProfit": "n/a as a rate; self-employed people working in the city are liable for the flat weekly fee, confirmed for Huntington",
     "nonresidentsPay": true,
@@ -580,7 +580,7 @@
         "perWeek": 5.0,
         "confidence": "medium",
         "appliesToSelfEmployed": null,
-        "note": "RAISED FROM $2.00 IN 2026 — Ordinance 2272 passed second reading 14 April 2026, effective about mid-May. Confirmed by news reporting only; the official ordinance PDF is an unreadable scan. Most aggregators still say $2.00."
+        "note": "RAISED FROM $2.00 IN 2026 — Ordinance 2272 passed second reading April 14, 2026, effective about mid-May. Confirmed by news reporting only; the official ordinance PDF is an unreadable scan. Most aggregators still say $2.00."
       },
       "Charleston": {
         "perWeek": 3.0,
@@ -633,7 +633,7 @@
         "thresholdSingle": 128000,
         "thresholdJoint": 205000,
         "confidence": "high",
-        "note": "Thresholds rose from $125,000/$200,000 because Metro Council adopted CPI indexing effective 1 January 2026; the rate did not change. Metro publishes updated thresholds by 15 November each year."
+        "note": "Thresholds rose from $125,000/$200,000 because Metro Council adopted CPI indexing effective January 1, 2026; the rate did not change. Metro publishes updated thresholds by November 15 each year."
       },
       "Multnomah County Preschool for All": {
         "bracketsSingle": [
@@ -661,7 +661,7 @@
           ]
         ],
         "confidence": "medium",
-        "note": "The scheduled +0.8 percentage-point increase DOES NOT APPLY IN 2026 — it was delayed by Board ordinance to 1 January 2027. For 2026 the rates remain 1.5% and 3.0%. Thresholds are NOT indexed, unlike SHS."
+        "note": "The scheduled +0.8 percentage-point increase DOES NOT APPLY IN 2026 — it was delayed by Board ordinance to January 1, 2027. For 2026 the rates remain 1.5% and 3.0%. Thresholds are NOT indexed, unlike SHS."
       },
       "Portland Arts Tax": {
         "flatAmount": 35,
@@ -672,11 +672,11 @@
       }
     },
     "_notes": "Both Metro SHS and Multnomah PFA use Oregon taxable income, so a sole proprietor's Schedule C profit counts toward the thresholds and is taxed. Both reach NONRESIDENTS on district-sourced income — the well-known trap for Washington-state commuters who owe Metro SHS on Portland-source income despite living in a no-income-tax state. The statewide transit tax and TriMet/Lane payroll taxes are employer-side or statewide and are excluded.",
-    "remoteWorkRule": "A nonresident who physically travels into the district to work IS taxable on that work. A nonresident employed by a district employer who works ENTIRELY REMOTELY from outside it — the Vancouver, Washington home office — is NOT. This is the distinction that decides the answer for most cross-river commuters and should be modelled explicitly rather than assumed.",
+    "remoteWorkRule": "A nonresident who physically travels into the district to work IS taxable on that work. A nonresident employed by a district employer who works ENTIRELY REMOTELY from outside it — the Vancouver, Washington home office — is NOT. This is the distinction that decides the answer for most cross-river commuters and should be modeled explicitly rather than assumed.",
     "statewideTransitTax": {
       "rate": 0.001,
       "paidBy": "employee, withheld by employer",
-      "note": "STAYED AT 0.1% FOR 2026. The 2025 transportation package would have doubled it to 0.2% from 1 January 2026, but Measure 120 was DEFEATED at the 19 May 2026 primary, so DOR instructs employers to continue withholding 0.1%. Many payroll-vendor 2026 guides still say 0.2% and are wrong."
+      "note": "STAYED AT 0.1% FOR 2026. The 2025 transportation package would have doubled it to 0.2% from January 1, 2026, but Measure 120 was DEFEATED at the May 19, 2026 primary, so DOR instructs employers to continue withholding 0.1%. Many payroll-vendor 2026 guides still say 0.2% and are wrong."
     },
     "employerTaxesNotPersonal": {
       "TriMet payroll": 0.008237,
@@ -891,7 +891,7 @@
       "selfEmploymentNote": "Sole proprietors, single-member LLCs and generally individual partners owe EIT on Schedule C and K-1 ordinary business income, and must file QUARTERLY ESTIMATES directly with their collector. No employer withholds it, so it is routinely missed.",
       "sCorpDistributiveShareTaxed": false,
       "sCorpNote": "S-CORP DISTRIBUTIVE SHARE IS NOT SUBJECT TO PA LOCAL EIT. This is the largest planning difference for Pennsylvania business owners and a common calculator error — it makes the S-corp election worth materially more in PA than the federal maths alone suggests.",
-      "act511Cap": "Combined municipal + school EIT is generally capped at 1% unless separately authorised by home rule charter, Act 1 referendum or distressed-city status. Where the cap binds and both levy, the split is typically 0.5/0.5."
+      "act511Cap": "Combined municipal + school EIT is generally capped at 1% unless separately authorized by home rule charter, Act 1 referendum or distressed-city status. Where the cap binds and both levy, the split is typically 0.5/0.5."
     },
     "philadelphia": {
       "outsideAct32": true,
@@ -907,12 +907,12 @@
           "nonresident": 0.03425
         }
       ],
-      "rateChangeDate": "1 July, NOT 1 January — a calendar-2026 calculation must blend two rates",
+      "rateChangeDate": "July 1, NOT January 1 — a calendar-2026 calculation must blend two rates",
       "netProfitsTax": {
         "resident": 0.03735,
         "nonresident": 0.03425,
         "confidence": "low",
-        "flag": "NOT CONFIRMED FOR 2026. The convention is that the NPT rate for a tax year equals the wage tax rate effective 1 July of that year, which gives these figures, but no official City page stating the 2026 NPT rate was found. Do not ship without confirming. NPT filers generally also owe BIRT, with a partial credit."
+        "flag": "NOT CONFIRMED FOR 2026. The convention is that the NPT rate for a tax year equals the wage tax rate effective July 1 of that year, which gives these figures, but no official City page stating the 2026 NPT rate was found. Do not ship without confirming. NPT filers generally also owe BIRT, with a partial credit."
       },
       "note": "The Wage Tax does not cover the self-employed at all — they pay the separate Net Profits Tax, and usually BIRT on top."
     },
@@ -935,6 +935,6 @@
       "basis": "work location, not residence"
     },
     "officialRegister": "munstats.pa.gov FindLocalTax and the DCED Official Tax Register",
-    "_notes": "Two systems that do not talk to each other. Act 32 EIT covers the whole state except Philadelphia, which sits outside it entirely with its own wage tax, its own net profits tax for the self-employed, and rates that change on 1 JULY rather than 1 January — so any calendar-2026 figure blends two rates. The single most valuable fact here for our audience: S-corp distributive share is NOT subject to PA local EIT, while sole-proprietor net profit is. In a jurisdiction at 3% combined that is a real reason to elect, and it is invisible in the federal calculation. The LST is a flat dollar tax the self-employed owe quarterly with nobody withholding it."
+    "_notes": "Two systems that do not talk to each other. Act 32 EIT covers the whole state except Philadelphia, which sits outside it entirely with its own wage tax, its own net profits tax for the self-employed, and rates that change on 1 JULY rather than January 1 — so any calendar-2026 figure blends two rates. The single most valuable fact here for our audience: S-corp distributive share is NOT subject to PA local EIT, while sole-proprietor net profit is. In a jurisdiction at 3% combined that is a real reason to elect, and it is invisible in the federal calculation. The LST is a flat dollar tax the self-employed owe quarterly with nobody withholding it."
   }
 }

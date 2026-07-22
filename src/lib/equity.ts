@@ -35,7 +35,7 @@ export const INSTRUMENTS: EquityInstrument[] = [
     key: 'iso',
     label: 'ISO',
     trap: 'AMT on an exercise you never sold',
-    lead: 'Incentive stock options cost nothing in regular tax when you exercise. They can still generate a tax bill through the alternative minimum tax, on a paper gain you have not realised and may never realise.',
+    lead: 'Incentive stock options cost nothing in regular tax when you exercise. They can still generate a tax bill through the alternative minimum tax, on a paper gain you have not realized and may never realize.',
   },
   {
     slug: 'nso-tax-calculator',

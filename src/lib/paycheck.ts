@@ -8,7 +8,7 @@
  * missing from the figures, which meant the take-home was overstated for the
  * five states that levy it — 0.9% of a California salary is real money coming
  * out of a real paycheck, and a take-home calculator that omits it is wrong.
- * Where a state's programme has no single statutory rate (New York's DBL and
+ * Where a state's program has no single statutory rate (New York's DBL and
  * Hawaii's TDI both vary by employer plan) it is reported as unmodelled rather
  * than guessed at.
  *
@@ -28,7 +28,7 @@ export interface SdiResult {
   amount: number | null;
   label: string;
   note: string;
-  /** True when the state has a programme we cannot put a number on. */
+  /** True when the state has a program we cannot put a number on. */
   unmodelled: boolean;
 }
 

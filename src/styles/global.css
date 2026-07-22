@@ -171,7 +171,7 @@ ul { margin: 0 0 1rem 1.25rem; }
 }
 .detail-body { font-size: .94rem; line-height: 1.68; font-variant-numeric: tabular-nums; }
 
-/* "often missed" and similar markers. Not a colour-only signal — it reads as
+/* "often missed" and similar markers. Not a color-only signal — it reads as
    words, so it survives greyscale and a screen reader alike. */
 .pill {
   font-family: var(--mono); font-size: 9.5px; text-transform: uppercase;

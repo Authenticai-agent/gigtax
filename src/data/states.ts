@@ -321,7 +321,7 @@ export const states: Record<string, StateData> = {
     "rate": 0.0295,
     "note": "Rate has been decreasing. Some counties add local income tax.",
     "sources": [
-      "in.gov/dor Departmental Notice #1 (R46/01-26), effective 1 January 2026",
+      "in.gov/dor Departmental Notice #1 (R46/01-26), effective January 1, 2026",
       "in.gov/dor Rates, Fees and Penalties — 2026 individual AGI rate 2.95%, 2027 2.90%"
     ],
     "bracketSource": "overrides/state-brackets-2026.json (2026-07)"

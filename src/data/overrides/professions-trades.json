@@ -31,7 +31,7 @@
       "equipment",
       "phone"
     ],
-    "note": "Hand tools and testers are deductible in the year you buy them; a van fit-out is a vehicle improvement and is depreciated. State licensing and the continuing education hours that renew it are both deductible, because they maintain a licence you already hold."
+    "note": "Hand tools and testers are deductible in the year you buy them; a van fit-out is a vehicle improvement and is depreciated. State licensing and the continuing education hours that renew it are both deductible, because they maintain a license you already hold."
   },
   "plumber": {
     "keyDeductions": [
@@ -59,7 +59,7 @@
       "materials_and_supplies",
       "safety_gear"
     ],
-    "note": "EPA Section 608 certification and the state licence behind it are deductible professional costs. Refrigerant and parts inventory bought for a job are deductible when used; stock held at year end is inventory rather than an expense."
+    "note": "EPA Section 608 certification and the state license behind it are deductible professional costs. Refrigerant and parts inventory bought for a job are deductible when used; stock held at year end is inventory rather than an expense."
   },
   "landscaper": {
     "keyDeductions": [
@@ -98,7 +98,7 @@
       "marketing",
       "phone"
     ],
-    "note": "Most handyman work sits below the licensing threshold, but the threshold is set by each state and by the value of the job — exceed it without a licence and the work may be unenforceable as well as uninsured. Materials billed to the customer are income and a deduction both."
+    "note": "Most handyman work sits below the licensing threshold, but the threshold is set by each state and by the value of the job — exceed it without a license and the work may be unenforceable as well as uninsured. Materials billed to the customer are income and a deduction both."
   },
   "painter": {
     "keyDeductions": [
@@ -872,7 +872,7 @@
       "booking_software",
       "detailing"
     ],
-    "note": "Passenger vehicles carry heavier insurance and licensing than freight, and the annual depreciation caps that hobble ordinary cars do not apply to the larger vehicles.",
+    "note": "Passenger vehicles carry heavier insurance and licensing than freight, and the annual depreciation caps that restrict ordinary cars do not apply to the larger vehicles.",
     "sources": [
       {
         "claim": "The passenger-automobile depreciation caps apply only to vehicles rated at 6,000 lb or less, and not to vehicles used in the business of transporting people for hire",
@@ -1012,7 +1012,7 @@
     "note": "Section 280E denies every ordinary business deduction to a cannabis business. Only cost of goods sold survives, which makes this the most punitive tax position in the code.",
     "sources": [
       {
-        "claim": "Marijuana under a state medical licence, and in FDA-approved products, moved to Schedule III on 28 April 2026",
+        "claim": "Marijuana under a state medical license, and in FDA-approved products, moved to Schedule III on April 28, 2026",
         "authority": "21 CFR 1308.13(g); 91 FR 22714",
         "url": "https://www.federalregister.gov/documents/full_text/text/2026/04/28/2026-08176.txt",
         "confidence": "high"
@@ -1120,7 +1120,7 @@
         "confidence": "high"
       },
       {
-        "claim": "Employee drivers cannot deduct it: the bar on miscellaneous itemised deductions was made permanent",
+        "claim": "Employee drivers cannot deduct it: the bar on miscellaneous itemized deductions was made permanent",
         "authority": "IRC 67(g), as amended by P.L. 119-21 sec. 70110",
         "url": "https://www.law.cornell.edu/uscode/text/26/67",
         "confidence": "high"
@@ -1922,16 +1922,16 @@
       "inventory_cogs",
       "liability_insurance"
     ],
-    "note": "The initial franchise fee is amortised over fifteen years however long the agreement runs, while ongoing royalties are deducted as paid.",
+    "note": "The initial franchise fee is amortized over fifteen years however long the agreement runs, while ongoing royalties are deducted as paid.",
     "sources": [
       {
-        "claim": "A franchise is a section 197 intangible amortised ratably over 15 years from acquisition",
+        "claim": "A franchise is a section 197 intangible amortized ratably over 15 years from acquisition",
         "authority": "IRC 197(a), 197(d)(1)(F)",
         "url": "https://www.law.cornell.edu/uscode/text/26/197",
         "confidence": "high"
       },
       {
-        "claim": "Contingent serial payments are deducted currently rather than amortised",
+        "claim": "Contingent serial payments are deducted currently rather than amortized",
         "authority": "IRC 1253(d)(1)",
         "url": "https://www.law.cornell.edu/uscode/text/26/1253",
         "confidence": "high"
@@ -1952,13 +1952,13 @@
     "note": "Development costs are deductible again in the year you incur them, provided the work is done in the United States.",
     "sources": [
       {
-        "claim": "Domestic research and experimental expenditures are deductible when paid or incurred, with an election to amortise over at least 60 months",
+        "claim": "Domestic research and experimental expenditures are deductible when paid or incurred, with an election to amortize over at least 60 months",
         "authority": "IRC 174A",
         "url": "https://www.law.cornell.edu/uscode/text/26/174A",
         "confidence": "high"
       },
       {
-        "claim": "Foreign research and experimental expenditures remain capitalised over 15 years",
+        "claim": "Foreign research and experimental expenditures remain capitalized over 15 years",
         "authority": "IRC 174, as amended by P.L. 119-21 sec. 70302",
         "url": "https://www.law.cornell.edu/uscode/text/26/174",
         "confidence": "high"

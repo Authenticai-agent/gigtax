@@ -199,7 +199,7 @@
   "WV": {
     "_confidence": "high — primary source is the West Virginia Tax Division",
     "_note": "A 5% across-the-board cut took effect 2026-06-12, retroactive to 2026-01-01, so these are the correct figures for the whole 2026 tax year. Internally consistent with the Tax Division's own cumulative amounts: $211 at $10,000; $632.50 at $25,000; $1,106.50 at $40,000; $1,950.50 at $60,000.",
-    "_supersedes": "Tax Foundation's 2026 table shows the pre-cut schedule (2.22/2.96/3.33/4.44/4.82). Those rates were correct until 12 June 2026 and are now superseded. The legacy dataset's topRate of 4.82% is from that same pre-cut schedule and is corrected to 4.58% below.",
+    "_supersedes": "Tax Foundation's 2026 table shows the pre-cut schedule (2.22/2.96/3.33/4.44/4.82). Those rates were correct until June 12, 2026 and are now superseded. The legacy dataset's topRate of 4.82% is from that same pre-cut schedule and is corrected to 4.58% below.",
     "topRate": 0.0458,
     "brackets_single": [
       [
@@ -262,7 +262,7 @@
     "rate": 0.0295,
     "topRate": 0.0295,
     "sources": [
-      "in.gov/dor Departmental Notice #1 (R46/01-26), effective 1 January 2026",
+      "in.gov/dor Departmental Notice #1 (R46/01-26), effective January 1, 2026",
       "in.gov/dor Rates, Fees and Penalties — 2026 individual AGI rate 2.95%, 2027 2.90%"
     ]
   }
