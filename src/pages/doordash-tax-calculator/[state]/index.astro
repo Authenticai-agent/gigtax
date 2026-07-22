@@ -1,0 +1,199 @@
+---
+/**
+ * PILOT: platform x state. One page per state for a single platform, to find out
+ * whether the pattern clears the quality gate before fourteen more scale out
+ * behind it.
+ *
+ * What has to be true for the pattern to be worth 765 pages: this page must
+ * differ from its 50 siblings (the state layer does that, as it does on the 1099
+ * pages) AND from /1099-tax-calculator/ohio/, which the cross-section check now
+ * measures. The thing carrying that second burden is the deduction stack — at
+ * 18,000 miles the mileage deduction alone is larger than everything else on the
+ * page, which is a different story from the generic 1099 page's.
+ */
+import Base from '../../../layouts/Base.astro';
+import QuickEstimator from '../../../components/calculators/QuickEstimator.tsx';
+import { states, stateList } from '../../../data/states';
+import { siblingStates } from '../../../data/neighbors';
+import { formatMoney, formatPct } from '../../../lib/tax-engine';
+import { stateSlug } from '../../../lib/slug';
+import { describeStateFacts, neighbourComparison, neighbourSentences } from '../../../lib/state-facts';
+import {
+  findPlatform, platformExample, platformTax, costOfNotTracking,
+  deductionLabel, MILE_RATE, MILE_SOURCE, platformLadder,
+} from '../../../lib/platform-copy';
+import { homeCommutePages, homeCommuteSlug } from '../../../lib/state-pair';
+import type { StateData } from '../../../data/types';
+
+const SLUG = 'doordash';
+
+export function getStaticPaths() {
+  return stateList.map(([code, s]) => ({
+    params: { state: stateSlug(s.name) },
+    props: { code, state: s },
+  }));
+}
+
+interface Props { code: string; state: StateData }
+const { code, state } = Astro.props as Props;
+
+const platform = findPlatform(SLUG)!;
+const ex = platformExample(platform)!;
+const r = platformTax(ex, code);
+const tracking = costOfNotTracking(ex, code);
+const facts = describeStateFacts(code, state);
+const neighbours = neighbourComparison(code, ex.netProfit);
+const neighbourLines = neighbourSentences(state, neighbours);
+const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);
+const noTax = state.noIncomeTax === true || state.type === 'none';
+const a = /^[AEIOU]/.test(state.name) ? 'an' : 'a';
+const ladder = platformLadder(platform, code);
+// Not every state has a cross-border guide: the no-income-tax states are covered
+// from the other direction, and Hawaii has no land border at all.
+const crossBorder = homeCommutePages().some((e) => e.homeCode === code)
+  ? `/working-in-one-state-living-in-another/${homeCommuteSlug(code)}/`
+  : null;
+
+const title = `DoorDash tax calculator — ${state.name} (2026)`;
+const description = `What a DoorDash driver in ${state.name} owes for 2026 after mileage and expenses: self-employment tax, federal and ${state.name} tax, with the deductions worked through.`;
+---
+
+<Base title={title} description={description}>
+  <div class="breadcrumbs">
+    <a href="/1099-tax-calculator/">1099 tax calculator</a> / DoorDash / {state.name}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year · {state.name}</p>
+    <h1>DoorDash driver taxes in {state.name}</h1>
+    <p class="tagline">
+      DoorDash reports your gross on a {platform.incomeType} and withholds nothing. The gap between that
+      number and what you are actually taxed on is mileage — and in {state.name} it is worth
+      {formatMoney(tracking.difference)} in tax.
+    </p>
+  </section>
+
+  <p data-source="overrides/platform-scenarios.json (illustrative scenario)">
+    Take a driver who grossed {formatMoney(ex.gross)} over {(18000).toLocaleString()} business miles.
+    After mileage at {(MILE_RATE * 100).toFixed(1)} cents and the rest of the stack —
+    {' '}<a href="/doordash-tax-calculator/">worked through on the main DoorDash page</a> —
+    {formatMoney(ex.totalDeductions)} comes off and {formatMoney(ex.netProfit)} is left as taxable profit.
+    That profit is what {state.name} and the IRS charge against.
+  </p>
+
+  <h2>What that leaves you owing in {state.name}</h2>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Self-employment tax</td><td>{formatMoney(r.seTax)}</td></tr>
+      <tr><td>Federal income tax</td><td>{formatMoney(r.fedTax)}</td></tr>
+      <tr><td>{state.name} income tax</td><td>{noTax ? '$0 — no state income tax' : formatMoney(r.stateTax)}</td></tr>
+      <tr class="total"><td>Total tax</td><td>{formatMoney(r.totalTax)}</td></tr>
+      <tr><td>Effective rate on gross</td><td>{formatPct(r.totalTax / ex.gross)}</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>What the mileage log is worth</strong>
+    The same {formatMoney(ex.gross)} with nothing deducted would be taxed at
+    {formatMoney(tracking.unclaimed.totalTax)} in {state.name}, against
+    {formatMoney(tracking.claimed.totalTax)} with the deductions above — a difference of
+    {formatMoney(tracking.difference)}.
+  </div>
+
+  <h2>Dashing more in {state.name} doesn't cost proportionally more</h2>
+  <p data-source="data/federal.ts → selfEmploymentDeductions.mileage">
+    Miles rise with earnings, so the deduction rises too. The effective rate on gross climbs far more
+    slowly than it would for someone whose income grew without expenses attached:
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Volume</th><th>Gross</th><th>Mileage off</th><th>Taxable profit</th><th>{state.name} tax</th><th>Total tax</th><th>Rate on gross</th></tr>
+    </thead>
+    <tbody>
+      {ladder.map((row) => (
+        <tr>
+          <td>{row.label}</td>
+          <td>{formatMoney(row.gross)}</td>
+          <td>{formatMoney(row.mileageDeduction)}</td>
+          <td>{formatMoney(row.netProfit)}</td>
+          <td>{noTax ? '—' : formatMoney(row.stateTax)}</td>
+          <td>{formatMoney(row.totalTax)}</td>
+          <td>{formatPct(row.rateOnGross)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <QuickEstimator
+    client:load
+    presetState={code}
+    defaultSeIncome={ex.gross}
+    stateHrefBase="/1099-tax-calculator/"
+  />
+
+  {facts.length > 0 && (
+    <>
+      <h2>{state.name} specifics that change the number</h2>
+      {facts.map((p) => <p data-source={`data/states.ts → stateMetadata, ${code}.note`}>{p}</p>)}
+    </>
+  )}
+
+  <h2>Delivering across a state line from {state.name}</h2>
+  <p>
+    Delivery work is sourced to where it is performed, so crossing a line to take orders can create a
+    filing obligation in the other state. On {formatMoney(ex.netProfit)} of profit:
+  </p>
+  {neighbours.length > 0 ? (
+    <>
+      <table class="data-table">
+        <thead><tr><th>If the delivery was in</th><th>Its tax on {formatMoney(ex.netProfit)}</th><th>vs {state.name}</th></tr></thead>
+        <tbody>
+          {neighbours.map((n) => (
+            <tr>
+              <td><a href={`/doordash-tax-calculator/${n.slug}/`}>{n.name}</a></td>
+              <td>{n.noTax ? 'No income tax' : formatMoney(n.tax)}</td>
+              <td>{n.delta === 0 ? 'same' : `${n.delta < 0 ? '−' : '+'}${formatMoney(Math.abs(n.delta))}`}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <ul>{neighbourLines.map((l) => <li data-source="lib/tax-engine.ts calcStateTax()">{l}</li>)}</ul>
+    </>
+  ) : (
+    <p>{state.name} has no land border, so this does not come up.</p>
+  )}
+  <p>
+    Reciprocity agreements do not help here — they cover wages, not self-employment income.
+    {crossBorder && <> See <a href={crossBorder}>crossing a state line from {state.name}</a>.</>}
+  </p>
+
+  <h2>DoorDash tax questions in {state.name}</h2>
+  <div class="faq">
+    <h3>How much should {a} {state.name} Dasher set aside?</h3>
+    <p data-source="lib/tax-engine.ts calcCombined()">
+      About {formatPct(r.totalTax / ex.gross)} of gross on the {formatMoney(ex.gross)} example —
+      {formatMoney(r.totalTax)} across self-employment tax, federal income tax
+      {noTax ? ` and nothing to ${state.name}` : ` and ${formatMoney(r.stateTax)} to ${state.name}`}.
+      Set aside from each payout rather than finding it in April.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does the {formatMoney(ex.gross)} on my 1099-NEC match what {state.name} taxes?</h3>
+    <p data-source="data/federal.ts → selfEmploymentDeductions.mileage">
+      No. {state.name} taxes profit, not gross. After {formatMoney(ex.totalDeductions)} of deductions the
+      taxable figure is {formatMoney(ex.netProfit)}, so
+      {noTax
+        ? ` there is no ${state.name} tax either way — but the federal side drops by ${formatMoney(tracking.difference)}.`
+        : ` the ${state.name} bill is ${formatMoney(r.stateTax)} rather than what gross alone would suggest.`}
+    </p>
+  </div>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href={`/1099-tax-calculator/${stateSlug(state.name)}/`}>General 1099 taxes in {state.name}</a></li>
+    <li><a href={`/quarterly-tax-calculator/${stateSlug(state.name)}/`}>Quarterly payments in {state.name}</a></li>
+    {siblings.map((s) => (
+      <li><a href={`/doordash-tax-calculator/${stateSlug(s!.name)}/`}>DoorDash taxes in {s!.name}</a></li>
+    ))}
+  </ul>
+</Base>
