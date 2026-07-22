@@ -13,7 +13,8 @@
       "threshold levies on income above a floor (Oregon Metro SHS, Multnomah PFA)"
     ],
     "status": "Ohio and Pennsylvania — the two most complex local-tax states — are still being researched and are absent from this file.",
-    "crossChecked": "Indiana, Kentucky and Alabama were researched twice independently. The second pass RESOLVED Alabama's open question — the occupational tax does not reach self-employment profit — and resolved Kentucky's contested school levy. It also surfaced that Indiana's 2026 STATE rate is 2.95%, not the 3.00% in the legacy dataset, which is now corrected in state-brackets-2026.json."
+    "crossChecked": "Indiana, Kentucky and Alabama were researched twice independently. The second pass RESOLVED Alabama's open question — the occupational tax does not reach self-employment profit — and resolved Kentucky's contested school levy. It also surfaced that Indiana's 2026 STATE rate is 2.95%, not the 3.00% in the legacy dataset, which is now corrected in state-brackets-2026.json. Michigan, Missouri, Delaware, West Virginia and Oregon were also researched twice. The second pass confirmed Saginaw's rate against the city's own form and identified the widely-used Grand Rapids aggregate table as stale; corrected Delaware's head tax from the commonly quoted $10 to $15; found Weirton's 2026 increase from $2 to $5 and Fairmont's inverted resident rule; and established that Oregon's statewide transit tax stayed at 0.1% because Measure 120 failed in May 2026, contradicting many payroll guides.",
+    "fetchBlocked": "michigan.gov, kcmo.gov and wilmingtonde.gov all refuse automated fetching. Figures for those came from alternative official sources — Michigan Treasury form PDFs, the St. Louis Comptroller's comparison page, and Wilmington's own budget portal."
   },
   "NY": {
     "nycResidentTax": {
@@ -509,7 +510,22 @@
         0.005
       ]
     },
-    "_notes": "The base is compensation AND net profits from a business, so self-employment profit is taxed — residents on all of it, nonresidents on the city-earned portion. RATE CONFLICT: Grand Rapids' comparison table lists Saginaw at 1.00/0.50 but Saginaw's own withholding guide says 1.50/0.75; Saginaw's own figure is used here. Rates were not individually re-confirmed for 2026 against all 24 cities."
+    "_notes": "24 cities levy a city income tax. Statutory default is 1% resident / 0.5% nonresident (MCL 141.611), with four exceptions: Detroit 2.4/1.2, Highland Park 2.0/1.0, Grand Rapids 1.5/0.75, Saginaw 1.5/0.75. The base is compensation AND net profits of an unincorporated business (MCL 141.612(b)), so self-employment profit is taxed — residents on all of it, nonresidents on the city-earned portion. Pensions, annuities and Social Security are NOT subject. DATA-QUALITY WARNING, confirmed twice: the convenient all-cities table on grandrapidsmi.gov is STALE — it lists Saginaw at 1.0/0.5, contradicted by Saginaw's own S-1040 instructions at 1.5/0.75. Do not use that table as a primary source. Only 8 of the 24 cities were verified from their own forms; the other 16 rest on the statutory default plus that same table.",
+    "verifiedFromOwnSource": [
+      "Detroit",
+      "East Lansing",
+      "Flint",
+      "Grand Rapids",
+      "Highland Park",
+      "Lansing",
+      "Muskegon",
+      "Saginaw"
+    ],
+    "statutoryDefault": {
+      "resident": 0.01,
+      "nonresident": 0.005,
+      "authority": "MCL 141.611; the nonresident rate may never exceed half the resident rate"
+    }
   },
   "MO": {
     "shape": "1% earnings tax on wages and on net profits of businesses and self-employed persons",
@@ -533,14 +549,16 @@
     "shape": "flat percentage on gross wages, plus a parallel net profits tax at the same rate",
     "appliesToSelfEmploymentNetProfit": true,
     "nonresidentsPay": true,
-    "confidence": "medium",
+    "confidence": "high",
     "jurisdictions": {
       "Wilmington": {
         "earnedIncomeTax": 0.0125,
-        "netProfitsTax": 0.0125
+        "netProfitsTax": 0.0125,
+        "headTaxPerEmployeePerMonth": 15,
+        "headTaxNote": "$15 per employee per month on businesses with 6+ employees, assessed on headcount minus 5. The widely quoted $10 is STALE. It is an EMPLOYER tax and must never be deducted from a paycheck calculation."
       }
     },
-    "_notes": "Wilmington is the only Delaware municipality with a local income tax. The self-employed are covered by the Net Profits Tax rather than the wage tax, at the same 1.25%. Both residents and nonresidents pay — the trigger is living OR working in the city. The wage tax is on gross wages with no personal exemptions. Most recent official rate sheet retrieved was FY2025; no 2026 change reported."
+    "_notes": "Wilmington is Delaware's only municipal wage tax, confirmed from the City's own FY2027 budget tax-rate sheet and unchanged across FY2025-FY2027. 1.25% on gross earned income, paid at the SAME rate by residents and by nonresidents working in the city — unlike Michigan there is no half-rate for nonresidents. A separate Net Profits Tax, also 1.25%, covers sole proprietors and partnerships. The rate is set by the Delaware General Assembly, not the city."
   },
   "WV": {
     "shape": "flat dollars per week worked — NOT a percentage, and must never be modelled as one",
@@ -553,21 +571,51 @@
         "confidence": "high",
         "appliesToSelfEmployed": true
       },
+      "Weirton": {
+        "perWeek": 5.0,
+        "confidence": "medium",
+        "appliesToSelfEmployed": null,
+        "note": "RAISED FROM $2.00 IN 2026 — Ordinance 2272 passed second reading 14 April 2026, effective about mid-May. Confirmed by news reporting only; the official ordinance PDF is an unreadable scan. Most aggregators still say $2.00."
+      },
       "Charleston": {
         "perWeek": 3.0,
-        "confidence": "low"
+        "confidence": "high",
+        "appliesToSelfEmployed": true,
+        "note": "$3.00 since January 2018. Some sources quote '$6 per pay period' — that is the biweekly equivalent, not a different rate."
       },
       "Morgantown": {
         "perWeek": 3.0,
-        "confidence": "low",
-        "note": "Unchanged since 1 January 2016; the city was considering a CPI-based increase as of April 2026 and whether it took effect is unconfirmed."
+        "confidence": "high",
+        "appliesToSelfEmployed": true,
+        "note": "An increase was under discussion through May 2026 but had not been adopted. Recheck before shipping."
       },
       "Parkersburg": {
         "perWeek": 2.5,
-        "confidence": "low"
+        "confidence": "high",
+        "appliesToSelfEmployed": true
+      },
+      "Wheeling": {
+        "perWeek": 2.0,
+        "confidence": "medium",
+        "appliesToSelfEmployed": true,
+        "note": "Source document dated 2019, effective January 2020. No later change found, but no 2026-dated confirmation either."
+      },
+      "Fairmont": {
+        "perWeek": 2.0,
+        "confidence": "high",
+        "appliesToSelfEmployed": true,
+        "residentsPayWeekly": false,
+        "residentAlternativePerMonth": 8.67,
+        "note": "INVERTS THE USUAL PATTERN. Only NONRESIDENT employees pay the weekly payroll charge; Fairmont residents are exempt from it and instead pay $8.67 a month on their city services bill."
       }
     },
-    "_notes": "A different shape from every other entry: a fixed dollar amount per week worked, regardless of hours or earnings. Anyone working at a physical location in the city pays, residents and commuters alike. Annual cost is roughly the amount times weeks worked. Not an exhaustive list of WV cities."
+    "_notes": "A different shape from every other entry: a fixed dollar amount per week worked, regardless of hours or earnings. Anyone working at a physical location in the city pays, residents and commuters alike. Annual cost is roughly the amount times weeks worked. Not an exhaustive list of WV cities.",
+    "unconfirmedCities": [
+      "South Charleston",
+      "Dunbar"
+    ],
+    "namingTrap": "Match on the fee's BASE, not its name. Huntington has two: the CITY Service Fee is the $5/week payroll fee, while its MUNICIPAL Service Fee is a property-owner fire fee and is not a wage item at all. Other cities use 'Municipal Service Fee' to mean the payroll fee.",
+    "authority": "W. Va. Code 8-13-13, special charges for municipal services"
   },
   "OR": {
     "shape": "threshold levies on Oregon taxable income above a floor, plus one flat annual charge",
@@ -580,7 +628,7 @@
         "thresholdSingle": 128000,
         "thresholdJoint": 205000,
         "confidence": "high",
-        "note": "Thresholds are inflation-indexed from tax year 2026, up from the fixed 125,000/200,000 used 2021-2025. The rate applies only to income above the threshold, not from the first dollar."
+        "note": "Thresholds rose from $125,000/$200,000 because Metro Council adopted CPI indexing effective 1 January 2026; the rate did not change. Metro publishes updated thresholds by 15 November each year."
       },
       "Multnomah County Preschool for All": {
         "bracketsSingle": [
@@ -608,7 +656,7 @@
           ]
         ],
         "confidence": "medium",
-        "note": "The scheduled 0.8 percentage-point increase applies from 2027, NOT 2026. Whether the thresholds are inflation-indexed for 2026 could not be definitively confirmed."
+        "note": "The scheduled +0.8 percentage-point increase DOES NOT APPLY IN 2026 — it was delayed by Board ordinance to 1 January 2027. For 2026 the rates remain 1.5% and 3.0%. Thresholds are NOT indexed, unlike SHS."
       },
       "Portland Arts Tax": {
         "flatAmount": 35,
@@ -618,6 +666,17 @@
         "note": "A flat annual charge, not a rate, and not prorated for part-year residents. Payable by Portland residents 18 or over with $1,000 or more of income, above the federal poverty level."
       }
     },
-    "_notes": "Both Metro SHS and Multnomah PFA use Oregon taxable income, so a sole proprietor's Schedule C profit counts toward the thresholds and is taxed. Both reach NONRESIDENTS on district-sourced income — the well-known trap for Washington-state commuters who owe Metro SHS on Portland-source income despite living in a no-income-tax state. The statewide transit tax and TriMet/Lane payroll taxes are employer-side or statewide and are excluded."
+    "_notes": "Both Metro SHS and Multnomah PFA use Oregon taxable income, so a sole proprietor's Schedule C profit counts toward the thresholds and is taxed. Both reach NONRESIDENTS on district-sourced income — the well-known trap for Washington-state commuters who owe Metro SHS on Portland-source income despite living in a no-income-tax state. The statewide transit tax and TriMet/Lane payroll taxes are employer-side or statewide and are excluded.",
+    "remoteWorkRule": "A nonresident who physically travels into the district to work IS taxable on that work. A nonresident employed by a district employer who works ENTIRELY REMOTELY from outside it — the Vancouver, Washington home office — is NOT. This is the distinction that decides the answer for most cross-river commuters and should be modelled explicitly rather than assumed.",
+    "statewideTransitTax": {
+      "rate": 0.001,
+      "paidBy": "employee, withheld by employer",
+      "note": "STAYED AT 0.1% FOR 2026. The 2025 transportation package would have doubled it to 0.2% from 1 January 2026, but Measure 120 was DEFEATED at the 19 May 2026 primary, so DOR instructs employers to continue withholding 0.1%. Many payroll-vendor 2026 guides still say 0.2% and are wrong."
+    },
+    "employerTaxesNotPersonal": {
+      "TriMet payroll": 0.008237,
+      "Lane Transit payroll": 0.008,
+      "note": "Employer-side, not part of an individual's calculation — but both have parallel SELF-EMPLOYMENT versions charged on net earnings over $400 from services in the district, which are."
+    }
   }
 }
