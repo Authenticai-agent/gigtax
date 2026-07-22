@@ -5,6 +5,7 @@
  * Zero JavaScript ships from this layout — islands opt in per page.
  */
 import '../styles/global.css';
+import { SITE_INDEXABLE } from '../site';
 
 interface Props {
   title: string;
@@ -22,7 +23,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content={SITE_INDEXABLE ? 'index,follow' : 'noindex,nofollow'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
