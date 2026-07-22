@@ -404,6 +404,14 @@ if (existsSync(FORMATION_PATH)) {
       }
     }
   }
+  // Rows the owner has decided, and rows the owner asked to re-check before use.
+  const ownerRows = codes.flatMap((c) => ['llc', 'corp']
+    .filter((k) => fd[c][k].provenance === 'owner').map((k) => `${c}.${k}`));
+  const recheck = codes.flatMap((c) => ['llc', 'corp']
+    .filter((k) => fd[c][k].checkBeforeUse).map((k) => `${c}.${k}`));
+  if (ownerRows.length) console.log(`  note  formation dataset: ${ownerRows.length} row(s) decided by the owner: ${ownerRows.join(', ')}`);
+  if (recheck.length) console.log(`  note  formation dataset: ${recheck.length} row(s) flagged to re-check before use: ${recheck.join(', ')}`);
+
   const nulls = codes.reduce((n, c) => n + ['llc', 'corp']
     .filter((k) => fd[c][k].formationFee === null).length, 0);
   const signed = Boolean(fd._meta?.signedOffBy);

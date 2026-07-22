@@ -57,9 +57,11 @@ Plus structured replacements for the 9 prose gross-receipts regimes, and the Tex
 ## 5. Conflicts
 
 - **South Dakota — RESOLVED.** Legacy said $150 formation and $50 a year. The state fee schedule confirms $150 formation but the annual report is **$55 electronic / $70 paper**; legacy's $50 was wrong. Also found: South Dakota foreign qualification is **$750**, which nothing in the repo had.
-- **Ohio corporation formation — OPEN.** ORC 111.16, effective 3 April 2025, sets $0.10 per share with a **$99** minimum, and SOS Form 532A charges $99. The Legislative Service Commission fee table dated 30 January 2026 still prints **$125**. $99 is stored. A state disagreeing with itself needs a human decision.
-- **New Jersey — OPEN.** The registry schedule shows **$100** formation and $100 foreign. The widely cited $125 does not appear anywhere on nj.gov. Worth confirming before use.
-- **Wisconsin — OPEN.** The domestic LLC annual report reads as either $25 or $40 on the DFI table and could not be resolved. Stored as $25.
+All three open conflicts were **resolved by owner decision**. Those rows are now tagged `provenance: "owner"`, which the merge script will not overwrite with later research.
+
+- **Ohio corporation formation — RESOLVED at $125.** ORC 111.16 (effective 3 April 2025) sets $0.10 per share with a **$99** floor, and SOS Form 532A charges $99; the Legislative Service Commission table dated 30 January 2026 prints **$125**. The owner chose $125 — the higher, later-dated figure. This errs in the conservative direction: if the SOS in fact charges $99, the calculator overstates a one-time fee by $26, which is the safer way to be wrong.
+- **New Jersey — RESOLVED at $100**, with a standing caveat. The registry schedule shows $100; the widely quoted $125 appears nowhere on nj.gov. The row carries `checkBeforeUse` pointing at the fee schedule, and the quality gate prints that flag on every build so it cannot quietly go stale.
+- **Wisconsin — RESOLVED at $25** for the domestic LLC annual report. The foreign figure of $80 was separately confirmed and is unaffected.
 - **Delaware LLC vs corporation.** Legacy records $300 annual tax for the LLC and a $50 report for the corporation. Both are seeded, both unverified. A calculator that applied the corporation figure to an LLC would understate Delaware by $250 a year.
 
 ## 6. Research in flight

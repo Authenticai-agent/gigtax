@@ -1869,8 +1869,10 @@
         "https://www.nj.gov/treasury/revenue/fees.shtml",
         "https://business.nj.gov/pages/filings-and-accounting"
       ],
-      "provenance": "research",
-      "researchNote": "Registry schedule shows $100 formation and $100 foreign certificate of authority. The widely cited $125 was NOT found on nj.gov — worth resolving before use."
+      "provenance": "owner",
+      "researchNote": "Registry schedule shows $100 formation and $100 foreign certificate of authority. The widely cited $125 was NOT found on nj.gov — worth resolving before use.",
+      "ownerDecision": "OWNER DECISION: keep $100, which is what the New Jersey registry fee schedule shows. The $125 widely quoted elsewhere appears nowhere on nj.gov. Check nj.gov/treasury/revenue/fees.shtml before relying on it — New Jersey has changed these without much notice.",
+      "checkBeforeUse": "https://www.nj.gov/treasury/revenue/fees.shtml"
     },
     "corp": {
       "formationFee": 100,
@@ -1891,8 +1893,10 @@
         "https://www.nj.gov/treasury/revenue/fees.shtml",
         "https://business.nj.gov/pages/filings-and-accounting"
       ],
-      "provenance": "research",
-      "researchNote": "Registry schedule shows $100 formation and $100 foreign certificate of authority. The widely cited $125 was NOT found on nj.gov — worth resolving before use."
+      "provenance": "owner",
+      "researchNote": "Registry schedule shows $100 formation and $100 foreign certificate of authority. The widely cited $125 was NOT found on nj.gov — worth resolving before use.",
+      "ownerDecision": "OWNER DECISION: keep $100, which is what the New Jersey registry fee schedule shows. The $125 widely quoted elsewhere appears nowhere on nj.gov. Check nj.gov/treasury/revenue/fees.shtml before relying on it — New Jersey has changed these without much notice.",
+      "checkBeforeUse": "https://www.nj.gov/treasury/revenue/fees.shtml"
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -2172,7 +2176,7 @@
       "researchNote": "CONFLICT FLAGGED: ORC 111.16 (effective 3 April 2025) sets $0.10 per share with a $99 minimum, and SOS Form 532A charges $99, but the Legislative Service Commission fee table dated 30 January 2026 still prints a $125 minimum. $99 used. Ohio's no-annual-report position is verified negatively — the statutory schedule lists none — because ohiosos.gov serves a JavaScript-only shell."
     },
     "corp": {
-      "formationFee": 99,
+      "formationFee": 125,
       "foreignQualificationFee": 99,
       "annualReport": {
         "amount": null,
@@ -2191,10 +2195,11 @@
         "https://tax.ohio.gov/business/commercial-activity-tax",
         "https://www.lsc.ohio.gov/assets/organizations/legislative-service-commission/files/2026-state-agency-fees-sos.pdf"
       ],
-      "provenance": "research",
+      "provenance": "owner",
       "researchNote": "CONFLICT FLAGGED: ORC 111.16 (effective 3 April 2025) sets $0.10 per share with a $99 minimum, and SOS Form 532A charges $99, but the Legislative Service Commission fee table dated 30 January 2026 still prints a $125 minimum. $99 used. Ohio's no-annual-report position is verified negatively — the statutory schedule lists none — because ohiosos.gov serves a JavaScript-only shell.",
       "feeVaries": true,
-      "feeVariesNote": "Ohio incorporation is $0.10 per authorized share with a $99 floor, so $99 covers 990 shares or fewer. The stored figure is the minimum."
+      "feeVariesNote": "Ohio incorporation is $0.10 per authorized share under ORC 111.16 with a floor, so it rises above the stored figure once authorized shares pass roughly 1,250. The stored figure is a minimum.",
+      "ownerDecision": "OWNER DECISION: $125, from the Legislative Service Commission fee table dated 30 January 2026. The other figure is $99, from ORC 111.16 (effective 3 April 2025, $0.10 per share with a $99 floor) and SOS Form 532A. The state disagrees with itself; the owner chose the higher, later-dated table. This is the conservative direction — if the SOS in fact charges $99, the calculator overstates Ohio corporation formation by $26, which is the safer way to be wrong on a one-time fee."
     },
     "grossReceiptsTax": {
       "applies": true,
@@ -3016,12 +3021,13 @@
         "note": null
       },
       "source": "https://dfi.wi.gov/Pages/BusinessServices/BusinessEntities/Fees.aspx",
-      "confidence": "medium",
+      "confidence": "high",
       "allSources": [
         "https://dfi.wi.gov/Pages/BusinessServices/BusinessEntities/Fees.aspx"
       ],
-      "provenance": "research",
-      "researchNote": "The domestic LLC annual report figure ($25 against $40) could not be read cleanly off the DFI table and needs a human check. Corp $40 and foreign $80 are confirmed."
+      "provenance": "owner",
+      "researchNote": "The domestic LLC annual report figure ($25 against $40) could not be read cleanly off the DFI table and needs a human check. Corp $40 and foreign $80 are confirmed.",
+      "ownerDecision": "OWNER DECISION: $25 for the domestic LLC annual report, resolving the $25-or-$40 ambiguity on the DFI table. The foreign LLC figure of $80 is separately confirmed and unaffected."
     },
     "corp": {
       "formationFee": 100,
