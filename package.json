@@ -5,13 +5,14 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/check-quality.mjs",
+    "build": "astro build && node scripts/check-quality.mjs && node scripts/check-formation-engine.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "check": "node scripts/check-quality.mjs",
     "check:report": "node scripts/check-quality.mjs --report",
     "check:engine": "node scripts/check-engine-parity.mjs",
-    "check:types": "tsc --noEmit"
+    "check:types": "tsc --noEmit",
+    "check:formation": "node scripts/check-formation-engine.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",

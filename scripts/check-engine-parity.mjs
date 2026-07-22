@@ -119,7 +119,36 @@ for (const status of STATUSES) {
   }
 }
 
+/* ---- Delaware franchise tax ------------------------------------------------
+ *
+ * Required by task_states.md before the formation calculator may use it: the
+ * two methods, the large-filer cap, and a small-startup case. Delaware is the
+ * only franchise regime on the site with a genuine choice of method, and the
+ * choice is worth five figures to a company with many authorized shares and a
+ * modest balance sheet — so a silent drift here would be expensive.
+ */
+const DE_CASES = [
+  { name: 'small startup, 10m authorized', args: [10_000_000, 500_000, 8_000_000, false] },
+  { name: 'VC-scale, 100m authorized', args: [100_000_000, 25_000_000, 60_000_000, false] },
+  { name: 'large corporate filer cap', args: [500_000_000, 2_000_000_000, 400_000_000, true] },
+  { name: 'minimum case, 5,000 shares', args: [5_000, 50_000, 5_000, false] },
+  { name: 'assumed par value should win', args: [20_000_000, 100_000, 19_000_000, false] },
+];
+let deCompared = 0;
+for (const c of DE_CASES) {
+  const a = L.calcDelawareFranchiseTax(...c.args.slice(0, 3), c.args[3], cfg);
+  const b = P.calcDelawareFranchiseTax(...c.args.slice(0, 3), c.args[3]);
+  for (const field of ['authMethod', 'parValueMethod', 'best']) {
+    deCompared++;
+    compared++;
+    if (!near(a[field], b[field])) {
+      regressions.push(`calcDelawareFranchiseTax ${field} (${c.name}): ${a[field]} vs ${b[field]}`);
+    }
+  }
+}
+
 console.log(`\nEngine parity — ${compared.toLocaleString()} figures compared`);
+console.log(`  ${deCompared} Delaware franchise figures across ${DE_CASES.length} share structures, both methods`);
 console.log(`  ${expected.stateFix} state-tax differences, all in ${Object.keys(KNOWN_STATE_FIXES).join('/')} (known legacy bugs)`);
 console.log(`  ${expected.addMedicare} SE/FICA differences, all the Additional Medicare Tax legacy omits`);
 console.log(`  ${expected.qbiPhaseIn} QBI differences, all the wage-limitation phase-in legacy applies as a cliff`);
