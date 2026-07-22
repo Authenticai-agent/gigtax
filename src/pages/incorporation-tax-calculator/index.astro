@@ -1,0 +1,62 @@
+---
+/**
+ * Where to incorporate: Delaware, Wyoming or where you actually work.
+ *
+ * Exists mainly to answer two questions with arithmetic rather than opinion:
+ * what Delaware's franchise tax really costs once you pick the right method,
+ * and whether incorporating away from home saves anything (it does not).
+ */
+import Base from '../../layouts/Base.astro';
+import IncorporationCalculator from '../../components/calculators/IncorporationCalculator.tsx';
+---
+
+<Base
+  title="Delaware franchise tax calculator (2026) — and whether to incorporate there"
+  description="Calculate Delaware franchise tax under both methods for 2026, see what the default method overcharges, and compare Delaware, Wyoming and your home state."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Delaware, Wyoming, or where you actually work?</h1>
+    <p class="tagline">Delaware bills the expensive method by default. You have to ask for the other one.</p>
+  </section>
+
+  <p>
+    Delaware calculates franchise tax two ways and bills you under the one based on
+    <strong>authorized shares</strong>. For a company with a few thousand shares that is a modest figure.
+    For a startup with ten million authorized shares and a small balance sheet it runs into tens of
+    thousands of dollars — and the alternative <strong>assumed par value</strong> method, calculated from
+    what the company is actually worth, usually produces a fraction of it.
+  </p>
+  <p>
+    Delaware is not required to work out the cheaper one for you. You elect it when you file the annual
+    report, due 1 March. Founders who pay the first bill that arrives routinely overpay by five figures.
+  </p>
+
+  <p class="section-label">Calculator</p>
+  <IncorporationCalculator client:load />
+
+  <h2>The question underneath</h2>
+  <p>
+    Incorporating in Delaware or Wyoming does not move your tax. If you live and work somewhere else, you
+    register there as a foreign entity, pay that state's fees, and file in both places. You end up with
+    two sets of paperwork and the same tax bill.
+  </p>
+  <p>
+    The real reasons to incorporate in Delaware are its courts and its investors — venture funds expect a
+    Delaware C corporation and will often require converting to one before they invest. Wyoming's appeal
+    is cost and privacy: no franchise tax, a small annual report fee, and member names that are not
+    public. Neither is a tax strategy, and any advice presenting them as one is worth ignoring.
+  </p>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/entity-tax-calculator/">Sole proprietor, S corp or C corp?</a></li>
+    <li><a href="/s-corp-tax-calculator/">S-corp election by state</a></li>
+    <li><a href="/s-corp-tax-calculator/salary/">What salary to pay yourself</a></li>
+  </ul>
+
+  <p class="disclaimer">
+    General information, not tax or legal advice. Where to incorporate has consequences well beyond tax —
+    take advice before filing.
+  </p>
+</Base>

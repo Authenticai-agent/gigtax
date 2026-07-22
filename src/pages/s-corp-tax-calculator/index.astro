@@ -5,6 +5,7 @@
  * their own state charges the company.
  */
 import Base from '../../layouts/Base.astro';
+import EntityCalculator from '../../components/calculators/EntityCalculator.tsx';
 import { states, stateList } from '../../data/states';
 import { stateSlug } from '../../lib/slug';
 import { formatMoney } from '../../lib/tax-engine';
@@ -60,6 +61,9 @@ const notModelled = stateList
     profit as salary, and each state page shows the whole 20–60% range so you can see what the trade-off
     costs rather than being handed the riskiest number as an answer.
   </div>
+
+  <p class="section-label">Is it worth it for you?</p>
+  <EntityCalculator client:load />
 
   <h2>States that ignore the federal election</h2>
   <p>Here the election creates a state tax rather than avoiding one:</p>
