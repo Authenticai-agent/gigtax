@@ -1,0 +1,27 @@
+---
+/**
+ * Definitions for the jargon that actually appears on this page.
+ *
+ * Fed from lib/plain.ts by the page itself, so it can never define a term the
+ * reader has not just met, and never leave one undefined because someone forgot
+ * to update a list.
+ */
+import type { Term } from '../lib/plain';
+
+interface Props { terms: Term[] }
+const { terms } = Astro.props as Props;
+---
+
+{terms.length > 0 && (
+  <>
+    <h2>What these words mean</h2>
+    <dl class="rule-list">
+      {terms.map((t) => (
+        <>
+          <dt>{t.term}</dt>
+          <dd>{t.gloss}</dd>
+        </>
+      ))}
+    </dl>
+  </>
+)}

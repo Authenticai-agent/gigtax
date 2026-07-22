@@ -24,6 +24,7 @@
 import localData from '../data/overrides/local-income-tax-2026.json';
 import { states } from '../data/states';
 import { calcStateTax, formatMoney } from './tax-engine';
+import { localCopyFor } from '../data/local-tax-copy';
 
 const DATA = localData as Record<string, any>;
 
@@ -281,21 +282,19 @@ export function reachesSelfEmployment(code: string): boolean | null {
   return known.every((v) => v === true) ? true : known.every((v) => v === false) ? false : null;
 }
 
-/** The traps a state page must state, drawn from the researched notes. */
+/**
+ * What catches people out in a state, written for the reader.
+ *
+ * Deliberately NOT the raw `_notes` from the dataset. Those were written to the
+ * person building this — "FOUR things a calculator must get right", "do NOT
+ * apply Alabama occupational tax to Schedule C profit" — and rendering them
+ * verbatim put engineering notes on a public page and left readers to work out
+ * what an owner-operator was. The research stays in the JSON as provenance; the
+ * prose comes from data/local-tax-copy.ts, carrying the same facts in words
+ * that explain themselves.
+ */
 export function localTraps(code: string): string[] {
-  const d = localTaxFor(code);
-  if (!d) return [];
-  return [
-    d._notes, d.stackingRule, d.namingTrap, d.remoteWorkRule,
-    d.creditCapsAreNotUniform, d.businessIncomeDeductionNote,
-    d.eit?.sCorpNote, d.eit?.selfEmploymentNote, d.localServicesTax?.selfEmploymentNote,
-    d.nonresidentRule, d.generalRule, d.statewideTransitTax,
-    // West Virginia records its self-employment answer as prose, not a boolean,
-    // because the levy is not a rate. It belongs on the page either way.
-    typeof d.appliesToSelfEmploymentNetProfit === 'string'
-      ? d.appliesToSelfEmploymentNetProfit
-      : null,
-  ].filter((s): s is string => typeof s === 'string' && s.length > 0);
+  return localCopyFor(code)?.traps ?? [];
 }
 
 /** One-line description of a state's shape, for the hub table. */
