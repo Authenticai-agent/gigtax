@@ -416,36 +416,50 @@
   },
   "CT": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 120,
+      "foreignQualificationFee": 120,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 80,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Filed online 1 Jan to 31 March; $80 domestic and foreign alike."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://business.ct.gov/knowledge-base/articles/domestic-limited-liability-companies-forms-and-fees",
+      "confidence": "high",
+      "allSources": [
+        "https://business.ct.gov/knowledge-base/articles/domestic-limited-liability-companies-forms-and-fees",
+        "https://business.ct.gov/knowledge-base/articles/foreign-stock-corporations-forms-and-fees",
+        "https://business.ct.gov/knowledge-base/articles/foreign-annual-report-forms-and-fees"
+      ],
+      "provenance": "research",
+      "researchNote": "Domestic stock corporations also owe a separate $150 Organization and First Report. The foreign qualification fee of $385 includes a $285 licence fee. Corporation annual report differs sharply: $150 domestic against $435 foreign."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 250,
+      "foreignQualificationFee": 385,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 150,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Domestic stock corporation $150; FOREIGN stock corporation annual report is $435."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://business.ct.gov/knowledge-base/articles/domestic-limited-liability-companies-forms-and-fees",
+      "confidence": "high",
+      "allSources": [
+        "https://business.ct.gov/knowledge-base/articles/domestic-limited-liability-companies-forms-and-fees",
+        "https://business.ct.gov/knowledge-base/articles/foreign-stock-corporations-forms-and-fees",
+        "https://business.ct.gov/knowledge-base/articles/foreign-annual-report-forms-and-fees"
+      ],
+      "provenance": "research",
+      "researchNote": "Domestic stock corporations also owe a separate $150 Organization and First Report. The foreign qualification fee of $385 includes a $285 licence fee. Corporation annual report differs sharply: $150 domestic against $435 foreign."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -668,36 +682,50 @@
   },
   "GA": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 225,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 50,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Annual registration due 1 Jan to 1 April; $5 online or $10 paper service charge on top."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://georgia.gov/register-llc",
+      "confidence": "medium",
+      "allSources": [
+        "https://georgia.gov/register-llc",
+        "https://georgia.gov/register-corporation",
+        "https://sos.ga.gov/how-to-guide/how-to-guide-register-foreign-entity"
+      ],
+      "provenance": "research",
+      "researchNote": "Online $100, mail $110. The $225 foreign qualification rests on the SOS how-to guide via search rather than a direct fetch — the PDF fee schedule 403s. Worth a human check."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 225,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 50,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Initial annual registration due within 90 days of incorporation."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://georgia.gov/register-llc",
+      "confidence": "medium",
+      "allSources": [
+        "https://georgia.gov/register-llc",
+        "https://georgia.gov/register-corporation",
+        "https://sos.ga.gov/how-to-guide/how-to-guide-register-foreign-entity"
+      ],
+      "provenance": "research",
+      "researchNote": "Online $100, mail $110. The $225 foreign qualification rests on the SOS how-to guide via search rather than a direct fetch — the PDF fee schedule 403s. Worth a human check."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -716,36 +744,50 @@
   },
   "HI": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 50,
+      "foreignQualificationFee": 50,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 15,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Flat $15, due in the quarter matching the registration anniversary."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://cca.hawaii.gov/breg/registration/dllc/fees/",
+      "confidence": "high",
+      "allSources": [
+        "https://cca.hawaii.gov/breg/registration/dllc/fees/",
+        "https://cca.hawaii.gov/breg/registration/fllc/fees/",
+        "https://cca.hawaii.gov/breg/registration/dpc/fees/"
+      ],
+      "provenance": "research",
+      "researchNote": "The cheapest jurisdiction found: $50 to form, $50 foreign, $15 a year, identical for LLC and corporation. Hawaii does have a general excise tax, recorded separately."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 50,
+      "foreignQualificationFee": 50,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 15,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "Flat $15, domestic and foreign profit corporations alike."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://cca.hawaii.gov/breg/registration/dllc/fees/",
+      "confidence": "high",
+      "allSources": [
+        "https://cca.hawaii.gov/breg/registration/dllc/fees/",
+        "https://cca.hawaii.gov/breg/registration/fllc/fees/",
+        "https://cca.hawaii.gov/breg/registration/dpc/fees/"
+      ],
+      "provenance": "research",
+      "researchNote": "The cheapest jurisdiction found: $50 to form, $50 foreign, $15 a year, identical for LLC and corporation. Hawaii does have a general excise tax, recorded separately."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -764,36 +806,48 @@
   },
   "ID": {
     "llc": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 100,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 0,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "NO FEE if filed on time, but the report is mandatory — miss it and the entity is administratively dissolved."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.idaho.gov/business-forms/",
+      "confidence": "high",
+      "allSources": [
+        "https://sos.idaho.gov/business-forms/",
+        "https://sos.idaho.gov/annual-report-help/"
+      ],
+      "provenance": "research",
+      "researchNote": "Online $100; paper adds a $20 manual processing fee. A $0 annual report is not the same as no annual report — the filing is still compulsory."
     },
     "corp": {
-      "formationFee": null,
-      "foreignQualificationFee": null,
+      "formationFee": 100,
+      "foreignQualificationFee": 100,
       "annualReport": {
-        "amount": null,
-        "frequency": null,
+        "amount": 0,
+        "frequency": "annual",
         "dueDate": null,
-        "note": null
+        "note": "No fee if filed on time."
       },
       "annualTax": {
         "amount": null,
         "note": null
       },
-      "source": null,
-      "confidence": null
+      "source": "https://sos.idaho.gov/business-forms/",
+      "confidence": "high",
+      "allSources": [
+        "https://sos.idaho.gov/business-forms/",
+        "https://sos.idaho.gov/annual-report-help/"
+      ],
+      "provenance": "research",
+      "researchNote": "Online $100; paper adds a $20 manual processing fee. A $0 annual report is not the same as no annual report — the filing is still compulsory."
     },
     "grossReceiptsTax": {
       "applies": null,

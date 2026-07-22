@@ -84,16 +84,18 @@ Research ran against state `.gov` sources only. Findings that matter beyond fill
 
 **One state stayed empty on purpose.** New Mexico publishes no current online fee schedule, so its formation and foreign fees are null. That is the correct outcome.
 
+**Illinois defeated the research.** Every `ilsos.gov` fetch timed out or returned 403. All Illinois figures are null by design and it needs a re-run or a manual look. Georgia's PDF fee schedule also 403s, so its $225 foreign qualification rests on a how-to guide rather than the schedule itself — recorded at medium confidence.
+
 **Two states will be stale within the year.** Louisiana's fees rise on 1 October 2026 under Act 921; the stored figures are pre-increase. Kansas reduced its fees on 27 February 2026; the stored figures are post-reduction. Both need a `verified` date the reader can see.
 
 ### Where the file stands
 
 | | |
 |---|---|
-| LLC formation fee | 42 of 51 jurisdictions |
+| LLC formation fee | 46 of 51 jurisdictions |
 | **Foreign qualification fee** | **82 of 102 rows — was 0** |
 | Rows flagged `feeVaries` | 14 |
-| Still empty | CT, GA, HI, ID, IL, MN, MO, MS, NM |
+| Still empty | IL, MN, MO, MS, NM |
 
 The honesty row now exists for most of the country, which is the single thing that had to happen before the engine could be honest.
 
