@@ -296,6 +296,37 @@ for (const p of pages) {
   }
 }
 
+/* ---- 3b. sections unreachable from the home page ------------------------- */
+
+/**
+ * A section hub the home page does not link to.
+ *
+ * Added after 28 of 34 section hubs — every platform, every gig category, four
+ * of the five equity instruments, local income tax and the profession profiles
+ * — turned out to be unreachable. The gate was green throughout, because
+ * nothing was broken. The pages were just invisible.
+ *
+ * The first version of this check tested for hubs with NO inbound links at all
+ * and caught nothing, because every child page carries a breadcrumb back to its
+ * own hub. A section can be entirely unreachable from the front door and still
+ * be densely linked from inside itself. So the test is specifically reachability
+ * from the home page, which on a static site with no search is the only entry
+ * point a reader or a crawler is guaranteed to have.
+ *
+ * Zero tolerance, deliberately. An earlier draft allowed six exceptions and that
+ * slack was enough to let a removed link pass unnoticed when it was tested.
+ */
+const hubs = pages.filter((p) => (p.url.match(/\//g) || []).length === 2 && p.url !== '/');
+const home = pages.find((p) => p.url === '/');
+if (!home) {
+  failures.push('no home page in dist');
+} else {
+  const fromHome = new Set([...home.html.matchAll(/href="(\/[^"#]*)"/g)].map((m) => m[1]));
+  const unreachable = hubs.filter((h) => !fromHome.has(h.url)).map((h) => h.url);
+  for (const url of unreachable) failures.push(`unreachable: the home page does not link to ${url}`);
+  console.log(`  ${unreachable.length === 0 ? 'ok  ' : 'FAIL'}  ${hubs.length} section hubs, all linked from the home page`);
+}
+
 /* ---- 4 & 5. canonical and disclaimer ------------------------------------- */
 
 for (const p of pages) {

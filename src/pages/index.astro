@@ -1,19 +1,54 @@
 ---
+/**
+ * Home page, and the site's only complete directory.
+ *
+ * It lists every section hub deliberately. There is no search on a static site,
+ * so a hub nothing links to is a hub nobody reaches — 28 of 34 of them were in
+ * that state before this page was rewritten, and the quality gate now fails if
+ * it happens again.
+ */
 import Base from '../layouts/Base.astro';
 import QuickEstimator from '../components/calculators/QuickEstimator.tsx';
 import { VERIFIED, LAST_VERIFIED } from '../data/federal';
 import { stateList } from '../data/states';
 import { stateSlug } from '../lib/slug';
+import { PROFESSIONS } from '../lib/professions';
+import { INSTRUMENTS } from '../lib/equity';
+import { localTaxStates } from '../lib/local-tax';
+import { states } from '../data/states';
+
+const localStates = localTaxStates();
+
+// The five gig categories, which replaced per-brand pages once it was clear the
+// tax answer varies by expense profile and not by which app pays you.
+const GIG = [
+  { href: '/gig-driver-tax-calculator/', name: 'Driving and delivery', note: 'mileage is the whole deduction' },
+  { href: '/gig-services-tax-calculator/', name: 'Services and tasks', note: 'tools, supplies, travel between jobs' },
+  { href: '/creator-tax-calculator/', name: 'Creators', note: 'equipment, software, home studio' },
+  { href: '/seller-tax-calculator/', name: 'Sellers', note: 'cost of goods, fees, shipping' },
+  { href: '/rental-host-tax-calculator/', name: 'Rental hosts', note: 'the 14-day rule and depreciation' },
+];
+
+const PLATFORMS = [
+  'uber', 'lyft', 'doordash', 'grubhub', 'instacart', 'shipt', 'amazon-flex',
+  'taskrabbit', 'rover', 'turo', 'airbnb', 'etsy', 'ebay', 'shopify',
+  'youtube', 'onlyfans',
+].map((k) => ({
+  href: `/${k}-tax-calculator/`,
+  name: { 'amazon-flex': 'Amazon Flex', doordash: 'DoorDash', ebay: 'eBay', onlyfans: 'OnlyFans',
+          taskrabbit: 'TaskRabbit', youtube: 'YouTube' }[k]
+        ?? k.charAt(0).toUpperCase() + k.slice(1),
+}));
 ---
 
 <Base
   title="MoneyScope — 2026 tax calculators for 1099, gig, and self-employed income"
-  description="Free 2026 tax calculators. Estimate self-employment tax, federal and state income tax, and what to set aside — with figures verified from IRS sources."
+  description="Free 2026 tax calculators. Self-employment tax, federal, state and local income tax, S-corp elections and equity compensation — with figures verified from IRS and state revenue sources."
 >
   <section class="hero">
     <p class="hero-label">2026 tax year · verified {LAST_VERIFIED}</p>
     <h1>Tax calculators for people who <em>work for themselves</em></h1>
-    <p class="tagline">Self-employment tax, federal and state income tax, and what to set aside — in one place.</p>
+    <p class="tagline">Self-employment tax, federal, state and local income tax, and what to set aside — in one place.</p>
   </section>
 
   <p>
@@ -24,12 +59,64 @@ import { stateSlug } from '../lib/slug';
   <p class="section-label">Quick estimate</p>
   <QuickEstimator client:load defaultSeIncome={50000} stateHrefBase="/1099-tax-calculator/" />
 
-  <h2>Living and working in different states</h2>
+  <h2>Start here</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 and self-employment tax</a> — by state</li>
+    <li><a href="/paycheck-calculator/">Paycheck</a> — everything taken out of a salary</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly payments</a> — what to send and when</li>
+    <li><a href="/s-corp-tax-calculator/">S-corp election</a> — does it pay for itself here?</li>
+  </ul>
+
+  <h2>Tax where you live and where you work</h2>
   <p>
-    Commute across a state line? See <a href="/cross-border-tax/">which
-    state taxes your wages</a> — reciprocity agreements, nonresident returns, and credits
-    for every bordering-state pair.
+    Two layers most calculators skip. Cross a state line to work and two states have a claim on the same
+    wages. Live in one of twelve states and a city, county or school district taxes you on top of the
+    state — {localStates.length} states do, in eight structurally different ways.
   </p>
+  <ul class="link-columns">
+    <li><a href="/cross-border-tax/">Living and working in different states</a> — reciprocity, nonresident returns, credits</li>
+    <li><a href="/local-income-tax/">Local income tax</a> — city, county and school district</li>
+  </ul>
+  <p class="section-label">Local income tax by state</p>
+  <ul class="link-columns">
+    {localStates.map((c) => (
+      <li><a href={`/local-income-tax/${stateSlug(states[c].name)}/`}>{states[c].name}</a></li>
+    ))}
+  </ul>
+
+  <h2>What your profession can deduct</h2>
+  <p>
+    Schedule C is the same form for everyone and the deductions on it are not. A signing agent's mileage,
+    a driver's per diem, a minister's housing allowance that is exempt from income tax and taxed for
+    self-employment tax at the same time:
+  </p>
+  <ul class="link-columns">
+    {PROFESSIONS.map((p) => (
+      <li><a href={`/self-employed-tax-calculator/${p.slug}/`}>{p.name}</a></li>
+    ))}
+  </ul>
+
+  <h2>Gig and platform income</h2>
+  <p>
+    Grouped by what you can deduct rather than by which app pays you, because that is what changes the
+    answer — a Lyft driver and an Uber driver have the same tax question, and a driver and an Etsy seller
+    do not:
+  </p>
+  <ul class="link-columns">
+    {GIG.map((g) => <li><a href={g.href}>{g.name}</a> — {g.note}</li>)}
+  </ul>
+  <p class="section-label">By platform</p>
+  <ul class="link-columns">
+    {PLATFORMS.map((p) => <li><a href={p.href}>{p.name}</a></li>)}
+  </ul>
+
+  <h2>Equity compensation</h2>
+  <p>Each of these has one expensive mistake attached to it, and the pages lead with it:</p>
+  <ul class="link-columns">
+    {INSTRUMENTS.map((i) => (
+      <li><a href={`/${i.slug}/`}>{i.label}</a> — {i.trap}</li>
+    ))}
+  </ul>
 
   <h2>1099 tax calculator by state</h2>
   <p>Pick your state for a page built on that state's 2026 income tax rules:</p>
