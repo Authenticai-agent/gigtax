@@ -394,7 +394,7 @@ const LABELS: Record<string, string> = {
   exploration_costs: 'Exploration costs',
   staff_wages: 'Staff wages',
   subcontractors_1099: 'Subcontractors you pay',
-  permits_and_licences: 'Permits and licenses',
+  permits_and_licenses: 'Permits and licenses',
   materials_and_supplies: 'Materials and supplies',
   equipment_rental: 'Equipment you hire rather than buy',
   workers_comp: 'Workers’ compensation insurance',

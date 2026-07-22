@@ -121,7 +121,7 @@ export default function IncorporationCalculator() {
                 The bill that arrives uses the authorized shares method. Delaware is not obliged to
                 calculate the cheaper one for you, and a company with millions of authorized shares and
                 modest assets is the exact case where the difference is largest. You elect the assumed par
-                value method when you file the annual report, by 1 March.
+                value method when you file the annual report, by March 1.
               </p>
             </div>
           )}

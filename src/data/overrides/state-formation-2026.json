@@ -40,15 +40,24 @@
       }
     },
     "notModelled": [
-      "Registered agent cost — a MARKET PRICE, not government data. Modelled as a user-selectable tier in the island and labelled 'typical market range', never presented as an official figure.",
+      "Registered agent cost — a MARKET PRICE, not government data. Modeled as a user-selectable tier in the island and labelled 'typical market range', never presented as an official figure.",
       "Sales tax and economic nexus — no dataset on this site; the calculator names the states and says explicitly that it does not compute this.",
-      "Local business licences, city and county registration",
+      "Local business licenses, city and county registration",
       "Property tax",
       "Attorney and formation-service fees",
       "Federal beneficial ownership (Corporate Transparency Act) filing costs, unless the owner adds verified figures",
       "Fee changes across the five-year window — the projection holds today's fees flat and says so"
     ],
-    "legacyHarvest": "Figures tagged source 'legacy/js/app.js <view>' came from the previous site and are UNVERIFIED against a government source. They are seeded here so the owner can re-verify rather than re-find them. Treat them as leads, not as data."
+    "legacyHarvest": "Figures tagged source 'legacy/js/app.js <view>' came from the previous site and are UNVERIFIED against a government source. They are seeded here so the owner can re-verify rather than re-find them. Treat them as leads, not as data.",
+    "url": "/business-formation-state-calculator/  (owner decision; /where-to-form-llc/ was the alternate and was not chosen)",
+    "registeredAgentTiers": {
+      "_note": "Owner decision: use the legacy tiers. These are MARKET PRICES, not government fees. Copy must label them 'typical market range' and never present them as an official figure. Self-agent is $0 but is only selectable for a state where the owner actually has an address — the engine enforces that on home and work state columns only.",
+      "self": 0,
+      "basic": 50,
+      "standard": 100,
+      "premium": 200,
+      "source": "legacy/js/app.js delawareFormationView (market tiers, not a state schedule)"
+    }
   },
   "AL": {
     "llc": {
@@ -422,7 +431,7 @@
         "amount": 80,
         "frequency": "annual",
         "dueDate": null,
-        "note": "Filed online 1 Jan to 31 March; $80 domestic and foreign alike."
+        "note": "Filed online 1 Jan to March 31; $80 domestic and foreign alike."
       },
       "annualTax": {
         "amount": null,
@@ -436,7 +445,7 @@
         "https://business.ct.gov/knowledge-base/articles/foreign-annual-report-forms-and-fees"
       ],
       "provenance": "research",
-      "researchNote": "Domestic stock corporations also owe a separate $150 Organization and First Report. The foreign qualification fee of $385 includes a $285 licence fee. Corporation annual report differs sharply: $150 domestic against $435 foreign."
+      "researchNote": "Domestic stock corporations also owe a separate $150 Organization and First Report. The foreign qualification fee of $385 includes a $285 license fee. Corporation annual report differs sharply: $150 domestic against $435 foreign."
     },
     "corp": {
       "formationFee": 250,
@@ -459,7 +468,7 @@
         "https://business.ct.gov/knowledge-base/articles/foreign-annual-report-forms-and-fees"
       ],
       "provenance": "research",
-      "researchNote": "Domestic stock corporations also owe a separate $150 Organization and First Report. The foreign qualification fee of $385 includes a $285 licence fee. Corporation annual report differs sharply: $150 domestic against $435 foreign."
+      "researchNote": "Domestic stock corporations also owe a separate $150 Organization and First Report. The foreign qualification fee of $385 includes a $285 license fee. Corporation annual report differs sharply: $150 domestic against $435 foreign."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -566,7 +575,7 @@
         "amount": 300,
         "frequency": "biennial",
         "dueDate": null,
-        "note": "BRA-25 biennial report $300 plus $100 late fee. First due 1 April of the year after registration."
+        "note": "BRA-25 biennial report $300 plus $100 late fee. First due April 1 of the year after registration."
       },
       "annualTax": {
         "amount": null,
@@ -579,7 +588,7 @@
         "https://otr.cfo.dc.gov/page/dc-business-franchise-tax-rates"
       ],
       "provenance": "research",
-      "researchNote": "Corp formation $99 covers authorised capital to $100,000, rising to $550, $1,100 and $1,650. SEPARATE mandatory DC franchise tax: D-20 and D-30 both carry a $250 minimum, $1,000 above $1M of DC gross receipts."
+      "researchNote": "Corp formation $99 covers authorized capital to $100,000, rising to $550, $1,100 and $1,650. SEPARATE mandatory DC franchise tax: D-20 and D-30 both carry a $250 minimum, $1,000 above $1M of DC gross receipts."
     },
     "corp": {
       "formationFee": 99,
@@ -601,7 +610,7 @@
         "https://otr.cfo.dc.gov/page/dc-business-franchise-tax-rates"
       ],
       "provenance": "research",
-      "researchNote": "Corp formation $99 covers authorised capital to $100,000, rising to $550, $1,100 and $1,650. SEPARATE mandatory DC franchise tax: D-20 and D-30 both carry a $250 minimum, $1,000 above $1M of DC gross receipts.",
+      "researchNote": "Corp formation $99 covers authorized capital to $100,000, rising to $550, $1,100 and $1,650. SEPARATE mandatory DC franchise tax: D-20 and D-30 both carry a $250 minimum, $1,000 above $1M of DC gross receipts.",
       "feeVaries": true,
       "feeVariesNote": "DC incorporation is $99 for authorized capital to $100,000, then $550, $1,100 and $1,650 by tier. The stored figure is the minimum."
     },
@@ -688,7 +697,7 @@
         "amount": 50,
         "frequency": "annual",
         "dueDate": null,
-        "note": "Annual registration due 1 Jan to 1 April; $5 online or $10 paper service charge on top."
+        "note": "Annual registration due 1 Jan to April 1; $5 online or $10 paper service charge on top."
       },
       "annualTax": {
         "amount": null,
@@ -980,7 +989,7 @@
         "amount": 30,
         "frequency": "biennial",
         "dueDate": null,
-        "note": "Biennial, odd years, due 1 April: $30 online, $45 paper."
+        "note": "Biennial, odd years, due April 1: $30 online, $45 paper."
       },
       "annualTax": {
         "amount": null,
@@ -1001,7 +1010,7 @@
         "amount": 60,
         "frequency": "biennial",
         "dueDate": null,
-        "note": "Profit corporations file in EVEN years, due 1 April: $60."
+        "note": "Profit corporations file in EVEN years, due April 1: $60."
       },
       "annualTax": {
         "amount": null,
@@ -1051,7 +1060,7 @@
         "https://sos.ks.gov/forms/business_services/FA.pdf"
       ],
       "provenance": "research",
-      "researchNote": "Fees REDUCED effective 27 February 2026 — figures are post-reduction. Foreign filings are paper only; form FA states $115 for all entity types though the regulation implies less for foreign LLCs."
+      "researchNote": "Fees REDUCED effective February 27, 2026 — figures are post-reduction. Foreign filings are paper only; form FA states $115 for all entity types though the regulation implies less for foreign LLCs."
     },
     "corp": {
       "formationFee": 85,
@@ -1073,7 +1082,7 @@
         "https://sos.ks.gov/forms/business_services/FA.pdf"
       ],
       "provenance": "research",
-      "researchNote": "Fees REDUCED effective 27 February 2026 — figures are post-reduction. Foreign filings are paper only; form FA states $115 for all entity types though the regulation implies less for foreign LLCs."
+      "researchNote": "Fees REDUCED effective February 27, 2026 — figures are post-reduction. Foreign filings are paper only; form FA states $115 for all entity types though the regulation implies less for foreign LLCs."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -1098,7 +1107,7 @@
         "amount": 15,
         "frequency": "annual",
         "dueDate": null,
-        "note": "Due 1 Jan to 30 June, $15."
+        "note": "Due 1 Jan to June 30, $15."
       },
       "annualTax": {
         "amount": null,
@@ -1171,7 +1180,7 @@
         "https://revenue.louisiana.gov/tax-education-and-faqs/faqs/income-tax-reform/is-the-corporation-franchise-tax-repealed/"
       ],
       "provenance": "research",
-      "researchNote": "FEES RISE 1 OCTOBER 2026 under Act 921 (2026) — these are pre-increase figures and will be stale within the year. Corporation franchise tax repealed for periods from 1 January 2026."
+      "researchNote": "FEES RISE 1 OCTOBER 2026 under Act 921 (2026) — these are pre-increase figures and will be stale within the year. Corporation franchise tax repealed for periods from January 1, 2026."
     },
     "corp": {
       "formationFee": 75,
@@ -1193,7 +1202,7 @@
         "https://revenue.louisiana.gov/tax-education-and-faqs/faqs/income-tax-reform/is-the-corporation-franchise-tax-repealed/"
       ],
       "provenance": "research",
-      "researchNote": "FEES RISE 1 OCTOBER 2026 under Act 921 (2026) — these are pre-increase figures and will be stale within the year. Corporation franchise tax repealed for periods from 1 January 2026."
+      "researchNote": "FEES RISE 1 OCTOBER 2026 under Act 921 (2026) — these are pre-increase figures and will be stale within the year. Corporation franchise tax repealed for periods from January 1, 2026."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -2173,7 +2182,7 @@
         "https://www.lsc.ohio.gov/assets/organizations/legislative-service-commission/files/2026-state-agency-fees-sos.pdf"
       ],
       "provenance": "research",
-      "researchNote": "CONFLICT FLAGGED: ORC 111.16 (effective 3 April 2025) sets $0.10 per share with a $99 minimum, and SOS Form 532A charges $99, but the Legislative Service Commission fee table dated 30 January 2026 still prints a $125 minimum. $99 used. Ohio's no-annual-report position is verified negatively — the statutory schedule lists none — because ohiosos.gov serves a JavaScript-only shell."
+      "researchNote": "CONFLICT FLAGGED: ORC 111.16 (effective April 3, 2025) sets $0.10 per share with a $99 minimum, and SOS Form 532A charges $99, but the Legislative Service Commission fee table dated January 30, 2026 still prints a $125 minimum. $99 used. Ohio's no-annual-report position is verified negatively — the statutory schedule lists none — because ohiosos.gov serves a JavaScript-only shell."
     },
     "corp": {
       "formationFee": 125,
@@ -2196,10 +2205,10 @@
         "https://www.lsc.ohio.gov/assets/organizations/legislative-service-commission/files/2026-state-agency-fees-sos.pdf"
       ],
       "provenance": "owner",
-      "researchNote": "CONFLICT FLAGGED: ORC 111.16 (effective 3 April 2025) sets $0.10 per share with a $99 minimum, and SOS Form 532A charges $99, but the Legislative Service Commission fee table dated 30 January 2026 still prints a $125 minimum. $99 used. Ohio's no-annual-report position is verified negatively — the statutory schedule lists none — because ohiosos.gov serves a JavaScript-only shell.",
+      "researchNote": "CONFLICT FLAGGED: ORC 111.16 (effective April 3, 2025) sets $0.10 per share with a $99 minimum, and SOS Form 532A charges $99, but the Legislative Service Commission fee table dated January 30, 2026 still prints a $125 minimum. $99 used. Ohio's no-annual-report position is verified negatively — the statutory schedule lists none — because ohiosos.gov serves a JavaScript-only shell.",
       "feeVaries": true,
       "feeVariesNote": "Ohio incorporation is $0.10 per authorized share under ORC 111.16 with a floor, so it rises above the stored figure once authorized shares pass roughly 1,250. The stored figure is a minimum.",
-      "ownerDecision": "OWNER DECISION: $125, from the Legislative Service Commission fee table dated 30 January 2026. The other figure is $99, from ORC 111.16 (effective 3 April 2025, $0.10 per share with a $99 floor) and SOS Form 532A. The state disagrees with itself; the owner chose the higher, later-dated table. This is the conservative direction — if the SOS in fact charges $99, the calculator overstates Ohio corporation formation by $26, which is the safer way to be wrong on a one-time fee."
+      "ownerDecision": "OWNER DECISION: $125, from the Legislative Service Commission fee table dated January 30, 2026. The other figure is $99, from ORC 111.16 (effective April 3, 2025, $0.10 per share with a $99 floor) and SOS Form 532A. The state disagrees with itself; the owner chose the higher, later-dated table. This is the conservative direction — if the SOS in fact charges $99, the calculator overstates Ohio corporation formation by $26, which is the safer way to be wrong on a one-time fee."
     },
     "grossReceiptsTax": {
       "applies": true,
@@ -2505,7 +2514,7 @@
       "provenance": "research",
       "researchNote": "Corp $110 SOS filing plus mandatory $25 CL-1 initial report = $135. LLC $110 flat, no CL-1 unless corp-taxed.",
       "feeVaries": true,
-      "feeVariesNote": "Annual licence fee is 0.1% of capital stock plus $15, with a $25 minimum. The stored figure is the minimum."
+      "feeVariesNote": "Annual license fee is 0.1% of capital stock plus $15, with a $25 minimum. The stored figure is the minimum."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -2726,7 +2735,7 @@
         "https://commerce.utah.gov/wp-content/uploads/2023/04/currentfees.pdf"
       ],
       "provenance": "research",
-      "researchNote": "Schedule is headed Fiscal Year 2026, effective 1 July 2025. No FY2027 schedule found on the .gov site."
+      "researchNote": "Schedule is headed Fiscal Year 2026, effective July 1, 2025. No FY2027 schedule found on the .gov site."
     },
     "corp": {
       "formationFee": 59,
@@ -2747,7 +2756,7 @@
         "https://commerce.utah.gov/wp-content/uploads/2023/04/currentfees.pdf"
       ],
       "provenance": "research",
-      "researchNote": "Schedule is headed Fiscal Year 2026, effective 1 July 2025. No FY2027 schedule found on the .gov site."
+      "researchNote": "Schedule is headed Fiscal Year 2026, effective July 1, 2025. No FY2027 schedule found on the .gov site."
     },
     "grossReceiptsTax": {
       "applies": null,
@@ -2954,7 +2963,7 @@
         "amount": 25,
         "frequency": "annual",
         "dueDate": null,
-        "note": "Due 1 Jan to 30 June; $50 late fee for profit entities."
+        "note": "Due 1 Jan to June 30; $50 late fee for profit entities."
       },
       "annualTax": {
         "amount": null,
@@ -3073,7 +3082,7 @@
         "amount": 60,
         "frequency": "annual",
         "dueDate": "first day of the anniversary month",
-        "note": "Licence tax: greater of $60 or $0.0002 per dollar of assets located and employed in Wyoming. May be filed up to 120 days early."
+        "note": "License tax: greater of $60 or $0.0002 per dollar of assets located and employed in Wyoming. May be filed up to 120 days early."
       },
       "annualTax": {
         "amount": null,
@@ -3095,7 +3104,7 @@
         "amount": 60,
         "frequency": "annual",
         "dueDate": "first day of the anniversary month",
-        "note": "Same licence tax formula. Figure is for profit corporations; nonprofits pay a flat $25."
+        "note": "Same license tax formula. Figure is for profit corporations; nonprofits pay a flat $25."
       },
       "annualTax": {
         "amount": null,

@@ -114,7 +114,7 @@ export default function ScorpSalaryCalculator({ presetState = '' }: { presetStat
             <p>
               Between the cheapest and dearest rows here the difference is{' '}
               {formatMoney(Math.max(...result.results.map((r) => r.totalTax)) - Math.min(...result.results.map((r) => r.totalTax)))}{' '}
-              a year. That is the size of the judgement you are making.
+              a year. That is the size of the judgment you are making.
             </p>
           </div>
 

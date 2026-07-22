@@ -211,7 +211,7 @@ const CROSS_WARN_AT = 0.35;
  * are held to a higher line, and the reason is written down here so a future
  * change has to argue with it rather than inherit it.
  *
- * This is NOT a licence to add sections to a family to make a failure go away.
+ * This is NOT a license to add sections to a family to make a failure go away.
  * A family means the pages answer one question. If two sections answer
  * different questions and score above 45%, one of them is redundant.
  */

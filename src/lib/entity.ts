@@ -199,7 +199,7 @@ export function compareEntityChoices(input: EntityInput): EntityComparison {
   // so the election gives no relief but costs nothing extra either.
   if (entity.taxedAsCCorp && entity.amount > 0) {
     warnings.push(
-      `This state does not recognise the federal S election and charges the company ${formatMoney(entity.amount)} — ${entity.basis}. Electing here creates a state tax rather than avoiding one, and that is already counted above.`,
+      `This state does not recognize the federal S election and charges the company ${formatMoney(entity.amount)} — ${entity.basis}. Electing here creates a state tax rather than avoiding one, and that is already counted above.`,
     );
   } else if (entity.taxedAsCCorp) {
     warnings.push(

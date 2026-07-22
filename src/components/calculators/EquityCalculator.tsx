@@ -98,7 +98,7 @@ export default function EquityCalculator({ instrument, presetState = '' }: { ins
       } else {
         out.push({ label: 'Regular federal tax at exercise', amount: 0 });
         out.push({ label: 'Added to your alternative minimum tax income', amount: spread, kind: 'warn' });
-        why.push('Incentive stock options cost nothing in regular tax at exercise. The spread is added to your alternative minimum tax income instead, which can produce a bill on a paper gain you have not realised and may never realise.');
+        why.push('Incentive stock options cost nothing in regular tax at exercise. The spread is added to your alternative minimum tax income instead, which can produce a bill on a paper gain you have not realized and may never realize.');
         why.push('This calculator shows the spread that enters the AMT calculation. Whether it produces an actual AMT bill depends on your whole return, which needs more than this page knows.');
       }
       if (sellNow) {
