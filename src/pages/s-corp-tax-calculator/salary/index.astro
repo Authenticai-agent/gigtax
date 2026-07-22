@@ -1,0 +1,54 @@
+---
+/** The salary question, as a calculator rather than a table of our assumptions. */
+import Base from '../../../layouts/Base.astro';
+import ScorpSalaryCalculator from '../../../components/calculators/ScorpSalaryCalculator.tsx';
+---
+
+<Base
+  title="S corp reasonable salary calculator (2026)"
+  description="Work out what salary to pay yourself from an S corporation in 2026, what each choice costs in tax, and why the cheapest option is the riskiest."
+>
+  <div class="breadcrumbs"><a href="/s-corp-tax-calculator/">S-corp calculator</a> / Salary</div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>What salary should you pay yourself?</h1>
+    <p class="tagline">The arithmetic always points at the lowest number. That is exactly why it is not the answer.</p>
+  </section>
+
+  <p>
+    An S corporation owner takes some profit as salary, which carries payroll tax, and the rest as a
+    distribution, which does not. Lower the salary and the tax falls. There is no point on the curve where
+    that stops being true, so any calculator promising an optimal salary is telling you to go as low as
+    you dare.
+  </p>
+  <p>
+    The constraint is not arithmetic, it is the reasonable compensation rule: your salary has to be
+    defensible for the work you actually do. Set it too low and the tax authority can reclassify the
+    difference and charge back payroll tax with interest and penalties. So this shows the whole range and
+    what each choice is worth, and leaves the judgement where it belongs.
+  </p>
+
+  <p class="section-label">Calculator</p>
+  <ScorpSalaryCalculator client:load />
+
+  <h2>What makes a salary defensible</h2>
+  <ul>
+    <li>What you would have to pay someone else to do your job.</li>
+    <li>The hours you actually work in the business, and what share of the profit your own labour generates rather than capital or staff.</li>
+    <li>Comparable pay in your industry and region — this is the evidence that matters if the figure is ever questioned.</li>
+    <li>Consistency. A salary that moves inversely to profit every year describes the strategy rather than the work.</li>
+  </ul>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/entity-tax-calculator/">Sole proprietor, S corp or C corp?</a></li>
+    <li><a href="/s-corp-tax-calculator/">S-corp election by state</a></li>
+    <li><a href="/">Household calculator</a></li>
+  </ul>
+
+  <p class="disclaimer">
+    General information, not tax advice. Reasonable compensation is a facts-and-circumstances judgement —
+    take advice before settling on a figure.
+  </p>
+</Base>
