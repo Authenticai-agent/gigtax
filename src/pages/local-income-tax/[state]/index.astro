@@ -15,6 +15,9 @@ import { states } from '../../../data/states';
 import { stateSlug } from '../../../lib/slug';
 import { formatMoney } from '../../../lib/tax-engine';
 import { localTaxStates, localTaxFor, levyExamples, localTraps, ohioCreditTraps, reachesSelfEmployment } from '../../../lib/local-tax';
+import Terms from '../../../components/Terms.astro';
+import { termsIn } from '../../../lib/plain';
+import { localCopyFor } from '../../../data/local-tax-copy';
 
 const EXAMPLE = 80000;
 
@@ -35,6 +38,9 @@ const traps = localTraps(code);
 const dearest = computable.length ? computable.reduce((a, b) => (b.amount! > a.amount! ? b : a)) : null;
 const seRule = reachesSelfEmployment(code);
 const ohTraps = code === 'OH' ? ohioCreditTraps() : [];
+// Define only the vocabulary this page actually uses.
+const copy = localCopyFor(code);
+const terms = termsIn(copy?.shape, ...traps, ...levies.map((l) => `${l.basis} ${l.needs ?? ''}`));
 
 const title = `Local income tax in ${state.name} (2026) — city, county and school district`;
 const description = `What ${state.name}'s cities, counties and school districts charge on income in 2026, on top of state tax, and whether it reaches self-employment profit.`;
@@ -55,11 +61,7 @@ const description = `What ${state.name}'s cities, counties and school districts 
     </p>
   </section>
 
-  {d.shape && (
-    <p data-source={`overrides/local-income-tax-2026.json → ${code}.shape`}>
-      The shape of it: {d.shape}.
-    </p>
-  )}
+  {copy?.shape && <p data-source={`overrides/local-income-tax-2026.json → ${code}.shape`}>{copy.shape}</p>}
 
   <h2>What the {state.name} levies cost on {formatMoney(EXAMPLE)}</h2>
   {computable.length > 0 ? (
@@ -145,12 +147,14 @@ const description = `What ${state.name}'s cities, counties and school districts 
 
   {d.confidence && (
     <p>
-      This entry is recorded at {typeof d.confidence === 'string' ? d.confidence : 'mixed'} confidence
-      against {state.name} jurisdiction and revenue-department sources, checked in July 2026. Local rates
-      move by ordinance and referendum far more often than state rates do — check your own jurisdiction
-      before relying on a figure.
+      These figures were checked in July 2026 against {state.name} city and state revenue sources, and we
+      rate our confidence in them as {typeof d.confidence === 'string' ? d.confidence : 'mixed'}. Local
+      rates change by council vote and local referendum far more often than state rates do, so confirm
+      yours with the city or county itself before relying on a number here.
     </p>
   )}
+
+  <Terms terms={terms} />
 
   <h2>Related</h2>
   <ul class="link-columns">

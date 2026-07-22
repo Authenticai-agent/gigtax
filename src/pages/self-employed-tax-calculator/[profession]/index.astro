@@ -10,6 +10,8 @@
 import Base from '../../../layouts/Base.astro';
 import { PROFESSIONS, professionFor, professionData, deductionsFor, uniqueRules, worthLadder } from '../../../lib/professions';
 import { formatMoney } from '../../../lib/tax-engine';
+import Terms from '../../../components/Terms.astro';
+import { termsIn } from '../../../lib/plain';
 
 export function getStaticPaths() {
   return PROFESSIONS.map((p) => ({ params: { profession: p.slug }, props: { p } }));
@@ -26,6 +28,7 @@ const mid = ladder[1];
 // "OTR truck driver".toLowerCase() gives "otr truck driver". Lowercase the first
 // letter only when the name does not open with an acronym — the same mangling
 // that once produced "cA SDI".
+const terms = termsIn(p.lead, p.watch, data.note, data.taxForm, ...deductions.map((d) => `${d.label} ${d.rule ?? ''}`), ...rules.map((r) => `${r.title} ${r.body}`));
 const lowerName = /^[A-Z]{2,}\b/.test(p.name) ? p.name : p.name.charAt(0).toLowerCase() + p.name.slice(1);
 
 const title = `${p.name} tax calculator (2026) — deductions and self-employment tax`;
@@ -138,6 +141,8 @@ const description = `What a self-employed ${p.name.toLowerCase()} can deduct in 
     Add a state income tax and every row rises. The
     {' '}<a href="/1099-tax-calculator/">1099 calculator</a> applies that layer.
   </p>
+
+  <Terms terms={terms} />
 
   <h2>Related</h2>
   <ul class="link-columns">

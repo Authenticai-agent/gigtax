@@ -23,6 +23,9 @@ import {
   PAYROLL_ADMIN_COST, DEFENSIBLE_SALARY_PCT,
 } from '../../../lib/scorp';
 import type { StateData } from '../../../data/types';
+import Terms from '../../../components/Terms.astro';
+import { termsIn } from '../../../lib/plain';
+import { scorpNoteFor } from '../../../data/scorp-note-copy';
 
 const EXAMPLE = 100000;
 
@@ -44,6 +47,8 @@ const entity = entityLevelTax(code, EXAMPLE);
 const facts = stateScorpTax(code);
 const stateParas = describeStateScorp(code, state, ex);
 const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);
+const notes = scorpNoteFor(code, facts?.notes);
+const terms = termsIn(...stateParas, notes, entity.basis, ...entity.disclosures.map((d) => `${d.label} ${d.why}`));
 
 const title = `S-corp calculator — ${state.name} (2026 election worth it?)`;
 const description = `Does electing S-corp status pay for itself in ${state.name} for 2026? The payroll tax saving against what ${state.name} charges the company, with the profit range where it works.`;
@@ -151,11 +156,12 @@ const description = `Does electing S-corp status pay for itself in ${state.name}
   {facts && (
     <>
       <h2>The {state.name} detail</h2>
-      <p data-source={`overrides/state-scorp-tax-2026.json → ${code}.notes`}>{facts.notes}</p>
+      <p data-source={`overrides/state-scorp-tax-2026.json → ${code}.notes`}>{notes}</p>
       {facts.confidence !== 'high' && (
         <p>
-          This entry is recorded at {facts.confidence} confidence — some of it comes from secondary
-          sources rather than {state.name}'s own revenue department. Check it before acting on it.
+          We rate our confidence in this entry as {facts.confidence}: some of it comes from tax
+          publishers and professional bodies rather than from {state.name}'s own revenue department.
+          Confirm it before acting on it.
         </p>
       )}
     </>
@@ -193,6 +199,8 @@ const description = `Does electing S-corp status pay for itself in ${state.name}
     <li>Comparing against a sole proprietorship. If you already trade through an LLC, some state fees are owed either way and are not a cost of electing.</li>
     <li>Anything listed as not modelled above is genuinely owed — it is excluded because it does not depend on profit, not because it is nil.</li>
   </ul>
+
+  <Terms terms={terms} />
 
   <h2>Related</h2>
   <ul class="link-columns">

@@ -1,0 +1,19 @@
+/**
+ * Reader-facing replacements for three S-corp state notes.
+ *
+ * Same problem as the local-tax notes: these three were written to the
+ * researcher, not the reader — "the single biggest change in this dataset",
+ * "the conflict flagged rather than guessed", "several secondary sources
+ * incorrectly report it". The underlying facts are right and worth keeping, so
+ * the JSON is untouched as provenance and these carry the same content in the
+ * site's voice. The other 48 states' notes read fine as they are.
+ */
+export const SCORP_NOTE_COPY: Record<string, string> = {
+  LA: 'Louisiana changed completely for 2026. Act 382 of the 2025 Regular Session means S corporations are automatically treated as pass-through businesses — the profit is taxed to the owners rather than to the company — with no election to make. That reverses decades of Louisiana taxing them much like ordinary corporations. They no longer pay Louisiana corporation income tax and file form CIT-620 for information only. Separately, the 0.275% corporation franchise tax was repealed from 1 January 2026, so there is no longer any Louisiana charge owed at zero profit. One warning: Louisiana Department of Revenue guidance pages have been slow to catch up and some still describe the old rules, so a page saying Louisiana does not recognise the federal election is out of date rather than wrong about your situation.',
+  KS: 'Kansas accepts the federal election with nothing separate to file for the state. The company files form K-120S whether or not any tax is due, and S corporations generally owe nothing at entity level. Kansas has had no franchise tax since 2011, so there is no minimum owed at a loss and no tax on turnover. There is a filing report, but it is every two years rather than annual: $90 online or $110 on paper. Figures of $55 still circulate on non-government sites and are out of date. A regulation effective February 2026 would reduce this to $85 and $105, but the Secretary of State\'s own instructions revised in June 2026 still print $90 and $110 — we have used the printed figure, and the two sources genuinely disagree.',
+  KY: 'Kentucky accepts the federal election with nothing separate to file for the state. There is no Kentucky rate on ordinary S corporation profit; the 5% corporate rate reaches only a few narrow situations that most small companies never encounter. The real cost is the Limited Liability Entity Tax. Every S corporation doing business in Kentucky owes at least $175 a year even at zero or negative profit, and once turnover passes $3 million the tax is calculated on turnover or gross profit rather than on what the business actually made. A proposed exemption for businesses under $100,000 of turnover was not enacted, despite several non-government sources reporting it as being in force from January 2026.',
+};
+
+export function scorpNoteFor(code: string, raw: string | undefined): string | undefined {
+  return SCORP_NOTE_COPY[code] ?? raw;
+}
