@@ -1,0 +1,44 @@
+{
+  "_meta": {
+    "purpose": "What each state charges an S CORPORATION ITSELF, on top of what its shareholders pay personally. Without this, an 'is an S-corp election worth it' calculator overstates the saving — in some states it inverts the answer entirely.",
+    "verified": "2026-07",
+    "why": "The verified 2026 dataset carries entity-level detail for Delaware and Wyoming only. Everything else here is researched against state revenue departments, recorded with its source and a confidence level, and left null wherever it could not be confirmed. A null means 'we do not know', which pages must say — it never means zero.",
+    "rules": [
+      "entityLevelIncomeTaxRate is what the STATE charges the CORPORATION on its net income. It is not the shareholder's personal rate and it is not an optional PTET election.",
+      "minimumAnnualTax is owed regardless of profit, including at a loss, unless notes say otherwise.",
+      "A state that does not recognise the federal S election taxes the company as a C corporation. For those, the election can COST money rather than save it, and the page has to lead with that.",
+      "Null is a correct answer. Never interpolate a rate."
+    ],
+    "modellingNote": "The comparison these figures feed is sole proprietorship vs S-corp. Where a state's minimum tax attaches to the LLC rather than the S election — California's $800 is owed by an LLC either way — the cost is not caused by electing, and the page must say so or it overstates the downside for anyone already trading through an LLC."
+  },
+
+  "CA": {
+    "recognizesFederalSElection": true,
+    "separateStateElectionRequired": false,
+    "entityLevelIncomeTaxRate": 0.015,
+    "minimumAnnualTax": 800,
+    "grossReceiptsTax": null,
+    "annualReportFee": 25,
+    "notes": "The annual tax is the GREATER of 1.5% of net income or $800 — not the sum. Owed whether the corporation is active, inactive or running at a loss, but waived for a newly formed S corporation's first taxable year. Note that an LLC in California owes an $800 annual tax anyway, so for someone already trading through an LLC the minimum is not a cost of electing.",
+    "sources": [
+      "ftb.ca.gov — S corporations business type: 'California taxes every S corporation that has California source income at 1.5%'; 'the annual tax for S corporations is the greater of 1.5% of net income or $800'",
+      "ftb.ca.gov — 2025/2026 Form 100S booklet and Publication 1060 (first-year minimum waiver)"
+    ],
+    "confidence": "high"
+  },
+
+  "TN": {
+    "recognizesFederalSElection": false,
+    "separateStateElectionRequired": false,
+    "entityLevelIncomeTaxRate": 0.065,
+    "minimumAnnualTax": 100,
+    "grossReceiptsTax": null,
+    "annualReportFee": null,
+    "notes": "Tennessee does not recognise the federal S election and taxes an S corporation as a C corporation: 6.5% excise tax on net earnings, plus a franchise tax of the greater of $0.25 per $100 of net worth or $100. A $50,000 standard deduction against net earnings applies from tax year 2024. Electing S status in Tennessee creates a state tax rather than avoiding one — this is the clearest case where the federal saving can be wiped out.",
+    "sources": [
+      "tn.gov Department of Revenue — Franchise and Excise Tax Manual (June 2025)",
+      "Secondary, consistent: nolo.com and s-corptax.com state guides"
+    ],
+    "confidence": "high"
+  }
+}
