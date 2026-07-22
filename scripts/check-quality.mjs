@@ -359,6 +359,51 @@ for (const p of pages) {
   uncited.push(p.url);
 }
 
+/* ---- 3d. formation dataset schema ---------------------------------------- */
+
+/**
+ * The formation dataset is the one file on this site whose NULLS are load-bearing.
+ *
+ * Filing fees change every year and are exactly what the never-invent rule
+ * covers, so an unresearched figure must stay null and the calculator must show
+ * it as unquantified rather than omitting it from a total. The failure this
+ * guards against is a number appearing without a source — which is how a
+ * plausible guess becomes a figure someone forms a company on.
+ *
+ * It also refuses incorporation-service sources. Those sites bundle their own
+ * fees into the state's, so a figure sourced from one is wrong even when it
+ * looks right.
+ */
+const FORMATION_PATH = 'src/data/overrides/state-formation-2026.json';
+if (existsSync(FORMATION_PATH)) {
+  const fd = JSON.parse(readFileSync(FORMATION_PATH, 'utf8'));
+  const BAD_SOURCE = /legalzoom|zenbusiness|incfile|northwestregisteredagent|harborcompliance|bizfilings|swyftfilings|rocketlawyer|nolo\.com/i;
+  const codes = Object.keys(fd).filter((k) => !k.startsWith('_'));
+
+  if (codes.length !== 51) {
+    failures.push(`formation dataset: expected 51 jurisdictions, found ${codes.length}`);
+  }
+  for (const code of codes) {
+    for (const kind of ['llc', 'corp']) {
+      const row = fd[code]?.[kind];
+      if (!row) { failures.push(`formation dataset: ${code}.${kind} missing`); continue; }
+      // A figure without a source is the failure mode this file exists to prevent.
+      const hasFigure = row.formationFee !== null || row.foreignQualificationFee !== null
+        || row.annualReport?.amount !== null;
+      if (hasFigure && !row.source) {
+        failures.push(`formation dataset: ${code}.${kind} has a figure but no source`);
+      }
+      if (row.source && BAD_SOURCE.test(row.source)) {
+        failures.push(`formation dataset: ${code}.${kind} cites an incorporation-service site, which bundles its own fees: ${row.source}`);
+      }
+    }
+  }
+  const nulls = codes.reduce((n, c) => n + ['llc', 'corp']
+    .filter((k) => fd[c][k].formationFee === null).length, 0);
+  const signed = Boolean(fd._meta?.signedOffBy);
+  console.log(`  ${signed ? 'ok  ' : 'note'}  formation dataset: ${codes.length} jurisdictions, ${nulls} of ${codes.length * 2} rows still awaiting a fee${signed ? '' : ' — NOT signed off, engine blocked'}`);
+}
+
 /* ---- 4 & 5. canonical and disclaimer ------------------------------------- */
 
 for (const p of pages) {

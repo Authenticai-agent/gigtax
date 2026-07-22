@@ -1,0 +1,2502 @@
+{
+  "_meta": {
+    "purpose": "Per-state business formation and annual compliance costs, for the 'where should I form my business?' comparison calculator. One row per jurisdiction, separate figures for LLC and corporation because they differ in almost every state.",
+    "status": "SKELETON — AWAITING OWNER SIGN-OFF. Not wired to any page or engine.",
+    "verified": null,
+    "signedOffBy": null,
+    "signedOffDate": null,
+    "rule": "No figure enters this file without a source URL. Filing fees change yearly and are exactly what the never-invent rule in CLAUDE.md covers. A null is a correct and expected value; a guessed number is not.",
+    "schema": {
+      "<STATE>.llc / <STATE>.corp": {
+        "formationFee": "number|null — one-time Secretary of State fee to file Articles of Organization (LLC) or Incorporation (corp)",
+        "foreignQualificationFee": "number|null — one-time fee for an entity formed elsewhere to register to do business in this state. THIS IS THE HONESTY ROW: it is what an out-of-state formation actually costs on top.",
+        "annualReport": {
+          "amount": "number|null",
+          "frequency": "'annual'|'biennial'|'none'|null",
+          "dueDate": "string|null — plain English, e.g. 'first day of the anniversary month'",
+          "note": "string|null — say so here if the fee varies by capital, shares or revenue rather than being flat"
+        },
+        "annualTax": {
+          "amount": "number|null — a mandatory annual tax DISTINCT from the report fee, e.g. Delaware LLC annual tax, California minimum franchise tax",
+          "note": "string|null"
+        },
+        "source": "string|null — URL on a state government domain. Incorporation-service sites are not acceptable sources: they bundle their own fees.",
+        "confidence": "'high'|'medium'|'low'|null"
+      },
+      "<STATE>.grossReceiptsTax": {
+        "applies": "boolean|null",
+        "rate": "number|null — null where the regime exists but is not reducible to one rate. The engine must then compute null and surface the note, never a guess.",
+        "threshold": "number|null — below this, the tax is zero",
+        "base": "'gross_receipts'|'margin'|null",
+        "note": "string|null",
+        "source": "string|null"
+      },
+      "<STATE>.franchiseTax": {
+        "structured": "object|null — parameters where real arithmetic is possible (Delaware's two methods, California's minimum, Texas's margin rate). null where only prose exists.",
+        "note": "string|null",
+        "source": "string|null"
+      }
+    },
+    "notModelled": [
+      "Registered agent cost — a MARKET PRICE, not government data. Modelled as a user-selectable tier in the island and labelled 'typical market range', never presented as an official figure.",
+      "Sales tax and economic nexus — no dataset on this site; the calculator names the states and says explicitly that it does not compute this.",
+      "Local business licences, city and county registration",
+      "Property tax",
+      "Attorney and formation-service fees",
+      "Federal beneficial ownership (Corporate Transparency Act) filing costs, unless the owner adds verified figures",
+      "Fee changes across the five-year window — the projection holds today's fees flat and says so"
+    ],
+    "legacyHarvest": "Figures tagged source 'legacy/js/app.js <view>' came from the previous site and are UNVERIFIED against a government source. They are seeded here so the owner can re-verify rather than re-find them. Treat them as leads, not as data."
+  },
+  "AL": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "AK": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "AZ": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "AR": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "CA": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "CO": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "CT": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "DE": {
+    "llc": {
+      "formationFee": 110,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": 0,
+        "frequency": "none",
+        "dueDate": null,
+        "note": "Delaware LLCs file no annual report. They pay a flat annual tax instead — see annualTax."
+      },
+      "annualTax": {
+        "amount": 300,
+        "note": "Flat annual LLC tax, due 1 June. Late penalty $200 plus 1.5% interest a month."
+      },
+      "source": "legacy/js/app.js delawareFormationView (UNVERIFIED — re-check against corp.delaware.gov)",
+      "confidence": "low"
+    },
+    "corp": {
+      "formationFee": 110,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": 50,
+        "frequency": "annual",
+        "dueDate": "1 March",
+        "note": "Report fee is separate from and additional to the franchise tax."
+      },
+      "annualTax": {
+        "amount": null,
+        "note": "Franchise tax — computed, see franchiseTax."
+      },
+      "source": "legacy/js/app.js delawareFormationView (UNVERIFIED — re-check against corp.delaware.gov)",
+      "confidence": "low"
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": {
+        "_note": "Legacy calcDelawareFranchiseTax reads these from entityTypes.delawareCCorp.franchiseTax in legacy/data/config.json. Port that function with parity rather than re-deriving these here.",
+        "portFrom": "legacy/js/tax-engine.js calcDelawareFranchiseTax"
+      },
+      "note": "Two methods. Delaware BILLS the authorized-shares method by default; the assumed par value method is usually far cheaper for a company with many authorized shares and modest assets, and must be elected.",
+      "source": "legacy/js/app.js delawareTaxView (UNVERIFIED)"
+    },
+    "_verified": null
+  },
+  "DC": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "FL": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "GA": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "HI": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "ID": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "IL": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "IN": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "IA": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "KS": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "KY": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "LA": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "ME": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "MD": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "MA": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "MI": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "MN": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "MS": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "MO": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "MT": {
+    "llc": {
+      "formationFee": 35,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": 20,
+        "frequency": "annual",
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": "legacy/js/app.js mtSdEntityView (UNVERIFIED — re-check against sosmt.gov)",
+      "confidence": "low"
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "NE": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "NV": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "NH": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "NJ": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "NM": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "NY": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "NC": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "ND": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "OH": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "OK": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "OR": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "PA": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "RI": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "SC": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "SD": {
+    "llc": {
+      "formationFee": 150,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": 50,
+        "frequency": "annual",
+        "dueDate": null,
+        "note": "Legacy figure. The S-corp dataset separately records $55 electronic / $70 paper — these disagree and the owner must resolve which is current."
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": "legacy/js/app.js mtSdEntityView (UNVERIFIED — CONFLICTS with state-scorp-tax-2026.json SD note)",
+      "confidence": "low"
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "TN": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "TX": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "UT": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "VT": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "VA": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "WA": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "WV": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "WI": {
+    "llc": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "corp": {
+      "formationFee": null,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": null,
+        "frequency": null,
+        "dueDate": null,
+        "note": null
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": null,
+      "confidence": null
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  },
+  "WY": {
+    "llc": {
+      "formationFee": 102,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": 60,
+        "frequency": "annual",
+        "dueDate": "first day of the anniversary month",
+        "note": "Legacy records the report as a licence tax of the greater of $60 or $0.0002 per dollar of Wyoming assets, so the $60 floor holds below $300,000 of Wyoming assets. VERIFY the rate and floor."
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": "legacy/js/app.js wyomingView (UNVERIFIED — re-check against sos.wyo.gov)",
+      "confidence": "low"
+    },
+    "corp": {
+      "formationFee": 102,
+      "foreignQualificationFee": null,
+      "annualReport": {
+        "amount": 60,
+        "frequency": "annual",
+        "dueDate": "first day of the anniversary month",
+        "note": "Same licence tax formula as the LLC. VERIFY."
+      },
+      "annualTax": {
+        "amount": null,
+        "note": null
+      },
+      "source": "legacy/js/app.js wyomingView (UNVERIFIED — re-check against sos.wyo.gov)",
+      "confidence": "low"
+    },
+    "grossReceiptsTax": {
+      "applies": null,
+      "rate": null,
+      "threshold": null,
+      "base": null,
+      "note": null,
+      "source": null
+    },
+    "franchiseTax": {
+      "structured": null,
+      "note": null,
+      "source": null
+    },
+    "_verified": null
+  }
+}
