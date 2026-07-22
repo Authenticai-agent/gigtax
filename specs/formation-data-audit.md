@@ -74,11 +74,11 @@ Two of the first research passes failed by delegating instead of searching and r
 
 Research ran against state `.gov` sources only. Findings that matter beyond filling a cell:
 
-**A legacy figure was wrong.** Legacy recorded Wyoming formation at **$102**. The current Secretary of State schedule is **$100**. Every Wyoming figure inherited from legacy should be treated as suspect until re-checked — this is the case for the spec's instruction to re-verify rather than re-use.
+**A legacy figure was wrong.** Legacy recorded Wyoming formation at **$102**. The current Secretary of State schedule is **$100**. Every Wyoming figure inherited from legacy should be treated as suspect until re-checked — legacy figures are leads to check, not figures to use.
 
 **Nevada has a buried annual cost.** On top of the $150 annual list, Nevada charges a **State Business License every year — $200 for an LLC, $500 for a corporation**. A Nevada column that shows only the list fee understates the state by two-thirds. This is the single most misleading omission available in this dataset, because Nevada is marketed on being cheap.
 
-**Fees are not always flat, and a minimum is not a price.** Research found scaling fees in Delaware (corp, by stock), Nevada (corp formation and annual list, by authorized share value, to a $35,000 and $11,125 maximum), Oklahoma (by authorized capital), Massachusetts and Michigan (by shares), Maryland (by par value), Arkansas, Nebraska, New Mexico and South Carolina. The schema gained `feeVaries` and `feeVariesNote` for exactly this: where true, the stored number is a **minimum**, the engine must render it as "from $X", and the column must be flagged unquantified. Storing a floor as if it were a fee is the quietest way this dataset could lie, and the gate now fails a `feeVaries` row that carries no explanation.
+**Fees are not always flat, and a minimum is not a price.** Research found scaling fees in Delaware (corp, by stock), Nevada (corp formation and annual list, by authorized share value, to a $35,000 and $11,125 maximum), Oklahoma (by authorized capital), Massachusetts and Michigan (by shares), Maryland (by par value), Arkansas, Nebraska, New Mexico and South Carolina. The schema gained `feeVaries` and `feeVariesNote` for exactly this: where true, the stored number is a **minimum**, the engine must render it as "from $X", and the column must be flagged unquantified. A stored minimum must never be presented as the price, and the gate now fails a `feeVaries` row that carries no explanation.
 
 **Domestic and foreign are different prices, sometimes very different.** Oregon charges $100 domestic and $275 foreign for everything. Alaska's biennial report doubles from $100 to $200 for foreign entities. Delaware corporations file a $50 domestic report due March 1 but a $125 foreign report due June 30. The engine must use the foreign figure on out-of-state columns, not the domestic one — otherwise the myth math understates exactly the thing the tool exists to show.
 
@@ -129,6 +129,15 @@ Adversarial research on the claims the tool rests on. These are the sentences th
 
 - **URL: `/business-formation-state-calculator/`.** `/where-to-form-llc/` was the alternate and was not chosen.
 - **Registered agent tiers: the legacy figures** — self $0, basic $50, standard $100, premium $200. These are **market prices, not government fees**, and the copy must label them "typical market range". Self-agent is selectable only for a state where the owner actually has an address, which the engine enforces on the home and work state columns only.
+
+## 6e. Section 12 — still open
+
+Four fetches, each with the document identified:
+
+1. `sos.mn.gov/media/1687/businessentityfees.pdf` — the Chapter 322C lines, to fill `MN.llc.foreignQualificationFee` properly. The earlier $205/$185 claim came from a filing-company survey and was rejected; the corporation lines in that same PDF are $200/$220, so the LLC guess is probably wrong in both directions.
+2. `sos.ms.gov/sites/default/files/business-services/FeeSchedule.pdf` — note this is a **different file** from the earlier Mississippi citation. Establish which is current.
+3. `ilga.gov/commission/lru/TaxHandbook2026.pdf` — the Illinois Tax Handbook for Legislators, dated 2026. Its franchise tax section would settle the exemption amount.
+4. `sdsos.gov` fee schedule — the actual foreign **corporation** figure, to replace the null.
 
 ## 7. What S2 must not do
 

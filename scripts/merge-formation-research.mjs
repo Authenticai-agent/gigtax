@@ -18,7 +18,30 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const PATH = 'src/data/overrides/state-formation-2026.json';
-const BAD_SOURCE = /legalzoom|zenbusiness|incfile|northwestregisteredagent|harborcompliance|bizfilings|swyftfilings|rocketlawyer|nolo\.com|corpnet|mycompanyworks/i;
+/**
+ * Source tiers.
+ *
+ * The original policy was binary — .gov good, everything else rejected — and it
+ * was too narrow. The ban exists because filing companies price their own
+ * product and their "state fee" bundles it. Reed Smith and PwC do not do that.
+ *
+ * So: three tiers.
+ *   primary       state government — statutes, public acts, SOS fee schedules
+ *   professional  law firms, accounting firms, tax policy bodies. Accepted,
+ *                 recorded as secondary, and REQUIRED to carry a publication
+ *                 date, because reputable and current are different axes. The
+ *                 Seyfarth piece "New Illinois Law Eliminates Franchise Tax" is
+ *                 a good source and is now wrong: PA 102-0016 reversed the
+ *                 repeal it describes.
+ *   rejected      incorporation and filing services only
+ *
+ * One further rule: a law firm is a good source for what a statute MEANS, and
+ * never a source for what a state CHARGES. Professional-tier sources are
+ * refused outright for formationFee and foreignQualificationFee.
+ */
+const REJECTED_SOURCE = /legalzoom|zenbusiness|incfile|bizee|northwestregisteredagent|newmexicoregisteredagent|eminutes|harborcompliance|secretaryofstateusa|upcounsel|bizfilings|swyftfilings|rocketlawyer|nolo\.com|corpnet|mycompanyworks|findlaw|cleertax|taxslayerpro/i;
+const PRIMARY_SOURCE = /\.gov(\/|$|\?)|\.gov\.|\bstate\.[a-z]{2}\.us|\bsdsos\.gov|\bsosnc\.gov|\bazcc\.gov|\bgeorgia\.gov|\bilga\.gov|\bilga\.org|revisor\.mn\.gov|leg\.state\.|legislature\.|sdlegislature\.gov/i;
+const FEE_FIELDS = ['formationFee', 'foreignQualificationFee'];
 
 const raw = readFileSync(0, 'utf8');
 const start = raw.indexOf('{');
@@ -41,11 +64,12 @@ for (const [code, incoming] of Object.entries(batch)) {
   const sources = Array.isArray(incoming.sources) ? incoming.sources.filter(Boolean) : [];
   const primary = sources[0] ?? null;
 
-  if (primary && BAD_SOURCE.test(primary)) {
-    console.error(`  ! ${code}: source is an incorporation-service site — rejected: ${primary}`);
+  if (primary && REJECTED_SOURCE.test(primary)) {
+    console.error(`  ! ${code}: source is an incorporation or filing service — rejected: ${primary}`);
     rejectedSource++;
     continue;
   }
+  const isPrimary = primary ? PRIMARY_SOURCE.test(primary) : false;
 
   for (const kind of ['llc', 'corp']) {
     const src = incoming[kind];
@@ -62,6 +86,11 @@ for (const [code, incoming] of Object.entries(batch)) {
       continue;
     }
 
+    // A professional source can explain a statute. It cannot price a filing.
+    if (!isPrimary && FEE_FIELDS.some((f) => src[f] != null)) {
+      console.error(`  ! ${code}.${kind}: fee fields need a primary source, got ${primary} — fees dropped`);
+      src = { ...src, formationFee: null, foreignQualificationFee: null };
+    }
     if (src.formationFee != null) row.formationFee = src.formationFee;
     if (src.foreignQualificationFee != null) row.foreignQualificationFee = src.foreignQualificationFee;
     if (src.annualReport) {
@@ -83,6 +112,7 @@ for (const [code, incoming] of Object.entries(batch)) {
       row.allSources = sources;
       row.confidence = incoming.confidence ?? 'medium';
       row.provenance = 'research';
+      row.sourceTier = isPrimary ? 'primary' : 'professional';
       if (incoming.notes) row.researchNote = incoming.notes;
       merged++;
       if (!touched.includes(code)) touched.push(code);

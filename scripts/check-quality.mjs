@@ -377,7 +377,12 @@ for (const p of pages) {
 const FORMATION_PATH = 'src/data/overrides/state-formation-2026.json';
 if (existsSync(FORMATION_PATH)) {
   const fd = JSON.parse(readFileSync(FORMATION_PATH, 'utf8'));
-  const BAD_SOURCE = /legalzoom|zenbusiness|incfile|northwestregisteredagent|harborcompliance|bizfilings|swyftfilings|rocketlawyer|nolo\.com/i;
+  // Three tiers, not two. Filing companies price their own product and are
+  // rejected; law and accounting firms are accepted as secondary but must carry
+  // a date, because reputable and current are different axes. Fee fields are
+  // primary-only: a law firm explains a statute, a state charges the fee.
+  const BAD_SOURCE = /legalzoom|zenbusiness|incfile|bizee|northwestregisteredagent|newmexicoregisteredagent|eminutes|harborcompliance|secretaryofstateusa|upcounsel|bizfilings|swyftfilings|rocketlawyer|nolo\.com|corpnet|mycompanyworks|findlaw|cleertax|taxslayerpro/i;
+  const PRIMARY = /\.gov(\/|$|\?)|\.gov\.|\bstate\.[a-z]{2}\.us|\bsdsos\.gov|\bsosnc\.gov|\bazcc\.gov|\bgeorgia\.gov|\bilga\.gov|\bilga\.org|revisor\.mn\.gov|leg\.state\.|legislature\.|sdlegislature\.gov/i;
   const codes = Object.keys(fd).filter((k) => !k.startsWith('_'));
 
   if (codes.length !== 51) {
@@ -400,7 +405,20 @@ if (existsSync(FORMATION_PATH)) {
         failures.push(`formation dataset: ${code}.${kind} is marked feeVaries with no note explaining what it scales with`);
       }
       if (row.source && BAD_SOURCE.test(row.source)) {
-        failures.push(`formation dataset: ${code}.${kind} cites an incorporation-service site, which bundles its own fees: ${row.source}`);
+        failures.push(`formation dataset: ${code}.${kind} cites an incorporation or filing service, which prices its own product: ${row.source}`);
+      }
+      // A fee is what a state charges. Only a state can be the source for one.
+      const hasFee = row.formationFee !== null || row.foreignQualificationFee !== null;
+      // A legacy lead is exempt because it is explicitly not presented as data —
+      // but it must say so on the row, and the engine renders it unquantified.
+      if (hasFee && row.legacyLead && row.confidence !== 'low') {
+        failures.push(`formation dataset: ${code}.${kind} is a legacy lead but is not marked low confidence`);
+      }
+      if (hasFee && !row.legacyLead && row.source && !PRIMARY.test(row.source)) {
+        failures.push(`formation dataset: ${code}.${kind} carries a fee sourced to a non-government page: ${row.source}`);
+      }
+      if (row.sourceTier === 'professional' && !row.sourceDate) {
+        failures.push(`formation dataset: ${code}.${kind} cites a professional source with no publication date`);
       }
     }
   }
@@ -410,12 +428,41 @@ if (existsSync(FORMATION_PATH)) {
   const recheck = codes.flatMap((c) => ['llc', 'corp']
     .filter((k) => fd[c][k].checkBeforeUse).map((k) => `${c}.${k}`));
   if (ownerRows.length) console.log(`  note  formation dataset: ${ownerRows.length} row(s) decided by the owner: ${ownerRows.join(', ')}`);
+  const leads = codes.flatMap((c) => ['llc', 'corp']
+    .filter((k) => fd[c][k].legacyLead).map((k) => `${c}.${k}`));
+  const flaggedPairs = codes.flatMap((c) => ['llc', 'corp']
+    .filter((k) => fd[c][k].recheckIdenticalForeignFee).map((k) => `${c}.${k}`));
+  if (leads.length) console.log(`  note  formation dataset: ${leads.length} unverified legacy lead(s): ${leads.join(', ')}`);
+  if (flaggedPairs.length) console.log(`  note  formation dataset: ${flaggedPairs.length / 2} jurisdiction(s) with identical llc/corp foreign fees, flagged to re-check`);
   if (recheck.length) console.log(`  note  formation dataset: ${recheck.length} row(s) flagged to re-check before use: ${recheck.join(', ')}`);
+
+  /*
+   * Acceptance check 7 — entity row, not state row.
+   * Mississippi charges a foreign corporation $500 and a foreign LLC $250. If a
+   * comparison ever shows the same foreign fee for both, the engine is reading
+   * the state row instead of the entity row. Not hypothetical: that exact bug
+   * was found live in South Dakota, where the LLC's $750 had been copied onto
+   * the corporation.
+   */
+  if (fd.MS?.llc?.foreignQualificationFee !== null && fd.MS?.corp?.foreignQualificationFee !== null
+      && fd.MS.llc.foreignQualificationFee === fd.MS.corp.foreignQualificationFee) {
+    failures.push('formation dataset: Mississippi llc and corp foreign fees are equal — they should be $250 and $500 (acceptance check 7)');
+  }
+
+  /*
+   * Acceptance check 8 — Nevada's one-time Initial List.
+   * An LLC five-year total of $1,825 instead of $1,975 means
+   * oneTimeAtRegistration is not being counted as a one-time charge.
+   */
+  const nvOneTime = fd.NV?.llc?.oneTimeAtRegistration?.amount ?? null;
+  if (nvOneTime !== 150) {
+    failures.push('formation dataset: Nevada llc oneTimeAtRegistration should be 150 — the Initial List duplicates the annual list in year one (acceptance check 8)');
+  }
 
   const nulls = codes.reduce((n, c) => n + ['llc', 'corp']
     .filter((k) => fd[c][k].formationFee === null).length, 0);
   const signed = Boolean(fd._meta?.signedOffBy);
-  console.log(`  ${signed ? 'ok  ' : 'note'}  formation dataset: ${codes.length} jurisdictions, ${nulls} of ${codes.length * 2} rows still awaiting a fee${signed ? '' : ' — NOT signed off, engine blocked'}`);
+  console.log(`  ${signed ? 'ok  ' : 'note'}  formation dataset: ${codes.length} jurisdictions, ${nulls} of ${codes.length * 2} rows still awaiting a fee${signed ? ` — signed off ${fd._meta.signedOffDate}, S2 unblocked` : ' — NOT signed off, engine blocked'}`);
 }
 
 /* ---- 4 & 5. canonical and disclaimer ------------------------------------- */
