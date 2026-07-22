@@ -13,7 +13,7 @@
       "threshold levies on income above a floor (Oregon Metro SHS, Multnomah PFA)"
     ],
     "status": "Ohio and Pennsylvania — the two most complex local-tax states — are still being researched and are absent from this file.",
-    "crossChecked": "Indiana, Kentucky and Alabama were researched twice independently. The second pass RESOLVED Alabama's open question — the occupational tax does not reach self-employment profit — and resolved Kentucky's contested school levy. It also surfaced that Indiana's 2026 STATE rate is 2.95%, not the 3.00% in the legacy dataset, which is now corrected in state-brackets-2026.json. Michigan, Missouri, Delaware, West Virginia and Oregon were also researched twice. The second pass confirmed Saginaw's rate against the city's own form and identified the widely-used Grand Rapids aggregate table as stale; corrected Delaware's head tax from the commonly quoted $10 to $15; found Weirton's 2026 increase from $2 to $5 and Fairmont's inverted resident rule; and established that Oregon's statewide transit tax stayed at 0.1% because Measure 120 failed in May 2026, contradicting many payroll guides.",
+    "crossChecked": "Indiana, Kentucky and Alabama were researched twice independently. The second pass RESOLVED Alabama's open question — the occupational tax does not reach self-employment profit — and resolved Kentucky's contested school levy. It also surfaced that Indiana's 2026 STATE rate is 2.95%, not the 3.00% in the legacy dataset, which is now corrected in state-brackets-2026.json. Michigan, Missouri, Delaware, West Virginia and Oregon were also researched twice. The second pass confirmed Saginaw's rate against the city's own form and identified the widely-used Grand Rapids aggregate table as stale; corrected Delaware's head tax from the commonly quoted $10 to $15; found Weirton's 2026 increase from $2 to $5 and Fairmont's inverted resident rule; and established that Oregon's statewide transit tax stayed at 0.1% because Measure 120 failed in May 2026, contradicting many payroll guides. Michigan was then researched a THIRD time to verify the 20 cities that had rested on the statutory default: all 20 confirmed 1%/0.5% from their own pages or forms, so the whole state is now high confidence. That pass also found two more bad sources — Portland's and Muskegon Heights' instruction PDFs both carry copy-paste boilerplate quoting Grand Rapids' 1.5/0.75 alongside their own correct 1%/0.5%. Scraping either would have produced wrong rates.",
     "fetchBlocked": "michigan.gov, kcmo.gov and wilmingtonde.gov all refuse automated fetching. Figures for those came from alternative official sources — Michigan Treasury form PDFs, the St. Louis Comptroller's comparison page, and Wilmington's own budget portal."
   },
   "NY": {
@@ -411,7 +411,7 @@
     "appliesToSelfEmploymentNetProfit": true,
     "nonresidentsPay": true,
     "generalRule": "Nonresident rate is one-half the resident rate by statute, and nonresidents are taxed only on income earned inside the city. Residents pay on all income wherever earned.",
-    "confidence": "medium",
+    "confidence": "high",
     "cities": {
       "Detroit": [
         0.024,
@@ -510,22 +510,27 @@
         0.005
       ]
     },
-    "_notes": "24 cities levy a city income tax. Statutory default is 1% resident / 0.5% nonresident (MCL 141.611), with four exceptions: Detroit 2.4/1.2, Highland Park 2.0/1.0, Grand Rapids 1.5/0.75, Saginaw 1.5/0.75. The base is compensation AND net profits of an unincorporated business (MCL 141.612(b)), so self-employment profit is taxed — residents on all of it, nonresidents on the city-earned portion. Pensions, annuities and Social Security are NOT subject. DATA-QUALITY WARNING, confirmed twice: the convenient all-cities table on grandrapidsmi.gov is STALE — it lists Saginaw at 1.0/0.5, contradicted by Saginaw's own S-1040 instructions at 1.5/0.75. Do not use that table as a primary source. Only 8 of the 24 cities were verified from their own forms; the other 16 rest on the statutory default plus that same table.",
-    "verifiedFromOwnSource": [
-      "Detroit",
-      "East Lansing",
-      "Flint",
-      "Grand Rapids",
-      "Highland Park",
-      "Lansing",
-      "Muskegon",
-      "Saginaw"
-    ],
+    "_notes": "24 cities levy a city income tax, ALL NOW VERIFIED from the city's own page or form. Statutory default is 1% resident / 0.5% nonresident (MCL 141.611), with the nonresident rate never exceeding half the resident rate. Four exceptions, each with its own population-gated statutory hook: Detroit 2.4/1.2, Highland Park 2.0/1.0, Grand Rapids 1.5/0.75, Saginaw 1.5/0.75. None of the other 20 qualifies for a higher-rate provision, so 1%/0.5% is their ceiling as well as their rate. SELF-EMPLOYMENT: taxed both ways. MCL 141.612(b) taxes a resident owner's distributive share of unincorporated business profits WHEREVER CONDUCTED; MCL 141.613(b) taxes a nonresident's only to the extent CONDUCTED IN THE CITY, apportioned by the city's business allocation formula. Pensions, annuities and Social Security are not subject. EAST LANSING SUNSETS after tax year 2030 — its tax was authorised for 12 years from January 2019 and is the only one here with an expiry, so it cannot be treated as permanent.",
+    "verifiedFromOwnSource": "all 24",
     "statutoryDefault": {
       "resident": 0.01,
       "nonresident": 0.005,
       "authority": "MCL 141.611; the nonresident rate may never exceed half the resident rate"
-    }
+    },
+    "sunsets": {
+      "East Lansing": 2030
+    },
+    "statutoryAuthority": {
+      "default": "MCL 141.611 — 1% resident / 0.5% nonresident, and the nonresident rate may never exceed half the resident rate",
+      "Detroit": "MCL 141.503(2) — population over 600,000; max 2.40/1.20, dropping to 2.20/1.10 once lighting-authority debt is retired",
+      "Highland Park": "MCL 141.503a — max 2.0, voter-approved before November 1988",
+      "Grand Rapids and Saginaw": "MCL 141.503c — max 1.5/0.75, population-gated"
+    },
+    "sourceTraps": [
+      "Portland's 'General Instructions' PDF contains a copy-paste error reading .015/.0075 — boilerplate inherited from the CF common-form template, which carries Grand Rapids' rates. Portland's own P-1040 and rate table both say 1.00/0.50.",
+      "Muskegon Heights' booklet has the same inherited boilerplate line alongside its own correct rate. The operative rate is 1%/0.5%.",
+      "The all-cities table on grandrapidsmi.gov is stale on Saginaw. Do not use any of these three as a primary source."
+    ]
   },
   "MO": {
     "shape": "1% earnings tax on wages and on net profits of businesses and self-employed persons",
