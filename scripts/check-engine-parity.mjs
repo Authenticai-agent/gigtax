@@ -15,7 +15,10 @@
  *   2. Ohio's exempt-below-$26,050 threshold, which legacy does not apply.
  *   3. Maryland, Nebraska, South Carolina and West Virginia brackets, which
  *      legacy does not have at all, so it returns $0 tax for all four.
- *   4. The QBI wage limitation. IRC 199A(b)(3)(B) phases the limitation in
+ *   4. Indiana's rate. Legacy has 3.00%, which was 2025. Indiana DOR's
+ *      Departmental Notice #1 (R46/01-26) sets 2.95% for 2026, dropping to
+ *      2.90% in 2027.
+ *   5. The QBI wage limitation. IRC 199A(b)(3)(B) phases the limitation in
  *      across the threshold range; legacy applies it as a switch at the top,
  *      so the deduction falls off a cliff. For a sole proprietor — who pays
  *      themselves no W-2 wages, making their wage limit zero — the whole
@@ -56,6 +59,7 @@ const KNOWN_STATE_FIXES = {
   SC: 'no brackets in legacy — returns $0',
   WV: 'no brackets in legacy — returns $0',
   OH: 'legacy ignores the exempt-below-$26,050 threshold',
+  IN: 'legacy carries the 2025 rate of 3.00%; Indiana is 2.95% for 2026',
 };
 
 const STATES = Object.keys(cfg.states);

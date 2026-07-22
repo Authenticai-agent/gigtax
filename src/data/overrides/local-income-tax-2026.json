@@ -1,0 +1,623 @@
+{
+  "_meta": {
+    "purpose": "Sub-state income taxes: city, county, school district and special-district levies that sit on top of state income tax. Researched July 2026 against jurisdiction and state revenue sources.",
+    "verified": "2026-07",
+    "whyItMatters": "Our audience is mostly self-employed, and the local rule for SELF-EMPLOYMENT NET PROFIT is frequently different from the wage rule. Every entry records appliesToSelfEmploymentNetProfit separately for that reason, and null there means 'not confirmed' — never 'no'.",
+    "shapes": [
+      "percentage of state taxable income (Maryland counties, Indiana counties)",
+      "percentage of gross wages or net profit (Kentucky, Michigan, Missouri, Delaware, Alabama)",
+      "percentage OF THE STATE TAX rather than of income (Yonkers resident surcharge)",
+      "own bracket schedule (New York City)",
+      "flat dollars per week worked, not a rate at all (West Virginia city service fees)",
+      "flat dollars per year (Portland Arts Tax)",
+      "threshold levies on income above a floor (Oregon Metro SHS, Multnomah PFA)"
+    ],
+    "status": "Ohio and Pennsylvania — the two most complex local-tax states — are still being researched and are absent from this file.",
+    "crossChecked": "Indiana, Kentucky and Alabama were researched twice independently. The second pass RESOLVED Alabama's open question — the occupational tax does not reach self-employment profit — and resolved Kentucky's contested school levy. It also surfaced that Indiana's 2026 STATE rate is 2.95%, not the 3.00% in the legacy dataset, which is now corrected in state-brackets-2026.json."
+  },
+  "NY": {
+    "nycResidentTax": {
+      "appliesTo": "NYC residents and part-year residents only",
+      "base": "NYC taxable income",
+      "bracketsSingle": [
+        [
+          0,
+          12000,
+          0.03078
+        ],
+        [
+          12000,
+          25000,
+          0.03762
+        ],
+        [
+          25000,
+          50000,
+          0.03819
+        ],
+        [
+          50000,
+          null,
+          0.03876
+        ]
+      ],
+      "bracketsMFJ": [
+        [
+          0,
+          21600,
+          0.03078
+        ],
+        [
+          21600,
+          45000,
+          0.03762
+        ],
+        [
+          45000,
+          90000,
+          0.03819
+        ],
+        [
+          90000,
+          null,
+          0.03876
+        ]
+      ],
+      "appliesToSelfEmploymentNetProfit": true,
+      "nonresidentsPay": false,
+      "confidence": "high",
+      "source": "tax.ny.gov IT-201-I NYC rate schedule; NYSDTF confirmed no NYC change for 2026"
+    },
+    "nycUnincorporatedBusinessTax": {
+      "rate": 0.04,
+      "level": "business entity, not personal",
+      "appliesToSelfEmploymentNetProfit": true,
+      "nonresidentsPay": true,
+      "confidence": "medium",
+      "note": "A separate 4% tax on unincorporated businesses with NYC-source income — sole proprietors and partnerships. Unlike the personal income tax it DOES reach nonresidents. Exemptions and the resident credit were not researched; do not model without further work.",
+      "source": "nyc.gov Department of Finance UBT page"
+    },
+    "yonkersResidentSurcharge": {
+      "rate": 0.1675,
+      "baseIsStateTax": true,
+      "appliesToSelfEmploymentNetProfit": true,
+      "nonresidentsPay": false,
+      "confidence": "high",
+      "note": "16.75% OF your New York STATE income tax, not of income. A rate on a tax, which no other jurisdiction in this file does.",
+      "source": "tax.ny.gov IT-201-I Yonkers worksheet"
+    },
+    "yonkersNonresidentEarningsTax": {
+      "rate": 0.005,
+      "exclusionFullYear": 3000,
+      "appliesToSelfEmploymentNetProfit": true,
+      "nonresidentsPay": true,
+      "confidence": "high",
+      "source": "tax.ny.gov Form Y-203 instructions"
+    },
+    "_notes": "NYC has no nonresident personal income tax — the commuter tax was repealed in 1999. But the 4% UBT does hit nonresident sole proprietors with NYC-source income, which is the trap for our audience."
+  },
+  "MD": {
+    "shape": "percentage of Maryland taxable income, set by COUNTY OF RESIDENCE not county of work",
+    "mandatoryStatewide": true,
+    "range": [
+      0.0225,
+      0.033
+    ],
+    "appliesToSelfEmploymentNetProfit": true,
+    "nonresidentsPay": false,
+    "specialNonresidentRate": 0.0225,
+    "defaultWhenCountyUnknown": 0.033,
+    "confidence": "high",
+    "source": "marylandcomptroller.gov 2026 state and local withholding memo, Attachment 1",
+    "rates": {
+      "Allegany": 0.032,
+      "Baltimore County": 0.032,
+      "Baltimore City": 0.032,
+      "Calvert": 0.032,
+      "Caroline": 0.032,
+      "Carroll": 0.0303,
+      "Cecil": 0.0274,
+      "Charles": 0.0303,
+      "Dorchester": 0.033,
+      "Garrett": 0.0265,
+      "Harford": 0.0306,
+      "Howard": 0.032,
+      "Kent": 0.033,
+      "Montgomery": 0.032,
+      "Prince George's": 0.032,
+      "Queen Anne's": 0.032,
+      "St. Mary's": 0.032,
+      "Somerset": 0.032,
+      "Talbot": 0.024,
+      "Washington": 0.0295,
+      "Wicomico": 0.032,
+      "Worcester": 0.0225
+    },
+    "graduated": {
+      "Anne Arundel": {
+        "single": [
+          [
+            0,
+            50000,
+            0.027
+          ],
+          [
+            50000,
+            400000,
+            0.0294
+          ],
+          [
+            400000,
+            null,
+            0.032
+          ]
+        ],
+        "mfj": [
+          [
+            0,
+            75000,
+            0.027
+          ],
+          [
+            75000,
+            480000,
+            0.0294
+          ],
+          [
+            480000,
+            null,
+            0.032
+          ]
+        ]
+      },
+      "Frederick": {
+        "single": [
+          [
+            0,
+            25000,
+            0.0225
+          ],
+          [
+            25000,
+            50000,
+            0.0275
+          ],
+          [
+            50000,
+            150000,
+            0.0296
+          ],
+          [
+            150000,
+            null,
+            0.032
+          ]
+        ],
+        "mfj": [
+          [
+            0,
+            25000,
+            0.0225
+          ],
+          [
+            25000,
+            100000,
+            0.0275
+          ],
+          [
+            100000,
+            250000,
+            0.0296
+          ],
+          [
+            250000,
+            null,
+            0.032
+          ]
+        ]
+      }
+    },
+    "_notes": "Mandatory for every Maryland resident, levied on the same base as the state tax so it automatically reaches self-employment profit, capital gains and interest. Allegany rose 3.03->3.20 and Kent 3.20->3.30 for 2026."
+  },
+  "IN": {
+    "shape": "percentage of Indiana adjusted gross income — same base as the state tax",
+    "allCountiesLevy": true,
+    "range": [
+      0.005,
+      0.03
+    ],
+    "appliesToSelfEmploymentNetProfit": true,
+    "nonresidentsPay": true,
+    "nonresidentRule": "County is fixed as of 1 January. An out-of-state resident on 1 January whose principal place of work or business is in an Indiana county pays that county's FULL rate — there is no longer a reduced nonresident rate.",
+    "confidence": "high",
+    "source": "in.gov/dor Departmental Notice #1, effective 1 January 2026 (R46/01-26)",
+    "rates": {
+      "Adams": 0.016,
+      "Allen": 0.0159,
+      "Bartholomew": 0.0175,
+      "Benton": 0.0179,
+      "Blackford": 0.025,
+      "Boone": 0.017,
+      "Brown": 0.025234,
+      "Carroll": 0.024733,
+      "Cass": 0.0295,
+      "Clark": 0.02,
+      "Clay": 0.0235,
+      "Clinton": 0.0265,
+      "Crawford": 0.0165,
+      "Daviess": 0.015,
+      "Dearborn": 0.014,
+      "Decatur": 0.0245,
+      "DeKalb": 0.0213,
+      "Delaware": 0.015,
+      "Dubois": 0.012,
+      "Elkhart": 0.02,
+      "Fayette": 0.0282,
+      "Floyd": 0.0189,
+      "Fountain": 0.021,
+      "Franklin": 0.017,
+      "Fulton": 0.0288,
+      "Gibson": 0.013,
+      "Grant": 0.0275,
+      "Greene": 0.0235,
+      "Hamilton": 0.011,
+      "Hancock": 0.0194,
+      "Harrison": 0.01,
+      "Hendricks": 0.017,
+      "Henry": 0.0202,
+      "Howard": 0.0235,
+      "Huntington": 0.0195,
+      "Jackson": 0.021,
+      "Jasper": 0.02864,
+      "Jay": 0.025,
+      "Jefferson": 0.0103,
+      "Jennings": 0.025,
+      "Johnson": 0.014,
+      "Knox": 0.017,
+      "Kosciusko": 0.01,
+      "LaGrange": 0.0165,
+      "Lake": 0.015,
+      "LaPorte": 0.0145,
+      "Lawrence": 0.0175,
+      "Madison": 0.0225,
+      "Marion": 0.0202,
+      "Marshall": 0.0125,
+      "Martin": 0.025,
+      "Miami": 0.0254,
+      "Monroe": 0.0214,
+      "Montgomery": 0.0265,
+      "Morgan": 0.0272,
+      "Newton": 0.01,
+      "Noble": 0.0175,
+      "Ohio": 0.02,
+      "Orange": 0.0175,
+      "Owen": 0.025,
+      "Parke": 0.0265,
+      "Perry": 0.014,
+      "Pike": 0.012,
+      "Porter": 0.005,
+      "Posey": 0.0145,
+      "Pulaski": 0.0285,
+      "Putnam": 0.023,
+      "Randolph": 0.03,
+      "Ripley": 0.0238,
+      "Rush": 0.0215,
+      "St. Joseph": 0.0175,
+      "Scott": 0.0216,
+      "Shelby": 0.017,
+      "Spencer": 0.008,
+      "Starke": 0.0171,
+      "Steuben": 0.0199,
+      "Sullivan": 0.017,
+      "Switzerland": 0.0145,
+      "Tippecanoe": 0.0128,
+      "Tipton": 0.026,
+      "Union": 0.0275,
+      "Vanderburgh": 0.0125,
+      "Vermillion": 0.015,
+      "Vigo": 0.02,
+      "Wabash": 0.029,
+      "Warren": 0.0212,
+      "Warrick": 0.01,
+      "Washington": 0.02,
+      "Wayne": 0.0125,
+      "Wells": 0.021,
+      "White": 0.0232,
+      "Whitley": 0.016829
+    },
+    "_notes": "All 92 counties levy it, on the same base as the state tax, so it reaches self-employment profit in full. Porter is the cheapest at 0.5% and Randolph the dearest at 3.0% — a six-fold spread between neighbouring counties. Six counties changed rates effective 1 January 2026: Carroll, Grant, Greene, Howard, Shelby, Union. The odd non-round values (Brown 0.025234, Carroll 0.024733, Jasper 0.02864, Whitley 0.016829) are exact as published and must not be rounded. Re-pull dn01.pdf each January. Confirmed twice, independently, from the same DOR notice.",
+    "rateChanges2026": [
+      "Carroll",
+      "Grant",
+      "Greene",
+      "Howard",
+      "Shelby",
+      "Union"
+    ]
+  },
+  "KY": {
+    "shape": "occupational licence fee on gross wages AND net profits, levied by cities, counties and some school districts",
+    "appliesToSelfEmploymentNetProfit": true,
+    "nonresidentsPay": true,
+    "typicalRange": [
+      0.005,
+      0.025
+    ],
+    "confidence": "medium",
+    "jurisdictions": {
+      "Louisville / Jefferson County": {
+        "resident": 0.022,
+        "nonresident": 0.0145,
+        "netProfit": 0.022,
+        "components": {
+          "metro": 0.0125,
+          "transit": 0.002,
+          "schoolBoard": 0.0075
+        },
+        "confidence": "medium",
+        "note": "The 0.75% school-board component does not apply to nonresident individuals, hence the lower nonresident rate. Confirmed from TY2024/25 official form instructions; louisvilleky.gov blocks automated fetch so no 2026-specific confirmation."
+      },
+      "Lexington-Fayette": {
+        "rate": 0.0225,
+        "annualMinimumLicenceFee": 100,
+        "confidence": "high",
+        "source": "lexingtonky.gov occupational licence fee rates",
+        "schoolDistrictOLT": 0.005,
+        "combinedRate": 0.0275
+      }
+    },
+    "unconfirmed": {
+      "Fayette County Public Schools": {
+        "priorRate": 0.005,
+        "proposedRate": 0.0075,
+        "proposedEffective": "2026-01-01",
+        "rate2026": 0.005,
+        "note": "RESOLVED by a second independent pass: the increase to 0.75% was declared unlawful and VOID by Kentucky Attorney General opinion OAG 25-07, for failure to give the required week of public notice. The rate in force remains 0.5%, stacking on LFUCG's 2.25% for a combined 2.75%. Confidence medium — FCPS's own page carries no year stamp, and SB 76 was filed in January 2026 to restrict such levies further."
+      }
+    },
+    "_notes": "These reach net profits of sole proprietors and contractors explicitly, with no personal exemptions or deductions. Both a city and a county may tax the same income, though counties over 30,000 population must credit city tax paid.",
+    "stackingRule": "KRS 68.197 requires a credit against the COUNTY tax for amounts paid to a city within that county, where the county has 30,000+ population. Stacking a city rate and a county rate without applying the credit overstates liability — this is the single easiest way to get Kentucky wrong.",
+    "jurisdictionCounts": {
+      "citiesTaxingGrossEarnings": 170,
+      "countiesTaxingGrossEarnings": 87,
+      "citiesTaxingNetProfits": 89,
+      "countiesTaxingNetProfits": 70
+    }
+  },
+  "AL": {
+    "shape": "municipal occupational tax on gross wages for work performed in the city",
+    "appliesToSelfEmploymentNetProfit": false,
+    "nonresidentsPay": true,
+    "confidence": "medium",
+    "jurisdictions": {
+      "Birmingham": {
+        "rate": 0.01,
+        "confidence": "medium"
+      },
+      "Auburn": {
+        "rate": 0.01,
+        "confidence": "high"
+      },
+      "Opelika": {
+        "rate": 0.015,
+        "confidence": "high"
+      }
+    },
+    "_notes": "RESOLVED by a second independent pass, and the answer is no. Alabama's occupational tax is a WAGE tax: Birmingham's ordinance keys it to compensation where 'the relationship between the individual performing the services and the person for whom such services are rendered is the legal relationship of employer and employee'. Self-employed people are instead reached by the separate municipal BUSINESS LICENSE tax on gross receipts, which is a different levy with different rates by classification. Do NOT apply Alabama occupational tax to Schedule C profit. Auburn and Opelika confirmed from their own city sites; the remaining ~22 cities come from an undated Alabama League of Municipalities survey and are low confidence. Act 2020-14 freezes NEW occupational taxes without legislative approval, so the roster is stable, but existing cities can still change their rate."
+  },
+  "MI": {
+    "shape": "city income tax under the Uniform City Income Tax Ordinance",
+    "appliesToSelfEmploymentNetProfit": true,
+    "nonresidentsPay": true,
+    "generalRule": "Nonresident rate is one-half the resident rate by statute, and nonresidents are taxed only on income earned inside the city. Residents pay on all income wherever earned.",
+    "confidence": "medium",
+    "cities": {
+      "Detroit": [
+        0.024,
+        0.012
+      ],
+      "Highland Park": [
+        0.02,
+        0.01
+      ],
+      "Grand Rapids": [
+        0.015,
+        0.0075
+      ],
+      "Saginaw": [
+        0.015,
+        0.0075
+      ],
+      "Albion": [
+        0.01,
+        0.005
+      ],
+      "Battle Creek": [
+        0.01,
+        0.005
+      ],
+      "Benton Harbor": [
+        0.01,
+        0.005
+      ],
+      "Big Rapids": [
+        0.01,
+        0.005
+      ],
+      "East Lansing": [
+        0.01,
+        0.005
+      ],
+      "Flint": [
+        0.01,
+        0.005
+      ],
+      "Grayling": [
+        0.01,
+        0.005
+      ],
+      "Hamtramck": [
+        0.01,
+        0.005
+      ],
+      "Hudson": [
+        0.01,
+        0.005
+      ],
+      "Ionia": [
+        0.01,
+        0.005
+      ],
+      "Jackson": [
+        0.01,
+        0.005
+      ],
+      "Lansing": [
+        0.01,
+        0.005
+      ],
+      "Lapeer": [
+        0.01,
+        0.005
+      ],
+      "Muskegon": [
+        0.01,
+        0.005
+      ],
+      "Muskegon Heights": [
+        0.01,
+        0.005
+      ],
+      "Pontiac": [
+        0.01,
+        0.005
+      ],
+      "Port Huron": [
+        0.01,
+        0.005
+      ],
+      "Portland": [
+        0.01,
+        0.005
+      ],
+      "Springfield": [
+        0.01,
+        0.005
+      ],
+      "Walker": [
+        0.01,
+        0.005
+      ]
+    },
+    "_notes": "The base is compensation AND net profits from a business, so self-employment profit is taxed — residents on all of it, nonresidents on the city-earned portion. RATE CONFLICT: Grand Rapids' comparison table lists Saginaw at 1.00/0.50 but Saginaw's own withholding guide says 1.50/0.75; Saginaw's own figure is used here. Rates were not individually re-confirmed for 2026 against all 24 cities."
+  },
+  "MO": {
+    "shape": "1% earnings tax on wages and on net profits of businesses and self-employed persons",
+    "appliesToSelfEmploymentNetProfit": true,
+    "nonresidentsPay": true,
+    "confidence": "high",
+    "jurisdictions": {
+      "Kansas City": {
+        "rate": 0.01,
+        "renewedThrough": 2031
+      },
+      "St. Louis": {
+        "rate": 0.01,
+        "renewedThrough": 2031,
+        "employerPayrollExpenseTax": 0.005
+      }
+    },
+    "_notes": "Both were renewed by voters on 7 April 2026 for a further five years, so both are confirmed in force. Residents pay on all earnings wherever performed; nonresidents pay on work actually performed inside the city and can claim a refund for out-of-city days. Both explicitly reach net profits, so a sole proprietor pays 1% on city-attributable profit. St. Louis's 0.5% payroll expense tax is employer-side and is not part of an individual's calculation."
+  },
+  "DE": {
+    "shape": "flat percentage on gross wages, plus a parallel net profits tax at the same rate",
+    "appliesToSelfEmploymentNetProfit": true,
+    "nonresidentsPay": true,
+    "confidence": "medium",
+    "jurisdictions": {
+      "Wilmington": {
+        "earnedIncomeTax": 0.0125,
+        "netProfitsTax": 0.0125
+      }
+    },
+    "_notes": "Wilmington is the only Delaware municipality with a local income tax. The self-employed are covered by the Net Profits Tax rather than the wage tax, at the same 1.25%. Both residents and nonresidents pay — the trigger is living OR working in the city. The wage tax is on gross wages with no personal exemptions. Most recent official rate sheet retrieved was FY2025; no 2026 change reported."
+  },
+  "WV": {
+    "shape": "flat dollars per week worked — NOT a percentage, and must never be modelled as one",
+    "isPercentage": false,
+    "appliesToSelfEmploymentNetProfit": "n/a as a rate; self-employed people working in the city are liable for the flat weekly fee, confirmed for Huntington",
+    "nonresidentsPay": true,
+    "jurisdictions": {
+      "Huntington": {
+        "perWeek": 5.0,
+        "confidence": "high",
+        "appliesToSelfEmployed": true
+      },
+      "Charleston": {
+        "perWeek": 3.0,
+        "confidence": "low"
+      },
+      "Morgantown": {
+        "perWeek": 3.0,
+        "confidence": "low",
+        "note": "Unchanged since 1 January 2016; the city was considering a CPI-based increase as of April 2026 and whether it took effect is unconfirmed."
+      },
+      "Parkersburg": {
+        "perWeek": 2.5,
+        "confidence": "low"
+      }
+    },
+    "_notes": "A different shape from every other entry: a fixed dollar amount per week worked, regardless of hours or earnings. Anyone working at a physical location in the city pays, residents and commuters alike. Annual cost is roughly the amount times weeks worked. Not an exhaustive list of WV cities."
+  },
+  "OR": {
+    "shape": "threshold levies on Oregon taxable income above a floor, plus one flat annual charge",
+    "appliesToSelfEmploymentNetProfit": true,
+    "nonresidentsPay": true,
+    "confidence": "medium",
+    "jurisdictions": {
+      "Metro Supportive Housing Services": {
+        "rate": 0.01,
+        "thresholdSingle": 128000,
+        "thresholdJoint": 205000,
+        "confidence": "high",
+        "note": "Thresholds are inflation-indexed from tax year 2026, up from the fixed 125,000/200,000 used 2021-2025. The rate applies only to income above the threshold, not from the first dollar."
+      },
+      "Multnomah County Preschool for All": {
+        "bracketsSingle": [
+          [
+            125000,
+            250000,
+            0.015
+          ],
+          [
+            250000,
+            null,
+            0.03
+          ]
+        ],
+        "bracketsJoint": [
+          [
+            200000,
+            400000,
+            0.015
+          ],
+          [
+            400000,
+            null,
+            0.03
+          ]
+        ],
+        "confidence": "medium",
+        "note": "The scheduled 0.8 percentage-point increase applies from 2027, NOT 2026. Whether the thresholds are inflation-indexed for 2026 could not be definitively confirmed."
+      },
+      "Portland Arts Tax": {
+        "flatAmount": 35,
+        "latePenalty": 15,
+        "nonresidentsPay": false,
+        "confidence": "medium",
+        "note": "A flat annual charge, not a rate, and not prorated for part-year residents. Payable by Portland residents 18 or over with $1,000 or more of income, above the federal poverty level."
+      }
+    },
+    "_notes": "Both Metro SHS and Multnomah PFA use Oregon taxable income, so a sole proprietor's Schedule C profit counts toward the thresholds and is taxed. Both reach NONRESIDENTS on district-sourced income — the well-known trap for Washington-state commuters who owe Metro SHS on Portland-source income despite living in a no-income-tax state. The statewide transit tax and TriMet/Lane payroll taxes are employer-side or statewide and are excluded."
+  }
+}
