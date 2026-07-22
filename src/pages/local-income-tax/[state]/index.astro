@@ -1,0 +1,168 @@
+---
+/**
+ * Local income tax in one state.
+ *
+ * Only the twelve states that levy one get a page. There is no "no local tax in
+ * Montana" page — that is a sentence, not a page, and it belongs on the hub.
+ *
+ * Every figure comes from overrides/local-income-tax-2026.json. The page shows
+ * what can be computed from income and names what cannot, because the shapes
+ * that cannot be computed (dollars per week worked, which school district you
+ * live in) are exactly the ones people do not know they owe.
+ */
+import Base from '../../../layouts/Base.astro';
+import { states } from '../../../data/states';
+import { stateSlug } from '../../../lib/slug';
+import { formatMoney } from '../../../lib/tax-engine';
+import { localTaxStates, localTaxFor, levyExamples, localTraps, ohioCreditTraps, reachesSelfEmployment } from '../../../lib/local-tax';
+
+const EXAMPLE = 80000;
+
+export function getStaticPaths() {
+  return localTaxStates().map((code) => ({
+    params: { state: stateSlug(states[code].name) },
+    props: { code },
+  }));
+}
+
+const { code } = Astro.props as { code: string };
+const state = states[code];
+const d = localTaxFor(code)!;
+const levies = levyExamples(code, EXAMPLE);
+const computable = levies.filter((l) => l.amount !== null);
+const needsInput = levies.filter((l) => l.amount === null);
+const traps = localTraps(code);
+const dearest = computable.length ? computable.reduce((a, b) => (b.amount! > a.amount! ? b : a)) : null;
+const seRule = reachesSelfEmployment(code);
+const ohTraps = code === 'OH' ? ohioCreditTraps() : [];
+
+const title = `Local income tax in ${state.name} (2026) — city, county and school district`;
+const description = `What ${state.name}'s cities, counties and school districts charge on income in 2026, on top of state tax, and whether it reaches self-employment profit.`;
+---
+
+<Base title={title} description={description}>
+  <div class="breadcrumbs">
+    <a href="/local-income-tax/">Local income tax</a> / {state.name}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year · {state.name}</p>
+    <h1>Local income tax in {state.name}</h1>
+    <p class="tagline" data-source={`overrides/local-income-tax-2026.json → ${code}`}>
+      {dearest
+        ? `${dearest.jurisdiction} is the dearest of the ${state.name} levies we hold — ${formatMoney(dearest.amount!)} on ${formatMoney(EXAMPLE)}, on top of federal and state tax.`
+        : `${state.name}'s local charges are flat dollar amounts rather than rates, so what you earn does not change them.`}
+    </p>
+  </section>
+
+  {d.shape && (
+    <p data-source={`overrides/local-income-tax-2026.json → ${code}.shape`}>
+      The shape of it: {d.shape}.
+    </p>
+  )}
+
+  <h2>What the {state.name} levies cost on {formatMoney(EXAMPLE)}</h2>
+  {computable.length > 0 ? (
+    <table class="data-table">
+      <thead>
+        <tr><th>Jurisdiction</th><th>How it is worked out</th><th>On {formatMoney(EXAMPLE)}</th></tr>
+      </thead>
+      <tbody>
+        {computable.map((l) => (
+          <tr>
+            <td>{l.jurisdiction}{l.residentOnly ? ' (residents)' : ''}</td>
+            <td>{l.basis}</td>
+            <td>{formatMoney(l.amount!)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ) : (
+    <p>Nothing here scales with income — see below.</p>
+  )}
+
+  {needsInput.length > 0 && (
+    <div class="callout">
+      <strong>Owed, but not computable from income</strong>
+      {needsInput.length === 1 ? 'This charge is' : 'These charges are'} real and {needsInput.length === 1 ? 'is' : 'are'} genuinely
+      owed. {needsInput.length === 1 ? 'It' : 'They'} cannot be worked out from what you earn, so no
+      calculator that only knows your income can show {needsInput.length === 1 ? 'it' : 'them'}:
+      <ul>
+        {needsInput.map((l) => (
+          <li><strong>{l.jurisdiction}</strong> — {l.basis}.</li>
+        ))}
+      </ul>
+      {needsInput.length === 1
+        ? `Working it out needs ${needsInput[0].needs}.`
+        : `Working these out needs ${needsInput[0].needs}.`}
+    </div>
+  )}
+
+  <h2>Does it reach self-employment profit?</h2>
+  <p data-source={`overrides/local-income-tax-2026.json → ${code}.appliesToSelfEmploymentNetProfit`}>
+    {seRule === true
+      ? `Yes. In ${state.name} the local tax reaches net profit from self-employment, not only wages. No employer withholds it, so it is on you to pay it — usually alongside your quarterly estimates, and it is routinely missed for exactly that reason.`
+      : seRule === false
+        ? `No. ${state.name}'s local charge applies to wages only, so a sole proprietor's Schedule C profit escapes it. That is unusual and worth confirming with your own jurisdiction before relying on it.`
+        : `Not confirmed. We could not establish from ${state.name} sources whether the local charge reaches self-employment net profit, and we will not guess. Treat it as probably owed until your jurisdiction tells you otherwise — "unconfirmed" is not "no".`}
+  </p>
+
+  {ohTraps.length > 0 && (
+    <>
+      <h2>The credit for tax paid to your work city is not always full</h2>
+      <p>
+        Live in one Ohio city, work in another, and your home city credits you for what the work city
+        already took. Most people assume that credit covers it. In {ohTraps.length} of the twenty largest
+        cities the credit is capped below the city's own rate, so the resident still owes the difference at
+        home:
+      </p>
+      <table class="data-table">
+        <thead>
+          <tr><th>City</th><th>Rate</th><th>Credit capped at</th><th>Still owed on {formatMoney(EXAMPLE)}</th></tr>
+        </thead>
+        <tbody>
+          {ohTraps.map((t) => (
+            <tr>
+              <td>{t.city}</td>
+              <td>{(t.rate * 100).toFixed(2).replace(/\.?0+$/, '')}%</td>
+              <td>{(t.cap * 100).toFixed(2).replace(/\.?0+$/, '')}%</td>
+              <td>{formatMoney(EXAMPLE * t.owed)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )}
+
+  {traps.length > 0 && (
+    <>
+      <h2>What catches people out in {state.name}</h2>
+      {traps.map((t) => (
+        <p data-source={`overrides/local-income-tax-2026.json → ${code}`}>{t}</p>
+      ))}
+    </>
+  )}
+
+  {d.confidence && (
+    <p>
+      This entry is recorded at {typeof d.confidence === 'string' ? d.confidence : 'mixed'} confidence
+      against {state.name} jurisdiction and revenue-department sources, checked in July 2026. Local rates
+      move by ordinance and referendum far more often than state rates do — check your own jurisdiction
+      before relying on a figure.
+    </p>
+  )}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/local-income-tax/">Local income tax in every state</a></li>
+    <li><a href={`/1099-tax-calculator/${stateSlug(state.name)}/`}>1099 taxes in {state.name}</a></li>
+    <li><a href={`/paycheck-calculator/${stateSlug(state.name)}/`}>Paycheck in {state.name}</a></li>
+    <li><a href={`/quarterly-tax-calculator/${stateSlug(state.name)}/`}>Quarterly payments in {state.name}</a></li>
+    <li><a href={`/s-corp-tax-calculator/${stateSlug(state.name)}/`}>S-corp election in {state.name}</a></li>
+  </ul>
+
+  <p class="disclaimer">
+    General information about how these taxes work, not tax advice. Local rates change by ordinance and
+    referendum — confirm with your jurisdiction or a tax professional before acting on anything here.
+  </p>
+</Base>
