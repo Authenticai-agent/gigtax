@@ -332,6 +332,53 @@ main ol li { margin-bottom: .4rem; line-height: 1.68; }
   .income-line > label, .field-row > label { flex: 1 1 100%; }
 }
 
+/* ---------------------------------------------------------------------------
+ * Formation comparison — table on desktop, cards on mobile.
+ *
+ * Nine columns will not fit a phone, and squeezing them produces a table nobody
+ * reads. So the same data renders twice and CSS picks one: the table scrolls
+ * inside its own container on desktop, the cards replace it below 900px. Both
+ * are in the HTML, so neither depends on JavaScript to become readable.
+ *
+ * The scroll container is min-height'd to stop the results box collapsing and
+ * re-expanding when a comparison is calculated — that shift is the CLS the
+ * spec forbids.
+ * ------------------------------------------------------------------------- */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: .5rem 0 1rem;
+}
+.comparison-table { min-width: 46rem; font-size: 12.5px; }
+.comparison-table th { white-space: nowrap; }
+.comparison-table td { white-space: nowrap; }
+.comparison-table td:first-child { white-space: normal; min-width: 9rem; }
+.comparison-table .pill { margin-left: .4rem; }
+
+.comparison-cards { display: none; }
+.comparison-card {
+  border: 1px solid rgba(255, 255, 255, .18); border-radius: var(--radius);
+  padding: .9rem 1rem; margin-bottom: .8rem;
+}
+.comparison-card.is-operating { border-color: rgba(255, 255, 255, .5); }
+.comparison-card h4 {
+  font-family: var(--disp); font-size: .95rem; margin: 0 0 .3rem; color: var(--paper);
+}
+.card-total { font-family: var(--mono); font-size: 1.15rem; margin: 0 0 .6rem; }
+.card-total span { font-size: .72rem; opacity: .7; }
+.comparison-card dl {
+  display: grid; grid-template-columns: 1fr auto; gap: .15rem .8rem;
+  font-family: var(--mono); font-size: 12px; margin: 0;
+}
+.comparison-card dt { opacity: .75; }
+.comparison-card dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.card-note { font-size: 12px; line-height: 1.5; margin: .6rem 0 0; opacity: .85; }
+
+@media (max-width: 900px) {
+  .table-scroll { display: none; }
+  .comparison-cards { display: block; }
+}
+
 @media (max-width: 720px) {
   main { padding: 1.25rem 1rem 4rem; }
   .hero { padding: 1.75rem 0 1.25rem; }

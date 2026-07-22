@@ -174,5 +174,54 @@ const professionalsTs =
   `export default professionals;\n`;
 writeFileSync(join(outDir, 'professionals.ts'), professionalsTs);
 
-console.log('Wrote src/data/{federal,states,platforms,professionals}.ts');
+// ---- formation-fees.ts : the UI-facing slice of the formation dataset ----
+/**
+ * The formation overrides file carries its whole audit trail — source URLs,
+ * research notes, owner decisions, citation problems, confidence levels. That
+ * apparatus is the point of the file and it is half its bytes, and the browser
+ * needs none of it: the island shows figures and the handful of notes that
+ * explain a figure.
+ *
+ * So the browser gets a projection. The full file stays the source of truth for
+ * the audit and the quality gate; this is what ships.
+ */
+const formationPath = join(root, 'src/data/overrides/state-formation-2026.json');
+const formationFull = JSON.parse(readFileSync(formationPath, 'utf8'));
+const KEEP_ROW = new Set([
+  'formationFee', 'foreignQualificationFee', 'annualReport', 'annualTax',
+  'oneTimeAtRegistration', 'feeVaries', 'feeVariesNote', 'legacyLead',
+]);
+const formationSlim = {};
+for (const [code, entry] of Object.entries(formationFull)) {
+  if (code.startsWith('_')) continue;
+  const out = {
+    grossReceiptsTax: entry.grossReceiptsTax
+      ? { applies: entry.grossReceiptsTax.applies, rate: entry.grossReceiptsTax.rate,
+          threshold: entry.grossReceiptsTax.threshold, base: entry.grossReceiptsTax.base,
+          note: entry.grossReceiptsTax.note }
+      : null,
+    franchiseTax: entry.franchiseTax
+      ? { structured: entry.franchiseTax.structured, note: entry.franchiseTax.note }
+      : null,
+  };
+  for (const kind of ['llc', 'corp']) {
+    const row = entry[kind] ?? {};
+    const slim = {};
+    for (const [k, v] of Object.entries(row)) if (KEEP_ROW.has(k)) slim[k] = v;
+    // A boolean, not the paragraph explaining it — the engine only needs the flag.
+    if (row.recheckIdenticalForeignFee) slim.recheckIdenticalForeignFee = true;
+    out[kind] = slim;
+  }
+  formationSlim[code] = out;
+}
+const formationTs =
+  banner('UI-facing projection of overrides/state-formation-2026.json. Provenance — sources, research notes, owner decisions, confidence — is deliberately stripped: it is the point of the source file and dead weight in a browser.') +
+  `export const formationFees = ${j(formationSlim)};\n\n` +
+  `export default formationFees;\n`;
+writeFileSync(join(outDir, 'formation-fees.ts'), formationTs);
+const fullKb = (JSON.stringify(formationFull).length / 1024).toFixed(1);
+const slimKb = (JSON.stringify(formationSlim).length / 1024).toFixed(1);
+console.log(`  formation fees: ${fullKb} KB source -> ${slimKb} KB shipped`);
+
+console.log('Wrote src/data/{federal,states,platforms,professionals,formation-fees}.ts');
 console.log(`  states: ${Object.keys(cfg.states).length}, platforms: ${summaries.length}, professions: ${Object.keys(allProfessions).length}, verified: ${VERIFIED}`);

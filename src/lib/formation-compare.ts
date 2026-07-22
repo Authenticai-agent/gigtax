@@ -32,7 +32,9 @@
  * that silently omits a real cost is worse than one that admits it does not
  * know, because it looks complete.
  */
-import formationData from '../data/overrides/state-formation-2026.json';
+// The UI-facing projection, not the full overrides file. The audit trail in
+// that file is half its bytes and no browser needs it — see gen-data.mjs.
+import formationData from '../data/formation-fees';
 import { states } from '../data/states';
 import {
   calcFederalTax, calcSETax, calcFICA, calcQBI, calcStateTax,

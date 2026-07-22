@@ -1,0 +1,189 @@
+---
+/**
+ * Where should I form my business? — hub page.
+ *
+ * The worked example below is computed at BUILD TIME by the same function the
+ * island calls, so the prose and the calculator cannot drift apart. Every
+ * dollar figure on this page comes from that call or from the formation
+ * dataset; none is typed into the copy.
+ *
+ * Copy marked data-review="legal" is legal-adjacent and wants a human read
+ * before this page is indexed. Two things are deliberately NOT asserted
+ * anywhere here, because the research came back empty on both: the legitimate
+ * non-tax reasons for Delaware incorporation, and whether Wyoming or Nevada
+ * anonymity survives the Corporate Transparency Act.
+ */
+import Base from '../../layouts/Base.astro';
+import FormationComparisonCalculator from '../../components/calculators/FormationComparisonCalculator.tsx';
+import { compareFormationStates, rankByFiveYear, AGENT_TIERS } from '../../lib/formation-compare';
+import { formatMoney } from '../../lib/tax-engine';
+import { states } from '../../data/states';
+
+// The worked example from the specification, computed rather than written.
+const example = compareFormationStates({
+  homeState: 'OH', workState: 'OH', entity: 'llc',
+  annualRevenue: 150_000, annualProfit: 110_000,
+  ownerSalary: 0, ownerDistributions: 110_000,
+  numberOfOwners: 1, numberOfEmployees: 0,
+  agentTier: 'standard', filingStatus: 'single',
+});
+const exRanked = rankByFiveYear(example);
+const oh = example.columns.find((c) => c.state === 'OH')!;
+const wy = example.columns.find((c) => c.state === 'WY')!;
+const de = example.columns.find((c) => c.state === 'DE')!;
+const wyExtra = wy.fiveYearTotal - oh.fiveYearTotal;
+---
+
+<Base
+  title="Where should I form my business? State comparison calculator (2026)"
+  description="Compare what it costs to form and run an LLC or corporation in every state for 2026 — including the foreign registration you still owe where you actually operate."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Where should I form my business?</h1>
+    <p class="tagline">Forming out of state usually adds cost. This shows you how much.</p>
+  </section>
+
+  <div class="callout" data-review="legal">
+    <strong>Before you read the numbers</strong>
+    <p>
+      Forming in Wyoming, Delaware or Nevada does not remove tax or registration obligations in the state
+      where your business actually operates. An out-of-state entity doing business in its owner's state
+      must usually register there as a foreign entity and pay that state's taxes anyway.
+    </p>
+    <p>
+      That is not a caveat on the calculation below. It <em>is</em> the calculation: every out-of-state
+      column keeps your operating state's obligations and adds its own on top.
+    </p>
+  </div>
+
+  <p>
+    The advice to form in Wyoming or Delaware is everywhere, and for a business that physically operates
+    somewhere else it is usually wrong on cost. You do not replace your home state's requirements by
+    filing elsewhere — you acquire a second set. Two annual reports, two registered agents, two states
+    that can dissolve you for missing a deadline.
+  </p>
+
+  <h2>The worked example</h2>
+  <p>
+    An Ohio consultant running an LLC on {formatMoney(150000)} of revenue and {formatMoney(110000)} of
+    profit, comparing Ohio against the states people are usually told to use:
+  </p>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Form in</th><th>Formation</th><th>Foreign registration in Ohio</th><th>Annual</th><th>Five-year total</th></tr>
+    </thead>
+    <tbody>
+      {exRanked.slice(0, 5).map((c) => (
+        <tr class={c.isOperatingState ? 'total' : undefined}>
+          <td>{c.stateName}{c.isOperatingState ? ' — where the work happens' : ''}</td>
+          <td>{c.formationFee.amount === null ? '—' : formatMoney(c.formationFee.amount)}</td>
+          <td>{c.foreignRegistration.oneTime === null ? '—' : formatMoney(c.foreignRegistration.oneTime)}</td>
+          <td>{formatMoney(c.annualTotal)}</td>
+          <td>{formatMoney(c.fiveYearTotal)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Wyoming costs {formatMoney(wyExtra)} more than Ohio over five years</strong>, not less. Delaware
+    costs {formatMoney(de.fiveYearTotal - oh.fiveYearTotal)} more. The Wyoming filing fee really is cheaper
+    than Ohio's — and it does not matter, because the Ohio obligations do not go away.
+  </p>
+
+  <div class="callout" data-review="legal">
+    <strong>Your income tax does not move either</strong>
+    <p>
+      Pass-through income is taxed where the owner lives and where the income is earned — not where the
+      LLC is filed. In this example the federal bill is {formatMoney(example.federal.tax)} and the Ohio
+      income tax is {formatMoney(oh.stateIncomeTax)}, and both are identical in every column above.
+    </p>
+    <p>
+      This is what kills the "move my LLC to Florida" idea for a California resident. The LLC can be
+      filed anywhere; the owner still lives in California, and California still taxes them.
+    </p>
+  </div>
+
+  <p class="section-label">Run it on your own numbers</p>
+  <FormationComparisonCalculator client:load />
+
+  <h2>What an LLC actually is, for tax</h2>
+  <p data-review="legal">
+    An LLC is created under state law. Its federal tax treatment depends on the entity's tax
+    classification — disregarded, partnership, S corporation or C corporation — and not on the state it
+    was formed in. Changing the state of formation does not change federal tax at all. That is why the
+    federal figure above sits outside the comparison table rather than inside it.
+  </p>
+
+  <h2>What this does not include</h2>
+  <p>
+    Everything below is real and none of it is in the totals. A calculator that quietly omits costs is
+    worse than one that names them:
+  </p>
+  <ul>
+    <li><strong>Sales tax and economic nexus.</strong> Selling into a state can create obligations there. This site has no sales tax dataset and does not compute any part of it.</li>
+    <li><strong>Property tax.</strong> Not modeled anywhere on this site.</li>
+    <li><strong>Local business licenses</strong> — city and county registrations, which vary enormously and are not held in any dataset here.</li>
+    <li><strong>Attorney and formation-service fees.</strong> Only the state's own charges are counted.</li>
+    <li><strong>Federal beneficial ownership reporting.</strong> No figure is included for it.</li>
+    <li><strong>Fee changes.</strong> The five-year projection holds today's fees flat. It applies no inflation and predicts no increases, though states do raise them — Louisiana's rise in October 2026 is already known.</li>
+    <li><strong>Registered agent pricing</strong> is a typical market range ({formatMoney(AGENT_TIERS.basic.cost)} to {formatMoney(AGENT_TIERS.premium.cost)} a year), not an official fee.</li>
+    <li><strong>Costs marked "unquantified"</strong> in the results are known to exist with no confirmed figure. They are excluded from totals and listed rather than guessed at.</li>
+  </ul>
+
+  <h2>Questions</h2>
+
+  <h3>Is it ever right to form outside the state I work in?</h3>
+  <p data-review="legal">
+    Sometimes — but the reasons are rarely about cost, and this calculator only measures cost. If you are
+    raising outside investment, your investors may require a particular structure and state; that is a
+    conversation with them and with a lawyer, not a number on this page.
+  </p>
+
+  <h3>What happens if I just do not register in my home state?</h3>
+  <p data-review="legal">
+    States attach real consequences to it. In California and Texas, for example, an unregistered
+    out-of-state entity cannot bring or maintain a lawsuit in that state's courts until it registers —
+    while remaining perfectly suable itself. California also assesses a penalty for each taxable year it
+    was doing business unregistered. The position is curable, but the cost is delay plus back fees.
+  </p>
+
+  <h3>Does a Wyoming or Nevada LLC keep my name off public records?</h3>
+  <p data-review="legal">
+    Those states do limit what appears in <em>state</em> filings. What we will not tell you is whether
+    that amounts to anonymity in 2026, because federal beneficial-ownership reporting is under active
+    regulatory development and any firm answer here would age badly. Check the current position with
+    FinCEN and the statute rather than trusting a page — including this one.
+  </p>
+
+  <h3>Why does the five-year total not include income tax?</h3>
+  <p>
+    Because income tax is the same in every column, so adding it would inflate every total by an
+    identical amount and change no comparison. It is shown separately above the table for exactly that
+    reason.
+  </p>
+
+  <h3>My state shows a dash instead of a number. Why?</h3>
+  <p>
+    Because no figure for it has been confirmed from that state's own source. Filing fees change yearly
+    and a plausible guess is worse than an admission, so those rows stay empty and the column is marked
+    unquantified.
+  </p>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/entity-tax-calculator/">Sole proprietor, S corp or C corp?</a></li>
+    <li><a href="/incorporation-tax-calculator/">Delaware franchise tax calculator</a></li>
+    <li><a href="/s-corp-tax-calculator/">S-corp election by state</a></li>
+    <li><a href="/s-corp-tax-calculator/salary/">What salary to pay yourself</a></li>
+    <li><a href="/1099-tax-calculator/">1099 taxes by state</a></li>
+  </ul>
+
+  <p class="disclaimer" data-review="legal">
+    General information about what states charge, not tax advice — and not legal advice either. Choosing
+    where and how to form a business involves legal questions well beyond cost, and an election or filing
+    is not always simple to undo. Take advice before filing anything.
+  </p>
+</Base>
