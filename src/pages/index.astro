@@ -8,7 +8,7 @@
  * it happens again.
  */
 import Base from '../layouts/Base.astro';
-import QuickEstimator from '../components/calculators/QuickEstimator.tsx';
+import HouseholdCalculator from '../components/calculators/HouseholdCalculator.tsx';
 import { LAST_VERIFIED } from '../data/federal';
 import { stateList } from '../data/states';
 import { stateSlug } from '../lib/slug';
@@ -57,8 +57,14 @@ const PLATFORMS = [
     written by hand. Where a number could not be confirmed, the page says so instead of guessing.
   </p>
 
-  <p class="section-label">Quick estimate</p>
-  <QuickEstimator client:load defaultSeIncome={50000} stateHrefBase="/1099-tax-calculator/" />
+  <p class="section-label">Household tax calculator</p>
+  <p>
+    One calculation for everyone in the household and every kind of income — wages, self-employment,
+    Social Security, disability benefits, a pension, a 401(k) drawdown. Add a person, add as many income
+    lines as you need, and it works out the whole bill together. That matters because these interact: one
+    spouse's freelance income can make the other's disability benefit taxable when it was not before.
+  </p>
+  <HouseholdCalculator client:load />
 
   <h2>Start here</h2>
   <ul class="link-columns">
@@ -66,6 +72,8 @@ const PLATFORMS = [
     <li><a href="/paycheck-calculator/">Paycheck</a> — everything taken out of a salary</li>
     <li><a href="/quarterly-tax-calculator/">Quarterly payments</a> — what to send and when</li>
     <li><a href="/s-corp-tax-calculator/">S-corp election</a> — does it pay for itself here?</li>
+    <li><a href="/benefits-tax-calculator/">Benefits and retirement</a> — SSDI, disability, Social Security</li>
+    <li><a href="/entity-tax-calculator/">Sole proprietor, S corp or C corp?</a> — compare on your numbers</li>
   </ul>
 
   <h2>Tax where you live and where you work</h2>

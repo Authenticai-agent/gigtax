@@ -1,0 +1,66 @@
+---
+/**
+ * Entity chooser. The one question the S-corp pages could not answer, because
+ * it needs the reader's own numbers: sole proprietor, S corporation or C
+ * corporation.
+ */
+import Base from '../../layouts/Base.astro';
+import EntityCalculator from '../../components/calculators/EntityCalculator.tsx';
+import { CCORP_RATE } from '../../lib/entity';
+---
+
+<Base
+  title="LLC vs S corp vs C corp calculator (2026)"
+  description="Compare sole proprietor, S corporation and C corporation on your own numbers for 2026 — including what your state charges the company and the cost of running payroll."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Sole proprietor, S corp or C corp?</h1>
+    <p class="tagline">Ranked on what you keep, not on what you pay.</p>
+  </section>
+
+  <p>
+    Three structures, three completely different tax treatments. A sole proprietor pays self-employment
+    tax on every dollar of profit. An S corporation splits the profit into salary and distribution, and
+    only the salary carries payroll tax. A C corporation pays {(CCORP_RATE * 100).toFixed(0)}% on its own
+    profit and then taxes you again on whatever you take out.
+  </p>
+  <p>
+    That last point is why this asks how much you actually need to withdraw. Profit left inside a C
+    corporation is taxed once, lightly. The same profit taken out is taxed twice. Every simplified
+    comparison omits that input and then declares the C corporation either brilliant or useless.
+  </p>
+
+  <div class="callout">
+    <strong>This ranks on take-home, deliberately</strong>
+    <p>
+      A C corporation can show the lowest tax simply by leaving your money inside the company. Ranking on
+      tax paid would recommend it to someone who needs the cash to live on. So the comparison is on what
+      reaches your pocket, and retained profit is reported separately rather than counted as income.
+    </p>
+  </div>
+
+  <p class="section-label">Calculator</p>
+  <EntityCalculator client:load />
+
+  <h2>What the comparison includes that most do not</h2>
+  <ul>
+    <li><strong>What your state charges the company.</strong> Four jurisdictions ignore the federal S election entirely; eighteen charge a minimum owed even at a loss. That is often larger than the federal saving.</li>
+    <li><strong>The cost of running payroll.</strong> An S corporation needs payroll and a separate return. It is a real annual cost and it is the reason the election does not pay at low profit.</li>
+    <li><strong>Both halves of payroll tax.</strong> An owner-operator bears the employer half as well, because it comes out of the same profit.</li>
+    <li><strong>Charges that cannot be computed here</strong> — a gross receipts tax needs turnover, a net worth tax needs a balance sheet — are listed rather than silently dropped.</li>
+  </ul>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/s-corp-tax-calculator/">S-corp election by state</a></li>
+    <li><a href="/s-corp-tax-calculator/salary/">What salary to pay yourself</a></li>
+    <li><a href="/1099-tax-calculator/">1099 taxes by state</a></li>
+    <li><a href="/">Household calculator</a></li>
+  </ul>
+
+  <p class="disclaimer">
+    General information, not tax advice. Choosing an entity has legal and administrative consequences
+    beyond tax, and an election is not always easy to reverse — take advice before filing anything.
+  </p>
+</Base>

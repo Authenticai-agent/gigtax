@@ -1,0 +1,78 @@
+---
+/**
+ * One benefit or retirement calculator.
+ *
+ * Each is the household calculator opened on the relevant income line rather
+ * than a separate implementation, so the arithmetic cannot drift between them.
+ * What differs per page is the explanation, which is the part that genuinely
+ * varies: the rule deciding whether SSDI is taxed is not the rule deciding
+ * whether a disability policy is taxed.
+ */
+import Base from '../../../layouts/Base.astro';
+import HouseholdCalculator from '../../../components/calculators/HouseholdCalculator.tsx';
+import Sources from '../../../components/Sources.astro';
+import Terms from '../../../components/Terms.astro';
+import { termsIn } from '../../../lib/plain';
+import { BENEFIT_PAGES } from '../../../lib/benefits-copy';
+import { statesTaxingSocialSecurity } from '../../../lib/household';
+import { states } from '../../../data/states';
+import { stateSlug } from '../../../lib/slug';
+
+export function getStaticPaths() {
+  return BENEFIT_PAGES.map((p) => ({ params: { benefit: p.slug }, props: { p } }));
+}
+
+const { p } = Astro.props as { p: (typeof BENEFIT_PAGES)[number] };
+const ssStates = statesTaxingSocialSecurity();
+const terms = termsIn(...p.body, p.tagline);
+---
+
+<Base title={p.title} description={p.description}>
+  <div class="breadcrumbs">
+    <a href="/benefits-tax-calculator/">Benefits and retirement</a> / {p.h1}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>{p.h1}</h1>
+    <p class="tagline">{p.tagline}</p>
+  </section>
+
+  {p.body.map((para) => <p>{para}</p>)}
+
+  <p class="section-label">Calculator</p>
+  <HouseholdCalculator client:load preset={p.preset} />
+
+  {(p.slug === 'retirement' || p.slug === 'ssdi') && (
+    <>
+      <h2>The states that tax Social Security</h2>
+      <p>
+        {ssStates.length} states tax Social Security benefits. Everywhere else leaves them alone
+        entirely, whatever your income:
+      </p>
+      <ul class="link-columns">
+        {ssStates.map((c) => (
+          <li><a href={`/1099-tax-calculator/${stateSlug(states[c].name)}/`}>{states[c].name}</a></li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  {p.sources && <Sources sources={p.sources} />}
+  <Terms terms={terms} />
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/benefits-tax-calculator/">All benefit calculators</a></li>
+    {BENEFIT_PAGES.filter((o) => o.slug !== p.slug).map((o) => (
+      <li><a href={`/benefits-tax-calculator/${o.slug}/`}>{o.h1}</a></li>
+    ))}
+    <li><a href="/">Household calculator</a></li>
+  </ul>
+
+  <p class="disclaimer">
+    General information about how these benefits are taxed, not tax advice. Disability and benefit
+    taxation turns on facts about your policy and your household that this page does not have — check
+    with a tax professional before relying on a figure here.
+  </p>
+</Base>

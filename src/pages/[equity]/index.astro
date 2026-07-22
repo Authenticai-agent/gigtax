@@ -5,6 +5,7 @@
  * vesting income is taxed as ordinary state wages.
  */
 import Base from '../../layouts/Base.astro';
+import EquityCalculator from '../../components/calculators/EquityCalculator.tsx';
 import { stateList } from '../../data/states';
 import { stateSlug } from '../../lib/slug';
 import { formatMoney } from '../../lib/tax-engine';
@@ -35,6 +36,16 @@ const description = `How ${inst.label}s are taxed in 2026, and the mistake that 
     <h1>{d.label ?? inst.label} tax</h1>
     <p class="tagline">{inst.lead}</p>
   </section>
+
+  {['rsu', 'iso', 'nso', 'espp'].includes(inst.key) && (
+    <>
+      <p class="section-label">Calculator</p>
+      <p>
+        Put your own numbers in. Nothing is stored or sent anywhere — it runs in your browser.
+      </p>
+      <EquityCalculator client:load instrument={inst.key as 'rsu' | 'iso' | 'nso' | 'espp'} />
+    </>
+  )}
 
   <div class="callout">
     <strong>Two taxable events, not one</strong>
