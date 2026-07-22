@@ -3,7 +3,7 @@
  * Imports the ported tax engine and computes a real 2026 estimate client-side.
  * Styled with the MoneyScope brand classes from src/styles/global.css.
  *
- * Two deliberate behaviours:
+ * Two deliberate behaviors:
  *  - Results stay hidden until Calculate is pressed, and are marked stale when
  *    an input changes afterwards, so it is never ambiguous whether the number
  *    on screen reflects what is in the form.
@@ -156,7 +156,15 @@ export default function QuickEstimator({
             />
             <Line label="Total tax" value={formatMoney(result.totalTax)} total />
             <Line label="Effective rate on total income" value={formatPct(result.effectiveRate)} />
+            <Line label="Marginal bracket" value={formatPct(result.marginalRate)} />
             <Line label="After tax" value={formatMoney(result.afterTax)} total />
+            {result.setAsidePct > 0 && (
+              <Line
+                label="Set aside from self-employment income"
+                value={`${formatPct(result.setAsidePct)} — about ${formatMoney((result.setAsidePct * result.netSE) / 12)} a month`}
+                total
+              />
+            )}
 
             {w2Income > 0 && (
               <p className="results-note">

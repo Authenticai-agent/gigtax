@@ -35,6 +35,21 @@ export function calcFederalTax(taxableIncome: number, status = 'single', data: a
   return Math.max(0, tax);
 }
 
+/**
+ * The federal marginal rate at a given taxable income — the rate the next dollar
+ * is taxed at. This is the bracket a reader is "in", as distinct from their
+ * effective rate, and the two are routinely confused. Returns 0 below the first
+ * bracket.
+ */
+export function marginalRate(taxableIncome: number, status = 'single', data: any = taxData): number {
+  const brackets = data.federal.brackets[status] || data.federal.brackets.single;
+  let rate = 0;
+  for (const b of brackets) {
+    if (taxableIncome > b.min) rate = b.rate;
+  }
+  return rate;
+}
+
 /* Additional Medicare Tax threshold (Form 8959), by filing status. */
 function additionalMedicareThreshold(am: any, status: string): number {
   if (!am) return Infinity;
@@ -396,7 +411,10 @@ export function calcCombined(w2Income: number, seGross: number, seDeductions: nu
   const stateRes = calcStateTax(agi, stateCode, data, status);
   const totalTax = fed + se.totalSE + stateRes.tax;
   const effectiveRate = totalIncome > 0 ? totalTax / totalIncome : 0;
-  return { w2Income, netSE, totalIncome, agi, taxableBeforeQBI, taxable, qbi, fedTax: fed, seTax: se.totalSE, stateTax: stateRes.tax, totalTax, effectiveRate, afterTax: totalIncome - totalTax };
+  // What fraction of self-employment income to set aside for tax. Measured
+  // against the SE portion, since W-2 tax is usually withheld already.
+  const setAsidePct = netSE > 0 ? (se.totalSE + fed * (netSE / Math.max(1, totalIncome))) / netSE : 0;
+  return { w2Income, netSE, totalIncome, agi, taxableBeforeQBI, taxable, qbi, fedTax: fed, seTax: se.totalSE, stateTax: stateRes.tax, totalTax, effectiveRate, marginalRate: marginalRate(taxable, status, data), setAsidePct, afterTax: totalIncome - totalTax };
 }
 
 /* Deductions Builder */
@@ -465,7 +483,7 @@ export const TaxEngine = {
   formatMoney, formatPct,
   calcFederalTax, calcSETax, calcFICA, getStandardDeduction, calcQBI,
   calcStateTax, calcSSDITaxable, calcACASubsidy,
-  getQDZeroRateThreshold, calcChildTaxCredit, calcSeniorDeductionOBBBA, calcEIC,
+  getQDZeroRateThreshold, calcChildTaxCredit, marginalRate, calcSeniorDeductionOBBBA, calcEIC,
   calcCapitalGains, calcLTCGTax, calcOptionsTax,
   compareEntities, calcQuarterly, reconcile1099K,
   calcBrandDeal, calcCombined, buildDeductionsList,

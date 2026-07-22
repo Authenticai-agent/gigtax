@@ -73,7 +73,7 @@ const description = `Estimate 2026 take-home pay in ${state.name}: federal incom
         <th>Federal</th>
         <th>FICA</th>
         <th>{state.name}</th>
-        {sdi && !sdi.unmodelled && <th>SDI</th>}
+        {sdi && !sdi.unmodeled && <th>SDI</th>}
         <th>Take-home</th>
         <th>Rate</th>
       </tr>
@@ -85,14 +85,14 @@ const description = `Estimate 2026 take-home pay in ${state.name}: federal incom
           <td>{formatMoney(row.federalTax)}</td>
           <td>{formatMoney(row.fica)}</td>
           <td>{noTax ? '—' : formatMoney(row.stateTax)}</td>
-          {sdi && !sdi.unmodelled && <td>{formatMoney(row.sdi?.amount ?? 0)}</td>}
+          {sdi && !sdi.unmodeled && <td>{formatMoney(row.sdi?.amount ?? 0)}</td>}
           <td>{formatMoney(row.takeHome)}</td>
           <td>{formatPct(row.effectiveRate)}</td>
         </tr>
       ))}
     </tbody>
   </table>
-  {sdi && !sdi.unmodelled && (
+  {sdi && !sdi.unmodeled && (
     <p data-source="data/states.ts → stateMetadata.statesWithSDI">
       {state.name} is one of five states that withholds for disability insurance. It is
       {' '}{sdi.label.replace('State disability insurance ', '').replace(/[()]/g, '')}, it comes out of
@@ -100,7 +100,7 @@ const description = `Estimate 2026 take-home pay in ${state.name}: federal incom
       {' '}{sdi.note}
     </p>
   )}
-  {sdi?.unmodelled && (
+  {sdi?.unmodeled && (
     <p data-source="data/states.ts → stateMetadata.statesWithSDI">
       {state.name} also requires disability coverage, but the premium varies by employer plan rather
       than a fixed statutory rate, so it is not in the figures above — your real take-home is slightly

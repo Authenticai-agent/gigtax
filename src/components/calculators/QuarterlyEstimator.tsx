@@ -3,7 +3,7 @@
  * 1040-ES due date. Shares the ported tax engine with the annual estimator, so
  * the two can never disagree.
  *
- * Same two behaviours as QuickEstimator: results wait for an explicit Calculate
+ * Same two behaviors as QuickEstimator: results wait for an explicit Calculate
  * press, and picking a state navigates to that state's own quarterly page so
  * the URL always names the state being estimated.
  */
@@ -185,6 +185,12 @@ export default function QuarterlyEstimator({
             <span>Total for the year (90% route)</span>
             <span className="num">{formatMoney(plan.perQuarterTotal * 4)}</span>
           </div>
+          {seIncome - seDeductions > 0 && (
+            <div className="result-line">
+              <span>Set aside from each dollar of profit</span>
+              <span className="num">{Math.round((plan.totalYear / Math.max(1, seIncome - seDeductions)) * 100)}%</span>
+            </div>
+          )}
           {plan.priorHarbor !== null && (
             <div className="result-line">
               <span>Prior-year safe harbor ({Math.round(plan.priorHarborRate * 100)}% of last year)</span>
@@ -193,8 +199,8 @@ export default function QuarterlyEstimator({
           )}
           <p className="results-note">
             {plan.priorHarbor !== null
-              ? `Paying the lower of the two totals keeps you inside the safe harbor. `
-              : `Add last year's tax above to compare against the prior-year safe harbor. `}
+              ? `Paying the lower of the two totals keeps you inside the safe harbor — no underpayment penalty. ${plan.priorHarborRate > 1 ? 'Your prior-year AGI was over $150,000, so the prior-year route is 110% of last year rather than 100%. ' : ''}`
+              : `Add last year's tax above to compare against the prior-year safe harbor. Above $150,000 of prior-year AGI that route is 110% of last year, not 100%. `}
             Estimate only. Assumes the standard deduction, no credits and no W-2 withholding. Not tax advice.
           </p>
         </div>
