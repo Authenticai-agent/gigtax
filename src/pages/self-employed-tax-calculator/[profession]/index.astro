@@ -8,7 +8,8 @@
  * it twenty-three times is how these pages would become each other.
  */
 import Base from '../../../layouts/Base.astro';
-import { PROFESSIONS, professionFor, professionData, deductionsFor, uniqueRules, worthLadder } from '../../../lib/professions';
+import { PROFESSIONS, professionFor, professionData, deductionsFor, uniqueRules, worthLadder, sourcesFor } from '../../../lib/professions';
+import Sources from '../../../components/Sources.astro';
 import { formatMoney } from '../../../lib/tax-engine';
 import Terms from '../../../components/Terms.astro';
 import { termsIn } from '../../../lib/plain';
@@ -29,6 +30,7 @@ const mid = ladder[1];
 // "OTR truck driver".toLowerCase() gives "otr truck driver". Lowercase the first
 // letter only when the name does not open with an acronym — the same mangling
 // that once produced "cA SDI".
+const sources = sourcesFor(p.key);
 const terms = termsIn(p.lead, p.watch, data.note, data.taxForm, ...deductions.map((d) => `${d.label} ${d.rule ?? ''}`), ...rules.map((r) => `${r.title} ${r.body}`));
 const lowerName = /^[A-Z]{2,}\b/.test(p.name) ? p.name : p.name.charAt(0).toLowerCase() + p.name.slice(1);
 
@@ -147,6 +149,8 @@ const description = `What a self-employed ${p.name.toLowerCase()} can deduct in 
     Add a state income tax and every row rises. The
     {' '}<a href="/1099-tax-calculator/">1099 calculator</a> applies that layer.
   </p>
+
+  <Sources sources={sources} />
 
   <Terms terms={terms} />
 

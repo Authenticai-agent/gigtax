@@ -447,6 +447,43 @@ export function worthLadder(stateCode: string, status = 'single'): DeductionWort
   return [40000, 100000, 200000].map((p) => deductionWorth(p, stateCode, status));
 }
 
+export interface Source {
+  /** Which claim on the page this backs. */
+  claim: string;
+  /** The provision itself — 'IRC 280E', 'Reg 1.469-1T(e)(3)(ii)(A)'. */
+  authority: string;
+  url: string;
+  confidence: 'high' | 'medium' | 'low';
+}
+
+/**
+ * Where a profession page's statutory claims come from.
+ *
+ * The first 23 professions were ported from a dataset that had already been
+ * verified. Everything added after that was written from knowledge and shipped
+ * labelled 'authored', which was honest about the provenance and useless to a
+ * reader deciding whether to believe it. A page that says a cannabis business
+ * cannot deduct rent, or that architects keep a deduction lawyers lose, is
+ * making a claim someone may act on — so it cites the provision and links to it.
+ */
+export function sourcesFor(key: string): Source[] {
+  return (RAW[key]?.sources ?? []) as Source[];
+}
+
+/** Professions whose claims are researched rather than ported. */
+export function isAuthored(key: string): boolean {
+  return Boolean(RAW[key]?.sources) || !LEGACY_KEYS.has(key);
+}
+
+/** The 23 professions that came from the pre-verified legacy dataset. */
+const LEGACY_KEYS = new Set([
+  'software_dev', 'ai_consultant', 'designer', 'copywriter', 'realtor', 'travel_nurse',
+  'truck_driver_otr', 'photographer', 'hair_stylist', 'personal_trainer', 'therapist',
+  'nurse_contractor', 'massage_therapist', 'bookkeeper_accountant', 'virtual_assistant',
+  'coach', 'insurance_agent', 'notary_signing_agent', 'tutor', 'wedding_event_planner',
+  'qa_tester_contractor', 'clergy_minister', 'farm_schedule_f',
+]);
+
 /** Unique statutory rules the dataset records for a trade, if any. */
 export function uniqueRules(key: string): Array<{ title: string; body: string }> {
   const d = RAW[key];
