@@ -63,6 +63,13 @@ const description = `What ${state.name}'s cities, counties and school districts 
 
   {copy?.shape && <p data-source={`overrides/local-income-tax-2026.json → ${code}.shape`}>{copy.shape}</p>}
 
+  {copy?.headline && (
+    <div class="callout">
+      <strong>The thing that catches people out here</strong>
+      <p>{copy.headline}</p>
+    </div>
+  )}
+
   <h2>What the {state.name} levies cost on {formatMoney(EXAMPLE)}</h2>
   {computable.length > 0 ? (
     <table class="data-table">

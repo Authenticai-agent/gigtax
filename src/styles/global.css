@@ -209,6 +209,40 @@ main ol li { margin-bottom: .4rem; line-height: 1.68; }
   .checklist { columns: 1; }
 }
 
+/* ---------------------------------------------------------------------------
+ * Accordion.
+ *
+ * <details>/<summary> rather than a scripted dropdown, for two reasons: the
+ * content is in the built HTML whether or not JavaScript runs, which is this
+ * site's rule for anything that carries meaning, and it is keyboard-operable
+ * and screen-reader-announced for free.
+ * ------------------------------------------------------------------------- */
+.accordion { margin: 1rem 0 1.5rem; border-top: 1px solid var(--border); max-width: 74ch; }
+.accordion details { border-bottom: 1px solid var(--border); }
+.accordion summary {
+  font-family: var(--disp); font-weight: 700; font-size: .95rem; letter-spacing: -.01em;
+  padding: .8rem 1.75rem .8rem 0; cursor: pointer; position: relative;
+  list-style: none; transition: color 160ms ease;
+}
+.accordion summary::-webkit-details-marker { display: none; }
+.accordion summary::after {
+  content: ''; position: absolute; right: .35rem; top: 50%;
+  width: 8px; height: 8px; margin-top: -6px;
+  border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted);
+  transform: rotate(45deg); transition: transform 200ms ease, border-color 160ms ease;
+}
+.accordion details[open] summary::after { transform: rotate(-135deg); margin-top: -2px; }
+.accordion summary:hover { color: var(--accent); }
+.accordion summary:hover::after { border-color: var(--accent); }
+.accordion summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 2px; }
+.accordion-body { padding: 0 0 .9rem; }
+.accordion-body p { margin-bottom: .5rem; font-size: .94rem; }
+.accordion-body p:last-child { margin-bottom: 0; font-family: var(--mono); font-size: 13px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion summary, .accordion summary::after { transition: none; }
+}
+
 @media (max-width: 720px) {
   main { padding: 1.25rem 1rem 4rem; }
   .hero { padding: 1.75rem 0 1.25rem; }
