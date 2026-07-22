@@ -36,6 +36,7 @@ const federalTs =
   `export const retirement = ${j(cfg.retirement)};\n\n` +
   `export const acaSubsidy = ${j(cfg.acaSubsidy)};\n\n` +
   `export const incomeSources = ${j(cfg.incomeSources)};\n\n` +
+  `export const equityCompensation = ${j(cfg.equityCompensation)};\n\n` +
   `export const entityTypes = ${j(cfg.entityTypes)};\n\n` +
   `export const filingStatuses = ${j(cfg.filingStatuses)};\n\n` +
   `export const quarterlyDates2026 = ${j(cfg.quarterlyDates2026)};\n`;

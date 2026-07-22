@@ -968,6 +968,248 @@ export const incomeSources = {
   }
 };
 
+export const equityCompensation = {
+  "_schema": "All equity objects share: incomeEvent, taxEvent, form1099B_basisTrap, quarterlyNote",
+  "_overview": "Equity compensation creates two taxable events: (1) ordinary income when shares vest or options are exercised, (2) capital gain/loss when shares are sold. Misunderstanding this two-layer structure is the most expensive equity tax mistake.",
+  "rsu": {
+    "label": "Restricted Stock Units",
+    "taxEvent1_vesting": {
+      "trigger": "Shares vest",
+      "incomeType": "Ordinary income — W-2 wages",
+      "amountTaxable": "FMV on vesting date × shares vested",
+      "ficaApplies": true,
+      "ficaSS_wageBase2026": 184500,
+      "additionalMedicareTrigger_single": 200000,
+      "additionalMedicareTrigger_mfj": 250000,
+      "withholdingRate_supplemental_under1M": 0.22,
+      "withholdingRate_supplemental_over1M": 0.37,
+      "withholdingRisk": "22% under-withholds for anyone in 32%+ bracket. Gap = (marginal_rate - 0.22) x RSU_income. Fix via increased W-4 withholding or quarterly payments.",
+      "form": "W-2 Box 1"
+    },
+    "taxEvent2_sale": {
+      "costBasis": "FMV at vesting (already reported as W-2 income)",
+      "shortTerm": "Sold within 1 year of vesting → ordinary income rates",
+      "longTerm": "Sold more than 1 year after vesting → LTCG rates 0/15/20%",
+      "form1099B_basisTrap": "Broker may report $0 or purchase price instead of FMV at vesting. Adjust on Form 8949 to avoid double taxation.",
+      "form": "Form 1099-B → Form 8949 → Schedule D"
+    },
+    "quarterlyRequired": "If withholding gap > $1,000 after W-4 optimization",
+    "seoKeywords": [
+      "RSU tax calculator 2026",
+      "restricted stock unit tax calculator",
+      "RSU withholding gap calculator"
+    ]
+  },
+  "iso": {
+    "label": "Incentive Stock Options",
+    "taxEvent1_exercise": {
+      "regularTaxAtExercise": "None",
+      "amtAtExercise": {
+        "applies": true,
+        "bargainElement": "FMV at exercise minus strike price = AMT preference item",
+        "amtExemption2026_single": 90100,
+        "amtExemption2026_mfj": 140200,
+        "amtPhaseoutStart_single": 500000,
+        "amtPhaseoutStart_mfj": 1000000,
+        "amtRate_tier1": 0.26,
+        "amtRate_tier2": 0.28,
+        "amtRate_tier2_threshold": 244500,
+        "amtTrap": "Large ISO exercise in single year can trigger AMT even without selling shares. Strategy: exercise in tranches across multiple years to stay below AMT exemption phaseout.",
+        "amtCreditCarryforward": "AMT paid generates Form 8801 credit to offset future regular tax"
+      },
+      "form": "Form 3921 (employer reports). No W-2."
+    },
+    "taxEvent2_sale": {
+      "qualifyingDisposition": {
+        "holdingFromExercise": "More than 1 year",
+        "holdingFromGrant": "More than 2 years",
+        "bothRequired": true,
+        "taxTreatment": "Entire gain (sale price minus strike price) as LONG-TERM capital gain",
+        "ordinaryIncome": 0,
+        "californiaWarning": "California taxes ISO qualifying dispositions at ordinary income state rates — no preferential CA treatment"
+      },
+      "disqualifyingDisposition": {
+        "trigger": "Either holding requirement not met",
+        "ordinaryIncome": "Bargain element at exercise — added to W-2",
+        "capitalGain": "Sale price minus FMV at exercise — STCG or LTCG depending on holding from exercise to sale",
+        "basisTrap": "Verify Form 1099-B basis on Form 8949"
+      }
+    },
+    "annualLimit_isoVsNso": {
+      "maxExercisablePerYear_iso": 100000,
+      "note": "Aggregate FMV at grant date exceeding $100,000 exercisable in one year — excess treated as NSOs"
+    },
+    "quarterlyRequired": "If projected AMT liability exceeds withholding by more than $1,000",
+    "seoKeywords": [
+      "ISO stock option tax calculator 2026",
+      "incentive stock option AMT calculator",
+      "ISO qualifying disposition LTCG calculator"
+    ]
+  },
+  "nso": {
+    "label": "Non-Qualified Stock Options",
+    "taxEvent1_exercise": {
+      "trigger": "Options exercised",
+      "incomeType": "Ordinary income on spread",
+      "spread": "FMV at exercise minus strike price",
+      "ficaApplies_employee": true,
+      "ficaApplies_contractor": "SE tax on spread",
+      "withholding_employee": "Employer withholds from payroll",
+      "withholding_contractor": "Must pay via quarterly estimated taxes",
+      "form_employee": "W-2 Box 1",
+      "form_contractor": "1099-NEC",
+      "cashNeeded": "Tax owed at exercise even if shares not sold. Cashless same-day sale covers obligation but triggers immediate sale."
+    },
+    "taxEvent2_sale": {
+      "costBasis": "FMV at exercise",
+      "shortTerm": "Sold within 1 year of exercise",
+      "longTerm": "Sold more than 1 year after exercise",
+      "basisTrap": "1099-B often shows wrong basis — adjust on Form 8949"
+    },
+    "quarterlyRequired": "Contractors always. Employees if withholding insufficient.",
+    "seoKeywords": [
+      "NSO tax calculator",
+      "non-qualified stock option exercise tax",
+      "NSO contractor 1099 taxes"
+    ]
+  },
+  "espp": {
+    "label": "Employee Stock Purchase Plan (Section 423 Qualified)",
+    "annualPurchaseLimit": 25000,
+    "maxDiscount": 0.15,
+    "ficaExempt_qualified423": true,
+    "ficaNote": "Section 423 qualified ESPP shares: NO FICA on either qualifying or disqualifying dispositions. Non-qualified ESPPs ARE subject to FICA at purchase.",
+    "holdingRequirements": {
+      "qualifyingDisposition": {
+        "fromOfferingDate": "More than 2 years",
+        "fromPurchaseDate": "More than 1 year",
+        "bothRequired": true
+      },
+      "disqualifyingDisposition": "Fails either requirement"
+    },
+    "qualifyingDispositionTax": {
+      "ordinaryIncome": "LESSER of: (a) 15% x FMV at offering date, or (b) actual gain (sale price minus purchase price)",
+      "ltcg": "Remaining gain above ordinary income portion",
+      "withholdingNote": "Qualifying disposition ordinary income NOT subject to federal withholding. Must pay via estimated taxes or W-4 adjustment.",
+      "basisAdjusted": "Purchase price + ordinary income per share"
+    },
+    "disqualifyingDispositionTax": {
+      "ordinaryIncome": "FMV at purchase date minus purchase price (full spread on purchase date)",
+      "capitalGain": "Sale price minus FMV at purchase date",
+      "capitalGainType": "STCG if held under 1 year from purchase; LTCG if over 1 year",
+      "form": "W-2 (employer adds ordinary income); 1099-B for proceeds"
+    },
+    "basisTrap": {
+      "description": "Broker 1099-B reports purchase price as basis — not adjusted basis. Adjusted basis = purchase price + ordinary income already on W-2. Failing to adjust = paying tax twice.",
+      "form8949Code": "Adjust Column E with correct adjusted basis"
+    },
+    "form3922": "Employer files Form 3922 at transfer. Use to verify offering date FMV, purchase date FMV, and purchase price.",
+    "quarterlyRequired": "For qualifying dispositions where ordinary income not withheld",
+    "seoKeywords": [
+      "ESPP tax calculator 2026",
+      "ESPP qualifying disposition tax calculator",
+      "ESPP disqualifying disposition calculator",
+      "Section 423 ESPP basis calculator"
+    ]
+  },
+  "qsbs": {
+    "label": "Qualified Small Business Stock (Section 1202)",
+    "overview": "Founders and early investors in qualifying C corps can exclude up to 100% of capital gains. Most powerful wealth-building provision in the tax code for startup equity.",
+    "obbbaChanges": {
+      "effectiveDate": "Stock issued after July 4, 2025",
+      "exclusionLimit_new": 15000000,
+      "exclusionLimit_old": 10000000,
+      "inflationIndexedFrom": 2027,
+      "tieredHolding_newStock": {
+        "3_years": 0.5,
+        "4_years": 0.75,
+        "5_years_plus": 1
+      },
+      "priorStock_5yearRequired": true
+    },
+    "exclusionCapCalc": "Greater of ($15M post-July-2025 stock / $10M pre-July-2025 stock) OR (10 x adjusted basis). Use higher.",
+    "amtTreatment": "Post-Sept 27, 2010 QSBS: no AMT preference. Full exclusion from AMT, NIIT, and regular capital gains tax.",
+    "niitTreatment": "Excluded gain NOT subject to 3.8% NIIT.",
+    "qualifyingRequirements": [
+      "Original issuance from domestic C corporation",
+      "Gross assets under $50M at time of issuance",
+      "Qualifying trade or business (excludes professional services, finance, hospitality, farming, mining)",
+      "Acquired for cash, property, or services — not purchased from existing shareholders",
+      "Held for required period"
+    ],
+    "stateConformity": {
+      "nonConforming_fullTax": [
+        "CA",
+        "AL",
+        "MS",
+        "PA"
+      ],
+      "partialConformity": [
+        "HI — 50% exclusion only"
+      ],
+      "note": "California taxes QSBS gains at full state rate (up to 13.3%) even when 100% excluded federally."
+    },
+    "qsbsStacking": "Gifting QSBS to family members before sale multiplies the per-person $15M exclusion cap. Each recipient (spouse, children, trusts) gets own cap.",
+    "section1045Rollover": "If QSBS sold before holding period: defer gain by reinvesting in new QSBS within 60 days.",
+    "quarterlyRequired": "State estimated tax in non-conforming states on excluded gain. Federal: no quarterly on excluded portion.",
+    "seoKeywords": [
+      "QSBS tax calculator 2026",
+      "Section 1202 exclusion calculator",
+      "startup equity QSBS calculator",
+      "founder stock tax calculator"
+    ]
+  },
+  "phantomStock_SAR": {
+    "label": "Phantom Stock and Stock Appreciation Rights",
+    "taxTreatment": "Ordinary income when paid or settled — no LTCG treatment",
+    "ficaApplies": true,
+    "form_employee": "W-2",
+    "form_contractor": "1099-NEC",
+    "note": "Common in S corps (which cannot have two stock classes) and LLCs. Tax treatment mirrors a cash bonus.",
+    "seoKeywords": [
+      "phantom stock tax calculator",
+      "SAR stock appreciation rights taxes"
+    ]
+  },
+  "form1099B_basisReconciliation": {
+    "_purpose": "The #1 equity tax filing error: paying tax twice due to under-reported cost basis on Form 1099-B",
+    "affectedTypes": [
+      "RSU",
+      "NSO exercise",
+      "ISO disqualifying disposition",
+      "ESPP any disposition"
+    ],
+    "problem": "Broker 1099-B shows $0 or purchase price as basis — not the adjusted basis that includes income already on W-2",
+    "rsuAdjustment": "Correct basis = FMV at vesting date. If 1099-B shows $0, enter FMV at vesting in Form 8949 Column E.",
+    "esppQualifyingAdjustment": "Correct basis = purchase price + ordinary income per share already on W-2",
+    "esppDisqualifyingAdjustment": "Correct basis = FMV at purchase date",
+    "isoDisqualifyingAdjustment": "Correct basis = FMV at exercise date (spread already taxed as W-2)",
+    "form8949Codes": "Code B (STCG with 1099-B) or Code E (LTCG with 1099-B), then correct in Column E",
+    "irsCP2000Risk": "Failing to adjust basis is the most common cause of IRS CP2000 notices for equity compensation",
+    "seoKeywords": [
+      "RSU adjusted cost basis calculator",
+      "ESPP Form 8949 basis adjustment",
+      "stock compensation double tax calculator"
+    ]
+  },
+  "multiStateAllocation": {
+    "note": "Employees working in multiple states during vesting period must allocate equity income by state",
+    "rsuMethod": "Days worked in each state / total days in vesting period x RSU income = each state's allocation",
+    "isoNsoMethod": "Same proration applied to ordinary income at exercise",
+    "remoteWorkTrap": "California employee who moved to Texas before vesting may still owe CA tax on CA-period portion",
+    "aggressiveSourceingStates": [
+      "CA",
+      "NY",
+      "MA"
+    ],
+    "seoKeywords": [
+      "RSU multi-state tax",
+      "equity compensation state allocation",
+      "California RSU taxes remote work"
+    ]
+  }
+};
+
 export const entityTypes = {
   "soleProprietorship": {
     "taxForm": "Schedule C (Form 1040)",
