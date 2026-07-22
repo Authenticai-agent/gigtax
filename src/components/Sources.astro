@@ -1,0 +1,34 @@
+---
+/**
+ * Citations for a page's statutory claims.
+ *
+ * Rendered only where sources exist. A page with no sources block is one whose
+ * claims are general practice rather than a specific provision — and the pages
+ * that assert something unusual are exactly the ones that carry citations.
+ */
+import type { Source } from '../lib/professions';
+
+interface Props { sources: Source[] }
+const { sources } = Astro.props as Props;
+---
+
+{sources.length > 0 && (
+  <>
+    <h2>Where this comes from</h2>
+    <p>
+      The rules on this page that are specific rather than general are cited below. Follow a link to read
+      the provision itself rather than taking our word for it:
+    </p>
+    <ul class="source-list">
+      {sources.map((s) => (
+        <li>
+          <span class="source-claim">{s.claim}</span>
+          <span class="source-cite">
+            <a href={s.url} rel="nofollow noopener" target="_blank">{s.authority}</a>
+            {s.confidence !== 'high' && <span class="pill">{s.confidence} confidence</span>}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </>
+)}

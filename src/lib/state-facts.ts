@@ -175,7 +175,7 @@ export function describeNeighbours(code: string, state: StateData, rows: Neighbo
   return (
     `On ${formatMoney(income)}, ${state.name} charges ${formatMoney(own)} of state income tax. ` +
     `Of the ${rows.length} states it borders, ${cheapest.name} is the lightest at ` +
-    `${cheapest.noTax ? 'nothing at all' : formatMoney(cheapest.tax)} and ${dearest.name} the heaviest at ` +
+    `${cheapest.noTax ? 'nothing at all' : formatMoney(cheapest.tax)} and ${dearest.name} the most expensive at ` +
     `${formatMoney(dearest.tax)} — a spread of ${formatMoney(dearest.tax - cheapest.tax)} on the same income.`
   );
 }

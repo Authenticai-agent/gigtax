@@ -18,6 +18,14 @@
  */
 
 export interface LocalCopy {
+  /**
+   * The one trap in this state, in a sentence, for the hub.
+   *
+   * Every one of the twelve has something. Giving Ohio a section of its own on
+   * the hub and the other eleven nothing implied they were straightforward,
+   * which is not true of any of them.
+   */
+  headline: string;
   /** One line: what shape the charge takes here. */
   shape: string;
   /** Paragraphs for "What catches people out in <state>". */
@@ -26,6 +34,7 @@ export interface LocalCopy {
 
 export const LOCAL_COPY: Record<string, LocalCopy> = {
   OH: {
+    headline: 'Your city taxes your whole business profit — the state break for business owners does not exist at city level.',
     shape: 'A city income tax on wages and business profit, plus a separate school district tax on top for people who live in a district that levies one.',
     traps: [
       'Ohio has the most complicated local income tax in the country, and the complications are structural rather than a matter of arithmetic. Four things work differently here from what you might expect.',
@@ -36,6 +45,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   PA: {
+    headline: 'S-corporation profit escapes the local tax entirely, while the identical profit earned as a sole proprietor does not.',
     shape: 'An Earned Income Tax everywhere except Philadelphia, which runs its own wage tax and its own tax on self-employed profit — plus a flat annual Local Services Tax based on where you work.',
     traps: [
       'Pennsylvania runs two local tax systems that do not talk to each other. The Earned Income Tax covers the whole state except Philadelphia, which sits outside it entirely with its own wage tax and its own tax on self-employed profit.',
@@ -46,6 +56,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   MI: {
+    headline: 'The rate halves if you only work in the city rather than live there, and four cities are allowed to charge far more than the rest.',
     shape: 'A city income tax, charged at one rate if you live there and half that if you only work there.',
     traps: [
       'Twenty-four Michigan cities charge their own income tax. The standard is 1% if you live there and 0.5% if you only work there — the rate for non-residents is set at half the resident rate by state law, and never more.',
@@ -56,6 +67,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   IN: {
+    headline: 'Your county is fixed on 1 January and does not change if you move — and rates run from 0.5% to 3%.',
     shape: 'A county income tax, charged on the same income Indiana taxes.',
     traps: [
       'Every one of Indiana’s 92 counties charges a local income tax, and it is calculated on the same income the state taxes. That means it reaches profit from working for yourself in full, along with everything else the state taxes.',
@@ -65,6 +77,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   MD: {
+    headline: 'Unavoidable: every resident pays, on the same income the state taxes, including business profit and investment income.',
     shape: 'A county income tax, charged on the same income Maryland taxes — and set by the county you live in, not the one you work in.',
     traps: [
       'Maryland’s county income tax is not optional and there is no county without one. Every Maryland resident pays their county’s rate on top of the state rate.',
@@ -73,6 +86,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   KY: {
+    headline: 'A city and a county can both tax the same income, and forgetting the credit between them overstates the bill.',
     shape: 'An occupational licence fee on both wages and self-employed profit, charged by cities, counties and some school districts.',
     traps: [
       'Kentucky’s local occupational taxes reach the profits of sole proprietors and contractors explicitly, and they do so with no personal allowances or deductions of any kind. The rate applies from the first dollar.',
@@ -80,6 +94,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   AL: {
+    headline: 'It reaches wages only. Work for yourself and it does not touch your profit — but a separate business licence tax does.',
     shape: 'A city occupational tax on wages, for work done inside the city.',
     traps: [
       'Alabama’s occupational tax is a tax on wages, and only on wages. It applies where the person doing the work is an employee of the person paying for it. If you work for yourself, it does not reach your profit — and that is an unusual answer, which is why it is worth stating plainly.',
@@ -88,6 +103,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   MO: {
+    headline: 'Work partly outside the city and you can reclaim the days you were elsewhere, which most people never do.',
     shape: 'A 1% earnings tax on wages and on the profits of businesses and self-employed people.',
     traps: [
       'Kansas City and St. Louis both charge a 1% earnings tax, and voters in both renewed it on 7 April 2026 for a further five years, so both are certain to be in force.',
@@ -97,6 +113,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   DE: {
+    headline: 'Wilmington charges commuters the same 1.25% as residents — no reduced rate for people who only work there.',
     shape: 'A flat percentage on gross wages, with a matching tax at the same rate on self-employed profit.',
     traps: [
       'Wilmington is the only place in Delaware with a municipal wage tax. It is 1.25% on gross earned income.',
@@ -106,6 +123,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   WV: {
+    headline: 'Dollars per week worked, not a percentage — so it costs someone on $30,000 exactly what it costs someone on $300,000.',
     shape: 'A fixed number of dollars for each week you work in the city — not a percentage, so what you earn makes no difference.',
     traps: [
       'West Virginia’s city fees are a different shape from every other state on this site: a fixed number of dollars for each week you work in the city, regardless of your hours or your earnings. Someone earning $30,000 and someone earning $300,000 pay exactly the same.',
@@ -115,6 +133,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   OR: {
+    headline: 'Both Portland-area taxes reach people who live in Washington, where there is no state income tax at all.',
     shape: 'Two taxes that only start above an income floor, plus one flat annual charge.',
     traps: [
       'Both Portland-area taxes — Metro Supportive Housing Services and Multnomah County Preschool for All — are charged on Oregon taxable income. That means profit from working for yourself counts towards the thresholds and is taxed once you pass them.',
@@ -124,6 +143,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     ],
   },
   NY: {
+    headline: 'No city tax on commuters since 1999 — except a 4% tax on self-employed profit, which does reach them.',
     shape: 'A city income tax for New York City residents, a surcharge in Yonkers calculated on your state tax bill, and a separate 4% tax on self-employed profit earned in New York City.',
     traps: [
       'New York City has no income tax on people who work in the city but live outside it. The commuter tax was repealed in 1999 and has not come back.',

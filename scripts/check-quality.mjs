@@ -327,6 +327,38 @@ if (!home) {
   console.log(`  ${unreachable.length === 0 ? 'ok  ' : 'FAIL'}  ${hubs.length} section hubs, all linked from the home page`);
 }
 
+/* ---- 3c. uncited statutory claims ----------------------------------------- */
+
+/**
+ * A page that names a statute but cites nothing.
+ *
+ * The profession pages divide into two kinds. Most describe ordinary practice —
+ * tools are deductible, mileage needs a log — which needs no citation. A few
+ * assert something specific and surprising: that a cannabis business cannot
+ * deduct rent, that architects keep a deduction lawyers lose, that a property
+ * flipper gets no capital gains treatment. Those are claims a reader may act on,
+ * and they were originally shipped with nothing behind them but my say-so.
+ *
+ * This warns where a page names a provision without linking to one. It is a
+ * warning rather than a failure because the right response is sometimes to
+ * soften the claim rather than to find a citation for it.
+ */
+/*
+ * Deliberately NOT every statute reference. The first draft matched "Section
+ * 179" and flagged 51 pages, which is noise: Section 179 is the common name of
+ * a rule every one of these trades uses and the deductions page explains it in
+ * full. What needs a citation is the claim a reader would be surprised by and
+ * might act on.
+ */
+const LOAD_BEARING = /\b(280E|199A|1031|263A|469|163\(j\)|45B|280F|like-kind|percentage depletion|specified service|written into the statute|statutory exception|excise tax|floor plan)\b/i;
+const uncited = [];
+for (const p of pages) {
+  if (!p.url.startsWith('/self-employed-tax-calculator/')) continue;
+  if (!LOAD_BEARING.test(p.text)) continue;
+  if (p.html.includes('Where this comes from')) continue;
+  uncited.push(p.url);
+}
+
 /* ---- 4 & 5. canonical and disclaimer ------------------------------------- */
 
 for (const p of pages) {
@@ -433,6 +465,12 @@ for (const [section, group] of bySection) {
 if (report) {
   console.log('\nWorst 15 pairs overall:');
   for (const w of worst.slice(0, 15)) console.log(`  ${(w.sim * 100).toFixed(0)}%  ${w.url}  vs  ${w.against}`);
+}
+
+if (uncited.length) {
+  console.log(`\n${uncited.length} page(s) make a load-bearing legal claim with no citation:`);
+  for (const u of uncited.slice(0, 15)) console.log(`  uncited: ${u}`);
+  if (uncited.length > 15) console.log(`  …and ${uncited.length - 15} more`);
 }
 
 const uniqWarn = [...new Set(warnings)];

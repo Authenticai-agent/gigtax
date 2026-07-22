@@ -35,7 +35,7 @@ const levies = levyExamples(code, EXAMPLE);
 const computable = levies.filter((l) => l.amount !== null);
 const needsInput = levies.filter((l) => l.amount === null);
 const traps = localTraps(code);
-const dearest = computable.length ? computable.reduce((a, b) => (b.amount! > a.amount! ? b : a)) : null;
+const mostExpensive = computable.length ? computable.reduce((a, b) => (b.amount! > a.amount! ? b : a)) : null;
 const seRule = reachesSelfEmployment(code);
 const ohTraps = code === 'OH' ? ohioCreditTraps() : [];
 // Define only the vocabulary this page actually uses.
@@ -55,13 +55,20 @@ const description = `What ${state.name}'s cities, counties and school districts 
     <p class="hero-label">2026 tax year · {state.name}</p>
     <h1>Local income tax in {state.name}</h1>
     <p class="tagline" data-source={`overrides/local-income-tax-2026.json → ${code}`}>
-      {dearest
-        ? `${dearest.jurisdiction} is the dearest of the ${state.name} levies we hold — ${formatMoney(dearest.amount!)} on ${formatMoney(EXAMPLE)}, on top of federal and state tax.`
+      {mostExpensive
+        ? `${mostExpensive.jurisdiction} is the most expensive of the ${state.name} levies we hold — ${formatMoney(mostExpensive.amount!)} on ${formatMoney(EXAMPLE)}, on top of federal and state tax.`
         : `${state.name}'s local charges are flat dollar amounts rather than rates, so what you earn does not change them.`}
     </p>
   </section>
 
   {copy?.shape && <p data-source={`overrides/local-income-tax-2026.json → ${code}.shape`}>{copy.shape}</p>}
+
+  {copy?.headline && (
+    <div class="callout">
+      <strong>The thing that catches people out here</strong>
+      <p>{copy.headline}</p>
+    </div>
+  )}
 
   <h2>What the {state.name} levies cost on {formatMoney(EXAMPLE)}</h2>
   {computable.length > 0 ? (

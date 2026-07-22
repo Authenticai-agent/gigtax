@@ -9,6 +9,7 @@ import { states } from '../../data/states';
 import { stateSlug } from '../../lib/slug';
 import { formatMoney } from '../../lib/tax-engine';
 import { localTaxStates, localTaxFor, localRange, ohioCreditTraps, reachesSelfEmployment } from '../../lib/local-tax';
+import { localCopyFor } from '../../data/local-tax-copy';
 
 const EXAMPLE = 80000;
 const codes = localTaxStates();
@@ -20,6 +21,7 @@ const rows = codes.map((code) => {
     code,
     name: states[code].name,
     reachesSE: reachesSelfEmployment(code),
+    headline: localCopyFor(code)?.headline ?? '',
     range,
   };
 });
@@ -53,7 +55,7 @@ const traps = ohioCreditTraps();
 
   <h2>Where local income tax exists</h2>
   <p>
-    What a levy costs on {formatMoney(EXAMPLE)}, from the cheapest jurisdiction in the state to the dearest.
+    What a levy costs on {formatMoney(EXAMPLE)}, from the cheapest jurisdiction in the state to the most expensive.
     A wide range means the state has no useful average:
   </p>
   <table class="data-table">
@@ -93,32 +95,27 @@ const traps = ohioCreditTraps();
     marked "not confirmed" it means exactly that, never that the answer is no.
   </div>
 
-  <h2>The Ohio credit trap</h2>
+  <h2>The trap in each of the twelve</h2>
   <p>
-    If you live in one Ohio city and work in another, your home city gives you a credit for the tax your
-    work city already took. Most people assume that credit is full, and in {20 - traps.length} of the twenty largest
-    cities it is. In {traps.length} it is not — the credit is capped below the city's own rate, so a
-    resident who works elsewhere and owes nothing on paper still gets a bill:
+    None of these states is straightforward, and the thing that catches people is different in every one.
+    Open one for the short version, or follow the link for how the charge is actually worked out:
   </p>
-  <table class="data-table">
-    <thead>
-      <tr><th>City</th><th>Its rate</th><th>Credit capped at</th><th>Still owed on {formatMoney(EXAMPLE)}</th></tr>
-    </thead>
-    <tbody>
-      {traps.map((t) => (
-        <tr>
-          <td>{t.city}</td>
-          <td>{(t.rate * 100).toFixed(2).replace(/\.?0+$/, '')}%</td>
-          <td>{(t.cap * 100).toFixed(2).replace(/\.?0+$/, '')}%</td>
-          <td>{formatMoney(EXAMPLE * t.owed)}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  <div class="accordion">
+    {rows.filter((r) => r.headline).map((r) => (
+      <details>
+        <summary>{r.name}</summary>
+        <div class="accordion-body">
+          <p>{r.headline}</p>
+          <p><a href={`/local-income-tax/${stateSlug(r.name)}/`}>Local income tax in {r.name} →</a></p>
+        </div>
+      </details>
+    ))}
+  </div>
   <p>
-    Worth checking against your own payslip: if you live in one of those six and work outside it, you owe
-    your home city money that nothing has withheld for you, and a bill you were not expecting is the usual
-    way people find out.
+    Ohio's is the one that changes the answer by direction rather than by amount: in {traps.length} of its
+    twenty largest cities the credit for tax paid to another city is capped below the city's own rate, so
+    a resident working elsewhere still gets a bill.
+    {' '}<a href="/local-income-tax/ohio/">The cities and the figures are on the Ohio page</a>.
   </p>
 
   <h2>The thirty-eight states with none</h2>

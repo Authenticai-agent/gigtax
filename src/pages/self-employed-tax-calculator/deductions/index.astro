@@ -1,0 +1,97 @@
+---
+/**
+ * The full deduction checklist, for every self-employed business.
+ *
+ * Lives on one page rather than being repeated on all forty profession pages:
+ * the content is identical by definition, so repeating it would be both padding
+ * and a duplicate-content failure. The profession pages carry what is
+ * distinctive about that trade and link here for everything universal.
+ */
+import Base from '../../../layouts/Base.astro';
+import Terms from '../../../components/Terms.astro';
+import { termsIn } from '../../../lib/plain';
+import { DEDUCTION_GROUPS, oftenMissed, totalDeductionCount } from '../../../lib/deductions';
+import { PROFESSIONS } from '../../../lib/professions';
+
+const missed = oftenMissed();
+const terms = termsIn(...DEDUCTION_GROUPS.flatMap((g) => g.items.map((i) => `${i.name} ${i.detail}`)));
+---
+
+<Base
+  title="Self-employed business deductions checklist (2026)"
+  description="A working checklist of business deductions for the self-employed in 2026 — including the Augusta rule, solo 401(k), health insurance and employing your children, with the 2026 limits."
+>
+  <div class="breadcrumbs">
+    <a href="/self-employed-tax-calculator/">By profession</a> / Deductions checklist
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>What a self-employed business can deduct</h1>
+    <p class="tagline">{totalDeductionCount()} lines, grouped by what they are — starting with the ones that save the most and get claimed the least.</p>
+  </section>
+
+  <p>
+    There is no official master list of deductible expenses, and there cannot be one. The statutory test
+    is whether a cost is <strong>ordinary and necessary</strong> for the trade you are actually in, which
+    means a drain camera is deductible for a plumber and not for a copywriter. So treat this as a
+    checklist rather than a definition: if something you spend money on is genuinely for the business and
+    is not on this page, that does not make it non-deductible.
+  </p>
+
+  <div class="callout">
+    <strong>Start here if you read nothing else</strong>
+    <p>
+      These {missed.length} are the ones people miss, and each is worth more than most of the everyday
+      expenses that get carefully receipted:
+    </p>
+    <ul class="checklist">
+      {missed.map((i) => <li>{i.name}</li>)}
+    </ul>
+  </div>
+
+  {DEDUCTION_GROUPS.map((g) => (
+    <section class="deduction-group">
+      <h2 id={g.key}>{g.title}</h2>
+      <p class="group-lead">{g.lead}</p>
+      <ul class="detail-list">
+        {g.items.map((i) => (
+          <li>
+            <span class="detail-name">{i.name}{i.oftenMissed && <span class="pill">often missed</span>}</span>
+            <span class="detail-body">{i.detail}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+
+  <h2>What is not deductible, however business-like it feels</h2>
+  <ul class="detail-list">
+    <li><span class="detail-name">Your own time</span><span class="detail-body">Work you do for the business unpaid is not a deduction. There is no rate at which your own hours become an expense.</span></li>
+    <li><span class="detail-name">Commuting</span><span class="detail-body">Home to your regular workplace is personal travel however far it is and however early you leave.</span></li>
+    <li><span class="detail-name">Ordinary clothing</span><span class="detail-body">If it is suitable to wear outside work it is not deductible, even where a client insists on it.</span></li>
+    <li><span class="detail-name">Client entertainment</span><span class="detail-body">Tickets and green fees stopped being deductible in 2018. A separately billed meal alongside can still qualify.</span></li>
+    <li><span class="detail-name">Fines and penalties</span><span class="detail-body">Parking tickets, traffic fines and late-filing penalties are never deductible, including ones incurred entirely at work.</span></li>
+    <li><span class="detail-name">Political contributions and lobbying</span><span class="detail-body">Not deductible as a business expense in any amount.</span></li>
+    <li><span class="detail-name">Money you never received</span><span class="detail-body">An unpaid invoice is only a bad debt if you had already reported it as income. On the cash basis you never did, so there is nothing to write off.</span></li>
+  </ul>
+
+  <h2>By profession</h2>
+  <p>
+    Everything above applies whatever you do. These pages add what is specific to one trade — the
+    equipment, the certifications and the rules that only bite in that line of work:
+  </p>
+  <ul class="link-columns">
+    {PROFESSIONS.map((p) => (
+      <li><a href={`/self-employed-tax-calculator/${p.slug}/`}>{p.name}</a></li>
+    ))}
+  </ul>
+
+  <Terms terms={terms} />
+
+  <p class="disclaimer">
+    General information about how these deductions work, not tax advice. Whether a particular expense is
+    deductible for you depends on facts this page does not have — check with a tax professional before
+    claiming anything listed here.
+  </p>
+</Base>
