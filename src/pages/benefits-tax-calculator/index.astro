@@ -1,0 +1,78 @@
+---
+/**
+ * Hub for the benefit and retirement calculators.
+ *
+ * The organising idea is that two completely different rules govern this whole
+ * area, and confusing them is the usual mistake: Social Security and SSDI turn
+ * on a combined-income formula, disability policies turn on who paid the
+ * premium. Neither has anything to do with the size of the benefit.
+ */
+import Base from '../../layouts/Base.astro';
+import { BENEFIT_PAGES } from '../../lib/benefits-copy';
+import { statesTaxingSocialSecurity } from '../../lib/household';
+import { states } from '../../data/states';
+
+const ssStates = statesTaxingSocialSecurity();
+---
+
+<Base
+  title="Benefit and retirement tax calculators (2026) — SSDI, disability, Social Security"
+  description="Calculators for how SSDI, short- and long-term disability, Social Security and 401(k) withdrawals are taxed in 2026 — separately and together."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Benefits and retirement</h1>
+    <p class="tagline">Benefit income is taxed by rules that look nothing like the rules for wages.</p>
+  </section>
+
+  <p>
+    Two rules govern almost everything here, and they have nothing in common. Social Security and SSDI
+    are taxed on a <strong>combined-income formula</strong> — half the benefit plus your other income,
+    tested against a threshold, and never more than 85% of the benefit taxable however high your income
+    goes. Disability policies are taxed on a <strong>premium question</strong> — who paid for the policy,
+    and whether the money that paid for it had already been taxed.
+  </p>
+  <p>
+    Neither rule has anything to do with how large the benefit is. Both are usually got wrong in the same
+    direction, which is why people are surprised in April rather than pleased.
+  </p>
+
+  <h2>Calculators</h2>
+  <dl class="rule-list">
+    {BENEFIT_PAGES.map((p) => (
+      <>
+        <dt><a href={`/benefits-tax-calculator/${p.slug}/`}>{p.h1}</a></dt>
+        <dd>{p.tagline}</dd>
+      </>
+    ))}
+  </dl>
+
+  <div class="callout">
+    <strong>The interaction that catches people</strong>
+    <p>
+      A benefit can become taxable without the benefit changing. The Social Security formula counts your
+      whole household's income, so a spouse taking on freelance work — or an employer-paid disability
+      policy starting — can make an SSDI benefit taxable that was tax-free the year before. The
+      <a href="/">household calculator</a> models everyone at once for exactly that reason.
+    </p>
+  </div>
+
+  <h2>The {ssStates.length} states that tax Social Security</h2>
+  <p>Everywhere else leaves it alone entirely, whatever your income:</p>
+  <ul class="link-columns">
+    {ssStates.map((c) => <li>{states[c].name}</li>)}
+  </ul>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/">Household calculator — everyone and everything at once</a></li>
+    <li><a href="/1099-tax-calculator/">1099 taxes by state</a></li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a></li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly payments</a></li>
+  </ul>
+
+  <p class="disclaimer">
+    General information about how these benefits are taxed, not tax advice. Check with a tax professional
+    before relying on any figure here.
+  </p>
+</Base>

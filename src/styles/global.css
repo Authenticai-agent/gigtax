@@ -254,6 +254,84 @@ main ol li { margin-bottom: .4rem; line-height: 1.68; }
 .source-cite { font-family: var(--mono); font-size: 12px; display: flex; gap: .5rem; align-items: baseline; flex-wrap: wrap; }
 .source-cite a { color: var(--accent); }
 
+/* ---------------------------------------------------------------------------
+ * Household calculator — the multi-person form.
+ *
+ * Each person is a fieldset so the grouping is real to a screen reader and not
+ * only visual, and each income line is a row that can be added and removed.
+ * ------------------------------------------------------------------------- */
+.person-block {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1rem 1.1rem 1.1rem; margin: 1.1rem 0; background: rgba(15, 14, 12, .015);
+}
+.person-block legend {
+  display: flex; align-items: center; gap: .6rem; padding: 0 .4rem;
+}
+.person-name {
+  font-family: var(--disp); font-weight: 700; font-size: 1rem;
+  border: none; border-bottom: 1.5px solid var(--border); background: transparent;
+  padding: .15rem .2rem; width: 11rem; color: var(--ink);
+}
+.person-name:focus-visible { outline: none; border-bottom-color: var(--accent); }
+
+.field-row { display: flex; flex-wrap: wrap; gap: .9rem; margin-bottom: .8rem; }
+.field-row > label, .income-line > label {
+  display: flex; flex-direction: column; gap: .25rem; flex: 1 1 11rem;
+  font-family: var(--mono); font-size: 11px; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--muted);
+}
+.field-row > label.check {
+  flex-direction: row; align-items: center; gap: .4rem; flex: 0 0 auto;
+  text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--ink);
+}
+.income-line > label.wide { flex: 1 1 100%; }
+.field-row input, .field-row select, .income-line input, .income-line select {
+  font-family: var(--mono); font-size: 14px; padding: .5rem .6rem;
+  border: 1px solid var(--border); border-radius: 4px; background: #fff; color: var(--ink);
+  text-transform: none; letter-spacing: 0;
+}
+.field-row input:focus-visible, .field-row select:focus-visible,
+.income-line input:focus-visible, .income-line select:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 1px;
+}
+
+.income-line {
+  display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-end;
+  padding: .8rem 0; border-top: 1px solid var(--border);
+}
+.income-line .field-note { flex: 1 1 100%; margin: 0; }
+
+.btn-secondary {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .04em;
+  background: transparent; color: var(--ink); border: 1.5px solid var(--ink);
+  border-radius: 4px; padding: .5rem 1rem; cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+.btn-secondary:hover { background: var(--ink); color: var(--paper); }
+.btn-secondary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn-link {
+  font-family: var(--mono); font-size: 11px; background: none; border: none;
+  color: var(--muted); cursor: pointer; text-decoration: underline; padding: .3rem .2rem;
+}
+.btn-link:hover { color: var(--accent); }
+.btn-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.result-notes {
+  margin-top: 1rem; padding-top: .9rem; border-top: 1px solid rgba(255,255,255,.2);
+  font-size: .9rem; line-height: 1.6;
+}
+.result-notes strong {
+  font-family: var(--disp); font-size: 10px; text-transform: uppercase;
+  letter-spacing: .12em; display: block; margin-bottom: .4rem; opacity: .75;
+}
+.result-notes ul { margin: 0 0 0 1.05rem; }
+.result-notes li { margin-bottom: .4rem; }
+
+@media (prefers-reduced-motion: reduce) { .btn-secondary { transition: none; } }
+@media (max-width: 720px) {
+  .income-line > label, .field-row > label { flex: 1 1 100%; }
+}
+
 @media (max-width: 720px) {
   main { padding: 1.25rem 1rem 4rem; }
   .hero { padding: 1.75rem 0 1.25rem; }
