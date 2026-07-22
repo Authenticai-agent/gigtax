@@ -131,6 +131,84 @@ ul { margin: 0 0 1rem 1.25rem; }
 .link-columns { columns: 2; font-family: var(--mono); font-size: 13px; }
 .link-columns li { margin-bottom: .3rem; break-inside: avoid; }
 
+
+/* ---------------------------------------------------------------------------
+ * Reference lists.
+ *
+ * .rule-list was being used on the profession and local-tax pages with no
+ * styles behind it at all, so a <dl> of term/definition pairs rendered as
+ * undifferentiated paragraphs sitting next to bulleted <ul>s — the same page
+ * mixing two list treatments for the same kind of content.
+ *
+ * All three lists below share one structure: a term in the display face, its
+ * explanation in the body face, and a hairline rule between entries instead of
+ * a bullet. Bullets are for short items you scan; a rule is for entries you
+ * read. Numerals are tabular throughout so figures line up down the column.
+ * ------------------------------------------------------------------------- */
+.rule-list { margin: 1.1rem 0 1.5rem; }
+.rule-list dt {
+  font-family: var(--disp); font-weight: 700; font-size: .95rem;
+  letter-spacing: -.01em; color: var(--ink);
+  padding-top: .85rem; border-top: 1px solid var(--border);
+}
+.rule-list dt:first-child { padding-top: 0; border-top: none; }
+.rule-list dd {
+  margin: .3rem 0 .85rem; max-width: 70ch;
+  font-size: .94rem; line-height: 1.68; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Name-then-explanation entries, where the name is not a heading. */
+.detail-list { list-style: none; margin: 1rem 0 1.5rem; }
+.detail-list li {
+  padding: .85rem 0; border-top: 1px solid var(--border);
+  display: grid; gap: .25rem; max-width: 74ch;
+}
+.detail-list li:first-child { border-top: none; padding-top: .2rem; }
+.detail-name {
+  font-family: var(--disp); font-weight: 700; font-size: .95rem; letter-spacing: -.01em;
+  display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap;
+}
+.detail-body { font-size: .94rem; line-height: 1.68; font-variant-numeric: tabular-nums; }
+
+/* "often missed" and similar markers. Not a colour-only signal — it reads as
+   words, so it survives greyscale and a screen reader alike. */
+.pill {
+  font-family: var(--mono); font-size: 9.5px; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--accent);
+  background: rgba(201, 74, 30, .09); border-radius: 3px;
+  padding: .15rem .4rem; white-space: nowrap;
+}
+
+/* Short scannable items — the checklist inside a callout. */
+.checklist { list-style: none; margin: .5rem 0 0; columns: 2; column-gap: 2rem; }
+.checklist li {
+  position: relative; padding-left: 1.1rem; margin-bottom: .3rem;
+  break-inside: avoid; font-size: .9rem; line-height: 1.5;
+}
+.checklist li::before {
+  content: ''; position: absolute; left: 0; top: .55em;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+}
+
+.deduction-group { margin-top: 2.25rem; }
+.deduction-group h2 { scroll-margin-top: 5rem; }
+.group-lead { color: var(--muted); font-size: .93rem; margin-bottom: .4rem; max-width: 70ch; }
+
+/* Plain prose lists — give them the same rhythm as everything else rather than
+   the browser default, which sits too tight against the paragraph above. */
+main ul:not(.link-columns):not(.checklist):not(.detail-list):not(.tile-grid),
+main ol { margin: .75rem 0 1.25rem 1.15rem; max-width: 72ch; }
+main ul:not(.link-columns):not(.checklist):not(.detail-list):not(.tile-grid) li,
+main ol li { margin-bottom: .4rem; line-height: 1.68; }
+.callout ul { margin: .5rem 0 .2rem 1.05rem; }
+.callout ul li { margin-bottom: .25rem; }
+.callout p { margin-bottom: .4rem; max-width: 70ch; }
+
+@media (max-width: 720px) {
+  .checklist { columns: 1; }
+}
+
 @media (max-width: 720px) {
   main { padding: 1.25rem 1rem 4rem; }
   .hero { padding: 1.75rem 0 1.25rem; }

@@ -1,0 +1,231 @@
+{
+  "_meta": {
+    "purpose": "Self-employed trades and services with no deduction profile in the legacy dataset — building, mechanical, teaching, creative and personal-service work.",
+    "authored": "2026-07",
+    "whyItIsNotResearchData": "legacy/data/config.json holds 23 professions and none of the building or mechanical trades. These entries list DEDUCTION CATEGORIES and practice notes only. They contain no rate, limit, threshold or dollar figure — every number on a trade page still comes from selfEmploymentDeductions in the verified dataset."
+  },
+  "general_contractor": {
+    "keyDeductions": [
+      "tools",
+      "vehicle",
+      "subcontractors_1099",
+      "liability_insurance",
+      "permits_and_licences",
+      "materials_and_supplies",
+      "equipment_rental",
+      "workers_comp",
+      "jobsite_travel",
+      "safety_gear"
+    ],
+    "note": "The line that decides a contractor's return is subcontractors. Pay anyone $600 or more in a year and you must issue a 1099-NEC, and misclassifying a worker who should have been an employee is the most expensive mistake in the trade. Materials you buy and bill on are both income and a deduction — never one without the other."
+  },
+  "electrician": {
+    "keyDeductions": [
+      "tools",
+      "vehicle",
+      "licensing_fees_state",
+      "continuing_education",
+      "liability_insurance",
+      "materials_and_supplies",
+      "safety_gear",
+      "equipment",
+      "phone"
+    ],
+    "note": "Hand tools and testers are deductible in the year you buy them; a van fit-out is a vehicle improvement and is depreciated. State licensing and the continuing education hours that renew it are both deductible, because they maintain a licence you already hold."
+  },
+  "plumber": {
+    "keyDeductions": [
+      "tools",
+      "vehicle",
+      "licensing_fees_state",
+      "continuing_education",
+      "liability_insurance",
+      "materials_and_supplies",
+      "equipment",
+      "safety_gear",
+      "phone"
+    ],
+    "note": "Emergency call-outs make mileage the largest single deduction for most plumbers, and it is the one least often logged properly. Specialist equipment — drain cameras, jetters, press tools — is Section 179 property and can be written off in full the year it goes into service."
+  },
+  "hvac_technician": {
+    "keyDeductions": [
+      "tools",
+      "vehicle",
+      "licensing_fees_state",
+      "epa_certification",
+      "continuing_education",
+      "liability_insurance",
+      "equipment",
+      "materials_and_supplies",
+      "safety_gear"
+    ],
+    "note": "EPA Section 608 certification and the state licence behind it are deductible professional costs. Refrigerant and parts inventory bought for a job are deductible when used; stock held at year end is inventory rather than an expense."
+  },
+  "landscaper": {
+    "keyDeductions": [
+      "equipment",
+      "vehicle",
+      "trailer",
+      "fuel",
+      "materials_and_supplies",
+      "liability_insurance",
+      "seasonal_labour",
+      "storage_yard_rent"
+    ],
+    "note": "Mowers, trimmers and trailers are Section 179 property. Seasonal crews are usually employees rather than contractors — being paid weekly, using your equipment and working your schedule are all signs of employment, and the penalty for getting it wrong is back payroll tax."
+  },
+  "cleaner": {
+    "keyDeductions": [
+      "supplies",
+      "equipment",
+      "vehicle",
+      "liability_insurance",
+      "bonding",
+      "uniforms",
+      "marketing",
+      "subcontractors_1099"
+    ],
+    "note": "Cleaning supplies and equipment are straightforward; bonding and liability cover are what clients ask for and both are deductible. Mileage between client properties counts, but the first trip from home to your first job of the day is commuting and does not."
+  },
+  "handyman": {
+    "keyDeductions": [
+      "tools",
+      "vehicle",
+      "materials_and_supplies",
+      "liability_insurance",
+      "permits_and_licences",
+      "equipment",
+      "marketing",
+      "phone"
+    ],
+    "note": "Most handyman work sits below the licensing threshold, but the threshold is set by each state and by the value of the job — exceed it without a licence and the work may be unenforceable as well as uninsured. Materials billed to the customer are income and a deduction both."
+  },
+  "painter": {
+    "keyDeductions": [
+      "materials_and_supplies",
+      "equipment",
+      "vehicle",
+      "liability_insurance",
+      "safety_gear",
+      "subcontractors_1099",
+      "equipment_rental",
+      "certification_fees"
+    ],
+    "note": "Sprayers, scaffolding and lifts are usually cheaper to hire than to own, and hire costs are deductible in full in the year you pay them with no depreciation to track."
+  },
+  "roofer": {
+    "keyDeductions": [
+      "materials_and_supplies",
+      "equipment_rental",
+      "vehicle",
+      "liability_insurance",
+      "workers_comp",
+      "safety_gear",
+      "subcontractors_1099",
+      "waste_disposal"
+    ],
+    "note": "Workers' compensation is the dominant insurance cost in roofing and is fully deductible. Fall-protection equipment is both a legal requirement and an ordinary business expense."
+  },
+  "welder": {
+    "keyDeductions": [
+      "equipment",
+      "materials_and_supplies",
+      "vehicle",
+      "safety_gear",
+      "certification_fees",
+      "liability_insurance",
+      "equipment_rental"
+    ],
+    "note": "Welding certifications have to be renewed and the renewal is deductible. Gas, rod and consumables are ordinary supplies; the machine itself is Section 179 property."
+  },
+  "auto_mechanic": {
+    "keyDeductions": [
+      "tools",
+      "equipment",
+      "shop_rent",
+      "materials_and_supplies",
+      "liability_insurance",
+      "certification_fees",
+      "uniforms",
+      "waste_disposal"
+    ],
+    "note": "Tool debt is the defining feature of this trade. Tools bought on a truck account are deductible when you buy them, not when you finish paying for them, and the interest on the account is deductible separately."
+  },
+  "teacher_tutor": {
+    "keyDeductions": [
+      "educational_materials_books",
+      "home_office_or_tutoring_space",
+      "laptop",
+      "software_subscriptions",
+      "professional_development",
+      "marketing",
+      "mileage_if_in_person",
+      "professional_memberships"
+    ],
+    "note": "The $300 educator expense deduction is for employed teachers in a school. If you teach for yourself — private tuition, online courses, music lessons — you are not limited to $300; you deduct the actual cost as a business expense, which is almost always more."
+  },
+  "musician": {
+    "keyDeductions": [
+      "instruments_section179",
+      "equipment",
+      "vehicle",
+      "studio_rent",
+      "marketing",
+      "professional_development",
+      "union_dues",
+      "travel"
+    ],
+    "note": "Instruments are Section 179 property, and a professional instrument that also gets played at home is deductible at the business-use percentage. Touring costs are business travel; the meals within them are only half deductible."
+  },
+  "translator": {
+    "keyDeductions": [
+      "software_subscriptions",
+      "computer",
+      "home_office",
+      "professional_development",
+      "professional_memberships",
+      "internet_pct",
+      "reference_materials"
+    ],
+    "note": "Translation memory and terminology software are ordinary subscriptions. Certification through a professional body is deductible as maintaining an existing skill, provided you are already working in the field."
+  },
+  "videographer": {
+    "keyDeductions": [
+      "camera_lenses_section179",
+      "lighting",
+      "editing_software",
+      "equipment",
+      "vehicle",
+      "studio_rent",
+      "travel",
+      "equipment_rental"
+    ],
+    "note": "Cameras, lenses, drones and lighting are Section 179 property at the business-use percentage. Hiring gear for a single shoot is deductible in full and avoids the business-use argument entirely."
+  },
+  "dog_groomer": {
+    "keyDeductions": [
+      "equipment",
+      "supplies",
+      "vehicle",
+      "liability_insurance",
+      "shop_rent",
+      "certification_fees",
+      "uniforms",
+      "marketing"
+    ],
+    "note": "Mobile groomers deduct the van conversion as a vehicle improvement and depreciate it, while the grooming equipment inside is Section 179 property in its own right — two different treatments in the same vehicle."
+  },
+  "caterer": {
+    "keyDeductions": [
+      "food_and_ingredients",
+      "equipment",
+      "vehicle",
+      "liability_insurance",
+      "permits_and_licences",
+      "staff_wages",
+      "equipment_rental",
+      "uniforms"
+    ],
+    "note": "Food bought for a job is cost of goods sold rather than a general expense, which matters for how it appears on your return. The 50% limit on business meals does not apply to it — that limit is about meals you eat, not food you sell."
+  }
+}

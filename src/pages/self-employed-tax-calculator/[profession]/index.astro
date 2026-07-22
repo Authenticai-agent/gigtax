@@ -22,7 +22,8 @@ const data = professionData(p.key);
 const deductions = deductionsFor(p.key);
 const withRules = deductions.filter((d) => d.rule);
 const plain = deductions.filter((d) => !d.rule);
-const rules = uniqueRules(p.key);
+// Farming's deductions ARE its unique rules, so listing both repeated all nine.
+const rules = data.keyDeductions ? uniqueRules(p.key) : [];
 const ladder = worthLadder('TX');
 const mid = ladder[1];
 // "OTR truck driver".toLowerCase() gives "otr truck driver". Lowercase the first
@@ -87,7 +88,7 @@ const description = `What a self-employed ${p.name.toLowerCase()} can deduct in 
         Ordinary and necessary business expenses, deductible in full in the year you pay them, provided
         they are genuinely for the business:
       </p>
-      <ul class="link-columns" data-source={`professionals → ${p.key}.keyDeductions`}>
+      <ul class="checklist" data-source={`professionals → ${p.key}.keyDeductions`}>
         {plain.map((d) => <li>{d.label}</li>)}
       </ul>
     </>
@@ -113,6 +114,11 @@ const description = `What a self-employed ${p.name.toLowerCase()} can deduct in 
       </dl>
     </>
   )}
+
+  <p>
+    That is what is specific to this trade. The larger deductions are the universal ones —
+    {' '}<a href="/self-employed-tax-calculator/deductions/">see the full checklist</a>.
+  </p>
 
   <h2>What each deduction is worth to you</h2>
   <p>
@@ -146,6 +152,7 @@ const description = `What a self-employed ${p.name.toLowerCase()} can deduct in 
 
   <h2>Related</h2>
   <ul class="link-columns">
+    <li><a href="/self-employed-tax-calculator/deductions/">Full deductions checklist</a></li>
     <li><a href="/self-employed-tax-calculator/">Every profession</a></li>
     <li><a href="/1099-tax-calculator/">1099 taxes by state</a></li>
     <li><a href="/quarterly-tax-calculator/">Quarterly payments</a></li>

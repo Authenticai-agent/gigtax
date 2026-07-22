@@ -114,13 +114,29 @@ const platformsTs =
   `export const platformList: PlatformSummary[] = ${j(summaries)};\n`;
 writeFileSync(join(outDir, 'platforms.ts'), platformsTs);
 
-// ---- professionals.ts : the 23 trade deduction profiles, verbatim ----
+// ---- professionals.ts : the legacy profiles, plus the authored trades overlay ----
+/**
+ * legacy/data/config.json carries 23 professions and none of the building or
+ * mechanical trades — no electrician, no plumber, no HVAC. Those live in their
+ * own overlay so this stays reproducible and so the boundary is explicit: the
+ * overlay adds deduction CATEGORIES and practice notes, never a figure.
+ */
+const tradesPath = join(root, 'src/data/overrides/professions-trades.json');
+const trades = JSON.parse(readFileSync(tradesPath, 'utf8'));
+const allProfessions = structuredClone(cfg.professionals);
+for (const [key, entry] of Object.entries(trades)) {
+  if (key.startsWith('_')) continue;
+  if (allProfessions[key]) throw new Error(`trade overlay would overwrite legacy profession ${key}`);
+  allProfessions[key] = entry;
+}
+console.log(`  trade professions added: ${Object.keys(trades).length - 1}`);
+
 const professionalsTs =
-  banner('Deduction slugs, notes and unique rules copied verbatim; labels are applied in lib/professions.ts.') +
+  banner('Legacy deduction slugs, notes and unique rules copied verbatim, MERGED with the authored trades in overrides/professions-trades.json. Labels are applied in lib/professions.ts.') +
   `export const VERIFIED = ${j(VERIFIED)} as const;\n\n` +
-  `export const professionals = ${j(cfg.professionals)};\n\n` +
+  `export const professionals = ${j(allProfessions)};\n\n` +
   `export default professionals;\n`;
 writeFileSync(join(outDir, 'professionals.ts'), professionalsTs);
 
 console.log('Wrote src/data/{federal,states,platforms,professionals}.ts');
-console.log(`  states: ${Object.keys(cfg.states).length}, platforms: ${summaries.length}, professions: ${Object.keys(cfg.professionals).length}, verified: ${VERIFIED}`);
+console.log(`  states: ${Object.keys(cfg.states).length}, platforms: ${summaries.length}, professions: ${Object.keys(allProfessions).length}, verified: ${VERIFIED}`);
