@@ -1,0 +1,157 @@
+---
+/**
+ * RSU × state. RSUs are the one equity instrument with a real state dimension:
+ * a vest is ordinary wages, so the state taxes it, and the sourcing rules when
+ * you move mid-vest are where the money actually goes wrong.
+ *
+ * The other four instruments are federal questions — AMT, holding periods, the
+ * Section 1202 exclusion — so they stay as hubs.
+ */
+import Base from '../../../layouts/Base.astro';
+import { states, stateList } from '../../../data/states';
+import { siblingStates } from '../../../data/neighbors';
+import { formatMoney, formatPct } from '../../../lib/tax-engine';
+import { stateSlug } from '../../../lib/slug';
+import { describeStateFacts, neighbourComparison, neighbourSentences } from '../../../lib/state-facts';
+import { rsuOutcome, rsuLadder, describeRsuState, equityData } from '../../../lib/equity';
+import type { StateData } from '../../../data/types';
+
+const VEST = 60000;
+const SALARY = 180000;
+
+export function getStaticPaths() {
+  return stateList.map(([code, s]) => ({
+    params: { equity: 'rsu-tax-calculator', state: stateSlug(s.name) },
+    props: { code, state: s },
+  }));
+}
+
+interface Props { code: string; state: StateData }
+const { code, state } = Astro.props as Props;
+
+const ex = rsuOutcome(VEST, SALARY, code);
+const ladder = rsuLadder(VEST, code);
+const stateParas = describeRsuState(code, state, ex);
+const facts = describeStateFacts(code, state, 'a vest');
+const neighbours = neighbourComparison(code, SALARY + VEST);
+const neighbourLines = neighbourSentences(state, neighbours);
+const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);
+const noTax = state.noIncomeTax === true || state.type === 'none';
+const d = equityData('rsu');
+
+const title = `RSU tax calculator — ${state.name} (2026)`;
+const description = `What an RSU vest costs in ${state.name} for 2026: the federal withholding gap, ${state.name} income tax on the vest, and the sourcing rule if you moved.`;
+---
+
+<Base title={title} description={description}>
+  <div class="breadcrumbs">
+    <a href="/rsu-tax-calculator/">RSU tax</a> / {state.name}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year · {state.name}</p>
+    <h1>RSU tax in {state.name}</h1>
+    <p class="tagline">
+      {noTax
+        ? `${state.name} takes nothing from a vest, but your employer still under-withholds the federal share — ${formatMoney(ex.shortfall)} of it on the example below.`
+        : `A ${formatMoney(VEST)} vest costs ${formatMoney(ex.stateTax)} in ${state.name} tax on top of the federal bill — and the federal share withheld is ${formatMoney(ex.shortfall)} short.`}
+    </p>
+  </section>
+
+  <h2>What a {formatMoney(VEST)} vest actually costs in {state.name}</h2>
+  <p>
+    A <strong>single filer</strong> already earning {formatMoney(SALARY)} in salary. The vest stacks on
+    top of that, so it fills the highest brackets rather than starting at the bottom:
+  </p>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Withheld by your employer at {formatPct(ex.supplementalRate)}</td><td>{formatMoney(ex.withheld)}</td></tr>
+      <tr><td>Federal tax the vest actually costs</td><td>{formatMoney(ex.actualFederal)}</td></tr>
+      <tr class="total"><td>Federal shortfall — owed in April</td><td>{formatMoney(ex.shortfall)}</td></tr>
+      <tr><td>{state.name} income tax on the vest</td><td>{noTax ? 'none' : formatMoney(ex.stateTax)}</td></tr>
+      <tr class="total"><td>Total still to find</td><td>{formatMoney(ex.shortfall + ex.stateTax)}</td></tr>
+    </tbody>
+  </table>
+  <p data-source="data/federal.ts → equityCompensation.rsu.taxEvent1_vesting">
+    The withholding rate is flat — {formatPct(d.taxEvent1_vesting.withholdingRate_supplemental_under1M)} below
+    $1 million of supplemental pay — and takes no account of your salary. That is why the gap grows the
+    more you earn.
+  </p>
+
+  <h2>The gap widens with salary</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>Salary</th><th>Withheld</th><th>Actually owed</th><th>Shortfall</th><th>{state.name} tax</th></tr>
+    </thead>
+    <tbody>
+      {ladder.map((r) => (
+        <tr>
+          <td>{formatMoney(r.salary)}</td>
+          <td>{formatMoney(r.withheld)}</td>
+          <td>{formatMoney(r.actualFederal)}</td>
+          <td>{formatMoney(r.shortfall)}</td>
+          <td>{noTax ? '—' : formatMoney(r.stateTax)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>How {state.name} treats a vest</h2>
+  {stateParas.map((p) => <p data-source={`data/federal.ts → equityCompensation.multiStateAllocation`}>{p}</p>)}
+
+  {facts.length > 0 && (
+    <>
+      <h2>{state.name} specifics that change the number</h2>
+      {facts.map((f) => <p data-source={`data/states.ts → stateMetadata, ${code}.note`}>{f}</p>)}
+    </>
+  )}
+
+  {neighbours.length > 0 && (
+    <>
+      <h2>What the same vest costs around {state.name}</h2>
+      <p>Total income of {formatMoney(SALARY + VEST)} in the states {state.name} borders:</p>
+      <table class="data-table">
+        <thead><tr><th>State</th><th>Its tax</th><th>vs {state.name}</th></tr></thead>
+        <tbody>
+          {neighbours.map((n) => (
+            <tr>
+              <td><a href={`/rsu-tax-calculator/${n.slug}/`}>{n.name}</a></td>
+              <td>{n.noTax ? 'No income tax' : formatMoney(n.tax)}</td>
+              <td>{n.delta === 0 ? 'same' : `${n.delta < 0 ? '−' : '+'}${formatMoney(Math.abs(n.delta))}`}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <ul>{neighbourLines.map((l) => <li data-source="lib/tax-engine.ts calcStateTax()">{l}</li>)}</ul>
+    </>
+  )}
+
+  <h2>RSU questions in {state.name}</h2>
+  <div class="faq">
+    <h3>Should I sell at vest?</h3>
+    <p>
+      Selling immediately raises the cash for the {formatMoney(ex.shortfall + ex.stateTax)} you still owe
+      and leaves no capital gain, because the sale price equals the price you were already taxed on.
+      Holding turns it into an investment decision — any further gain is a capital gain, and any fall is
+      a loss you take on shares you were already taxed on at the higher value.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>I moved to {state.name} mid-vest — who taxes it?</h3>
+    <p data-source="data/federal.ts → equityCompensation.multiStateAllocation">
+      Both states, split by workdays. {equityData('rsu') && 'The income is allocated across the vesting period, not assigned to wherever you happened to live on the vesting date.'}
+      {' '}The state you left can still claim its share, and California, New York and Massachusetts
+      pursue it hardest.
+    </p>
+  </div>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/rsu-tax-calculator/">RSU tax — the federal picture</a></li>
+    <li><a href={`/paycheck-calculator/${stateSlug(state.name)}/`}>{state.name} paycheck calculator</a></li>
+    <li><a href="/iso-tax-calculator/">ISOs and the AMT trap</a></li>
+    {siblings.map((s) => (
+      <li><a href={`/rsu-tax-calculator/${stateSlug(s!.name)}/`}>RSU tax in {s!.name}</a></li>
+    ))}
+  </ul>
+</Base>

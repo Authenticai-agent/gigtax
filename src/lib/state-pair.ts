@@ -22,9 +22,10 @@ import type { StateData } from '../data/types';
 const noTax = (s: StateData) => s.noIncomeTax === true || s.type === 'none';
 
 /**
- * High-value home→work pairs to generate: real commuter corridors (bordering
- * states) plus every reciprocity pair (both directions) plus the Arizona WEC
- * pairs. Quality-first per the migration plan — no all-pairs matrix.
+ * Every home→work combination worth considering: real commuter corridors
+ * (bordering states), every reciprocity pair in both directions, and the
+ * Arizona WEC pairs. These are no longer pages — they are grouped by home state
+ * into one page each — but the pair is still the unit the tax rules apply to.
  */
 function allCandidatePairs(): Array<[string, string]> {
   const set = new Set<string>();
@@ -34,56 +35,8 @@ function allCandidatePairs(): Array<[string, string]> {
   return [...set].map((s) => s.split('>') as [string, string]);
 }
 
-/**
- * A pair collapses when one side has no income tax, because that side then
- * contributes nothing but its name and every pair sharing the other side reads
- * identically. Both directions collapse, for the same reason:
- *
- *  - work state has none  -> Idaho→Nevada == Idaho→Wyoming == Idaho→Washington
- *  - home state has none  -> Florida→Alabama == Tennessee→Alabama
- *
- * Reciprocity pairs never collapse: they carry a form number and conditions.
- */
-function collapsesOnWork(homeCode: string, workCode: string): boolean {
-  return noTax(states[workCode]) && !hasReciprocity(homeCode, workCode);
-}
-
 function collapsesOnHome(homeCode: string, workCode: string): boolean {
   return !noTax(states[workCode]) && noTax(states[homeCode]) && !hasReciprocity(homeCode, workCode);
-}
-
-/**
- * The plain credit case: both states tax wages, no agreement between them, no
- * Arizona WEC. The answer is formulaic — file a nonresident return, claim the
- * credit at home, end up paying roughly the higher of the two rates — and only
- * two numbers change between one such pair and the next. Ninety-nine of these
- * carried a median of 17 trigrams no sibling had. They collapse to one page per
- * home state, which can answer for every neighbour at once and compare them.
- */
-function collapsesOnCredit(homeCode: string, workCode: string): boolean {
-  const azWec = workCode === 'AZ'
-    && (AZ_WEC_WITHHOLDING_EXEMPTION.eligibleResidentStates as readonly string[]).includes(homeCode);
-  return !noTax(states[homeCode]) && !noTax(states[workCode])
-    && !hasReciprocity(homeCode, workCode) && !azWec;
-}
-
-/**
- * Home→work pairs that deserve their own page.
- *
- * Excludes pairs whose work state has no income tax. Those are not distinct
- * pages: living in Idaho and working in Nevada has the same answer as working in
- * Wyoming or Washington, because a work state that taxes nothing contributes
- * nothing but its name. The quality gate scored those at 81–84% against each
- * other. They are served instead by one `noTaxWorkPages()` entry per home state.
- *
- * The mirror case — home state has no income tax, work state does — is KEPT,
- * because there the work state's rate is the entire answer and it differs for
- * every work state.
- */
-export function highValuePairs(): Array<[string, string]> {
-  return allCandidatePairs().filter(
-    ([h, w]) => !collapsesOnWork(h, w) && !collapsesOnHome(h, w) && !collapsesOnCredit(h, w),
-  );
 }
 
 /**
@@ -120,47 +73,7 @@ export function homeCommutePages(): HomeCommute[] {
 }
 
 export function homeCommuteSlug(homeCode: string): string {
-  return `living-in-${stateSlugFn(states[homeCode].name)}-working-in-another-state`;
-}
-
-/** One entry per home state with ordinary credit-case neighbours. */
-export function creditPages(): Array<{ homeCode: string; workCodes: string[] }> {
-  const byHome = new Map<string, string[]>();
-  for (const [h, w] of allCandidatePairs()) {
-    if (!collapsesOnCredit(h, w)) continue;
-    if (!byHome.has(h)) byHome.set(h, []);
-    byHome.get(h)!.push(w);
-  }
-  return [...byHome.entries()]
-    .map(([homeCode, workCodes]) => ({
-      homeCode,
-      workCodes: workCodes.sort((a, b) => states[a].name.localeCompare(states[b].name)),
-    }))
-    .sort((a, b) => states[a.homeCode].name.localeCompare(states[b.homeCode].name));
-}
-
-/** Slug for a collapsed credit page. */
-export function creditSlug(homeCode: string): string {
-  return `living-in-${stateSlugFn(states[homeCode].name)}-working-in-a-neighbouring-state`;
-}
-
-/**
- * One entry per home state that borders at least one no-income-tax state:
- * the home state and every no-tax work state it reaches.
- */
-export function noTaxWorkPages(): Array<{ homeCode: string; workCodes: string[] }> {
-  const byHome = new Map<string, string[]>();
-  for (const [h, w] of allCandidatePairs()) {
-    if (!collapsesOnWork(h, w)) continue;
-    if (!byHome.has(h)) byHome.set(h, []);
-    byHome.get(h)!.push(w);
-  }
-  return [...byHome.entries()]
-    .map(([homeCode, workCodes]) => ({
-      homeCode,
-      workCodes: workCodes.sort((a, b) => states[a].name.localeCompare(states[b].name)),
-    }))
-    .sort((a, b) => states[a.homeCode].name.localeCompare(states[b.homeCode].name));
+  return stateSlugFn(states[homeCode].name);
 }
 
 /** The mirror: one entry per work state reachable from a no-income-tax state. */
@@ -177,16 +90,6 @@ export function noTaxHomePages(): Array<{ workCode: string; homeCodes: string[] 
       homeCodes: homeCodes.sort((a, b) => states[a].name.localeCompare(states[b].name)),
     }))
     .sort((a, b) => states[a.workCode].name.localeCompare(states[b.workCode].name));
-}
-
-/** Slug for a collapsed page: living-in-idaho-working-in-a-no-income-tax-state. */
-export function noTaxWorkSlug(homeCode: string): string {
-  return `living-in-${stateSlugFn(states[homeCode].name)}-working-in-a-no-income-tax-state`;
-}
-
-/** Slug for the mirror: living-in-a-no-income-tax-state-working-in-alabama. */
-export function noTaxHomeSlug(workCode: string): string {
-  return `living-in-a-no-income-tax-state-working-in-${stateSlugFn(states[workCode].name)}`;
 }
 
 export { stateSlug } from './slug';
@@ -262,39 +165,6 @@ export function pairOutcome(homeCode: string, workCode: string, income = 70000, 
     home, work, homeCode, workCode, type, income,
     workTax, homeTaxBeforeCredit, credit, homeTaxAfterCredit, totalStateTax,
     exemptionForm, headline, explanation,
-  };
-}
-
-/**
- * The same pair at three income levels. Two pages that share a work state — say
- * Virginia→Maryland and West Virginia→Maryland — differ only in the home state,
- * so the figures that actually separate them are the home-state ones, and they
- * separate further as income rises through different brackets.
- */
-export function pairLadder(homeCode: string, workCode: string, incomes = [45000, 70000, 120000]): PairOutcome[] {
-  return incomes.map((income) => pairOutcome(homeCode, workCode, income));
-}
-
-/**
- * What a reciprocity pair would cost WITHOUT the agreement: the work state
- * would tax the wages, the home state would credit it back, and the net would
- * be the higher of the two rates. Quantifies what the agreement is worth, which
- * is different for every pair and is the question behind "does this matter to
- * me".
- */
-export function reciprocityWorth(homeCode: string, workCode: string, income = 70000, status = 'single') {
-  const workTax = calcStateTax(income, workCode, undefined, status).tax;
-  const homeTax = calcStateTax(income, homeCode, undefined, status).tax;
-  const credit = Math.min(workTax, homeTax);
-  const withoutAgreement = workTax + Math.max(0, homeTax - credit);
-  return {
-    workTax,
-    homeTax,
-    withoutAgreement,
-    // What the agreement saves in cash is usually nothing — the credit already
-    // prevents double taxation. What it saves is the second return, plus any
-    // cash-flow gap where the work state withholds at a higher rate all year.
-    cashDifference: withoutAgreement - homeTax,
   };
 }
 

@@ -1,0 +1,153 @@
+---
+/**
+ * One hub per equity instrument. These are federal questions — AMT, holding
+ * periods, the Section 1202 exclusion — so only RSUs get a state layer, where
+ * vesting income is taxed as ordinary state wages.
+ */
+import Base from '../../layouts/Base.astro';
+import { stateList } from '../../data/states';
+import { stateSlug } from '../../lib/slug';
+import { formatMoney } from '../../lib/tax-engine';
+import { INSTRUMENTS, instrumentFor, equityData, rsuOutcome } from '../../lib/equity';
+
+export function getStaticPaths() {
+  return INSTRUMENTS.map((i) => ({ params: { equity: i.slug }, props: { slug: i.slug } }));
+}
+
+interface Props { slug: string }
+const { slug } = Astro.props as Props;
+const inst = instrumentFor(slug)!;
+const d = equityData(inst.key);
+
+const EXAMPLE_VEST = 60000;
+const EXAMPLE_SALARY = 180000;
+const rsu = inst.key === 'rsu' ? rsuOutcome(EXAMPLE_VEST, EXAMPLE_SALARY, 'CA') : null;
+
+const title = `${inst.label} tax calculator (2026) — ${inst.trap}`;
+const description = `How ${inst.label}s are taxed in 2026, and the mistake that costs the most: ${inst.trap}.`;
+---
+
+<Base title={title} description={description}>
+  <div class="breadcrumbs"><a href="/">Home</a> / Equity / {inst.label}</div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year · equity compensation</p>
+    <h1>{d.label ?? inst.label} tax</h1>
+    <p class="tagline">{inst.lead}</p>
+  </section>
+
+  <div class="callout">
+    <strong>Two taxable events, not one</strong>
+    {equityData('_overview') as unknown as string || 'Equity compensation creates two taxable events: ordinary income when shares vest or options are exercised, and capital gain or loss when they are sold. Misunderstanding that two-layer structure is the most expensive equity tax mistake.'}
+  </div>
+
+  {inst.key === 'rsu' && rsu && (
+    <>
+      <h2>The withholding gap</h2>
+      <p data-source="data/federal.ts → equityCompensation.rsu.taxEvent1_vesting">
+        Your employer withholds federal tax on a vest at a flat supplemental rate —
+        {' '}{(d.taxEvent1_vesting.withholdingRate_supplemental_under1M * 100).toFixed(0)}% below $1 million,
+        {' '}{(d.taxEvent1_vesting.withholdingRate_supplemental_over1M * 100).toFixed(0)}% above it. That is
+        not your marginal rate, and for anyone in the higher brackets it is not close.
+      </p>
+      <p>
+        On {formatMoney(EXAMPLE_VEST)} of vesting stock for someone already earning
+        {' '}{formatMoney(EXAMPLE_SALARY)}: the employer withholds {formatMoney(rsu.withheld)}, the vest
+        actually costs {formatMoney(rsu.actualFederal)} in federal tax, and the difference —
+        {' '}<strong>{formatMoney(rsu.shortfall)}</strong> — turns up as a bill in April.
+      </p>
+      <p data-source="data/federal.ts → equityCompensation.rsu">{d.taxEvent1_vesting.withholdingRisk}</p>
+    </>
+  )}
+
+  {inst.key === 'iso' && (
+    <>
+      <h2>Why an exercise you never sold can still cost you</h2>
+      <p data-source="data/federal.ts → equityCompensation.iso">
+        Exercising an ISO costs nothing in regular tax. It does create an AMT preference item:
+        {' '}{d.taxEvent1_exercise.amtAtExercise.bargainElement}. For 2026 the AMT exemption is
+        {' '}{formatMoney(d.taxEvent1_exercise.amtAtExercise.amtExemption2026_single)} single and
+        {' '}{formatMoney(d.taxEvent1_exercise.amtAtExercise.amtExemption2026_mfj)} married filing jointly,
+        phasing out from {formatMoney(d.taxEvent1_exercise.amtAtExercise.amtPhaseoutStart_single)} and
+        {' '}{formatMoney(d.taxEvent1_exercise.amtAtExercise.amtPhaseoutStart_mfj)} respectively. AMT runs at
+        {' '}{(d.taxEvent1_exercise.amtAtExercise.amtRate_tier1 * 100).toFixed(0)}% and
+        {' '}{(d.taxEvent1_exercise.amtAtExercise.amtRate_tier2 * 100).toFixed(0)}% above
+        {' '}{formatMoney(d.taxEvent1_exercise.amtAtExercise.amtRate_tier2_threshold)}.
+      </p>
+      <p><strong>The trap:</strong> {d.taxEvent1_exercise.amtAtExercise.amtTrap}</p>
+    </>
+  )}
+
+  {inst.key === 'nso' && (
+    <>
+      <h2>Tax the day you exercise, cash or no cash</h2>
+      <p data-source="data/federal.ts → equityCompensation.nso">
+        The spread — {d.taxEvent1_exercise.spread} — is ordinary income the moment you exercise.
+        For an employee it runs through payroll and FICA applies. For a contractor it lands on a
+        1099-NEC and is subject to self-employment tax, with nothing withheld:
+        {' '}{d.taxEvent1_exercise.withholding_contractor}.
+      </p>
+      <p><strong>{d.taxEvent1_exercise.cashNeeded}</strong></p>
+    </>
+  )}
+
+  {inst.key === 'espp' && (
+    <>
+      <h2>Two holding periods, both of which have to clear</h2>
+      <p data-source="data/federal.ts → equityCompensation.espp">
+        A Section 423 plan lets you buy at a discount of up to
+        {' '}{(d.maxDiscount * 100).toFixed(0)}%, with an annual purchase limit of
+        {' '}{formatMoney(d.annualPurchaseLimit)}. Whether the discount is taxed as ordinary income or as
+        capital gain depends on clearing BOTH periods: more than
+        {' '}{d.holdingRequirements.qualifyingDisposition.fromOfferingDate.toLowerCase()} from the offering
+        date AND more than {d.holdingRequirements.qualifyingDisposition.fromPurchaseDate.toLowerCase()}
+        {' '}from the purchase date. Missing either makes it a disqualifying disposition.
+      </p>
+      <p data-source="data/federal.ts → equityCompensation.espp.ficaNote">{d.ficaNote}</p>
+    </>
+  )}
+
+  {inst.key === 'qsbs' && (
+    <>
+      <h2>What changed in 2025, and which rules apply to you</h2>
+      <p data-source="data/federal.ts → equityCompensation.qsbs">{d.overview}</p>
+      <p>
+        For stock issued after {d.obbbaChanges.effectiveDate.replace('Stock issued after ', '')}, the
+        exclusion cap rose from {formatMoney(d.obbbaChanges.exclusionLimit_old)} to
+        {' '}{formatMoney(d.obbbaChanges.exclusionLimit_new)}, and the holding period became tiered:
+        {' '}{(d.obbbaChanges.tieredHolding_newStock['3_years'] * 100).toFixed(0)}% excluded at three years,
+        {' '}{(d.obbbaChanges.tieredHolding_newStock['4_years'] * 100).toFixed(0)}% at four,
+        {' '}{(d.obbbaChanges.tieredHolding_newStock['5_years_plus'] * 100).toFixed(0)}% at five or more.
+        Stock issued before that date still needs the full five years.
+      </p>
+      <p><strong>Cap:</strong> {d.exclusionCapCalc}</p>
+    </>
+  )}
+
+  {inst.key === 'rsu' && (
+    <>
+      <h2>RSU tax by state</h2>
+      <p>A vest is ordinary income in your state as well as federally. What that costs, state by state:</p>
+      <ul class="link-columns">
+        {stateList.map(([, s]) => (
+          <li><a href={`/rsu-tax-calculator/${stateSlug(s.name)}/`}>{s.name}</a></li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  <h2>The other equity instruments</h2>
+  <ul class="link-columns">
+    {INSTRUMENTS.filter((i) => i.slug !== slug).map((i) => (
+      <li><a href={`/${i.slug}/`}>{i.label} — {i.trap}</a></li>
+    ))}
+  </ul>
+
+  <h2>What this covers</h2>
+  <ul>
+    <li>Federal treatment for the 2026 tax year, from the verified dataset.</li>
+    <li>Single filer taking the standard deduction in the worked figures.</li>
+    <li>Equity income stacks on top of salary, so it fills your highest brackets — the figures reflect that rather than taxing it in isolation.</li>
+    <li>Informational only, not tax advice. Equity decisions are worth a professional's time.</li>
+  </ul>
+</Base>

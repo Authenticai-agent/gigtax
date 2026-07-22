@@ -208,7 +208,7 @@ export function buildStateFaqs(
     });
   }
 
-  const q = federal.quarterlyEstimated.quarters as Array<Record<string, string>>;
+  const q = federal.quarterlyEstimated.quarters as unknown as Array<Record<string, string>>;
   faqs.push({
     q: 'When are quarterly estimated payments due?',
     a:

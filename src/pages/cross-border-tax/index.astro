@@ -38,7 +38,7 @@ const name = (c: string) => states[c].name;
   <ul class="link-columns">
     {homes.map((e) => (
       <li>
-        <a href={`/working-in-one-state-living-in-another/${homeCommuteSlug(e.homeCode)}/`}>
+        <a href={`/cross-border-tax/${homeCommuteSlug(e.homeCode)}/`}>
           {name(e.homeCode)}{inbound.has(e.homeCode) ? ' ↔' : ''}
         </a>
       </li>

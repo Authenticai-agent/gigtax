@@ -31,7 +31,7 @@ const stateOptions = Object.entries(states)
   .map(([code, s]) => [code, s.name] as const)
   .sort((a, b) => a[1].localeCompare(b[1]));
 
-const QUARTERS = federal.quarterlyEstimated.quarters as Array<Record<string, string>>;
+const QUARTERS = federal.quarterlyEstimated.quarters as unknown as Array<Record<string, string>>;
 const MIN_TO_OWE = Number(
   (federal.quarterlyEstimated.safeHarborRules as Record<string, unknown>).minimumToOweEstimated,
 );

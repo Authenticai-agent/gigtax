@@ -9,7 +9,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "node scripts/check-quality.mjs",
-    "check:report": "node scripts/check-quality.mjs --report"
+    "check:report": "node scripts/check-quality.mjs --report",
+    "check:engine": "node scripts/check-engine-parity.mjs",
+    "check:types": "tsc --noEmit"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",

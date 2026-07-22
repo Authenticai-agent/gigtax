@@ -7,20 +7,20 @@
     "rules": [
       "Every bracket below is transcribed from a cited source. Nothing is interpolated, rounded or inferred.",
       "Where sources disagreed, the state's own revenue department wins. Two such conflicts were found and are recorded per state below.",
-      "Fields that could not be independently confirmed are omitted rather than guessed \u2014 see Maryland's standard deduction."
+      "Fields that could not be independently confirmed are omitted rather than guessed — see Maryland's standard deduction."
     ],
     "sources": [
-      "West Virginia Tax Division \u2014 2026 Income Tax Rate Cut (tax.wv.gov/Individuals/Pages/PersonalIncomeTaxReductionBill.aspx)",
-      "South Carolina Department of Revenue \u2014 Information about H. 4216 (dor.sc.gov/news/information-about-h-4216)",
-      "Nebraska Legislature \u2014 Neb. Rev. Stat. 77-2715.03 (statutory rates and indexing rule)",
-      "Tax Foundation \u2014 State Individual Income Tax Rates and Brackets, 2026",
-      "ustax.tools \u2014 Nebraska / Maryland 2026 bracket tables (independent cross-check)"
+      "West Virginia Tax Division — 2026 Income Tax Rate Cut (tax.wv.gov/Individuals/Pages/PersonalIncomeTaxReductionBill.aspx)",
+      "South Carolina Department of Revenue — Information about H. 4216 (dor.sc.gov/news/information-about-h-4216)",
+      "Nebraska Legislature — Neb. Rev. Stat. 77-2715.03 (statutory rates and indexing rule)",
+      "Tax Foundation — State Individual Income Tax Rates and Brackets, 2026",
+      "ustax.tools — Nebraska / Maryland 2026 bracket tables (independent cross-check)"
     ]
   },
   "MD": {
     "_confidence": "high on brackets, standard deduction deliberately omitted",
     "_note": "Bracket structure agreed across Tax Foundation 2026 and multiple independent references, and matches the legacy dataset's own note that the 2025 BRF Act added the 6.25% and 6.5% brackets. topRate 6.5% was already correct.",
-    "_omitted": "No standardDeduction is set. Sources disagree ($2,550 vs $3,350) because Maryland's standard deduction is a percentage of AGI with a floor and a cap, which this engine cannot express as a single figure. Omitting it means Maryland tax is computed on full AGI and is therefore slightly OVERSTATED \u2014 the page says so. Do not paper over this with a guessed number.",
+    "_omitted": "No standardDeduction is set. Sources disagree ($2,550 vs $3,350) because Maryland's standard deduction is a percentage of AGI with a floor and a cap, which this engine cannot express as a single figure. Omitting it means Maryland tax is computed on full AGI and is therefore slightly OVERSTATED — the page says so. Do not paper over this with a guessed number.",
     "_localTax": "Maryland county tax (2.25%-3.20%) is separate and is not part of these brackets; it is surfaced from stateMetadata.statesWithLocalIncomeTax.",
     "brackets_single": [
       [
@@ -130,7 +130,7 @@
   },
   "NE": {
     "_confidence": "high on rates (statute), medium-high on thresholds (two independent references agreeing, not the DOR directly)",
-    "_note": "Neb. Rev. Stat. 77-2715.03 sets four statutory brackets but rate three and rate four are BOTH 4.55% for tax years beginning on or after 2026-01-01, so the top two collapse into one. That is why some references say three brackets and the statute says four \u2014 they agree. One reference quoted a 4.40% middle bracket and thresholds of $3,990/$23,930; those are the pre-indexation figures and are not used.",
+    "_note": "Neb. Rev. Stat. 77-2715.03 sets four statutory brackets but rate three and rate four are BOTH 4.55% for tax years beginning on or after 2026-01-01, so the top two collapse into one. That is why some references say three brackets and the statute says four — they agree. One reference quoted a 4.40% middle bracket and thresholds of $3,990/$23,930; those are the pre-indexation figures and are not used.",
     "_thresholds": "Bracket dollar amounts are inflation-indexed annually by the Tax Commissioner under 77-2715.03. The 2026 values below come from Tax Foundation 2026 and are corroborated by an independent bracket table.",
     "brackets_single": [
       [
@@ -168,7 +168,7 @@
     ]
   },
   "SC": {
-    "_confidence": "high \u2014 primary source is the South Carolina Department of Revenue",
+    "_confidence": "high — primary source is the South Carolina Department of Revenue",
     "_note": "H. 4216, signed 2026-03-30, replaced the three-bracket schedule with two brackets effective for tax year 2026. SC DOR states it as '1.99% under $30,000' and '5.21% from $30,000 and above, minus $966'. The $966 offset is an equivalent formulation of a marginal bracket, not an extra deduction: at $30,000 both forms give $597 (30,000 x 1.99% = 597; 30,000 x 5.21% - 966 = 597), and at $50,000 both give $1,639. Transcribed below as the equivalent marginal brackets so the engine needs no special case.",
     "_supersedes": "Tax Foundation's 2026 table still shows the OLD 0%/3%/6% schedule for South Carolina. It is out of date; the DOR is authoritative.",
     "brackets_single": [
@@ -197,7 +197,7 @@
     ]
   },
   "WV": {
-    "_confidence": "high \u2014 primary source is the West Virginia Tax Division",
+    "_confidence": "high — primary source is the West Virginia Tax Division",
     "_note": "A 5% across-the-board cut took effect 2026-06-12, retroactive to 2026-01-01, so these are the correct figures for the whole 2026 tax year. Internally consistent with the Tax Division's own cumulative amounts: $211 at $10,000; $632.50 at $25,000; $1,106.50 at $40,000; $1,950.50 at $60,000.",
     "_supersedes": "Tax Foundation's 2026 table shows the pre-cut schedule (2.22/2.96/3.33/4.44/4.82). Those rates were correct until 12 June 2026 and are now superseded. The legacy dataset's topRate of 4.82% is from that same pre-cut schedule and is corrected to 4.58% below.",
     "topRate": 0.0458,
@@ -254,6 +254,16 @@
         null,
         0.0458
       ]
+    ]
+  },
+  "IN": {
+    "_confidence": "high — Indiana DOR is the primary source and a second search confirmed it",
+    "_note": "The legacy dataset carries 3.00%, which was the 2025 rate. Indiana's 2026 rate is 2.95%, dropping again to 2.90% in 2027. The legacy note ('Rate has been decreasing') was right about the direction and stale on the figure.",
+    "rate": 0.0295,
+    "topRate": 0.0295,
+    "sources": [
+      "in.gov/dor Departmental Notice #1 (R46/01-26), effective 1 January 2026",
+      "in.gov/dor Rates, Fees and Penalties — 2026 individual AGI rate 2.95%, 2027 2.90%"
     ]
   }
 }

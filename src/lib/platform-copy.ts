@@ -35,6 +35,183 @@ export interface PlatformEntry {
   fees: Record<string, number> | null;
 }
 
+/**
+ * Categories, not brands, are the unit for the state pages.
+ *
+ * DoorDash and Grubhub are the same tax answer: a 1099-NEC, mileage at the
+ * standard rate, the same deductions. Generating a state page per brand produced
+ * pages 53% similar to each other across brands — a grid sharing its platform
+ * axis with every state and its state axis with every brand. What genuinely
+ * differs is the SHAPE of the deduction stack, and that varies by category:
+ * mileage-led, cost-of-goods-led, equipment-led.
+ *
+ * Brands keep their own hub, which is where brand-name search intent lands, and
+ * it points at the category page for the state detail.
+ */
+export interface PlatformCategory {
+  slug: string;
+  name: string;
+  worker: string;
+  /** Category keys in the platform dataset that roll up here. */
+  sources: string[];
+  /** The platform whose scenario represents the category's shape. */
+  exemplar: string;
+  lead: string;
+}
+
+export const CATEGORIES: PlatformCategory[] = [
+  {
+    slug: 'gig-driver-tax-calculator',
+    name: 'Delivery and rideshare driver',
+    worker: 'driver',
+    sources: ['gig_rideshare', 'gig_delivery'],
+    exemplar: 'doordash',
+    lead: 'Driving is the one gig category where a single deduction dominates everything else. Every mile between jobs counts, and at the 2026 rate it is usually the largest number on the return.',
+  },
+  {
+    slug: 'gig-services-tax-calculator',
+    name: 'Services and task work',
+    worker: 'contractor',
+    sources: ['gig_services'],
+    exemplar: 'taskrabbit',
+    lead: 'Task and services work sits between the two shapes: you drive to jobs, so mileage counts, but tools and materials are a real second line that a driver does not have.',
+  },
+  {
+    slug: 'creator-tax-calculator',
+    name: 'Creator and content',
+    worker: 'creator',
+    sources: ['creators'],
+    exemplar: 'youtube',
+    lead: 'Creator income has almost no cost of goods and very few miles. What it does have is equipment and a room to work in, which is why the home office deduction matters here more than anywhere else.',
+  },
+  {
+    slug: 'seller-tax-calculator',
+    name: 'Marketplace seller',
+    worker: 'seller',
+    sources: ['sellers'],
+    exemplar: 'etsy',
+    lead: 'Selling a physical product is the one category where most of the money that arrives was never yours. Cost of goods and platform fees come off first, so gross receipts on a 1099-K bear almost no relation to taxable profit.',
+  },
+  {
+    slug: 'rental-host-tax-calculator',
+    name: 'Rental host',
+    worker: 'host',
+    sources: ['rental'],
+    exemplar: 'airbnb',
+    lead: 'Renting out property or a vehicle carries costs the platform never sees — cleaning, supplies, repairs and the wear on the asset itself.',
+  },
+];
+
+/**
+ * The state-level question that is actually different for each category.
+ *
+ * Every category page was ending with the same cross-border paragraph, which is
+ * what pushed two categories in the same state to 58% alike. The honest fix is
+ * not to trim it but to notice that the state question genuinely differs: a
+ * driver crosses a line physically, a seller trips a marketplace facilitator
+ * rule, a host owes an occupancy tax the platform may or may not collect.
+ */
+export function categoryStateAngle(c: PlatformCategory, stateName: string): { heading: string; body: string } {
+  const a = /^[AEIOU]/.test(stateName) ? 'an' : 'a';
+  switch (c.slug) {
+    case 'gig-driver-tax-calculator':
+      return {
+        heading: `Driving across ${a} ${stateName} line`,
+        body: `Driving income is sourced to where the wheels were, not where you live. Take a fare or a `
+          + `delivery that ends in the next state and that state can claim the income earned inside it. `
+          + `Most drivers near a border never file the second return — the amounts are small and the `
+          + `platforms do not split earnings by state — but the obligation exists, and it is the state you `
+          + `drove INTO that would come asking.`,
+      };
+    case 'seller-tax-calculator':
+      return {
+        heading: `Selling into and out of ${stateName}`,
+        body: `Income tax follows you: ${stateName} taxes your profit wherever the buyer was. Sales tax `
+          + `does not. Marketplace facilitator laws make the platform collect and remit sales tax on your `
+          + `behalf in most states, which is why a seller can have customers in all fifty and still file `
+          + `only one income tax return. Selling off-platform is where that stops being true.`,
+      };
+    case 'rental-host-tax-calculator':
+      return {
+        heading: `Local taxes on ${a} ${stateName} let`,
+        body: `The income tax below is only part of it. Short-term lets attract occupancy, lodging or `
+          + `transient taxes levied by the city or county rather than ${stateName}, often at rates that `
+          + `dwarf the state income tax. Some platforms collect and remit them; some collect only part; `
+          + `in some places the host is on the hook entirely. That is a local question this calculator `
+          + `cannot answer, and it is the one hosts most often get wrong.`,
+      };
+    case 'creator-tax-calculator':
+      return {
+        heading: `Where creator income is taxed`,
+        body: `Creator income is sourced to where you were sitting when you made it, not where the `
+          + `audience or the platform is. ${stateName} taxes the lot if you live there. Moving mid-year `
+          + `means splitting the year between two states, and a sponsor paying from another state does `
+          + `not create an obligation there.`,
+      };
+    default:
+      return {
+        heading: `Working across ${a} ${stateName} line`,
+        body: `Services income is sourced to where the work was physically done. A job over the line can `
+          + `create a filing obligation in that state even for a single afternoon, and reciprocity `
+          + `agreements do not help — they cover wages paid by an employer, not self-employment income.`,
+      };
+  }
+}
+
+export function categoryFor(slug: string): PlatformCategory | null {
+  return CATEGORIES.find((c) => c.slug === slug) ?? null;
+}
+
+export function brandsIn(category: PlatformCategory): PlatformEntry[] {
+  return platformsWithScenarios().filter((p) => category.sources.includes(p.category));
+}
+
+export function categoryOf(p: PlatformEntry): PlatformCategory | null {
+  return CATEGORIES.find((c) => c.sources.includes(p.category)) ?? null;
+}
+
+/** Every platform we have a scenario for — one page set each. */
+export function platformsWithScenarios(): PlatformEntry[] {
+  return Object.keys(scenarios as Record<string, unknown>)
+    .filter((k) => !k.startsWith('_'))
+    .map((slug) => findPlatform(slug))
+    .filter((p): p is PlatformEntry => p !== null);
+}
+
+/** URL segment for a platform's calculator, e.g. "doordash-tax-calculator". */
+export function platformSlug(p: PlatformEntry): string {
+  return `${p.slug}-tax-calculator`;
+}
+
+/** Display name: the dataset keys are lowercase, so title-case for prose. */
+export function platformName(p: PlatformEntry): string {
+  const OVERRIDES: Record<string, string> = {
+    doordash: 'DoorDash', uber: 'Uber', lyft: 'Lyft', instacart: 'Instacart',
+    grubhub: 'Grubhub', 'amazon-flex': 'Amazon Flex', shipt: 'Shipt',
+    taskrabbit: 'TaskRabbit', rover: 'Rover', etsy: 'Etsy', ebay: 'eBay',
+    shopify: 'Shopify', airbnb: 'Airbnb', turo: 'Turo', onlyfans: 'OnlyFans',
+    youtube: 'YouTube',
+  };
+  return OVERRIDES[p.slug] ?? p.slug.replace(/-/g, ' ');
+}
+
+/** What the worker is called, for prose that reads naturally. */
+export function platformWorker(p: PlatformEntry): string {
+  if (p.category.startsWith('gig_rideshare')) return 'driver';
+  if (p.category.startsWith('gig_delivery')) return 'driver';
+  if (p.category === 'gig_services') return 'contractor';
+  if (p.category === 'creators') return 'creator';
+  if (p.category === 'sellers') return 'seller';
+  if (p.category === 'rental') return 'host';
+  return 'worker';
+}
+
+/** True when mileage is the dominant deduction — changes the whole story. */
+export function isMileageDominant(p: PlatformEntry): boolean {
+  const sc = (scenarios as Record<string, any>)[p.slug];
+  return Boolean(sc?.businessMiles) && p.keyDeductions.includes('mileage');
+}
+
 /** Find a platform in the nested category structure by its slug. */
 export function findPlatform(slug: string): PlatformEntry | null {
   for (const [category, group] of Object.entries(platforms as Record<string, Record<string, any>>)) {
@@ -100,6 +277,58 @@ export function platformExample(p: PlatformEntry): PlatformExample | null {
     });
   }
 
+  // Cost of goods: the dominant line for anyone selling a physical product, and
+  // the reason a seller's stack looks nothing like a driver's.
+  if (sc.cogsPct && sc.grossEarnings) {
+    lines.push({
+      label: `Cost of goods sold — ${Math.round(sc.cogsPct * 100)}% of sales`,
+      amount: sc.grossEarnings * sc.cogsPct,
+      source: 'overrides/platform-scenarios.json (illustrative business shape)',
+    });
+  }
+
+  if (sc.homeOfficeSqFt && p.keyDeductions.some((d) => /home|office/i.test(d))) {
+    const ho = (selfEmploymentDeductions.homeOffice as any).simplified;
+    const sqft = Math.min(sc.homeOfficeSqFt, ho.maxSqFt);
+    lines.push({
+      label: `Home office — ${sqft} sq ft at $${ho.ratePerSqFt} (simplified method)`,
+      amount: sqft * ho.ratePerSqFt,
+      source: 'data/federal.ts → selfEmploymentDeductions.homeOffice.simplified',
+    });
+  }
+
+  if (sc.materialsCost) {
+    lines.push({
+      label: 'Tools, materials and supplies for jobs',
+      amount: sc.materialsCost,
+      source: 'overrides/platform-scenarios.json (illustrative)',
+    });
+  }
+
+  if (sc.cleaningCost) {
+    lines.push({
+      label: 'Cleaning and turnover between guests',
+      amount: sc.cleaningCost,
+      source: 'overrides/platform-scenarios.json (illustrative)',
+    });
+  }
+
+  if (sc.repairsCost) {
+    lines.push({
+      label: 'Repairs and maintenance on the asset',
+      amount: sc.repairsCost,
+      source: 'overrides/platform-scenarios.json (illustrative)',
+    });
+  }
+
+  if (sc.equipmentCost) {
+    lines.push({
+      label: 'Camera, lighting and production equipment',
+      amount: sc.equipmentCost,
+      source: 'overrides/platform-scenarios.json (illustrative)',
+    });
+  }
+
   if (sc.suppliesCost) {
     lines.push({
       label: 'Supplies and equipment',
@@ -114,7 +343,7 @@ export function platformExample(p: PlatformEntry): PlatformExample | null {
       .reduce((sum, [, v]) => sum + (v as number), 0);
     if (rate > 0) {
       lines.push({
-        label: `${p.name} fees — ${(rate * 100).toFixed(2)}% of sales`,
+        label: `Platform fees — ${(rate * 100).toFixed(2)}% of sales`,
         amount: sc.grossEarnings * rate,
         source: `data/platforms.ts → ${p.slug}.fees`,
       });

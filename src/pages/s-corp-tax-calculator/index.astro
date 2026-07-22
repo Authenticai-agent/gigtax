@@ -1,0 +1,131 @@
+---
+/**
+ * S-corp hub. The federal mechanism and the reasonable-compensation problem live
+ * here because they are identical in every state; the state pages carry what
+ * their own state charges the company.
+ */
+import Base from '../../layouts/Base.astro';
+import { states, stateList } from '../../data/states';
+import { stateSlug } from '../../lib/slug';
+import { formatMoney } from '../../lib/tax-engine';
+import { entityLevelTax, stateScorpTax, PAYROLL_ADMIN_COST, DEFENSIBLE_SALARY_PCT } from '../../lib/scorp';
+
+// The three groups a reader needs to know they are in before anything else.
+const notRecognised = stateList
+  .filter(([code]) => stateScorpTax(code)?.recognizesFederalSElection === false)
+  .map(([code, s]) => ({ code, name: s.name, tax: stateScorpTax(code)! }));
+
+const withMinimum = stateList
+  .map(([code, s]) => ({ code, name: s.name, min: stateScorpTax(code)?.minimumAnnualTax ?? null }))
+  .filter((e) => e.min !== null)
+  .sort((a, b) => (b.min ?? 0) - (a.min ?? 0));
+
+const withRate = stateList
+  .map(([code, s]) => ({ code, name: s.name, rate: stateScorpTax(code)?.entityLevelIncomeTaxRate ?? null }))
+  .filter((e) => e.rate !== null)
+  .sort((a, b) => (b.rate ?? 0) - (a.rate ?? 0));
+
+const notModelled = stateList
+  .map(([code, s]) => ({ code, name: s.name, d: entityLevelTax(code, 100000).disclosures }))
+  .filter((e) => e.d.length > 0);
+---
+
+<Base
+  title="S-corp tax calculator (2026) — is the election worth it in your state?"
+  description="Electing S-corp status saves payroll tax, but your state may charge the company for the privilege. What the election is worth in 2026, state by state."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Is an S-corp election worth it?</h1>
+    <p class="tagline">The federal saving is the easy part. What your state charges the company decides it.</p>
+  </section>
+
+  <p>
+    A sole proprietor pays self-employment tax on every dollar of profit. An S-corp owner pays payroll tax
+    only on the salary they take, and the rest comes out as a distribution. That is the whole federal
+    mechanism, and it is the same in every state.
+  </p>
+  <p>
+    What is not the same is the state layer. Four jurisdictions ignore the federal election entirely and
+    tax the company as a C corporation. Eighteen charge a minimum owed even at a loss. Several tax turnover
+    or net worth rather than profit. Any of those can outweigh the federal saving, and the general advice
+    you will read — "elect once you clear $40,000 of profit" — accounts for none of it.
+  </p>
+
+  <div class="callout">
+    <strong>Salary is a judgement, not an optimisation</strong>
+    Less salary means less payroll tax, so the arithmetic always points at the smallest salary you can get
+    away with. Compensation has to be reasonable for the work you actually do; too low invites
+    reclassification and back payroll tax. Every figure on this site uses {DEFENSIBLE_SALARY_PCT}% of
+    profit as salary, and each state page shows the whole 20–60% range so you can see what the trade-off
+    costs rather than being handed the riskiest number as an answer.
+  </div>
+
+  <h2>States that ignore the federal election</h2>
+  <p>Here the election creates a state tax rather than avoiding one:</p>
+  <table class="data-table">
+    <thead><tr><th>State</th><th>What it charges the company instead</th></tr></thead>
+    <tbody>
+      {notRecognised.map((e) => (
+        <tr>
+          <td><a href={`/s-corp-tax-calculator/${stateSlug(e.name)}/`}>{e.name}</a></td>
+          <td>{e.tax.entityLevelIncomeTaxRate
+            ? `${(e.tax.entityLevelIncomeTaxRate * 100).toFixed(2).replace(/\.?0+$/, '')}% on the company's income`
+            : e.tax.grossReceiptsTax ? 'a tax on turnover, not profit' : 'taxed as a C corporation'}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>States charging the company a rate on its income</h2>
+  <table class="data-table">
+    <thead><tr><th>State</th><th>Rate on the company's income</th></tr></thead>
+    <tbody>
+      {withRate.map((e) => (
+        <tr>
+          <td><a href={`/s-corp-tax-calculator/${stateSlug(e.name)}/`}>{e.name}</a></td>
+          <td>{((e.rate ?? 0) * 100).toFixed(2).replace(/\.?0+$/, '')}%</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>States with a minimum owed at zero profit</h2>
+  <p>
+    These are owed whether the business made money or not, which is what turns a marginal election into a
+    losing one for a small company:
+  </p>
+  <ul class="link-columns">
+    {withMinimum.map((e) => (
+      <li><a href={`/s-corp-tax-calculator/${stateSlug(e.name)}/`}>{e.name}</a> — {formatMoney(e.min ?? 0)}</li>
+    ))}
+  </ul>
+
+  <h2>What these figures do not include</h2>
+  <p>
+    Some state charges cannot be worked out from net profit. A gross receipts tax needs turnover; a net
+    worth tax needs a balance sheet. Rather than leave them out silently and show a number that looks
+    complete, each state page lists what applies there. {notModelled.length} states have at least one:
+  </p>
+  <ul class="link-columns">
+    {notModelled.map((e) => (
+      <li><a href={`/s-corp-tax-calculator/${stateSlug(e.name)}/`}>{e.name}</a> — {e.d.map((x) => x.label.replace(`${e.name} `, '')).join(', ')}</li>
+    ))}
+  </ul>
+
+  <h2>Every state</h2>
+  <ul class="link-columns">
+    {stateList.map(([, s]) => (
+      <li><a href={`/s-corp-tax-calculator/${stateSlug(s.name)}/`}>{s.name}</a></li>
+    ))}
+  </ul>
+
+  <h2>What every figure on these pages assumes</h2>
+  <ul>
+    <li>Single filer, standard deduction, the business as the only income.</li>
+    <li>{DEFENSIBLE_SALARY_PCT}% of profit taken as salary.</li>
+    <li>{formatMoney(PAYROLL_ADMIN_COST)} a year for payroll and a separate 1120-S return. That is a cost estimate, not a tax figure, and it varies by provider — it is the number most comparisons leave out entirely.</li>
+    <li>Comparison is against a sole proprietorship. If you already trade through an LLC, some state fees are owed either way and are not a cost of electing.</li>
+    <li>Optional pass-through entity tax elections are excluded throughout. They are a separate SALT-cap question and are elective, not automatic.</li>
+  </ul>
+</Base>

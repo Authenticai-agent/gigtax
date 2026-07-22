@@ -109,25 +109,44 @@ export function getStandardDeduction(status: string, age65Plus = false, data: an
 /* QBI Deduction */
 export function calcQBI(qbiIncome: number, taxableIncomeBeforeQBI: number, status: string, data: any = taxData, isSSTB = false, w2WagesPaid = 0, qualifiedPropertyBasis = 0): number {
   const qbi = data.selfEmploymentDeductions.qualifiedBusinessIncomeDeduction;
-  let deduction = qbiIncome * qbi.rate;
-  const phaseoutStart = status === 'mfj' ? qbi.phaseoutMFJ : qbi.phaseoutSingle;
-  const phaseoutRange = status === 'mfj' ? qbi.phaseoutRangeMFJ : qbi.phaseoutRangeSingle;
-  if (taxableIncomeBeforeQBI > phaseoutStart) {
-    const intoPhaseout = taxableIncomeBeforeQBI - phaseoutStart;
-    const pctThrough = Math.min(1, intoPhaseout / phaseoutRange);
-    if (isSSTB) {
-      deduction *= (1 - pctThrough);
-    }
-  }
-  // For non-SSTBs above phase-out, apply wage/property limitation (IRC §199A(b)(2))
-  // If no W-2 wages paid, the deduction is limited to $0 for high earners
-  if (taxableIncomeBeforeQBI > phaseoutStart + phaseoutRange && !isSSTB) {
-    const wageLimit = w2WagesPaid * 0.50;
-    const altLimit = (w2WagesPaid * 0.25) + (qualifiedPropertyBasis * 0.025);
-    deduction = Math.min(deduction, Math.max(wageLimit, altLimit));
-  }
-  deduction = Math.max(0, Math.min(deduction, taxableIncomeBeforeQBI * qbi.rate));
-  return deduction;
+  const threshold = status === 'mfj' ? qbi.phaseoutMFJ : qbi.phaseoutSingle;
+  const range = status === 'mfj' ? qbi.phaseoutRangeMFJ : qbi.phaseoutRangeSingle;
+
+  const income = Math.max(0, qbiIncome);
+  const taxable = Math.max(0, taxableIncomeBeforeQBI);
+  // §199A(a) overall limitation: never more than 20% of taxable income.
+  const overallCap = taxable * qbi.rate;
+
+  // Below the threshold neither the wage limitation nor the SSTB reduction
+  // applies at all — the full 20% stands.
+  if (taxable <= threshold) return Math.max(0, Math.min(income * qbi.rate, overallCap));
+
+  const pctThrough = Math.min(1, (taxable - threshold) / range);
+
+  // For an SSTB the "applicable percentage" reduces the QBI, the W-2 wages and
+  // the property basis together, reaching zero at the top of the range.
+  const applicable = isSSTB ? 1 - pctThrough : 1;
+  const countedIncome = income * applicable;
+  const countedWages = w2WagesPaid * applicable;
+  const countedProperty = qualifiedPropertyBasis * applicable;
+
+  const tentative = countedIncome * qbi.rate;
+  const wageLimit = Math.max(countedWages * 0.5, countedWages * 0.25 + countedProperty * 0.025);
+
+  // §199A(b)(3)(B): inside the range the wage limitation PHASES IN. The excess
+  // of the tentative deduction over the wage-limited amount is reduced by the
+  // proportion of the way through the range, rather than applied in full the
+  // moment the threshold is crossed.
+  //
+  // Applying it as a switch — which is what this did, and what legacy still
+  // does — puts a cliff in the middle of the most common income band for this
+  // question. A sole proprietor pays themselves no W-2 wages, so their wage
+  // limit is zero and the whole deduction vanished at once: $19,050 of extra
+  // tax on $2,000 more profit, at about $308,000 of profit for a single filer.
+  const excess = Math.max(0, tentative - wageLimit);
+  const deduction = tentative - excess * pctThrough;
+
+  return Math.max(0, Math.min(deduction, overallCap));
 }
 
 /* Qualified Dividend 0% Rate Threshold */

@@ -5,6 +5,7 @@
  * Zero JavaScript ships from this layout — islands opt in per page.
  */
 import '../styles/global.css';
+import { SITE_INDEXABLE } from '../site';
 
 interface Props {
   title: string;
@@ -22,7 +23,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content={SITE_INDEXABLE ? 'index,follow' : 'noindex,nofollow'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -42,7 +43,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
           <a href="/1099-tax-calculator/">1099</a>
           <a href="/quarterly-tax-calculator/">Quarterly</a>
           <a href="/paycheck-calculator/">Paycheck</a>
-          <a href="/working-in-one-state-living-in-another/">Two states</a>
+          <a href="/s-corp-tax-calculator/">S-corp</a>
+          <a href="/rsu-tax-calculator/">Equity</a>
+          <a href="/cross-border-tax/">Two states</a>
         </nav>
       </div>
     </header>

@@ -1,0 +1,143 @@
+---
+/**
+ * Local income tax hub. Twelve states levy something below the state line, and
+ * the point of this page is that they do it in eight different shapes — so the
+ * question "what's the local rate?" has no answer in half of them.
+ */
+import Base from '../../layouts/Base.astro';
+import { states } from '../../data/states';
+import { stateSlug } from '../../lib/slug';
+import { formatMoney } from '../../lib/tax-engine';
+import { localTaxStates, localTaxFor, localRange, ohioCreditTraps, reachesSelfEmployment } from '../../lib/local-tax';
+
+const EXAMPLE = 80000;
+const codes = localTaxStates();
+
+const rows = codes.map((code) => {
+  const d = localTaxFor(code)!;
+  const range = localRange(code, EXAMPLE);
+  return {
+    code,
+    name: states[code].name,
+    reachesSE: reachesSelfEmployment(code),
+    range,
+  };
+});
+
+const traps = ohioCreditTraps();
+---
+
+<Base
+  title="Local income tax by state (2026) — the city and county taxes on top of state tax"
+  description="Twelve states let cities, counties and school districts tax income on top of the state. Which they are, what they charge in 2026, and whether they reach self-employment profit."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Local income tax, state by state</h1>
+    <p class="tagline">Twelve states tax income below the state line. Most calculators stop at the state.</p>
+  </section>
+
+  <p>
+    Federal, then state, then — in twelve states — a third layer your city, county or school district
+    charges on top. It is small enough to ignore in some places and larger than the state tax in others: a
+    Philadelphia resident pays more to Philadelphia than to Pennsylvania, because Pennsylvania's flat rate
+    is 3.07% and the city's is 3.74%.
+  </p>
+  <p>
+    There is no single "local rate" to look up. Across these twelve states the charge takes eight different
+    shapes. Some are a percentage of income. Yonkers charges a percentage <em>of your state tax</em>. New
+    York City has its own bracket schedule. Huntington, West Virginia charges $5 a week regardless of what
+    you earn. Portland charges $35 a year, flat. Ohio charges a rate and then partially credits what you
+    paid somewhere else — and the size of that credit is not the same in any two cities.
+  </p>
+
+  <h2>Where local income tax exists</h2>
+  <p>
+    What a levy costs on {formatMoney(EXAMPLE)}, from the cheapest jurisdiction in the state to the dearest.
+    A wide range means the state has no useful average:
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>State</th>
+        <th>On {formatMoney(EXAMPLE)}</th>
+        <th>Reaches self-employment profit?</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <td><a href={`/local-income-tax/${stateSlug(r.name)}/`}>{r.name}</a></td>
+          <td>
+            {r.range === null
+              ? 'flat dollars, not a rate'
+              : r.range.low === r.range.high
+                ? formatMoney(r.range.low)
+                : `${formatMoney(r.range.low)} – ${formatMoney(r.range.high)}`}
+          </td>
+          <td>
+            {r.reachesSE === true ? 'Yes' : r.reachesSE === false ? 'No — wages only' : 'Not confirmed'}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>The self-employment column is the one to read</strong>
+    Local rules for self-employment net profit are frequently different from the wage rule, and the
+    difference cuts both ways. Pennsylvania's earned income tax reaches a sole proprietor's Schedule C
+    profit but <strong>not</strong> an S-corp owner's distributive share — which makes the S-corp election
+    worth materially more in Pennsylvania than the federal arithmetic alone suggests. Ohio taxes net profit
+    in full and does not let you use the state Business Income Deduction against it. Where a state is
+    marked "not confirmed" it means exactly that, never that the answer is no.
+  </div>
+
+  <h2>The Ohio credit trap</h2>
+  <p>
+    If you live in one Ohio city and work in another, your home city gives you a credit for the tax your
+    work city already took. Most people assume that credit is full, and in {20 - traps.length} of the twenty largest
+    cities it is. In {traps.length} it is not — the credit is capped below the city's own rate, so a
+    resident who works elsewhere and owes nothing on paper still gets a bill:
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr><th>City</th><th>Its rate</th><th>Credit capped at</th><th>Still owed on {formatMoney(EXAMPLE)}</th></tr>
+    </thead>
+    <tbody>
+      {traps.map((t) => (
+        <tr>
+          <td>{t.city}</td>
+          <td>{(t.rate * 100).toFixed(2).replace(/\.?0+$/, '')}%</td>
+          <td>{(t.cap * 100).toFixed(2).replace(/\.?0+$/, '')}%</td>
+          <td>{formatMoney(EXAMPLE * t.owed)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p>
+    That is a difference of direction, not of size. A calculator that assumes a full credit tells these
+    residents they owe nothing.
+  </p>
+
+  <h2>The thirty-eight states with none</h2>
+  <p>
+    Everywhere not listed above, the state return is the last one. If you live in one of the twelve, the
+    local charge is usually not withheld when you are self-employed — no employer means no withholding —
+    and it is due on the same quarterly rhythm as everything else.
+  </p>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a></li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a></li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly payments</a></li>
+    <li><a href="/s-corp-tax-calculator/">S-corp election</a></li>
+  </ul>
+
+  <p class="disclaimer">
+    This is general information about how these taxes work, not tax advice. Local rates change by
+    ordinance and referendum more often than state rates do — check with your own jurisdiction or a tax
+    professional before relying on any figure here.
+  </p>
+</Base>

@@ -9,3 +9,17 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# Keeps the site out of search results until the content is ready.
+#
+# A robots.txt disallow stops crawling; it does NOT reliably stop indexing, because
+# a URL linked from elsewhere can be indexed on its title alone without ever being
+# fetched. This header is what actually keeps it out — but it is only seen when a
+# page IS fetched, which is why both exist.
+#
+# TO GO LIVE: delete this whole [[headers]] block AND set SITE_INDEXABLE = true in
+# src/site.ts. Doing only one of the two leaves the site half-blocked.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

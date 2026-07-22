@@ -18,26 +18,36 @@ import { siblingStates } from '../../../data/neighbors';
 import { formatMoney, formatPct } from '../../../lib/tax-engine';
 import { stateSlug } from '../../../lib/slug';
 import { describeStateFacts, neighbourComparison, neighbourSentences } from '../../../lib/state-facts';
+import { describeStateTax } from '../../../lib/state-copy';
 import {
   findPlatform, platformExample, platformTax, costOfNotTracking,
-  deductionLabel, MILE_RATE, MILE_SOURCE, platformLadder,
+  MILE_RATE, MILE_SOURCE, platformLadder, isMileageDominant,
+  CATEGORIES, categoryFor, brandsIn, platformName, categoryStateAngle,
 } from '../../../lib/platform-copy';
 import { homeCommutePages, homeCommuteSlug } from '../../../lib/state-pair';
 import type { StateData } from '../../../data/types';
 
-const SLUG = 'doordash';
-
 export function getStaticPaths() {
-  return stateList.map(([code, s]) => ({
-    params: { state: stateSlug(s.name) },
-    props: { code, state: s },
-  }));
+  // Per CATEGORY, not per brand: brands inside a category share a tax answer.
+  return CATEGORIES.flatMap((c) =>
+    stateList.map(([code, s]) => ({
+      params: { platform: c.slug, state: stateSlug(s.name) },
+      props: { code, state: s, categorySlug: c.slug },
+    })),
+  );
 }
 
-interface Props { code: string; state: StateData }
-const { code, state } = Astro.props as Props;
+interface Props { code: string; state: StateData; categorySlug: string }
+const { code, state, categorySlug } = Astro.props as Props;
 
-const platform = findPlatform(SLUG)!;
+const category = categoryFor(categorySlug)!;
+const platform = findPlatform(category.exemplar)!;
+const NAME = category.name;
+const WORKER = category.worker;
+const MILEAGE_LED = isMileageDominant(platform);
+const brands = brandsIn(category);
+const angle = categoryStateAngle(category, state.name);
+const aOrAn = (n: string) => (/^[AEIOU]/.test(n) ? 'an' : 'a');
 const ex = platformExample(platform)!;
 const r = platformTax(ex, code);
 const tracking = costOfNotTracking(ex, code);
@@ -46,29 +56,29 @@ const neighbours = neighbourComparison(code, ex.netProfit);
 const neighbourLines = neighbourSentences(state, neighbours);
 const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);
 const noTax = state.noIncomeTax === true || state.type === 'none';
-const a = /^[AEIOU]/.test(state.name) ? 'an' : 'a';
 const ladder = platformLadder(platform, code);
 // Not every state has a cross-border guide: the no-income-tax states are covered
 // from the other direction, and Hawaii has no land border at all.
 const crossBorder = homeCommutePages().some((e) => e.homeCode === code)
-  ? `/working-in-one-state-living-in-another/${homeCommuteSlug(code)}/`
+  ? `/cross-border-tax/${homeCommuteSlug(code)}/`
   : null;
 
-const title = `DoorDash tax calculator — ${state.name} (2026)`;
-const description = `What a DoorDash driver in ${state.name} owes for 2026 after mileage and expenses: self-employment tax, federal and ${state.name} tax, with the deductions worked through.`;
+const title = `${NAME} taxes — ${state.name} (2026)`;
+const description = `What ${aOrAn(NAME)} ${NAME.toLowerCase()} in ${state.name} owes for 2026 after expenses: self-employment tax, federal and ${state.name} tax, with the deduction stack worked through.`;
 ---
 
 <Base title={title} description={description}>
   <div class="breadcrumbs">
-    <a href="/1099-tax-calculator/">1099 tax calculator</a> / DoorDash / {state.name}
+    <a href="/1099-tax-calculator/">1099 tax calculator</a> / <a href={`/${categorySlug}/`}>{NAME}</a> / {state.name}
   </div>
 
   <section class="hero">
     <p class="hero-label">2026 tax year · {state.name}</p>
-    <h1>DoorDash driver taxes in {state.name}</h1>
+    <h1>{NAME} taxes in {state.name}</h1>
     <p class="tagline">
-      DoorDash reports your gross on a {platform.incomeType} and withholds nothing. The gap between that
-      number and what you are actually taxed on is mileage — and in {state.name} it is worth
+      {brands.slice(0, 3).map((b) => platformName(b)).join(', ')} and the rest report your gross and
+      withhold nothing. The gap between that and what you are actually taxed on is
+      {MILEAGE_LED ? ' mileage' : ' your costs'} — in {state.name} that gap is worth
       {formatMoney(tracking.difference)} in tax.
     </p>
   </section>
@@ -76,12 +86,13 @@ const description = `What a DoorDash driver in ${state.name} owes for 2026 after
   <p data-source="overrides/platform-scenarios.json (illustrative scenario)">
     Take a driver who grossed {formatMoney(ex.gross)} over {(18000).toLocaleString()} business miles.
     After mileage at {(MILE_RATE * 100).toFixed(1)} cents and the rest of the stack —
-    {' '}<a href="/doordash-tax-calculator/">worked through on the main DoorDash page</a> —
+    {' '}<a href=`/${categorySlug}/`>worked through on the {NAME.toLowerCase()} page</a> —
     {formatMoney(ex.totalDeductions)} comes off and {formatMoney(ex.netProfit)} is left as taxable profit.
     That profit is what {state.name} and the IRS charge against.
   </p>
 
   <h2>What that leaves you owing in {state.name}</h2>
+  {!noTax && <p data-source={`data/states.ts → ${code}`}>{describeStateTax(state)}</p>}
   <table class="data-table">
     <tbody>
       <tr><td>Self-employment tax</td><td>{formatMoney(r.seTax)}</td></tr>
@@ -92,17 +103,10 @@ const description = `What a DoorDash driver in ${state.name} owes for 2026 after
     </tbody>
   </table>
 
-  <div class="callout">
-    <strong>What the mileage log is worth</strong>
-    The same {formatMoney(ex.gross)} with nothing deducted would be taxed at
-    {formatMoney(tracking.unclaimed.totalTax)} in {state.name}, against
-    {formatMoney(tracking.claimed.totalTax)} with the deductions above — a difference of
-    {formatMoney(tracking.difference)}.
-  </div>
 
-  <h2>Dashing more in {state.name} doesn't cost proportionally more</h2>
+  <h2>Earning more in {state.name}</h2>
   <p data-source="data/federal.ts → selfEmploymentDeductions.mileage">
-    A <strong>single filer</strong> taking the standard deduction, standard mileage method, DoorDash as
+    A <strong>single filer</strong> taking the standard deduction, {MILEAGE_LED ? 'standard mileage method, ' : ''}this work as
     the only income — the calculator above handles the other filing statuses. Miles rise with earnings,
     so the deduction rises too, and the effective rate on gross climbs more slowly than it would for
     someone whose income grew without expenses attached:
@@ -140,38 +144,33 @@ const description = `What a DoorDash driver in ${state.name} owes for 2026 after
     </>
   )}
 
-  <h2>Delivering across a state line from {state.name}</h2>
-  <p>
-    Delivery work is sourced to where it is performed, so crossing a line to take orders can create a
-    filing obligation in the other state. On {formatMoney(ex.netProfit)} of profit:
-  </p>
-  {neighbours.length > 0 ? (
+  <h2>{angle.heading}</h2>
+  <p data-source="lib/platform-copy.ts categoryStateAngle()">{angle.body}</p>
+  {neighbours.length > 0 && (
     <>
+      <p>On {formatMoney(ex.netProfit)} of profit, what the states around {state.name} would charge:</p>
       <table class="data-table">
-        <thead><tr><th>If the delivery was in</th><th>Its tax on {formatMoney(ex.netProfit)}</th><th>vs {state.name}</th></tr></thead>
+        <thead><tr><th>State</th><th>Its tax</th><th>vs {state.name}</th></tr></thead>
         <tbody>
           {neighbours.map((n) => (
             <tr>
-              <td><a href={`/doordash-tax-calculator/${n.slug}/`}>{n.name}</a></td>
+              <td><a href={`/${categorySlug}/${n.slug}/`}>{n.name}</a></td>
               <td>{n.noTax ? 'No income tax' : formatMoney(n.tax)}</td>
               <td>{n.delta === 0 ? 'same' : `${n.delta < 0 ? '−' : '+'}${formatMoney(Math.abs(n.delta))}`}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <ul>{neighbourLines.map((l) => <li data-source="lib/tax-engine.ts calcStateTax()">{l}</li>)}</ul>
+      <ul>
+        {neighbourLines.map((l) => <li data-source="lib/tax-engine.ts calcStateTax()">{l}</li>)}
+      </ul>
     </>
-  ) : (
-    <p>{state.name} has no land border, so this does not come up.</p>
   )}
-  <p>
-    Reciprocity agreements do not help here — they cover wages, not self-employment income.
-    {crossBorder && <> See <a href={crossBorder}>crossing a state line from {state.name}</a>.</>}
-  </p>
 
-  <h2>DoorDash tax questions in {state.name}</h2>
+
+  <h2>{NAME} tax questions in {state.name}</h2>
   <div class="faq">
-    <h3>How much should {a} {state.name} Dasher set aside?</h3>
+    <h3>How much should {aOrAn(state.name)} {state.name} {WORKER} set aside?</h3>
     <p data-source="lib/tax-engine.ts calcCombined()">
       About {formatPct(r.totalTax / ex.gross)} of gross on the {formatMoney(ex.gross)} example —
       {formatMoney(r.totalTax)} across self-employment tax, federal income tax
@@ -195,7 +194,7 @@ const description = `What a DoorDash driver in ${state.name} owes for 2026 after
     <li><a href={`/1099-tax-calculator/${stateSlug(state.name)}/`}>General 1099 taxes in {state.name}</a></li>
     <li><a href={`/quarterly-tax-calculator/${stateSlug(state.name)}/`}>Quarterly payments in {state.name}</a></li>
     {siblings.map((s) => (
-      <li><a href={`/doordash-tax-calculator/${stateSlug(s!.name)}/`}>DoorDash taxes in {s!.name}</a></li>
+      <li><a href={`/${categorySlug}/${stateSlug(s!.name)}/`}>{NAME} in {s!.name}</a></li>
     ))}
   </ul>
 </Base>

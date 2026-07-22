@@ -36,6 +36,7 @@ const federalTs =
   `export const retirement = ${j(cfg.retirement)};\n\n` +
   `export const acaSubsidy = ${j(cfg.acaSubsidy)};\n\n` +
   `export const incomeSources = ${j(cfg.incomeSources)};\n\n` +
+  `export const equityCompensation = ${j(cfg.equityCompensation)};\n\n` +
   `export const entityTypes = ${j(cfg.entityTypes)};\n\n` +
   `export const filingStatuses = ${j(cfg.filingStatuses)};\n\n` +
   `export const quarterlyDates2026 = ${j(cfg.quarterlyDates2026)};\n`;
@@ -113,5 +114,13 @@ const platformsTs =
   `export const platformList: PlatformSummary[] = ${j(summaries)};\n`;
 writeFileSync(join(outDir, 'platforms.ts'), platformsTs);
 
-console.log('Wrote src/data/{federal,states,platforms}.ts');
-console.log(`  states: ${Object.keys(cfg.states).length}, platforms: ${summaries.length}, verified: ${VERIFIED}`);
+// ---- professionals.ts : the 23 trade deduction profiles, verbatim ----
+const professionalsTs =
+  banner('Deduction slugs, notes and unique rules copied verbatim; labels are applied in lib/professions.ts.') +
+  `export const VERIFIED = ${j(VERIFIED)} as const;\n\n` +
+  `export const professionals = ${j(cfg.professionals)};\n\n` +
+  `export default professionals;\n`;
+writeFileSync(join(outDir, 'professionals.ts'), professionalsTs);
+
+console.log('Wrote src/data/{federal,states,platforms,professionals}.ts');
+console.log(`  states: ${Object.keys(cfg.states).length}, platforms: ${summaries.length}, professions: ${Object.keys(cfg.professionals).length}, verified: ${VERIFIED}`);

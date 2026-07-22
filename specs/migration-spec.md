@@ -20,6 +20,15 @@ Three page tiers:
 - Tier 2 — state layer (~150 pages initially). The 2 or 3 highest-volume calculators × 50 states + DC: /1099-tax-calculator/ohio/, /paycheck-calculator/florida/. Calculator preset to that state; content built from state data.
 - Tier 3 — platform layer (40–80 pages). /1099-tax-calculator/doordash-driver/, /uber-driver/, /etsy-seller/, /onlyfans-creator/, /airbnb-host/, /turo-host/, /youtube-creator/, /brand-deal-tax-calculator/. Only build a platform page if it appears in the keyword list in `specs/keywords.md` (owner maintains this file; if absent, propose the list and wait for approval).
 
+## URL conventions
+
+Settled while the site was still unindexed, when changing them was free. Do not change these once the site is indexed without writing a redirect map first.
+
+- Spokes use the full state name, never the two-letter code: `/1099-tax-calculator/ohio/`, not `/oh/`.
+- One dynamic segment per axis. A slug never repeats what its parent already says — `/cross-border-tax/ohio/`, not `/working-in-one-state-living-in-another/living-in-ohio-working-in-another-state/`.
+- Platform calculators are flat and keyword-first: `/doordash-tax-calculator/[state]/`, not `/gig-tax-calculator/doordash/[state]/`. Fifteen top-level platform directories is the deliberate cost; "doordash tax calculator" is the query being answered, and burying the platform a level down answers it less directly.
+- Section names are the thing a person would search for, not a description of the page's internals.
+
 Internal linking rules:
 - Every Tier 2/3 page links up to its hub and sideways to 3–4 siblings (nearby states or related platforms).
 - Every hub links down to all of its spokes, grouped (states in a compact index, platforms as cards).

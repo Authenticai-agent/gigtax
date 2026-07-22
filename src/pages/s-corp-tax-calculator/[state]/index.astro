@@ -1,0 +1,206 @@
+---
+/**
+ * S-corp election by state: does it pay for itself here, and up to what profit?
+ *
+ * The federal saving is the same everywhere — payroll tax on salary instead of
+ * self-employment tax on everything. What differs, and what makes 51 pages worth
+ * having, is what the state does to the company on top: four jurisdictions tax
+ * it as a C corporation, eighteen charge a minimum owed at zero profit, and
+ * several levy on turnover or net worth rather than income.
+ *
+ * The page computes what can be computed from net profit and lists the rest
+ * rather than dropping it. A number that looks complete and is not is the whole
+ * failure mode of this calculator.
+ */
+import Base from '../../../layouts/Base.astro';
+import { states, stateList } from '../../../data/states';
+import { siblingStates } from '../../../data/neighbors';
+import { formatMoney } from '../../../lib/tax-engine';
+import { stateSlug } from '../../../lib/slug';
+import {
+  scorpOutcome, scorpLadder, salarySplits, worthwhileBand,
+  entityLevelTax, stateScorpTax, describeStateScorp,
+  PAYROLL_ADMIN_COST, DEFENSIBLE_SALARY_PCT,
+} from '../../../lib/scorp';
+import type { StateData } from '../../../data/types';
+
+const EXAMPLE = 100000;
+
+export function getStaticPaths() {
+  return stateList.map(([code, s]) => ({
+    params: { state: stateSlug(s.name) },
+    props: { code, state: s },
+  }));
+}
+
+interface Props { code: string; state: StateData }
+const { code, state } = Astro.props as Props;
+
+const ex = scorpOutcome(EXAMPLE, code);
+const ladder = scorpLadder(code);
+const splits = salarySplits(EXAMPLE, code);
+const band = worthwhileBand(code);
+const entity = entityLevelTax(code, EXAMPLE);
+const facts = stateScorpTax(code);
+const stateParas = describeStateScorp(code, state, ex);
+const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);
+
+const title = `S-corp calculator — ${state.name} (2026 election worth it?)`;
+const description = `Does electing S-corp status pay for itself in ${state.name} for 2026? The payroll tax saving against what ${state.name} charges the company, with the profit range where it works.`;
+---
+
+<Base title={title} description={description}>
+  <div class="breadcrumbs">
+    <a href="/s-corp-tax-calculator/">S-corp calculator</a> / {state.name}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year · {state.name}</p>
+    <h1>Is an S-corp election worth it in {state.name}?</h1>
+    <p class="tagline" data-source={`overrides/state-scorp-tax-2026.json → ${code}`}>
+      {entity.taxedAsCCorp
+        ? `${state.name} does not recognise the federal S election. It taxes the company as a C corporation, so electing here creates a state tax rather than avoiding one.`
+        : ex.saving > 0
+          ? `On ${formatMoney(EXAMPLE)} of profit the election saves about ${formatMoney(ex.saving)} a year in ${state.name}, after everything ${state.name} charges the company.`
+          : `On ${formatMoney(EXAMPLE)} of profit the election costs about ${formatMoney(Math.abs(ex.saving))} a year in ${state.name} once the state's own charges are counted.`}
+    </p>
+  </section>
+
+  {entity.taxedAsCCorp && (
+    <div class="callout">
+      <strong>{state.name} ignores the federal election</strong>
+      Most guidance about S-corps assumes your state follows the federal treatment. {state.name} does not.
+      Whatever you read about the payroll-tax saving still applies federally — but {state.name} taxes the
+      company itself, and that comes off the saving before you see any of it.
+    </div>
+  )}
+
+  <h2>What the election is worth on {formatMoney(EXAMPLE)} of profit</h2>
+  <p>
+    A <strong>single filer</strong> taking the standard deduction, paying themselves
+    {' '}{DEFENSIBLE_SALARY_PCT}% of profit as salary, with {formatMoney(PAYROLL_ADMIN_COST)} a year of
+    payroll and filing cost:
+  </p>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Tax as a sole proprietor</td><td>{formatMoney(ex.solePropTax)}</td></tr>
+      <tr><td>Tax as an S-corp, federal and personal state</td><td>{formatMoney(ex.sCorpTaxBeforeEntity)}</td></tr>
+      <tr><td>Saving from the payroll-tax split alone</td><td>{formatMoney(ex.federalOnlySaving)}</td></tr>
+      <tr>
+        <td data-source={`overrides/state-scorp-tax-2026.json → ${code}`}>What {state.name} charges the company</td>
+        <td>{entity.unknown ? 'not yet researched' : `− ${formatMoney(entity.amount)}`}</td>
+      </tr>
+      <tr class="total">
+        <td>{ex.saving > 0 ? 'Net saving' : 'Net cost'}</td>
+        <td>{formatMoney(Math.abs(ex.saving))}{ex.saving > 0 ? '' : ' worse off'}</td>
+      </tr>
+    </tbody>
+  </table>
+  {!entity.unknown && entity.basis !== 'nothing on net income' && (
+    <p data-source={`overrides/state-scorp-tax-2026.json → ${code}`}>
+      {state.name} charges the company {entity.basis}.
+    </p>
+  )}
+
+  {entity.disclosures.length > 0 && (
+    <div class="callout">
+      <strong>Not in that figure</strong>
+      {state.name} also charges the following. {entity.disclosures.length === 1 ? 'It is' : 'They are'} real,
+      but {entity.disclosures.length === 1 ? 'it does' : 'they do'} not depend on net profit, so
+      {entity.disclosures.length === 1 ? ' it cannot' : ' they cannot'} be worked out from what this
+      calculator knows:
+      <ul>
+        {entity.disclosures.map((d) => <li><strong>{d.label}.</strong> {d.why}</li>)}
+      </ul>
+    </div>
+  )}
+
+  <h2>The profit range where it actually pays in {state.name}</h2>
+  <p data-source="lib/scorp.ts worthwhileBand()">
+    {band.unknownState
+      ? `${state.name}'s entity-level charges have not been researched yet, so this range counts the federal payroll saving only and is probably optimistic.`
+      : band.from === null
+        ? `On these assumptions the election does not pay for itself at any profit up to $500,000 in ${state.name}. What ${state.name} charges the company outweighs the payroll-tax saving throughout.`
+        : band.until === null
+          ? `From about ${formatMoney(band.from)} of profit upwards. Below that, the ${formatMoney(PAYROLL_ADMIN_COST)} of payroll cost is more than the saving.`
+          : `Between about ${formatMoney(band.from)} and ${formatMoney(band.until)} of profit. It stops paying above that: the payroll saving flattens once salary passes the Social Security wage base, while ${state.name}'s charge keeps climbing with profit.`}
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Net profit</th><th>Sole proprietor</th><th>S-corp, all in</th><th>Difference</th></tr>
+    </thead>
+    <tbody>
+      {ladder.map((row) => (
+        <tr>
+          <td>{formatMoney(row.netProfit)}</td>
+          <td>{formatMoney(row.solePropTax)}</td>
+          <td>{formatMoney(row.sCorpTax)}</td>
+          <td>{row.saving > 0 ? `saves ${formatMoney(row.saving)}` : `costs ${formatMoney(Math.abs(row.saving))}`}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  {stateParas.length > 0 && (
+    <>
+      <h2>What {state.name} does differently</h2>
+      {stateParas.map((p) => <p data-source={`overrides/state-scorp-tax-2026.json → ${code}`}>{p}</p>)}
+    </>
+  )}
+
+  {facts && (
+    <>
+      <h2>The {state.name} detail</h2>
+      <p data-source={`overrides/state-scorp-tax-2026.json → ${code}.notes`}>{facts.notes}</p>
+      {facts.confidence !== 'high' && (
+        <p>
+          This entry is recorded at {facts.confidence} confidence — some of it comes from secondary
+          sources rather than {state.name}'s own revenue department. Check it before acting on it.
+        </p>
+      )}
+    </>
+  )}
+
+  <h2>How much salary to pay yourself</h2>
+  <p>
+    Less salary means less payroll tax, so the arithmetic always points at the smallest salary you can
+    justify. That is exactly why it is not a number to optimise: compensation has to be reasonable for the
+    work you do, and the penalty for getting it wrong is reclassification plus back payroll tax. The
+    cheapest row here is the riskiest one.
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Salary share</th><th>Salary</th><th>Distribution</th><th>Total tax</th><th>vs sole proprietor</th></tr>
+    </thead>
+    <tbody>
+      {splits.map((r) => (
+        <tr>
+          <td>{r.pct}%</td>
+          <td>{formatMoney(r.salary)}</td>
+          <td>{formatMoney(r.distribution)}</td>
+          <td>{formatMoney(r.totalTax)}</td>
+          <td>{formatMoney(r.saving)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>What this assumes</h2>
+  <ul>
+    <li>Single filer, standard deduction, the business as the only income.</li>
+    <li>{DEFENSIBLE_SALARY_PCT}% of profit taken as salary in the headline figures.</li>
+    <li>{formatMoney(PAYROLL_ADMIN_COST)} a year for payroll and a separate 1120-S — a cost estimate, not a tax figure, and it varies by provider.</li>
+    <li>Comparing against a sole proprietorship. If you already trade through an LLC, some state fees are owed either way and are not a cost of electing.</li>
+    <li>Anything listed as not modelled above is genuinely owed — it is excluded because it does not depend on profit, not because it is nil.</li>
+  </ul>
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/s-corp-tax-calculator/">S-corp calculator (all states)</a></li>
+    <li><a href={`/1099-tax-calculator/${stateSlug(state.name)}/`}>1099 taxes in {state.name}</a></li>
+    <li><a href={`/quarterly-tax-calculator/${stateSlug(state.name)}/`}>Quarterly payments in {state.name}</a></li>
+    {siblings.map((s) => (
+      <li><a href={`/s-corp-tax-calculator/${stateSlug(s!.name)}/`}>S-corp in {s!.name}</a></li>
+    ))}
+  </ul>
+</Base>

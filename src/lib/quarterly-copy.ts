@@ -15,7 +15,7 @@ const qe = federal.quarterlyEstimated;
 const safe = qe.safeHarborRules as Record<string, unknown>;
 
 /** The 2026 federal 1040-ES due dates, formatted for prose and tables. */
-export const quarters = (qe.quarters as Array<Record<string, string>>).map((q) => ({
+export const quarters = (qe.quarters as unknown as Array<Record<string, string>>).map((q) => ({
   quarter: Number(q.quarter),
   periodLabel: q.periodLabel,
   dueIso: q.dueDate,
