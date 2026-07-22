@@ -10,6 +10,7 @@
 import Base from '../../../layouts/Base.astro';
 import QuickEstimator from '../../../components/calculators/QuickEstimator.tsx';
 import { states, stateList } from '../../../data/states';
+import { adjacency } from '../../../data/adjacency';
 import { siblingStates } from '../../../data/neighbors';
 import { calcCombined, formatMoney, formatPct, getStandardDeduction } from '../../../lib/tax-engine';
 import {
@@ -53,6 +54,7 @@ const facts = describeStateFacts(code, state);
 const neighbours = neighbourComparison(code, EXAMPLE_INCOME);
 const neighbourSummary = describeNeighbours(code, state, neighbours, EXAMPLE_INCOME);
 const neighbourLines = neighbourSentences(state, neighbours);
+const neighbourBorderless = !adjacency[code]?.length;
 
 const title = `1099 tax calculator — ${state.name} (2026)`;
 const description = `Estimate 2026 self-employment, federal, and ${state.name} state income tax on 1099 income. Worked example and free calculator, figures verified from IRS sources.`;
@@ -121,7 +123,7 @@ const description = `Estimate 2026 self-employment, federal, and ${state.name} s
     </>
   )}
 
-  <h2>{state.name} against the states it borders</h2>
+  <h2>{neighbourBorderless ? `${state.name} against the biggest states` : `${state.name} against the states it borders`}</h2>
   {neighbourSummary && <p data-source="lib/tax-engine.ts calcStateTax() + data/adjacency.ts">{neighbourSummary}</p>}
   {neighbours.length > 0 && (
     <table class="data-table">
