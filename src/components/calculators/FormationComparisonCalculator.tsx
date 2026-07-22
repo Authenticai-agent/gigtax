@@ -43,7 +43,18 @@ const ENTITIES: Array<[EntityChoice, string]> = [
 const money = (n: number | null | undefined) =>
   n === null || n === undefined ? '—' : formatMoney(n);
 
-export default function FormationComparisonCalculator() {
+interface Props {
+  /**
+   * Restrict the comparison to two formation states, for the pair pages.
+   *
+   * The operating state is always kept alongside them even when it is not one
+   * of the pair — dropping it would hide the obligations that make the
+   * comparison honest, which is the one thing this tool must never do.
+   */
+  pairStates?: [string, string];
+}
+
+export default function FormationComparisonCalculator({ pairStates }: Props = {}) {
   const [homeState, setHomeState] = useState('OH');
   const [workState, setWorkState] = useState('OH');
   const [entity, setEntity] = useState<EntityChoice>('llc');
@@ -76,7 +87,10 @@ export default function FormationComparisonCalculator() {
     setStale(false);
   };
 
-  const ranked = result ? rankByFiveYear(result) : [];
+  const allRanked = result ? rankByFiveYear(result) : [];
+  const ranked = pairStates
+    ? allRanked.filter((c) => pairStates.includes(c.state) || c.isOperatingState)
+    : allRanked;
   const operating = workState || homeState;
 
   return (

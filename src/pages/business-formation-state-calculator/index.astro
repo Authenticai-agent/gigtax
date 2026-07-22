@@ -19,6 +19,7 @@ import { compareFormationStates, rankByFiveYear, AGENT_TIERS } from '../../lib/f
 import { formatMoney } from '../../lib/tax-engine';
 import { states } from '../../data/states';
 import { SPOKES } from '../../lib/formation-spokes';
+import { PAIRS } from '../../lib/formation-pairs';
 
 // The worked example from the specification, computed rather than written.
 const example = compareFormationStates({
@@ -178,6 +179,14 @@ const wyExtra = wy.fiveYearTotal - oh.fiveYearTotal;
   <ul class="link-columns">
     {SPOKES.map((s) => (
       <li><a href={`/business-formation-state-calculator/${s.slug}/`}>{s.h1}</a> — {s.tagline}</li>
+    ))}
+  </ul>
+
+  <h2>Two states, head to head</h2>
+  <p>The comparisons people actually search for, each with the thing that separates that pair:</p>
+  <ul class="link-columns">
+    {PAIRS.map((p) => (
+      <li><a href={`/${p.slug}/`}>{p.h1}</a> — {p.tagline}</li>
     ))}
   </ul>
 

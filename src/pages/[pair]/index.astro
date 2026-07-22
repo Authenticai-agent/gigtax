@@ -1,0 +1,125 @@
+---
+/**
+ * A formation comparison-pair page.
+ *
+ * Approved on the basis that each pair fails a find-and-replace test — swap one
+ * state's name for another and the page stops being true. The asymmetry block
+ * is therefore the page, not decoration around a shared calculator, and if
+ * these four ever converge on the duplicate gate the right response is to cut
+ * pages rather than pad them.
+ *
+ * The operating state is not preset. Which of the two wins depends entirely on
+ * where the reader actually works, and presetting that would fabricate the
+ * premise the answer rests on.
+ */
+import Base from '../../layouts/Base.astro';
+import FormationComparisonCalculator from '../../components/calculators/FormationComparisonCalculator.tsx';
+import { PAIRS } from '../../lib/formation-pairs';
+import formationFees from '../../data/formation-fees';
+import { states } from '../../data/states';
+import { formatMoney } from '../../lib/tax-engine';
+
+export function getStaticPaths() {
+  return PAIRS.map((p) => ({ params: { pair: p.slug }, props: { p } }));
+}
+const { p } = Astro.props as { p: (typeof PAIRS)[number] };
+const fees = formationFees as Record<string, any>;
+const [a, b] = p.states;
+
+const money = (n: number | null | undefined) =>
+  n === null || n === undefined ? 'not established' : formatMoney(n);
+const anyVaries = p.states.some((c) => fees[c]?.llc?.feeVaries || fees[c]?.corp?.feeVaries);
+---
+
+<Base title={p.title} description={p.description}>
+  <div class="breadcrumbs">
+    <a href="/business-formation-state-calculator/">Where to form</a> / {p.h1}
+  </div>
+
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>{p.h1}</h1>
+    <p class="tagline">{p.tagline}</p>
+  </section>
+
+  <div class="callout" data-review="legal">
+    <strong>Before either column</strong>
+    <p>
+      Forming in Wyoming, Delaware or Nevada does not remove tax or registration obligations in the state
+      where your business actually operates. An out-of-state entity doing business in its owner's state
+      must usually register there as a foreign entity and pay that state's taxes anyway.
+    </p>
+  </div>
+
+  {p.intro.map((para) => <p>{para}</p>)}
+
+  <h2>{p.asymmetryHeading}</h2>
+  {p.asymmetry.map((para) => <p>{para}</p>)}
+
+  <h2>What each charges</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>State</th><th>Entity</th><th>Formation</th><th>Foreign registration</th><th>Annual report</th><th>Annual tax</th></tr>
+    </thead>
+    <tbody>
+      {p.states.flatMap((code) => (['llc', 'corp'] as const).map((kind) => {
+        const r = fees[code]?.[kind] ?? {};
+        return (
+          <tr>
+            <td>{states[code].name}</td>
+            <td>{kind === 'llc' ? 'LLC' : 'Corporation'}</td>
+            <td>{money(r.formationFee)}{r.feeVaries ? ' minimum' : ''}</td>
+            <td>{money(r.foreignQualificationFee)}</td>
+            <td>{r.annualReport?.frequency === 'none' ? 'none required' : money(r.annualReport?.amount)}</td>
+            <td>{money(r.annualTax?.amount)}</td>
+          </tr>
+        );
+      }))}
+    </tbody>
+  </table>
+  {anyVaries && (
+    <p class="field-note">
+      A figure marked "minimum" scales with authorized shares or capital. The real amount depends on a
+      share structure this calculator does not ask for, so any total containing it is a floor.
+    </p>
+  )}
+
+  <h2>{states[a].name} in detail</h2>
+  {p.detail[a].map((para) => <p>{para}</p>)}
+
+  <h2>{states[b].name} in detail</h2>
+  {p.detail[b].map((para) => <p>{para}</p>)}
+
+  <h2>The short answer</h2>
+  <p>{p.verdict}</p>
+
+  <p class="section-label">Run it on your own state and figures</p>
+  <p>
+    Your operating state is not preset here, because it decides the answer. Set where you live and where
+    the work happens, and the comparison keeps that state's obligations on every column — which is what
+    makes the totals honest.
+  </p>
+  <FormationComparisonCalculator client:load pairStates={p.states} />
+
+  <h2>Questions</h2>
+  {p.faqs.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review={f.review ? 'legal' : undefined}>{f.a}</p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/business-formation-state-calculator/">Compare every state</a></li>
+    {PAIRS.filter((o) => o.slug !== p.slug).map((o) => (
+      <li><a href={`/${o.slug}/`}>{o.h1}</a></li>
+    ))}
+    <li><a href="/incorporation-tax-calculator/">Delaware franchise tax calculator</a></li>
+  </ul>
+
+  <p class="disclaimer" data-review="legal">
+    General information about what states charge, not tax advice — and not legal advice either. Choosing
+    where and how to form a business involves legal questions beyond cost. Take advice before filing.
+  </p>
+</Base>
