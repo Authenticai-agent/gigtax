@@ -6,7 +6,7 @@
     "rules": [
       "entityLevelIncomeTaxRate is what the STATE charges the CORPORATION on its net income. It is not the shareholder's personal rate and it is not an optional PTET election.",
       "minimumAnnualTax is owed regardless of profit, including at a loss, unless notes say otherwise.",
-      "A state that does not recognise the federal S election taxes the company as a C corporation. For those, the election can COST money rather than save it, and the page has to lead with that.",
+      "A state that does not recognize the federal S election taxes the company as a C corporation. For those, the election can COST money rather than save it, and the page has to lead with that.",
       "Null is a correct answer. Never interpolate a rate.",
       "minimumIsAlternative says whether the minimum REPLACES the income-based charge ('the greater of X or Y', California) or is owed ON TOP of it (Tennessee's franchise tax alongside its excise tax). It must be an explicit field — deciding it by pattern-matching the notes is how arithmetic silently goes wrong."
     ],
@@ -36,7 +36,7 @@
     "minimumAnnualTax": 100,
     "grossReceiptsTax": null,
     "annualReportFee": null,
-    "notes": "Tennessee does not recognise the federal S election and taxes an S corporation as a C corporation: 6.5% excise tax on net earnings, plus a franchise tax of the greater of $0.25 per $100 of net worth or $100. A $50,000 standard deduction against net earnings applies from tax year 2024. Electing S status in Tennessee creates a state tax rather than avoiding one — this is the clearest case where the federal saving can be wiped out.",
+    "notes": "Tennessee does not recognize the federal S election and taxes an S corporation as a C corporation: 6.5% excise tax on net earnings, plus a franchise tax of the greater of $0.25 per $100 of net worth or $100. A $50,000 standard deduction against net earnings applies from tax year 2024. Electing S status in Tennessee creates a state tax rather than avoiding one — this is the clearest case where the federal saving can be wiped out.",
     "sources": [
       "tn.gov Department of Revenue — Franchise and Excise Tax Manual (June 2025)",
       "Secondary, consistent: nolo.com and s-corptax.com state guides"
@@ -52,7 +52,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": null,
-    "notes": "Alabama recognises the federal election automatically (Form 20S is a return, not an election). No entity-level income tax, but the Business Privilege Tax applies on NET WORTH ($0.25-$1.75 per $1,000); the $100 minimum BPT was eliminated for tax years after 31/12/2023 and entities owing $100 or less need not file. An optional PTE election at 5% exists. The corporate annual report was repealed effective 2024.",
+    "notes": "Alabama recognizes the federal election automatically (Form 20S is a return, not an election). No entity-level income tax, but the Business Privilege Tax applies on NET WORTH ($0.25-$1.75 per $1,000); the $100 minimum BPT was eliminated for tax years after 31/12/2023 and entities owing $100 or less need not file. An optional PTE election at 5% exists. The corporate annual report was repealed effective 2024.",
     "sources": [
       "revenue.alabama.gov S-corporation and BPT pages"
     ],
@@ -66,7 +66,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": null,
-    "notes": "Alaska's corporate net income tax reaches C corporations only; S corporations are pass-through and owe no Alaska entity-level income tax, and Alaska has no individual income tax either. Recurring fees are not annual: a $100 biennial report plus a $50/year business licence.",
+    "notes": "Alaska's corporate net income tax reaches C corporations only; S corporations are pass-through and owe no Alaska entity-level income tax, and Alaska has no individual income tax either. Recurring fees are not annual: a $100 biennial report plus a $50/year business license.",
     "sources": [
       "AS 43.20.011",
       "commerce.alaska.gov biennial report FAQs"
@@ -139,7 +139,7 @@
     "minimumAnnualTax": 175,
     "grossReceiptsTax": "Delaware gross receipts tax, 0.0945%-1.9914% of gross receipts by activity, with monthly exclusions generally starting at $100,000",
     "annualReportFee": 50,
-    "notes": "Delaware recognises the federal election and imposes no entity-level income tax, but every Delaware-incorporated corporation owes annual franchise tax with a $175 minimum under the authorised shares method (or $400 minimum under assumed par value capital) plus a $50 annual report fee, regardless of where it operates or whether it profits.",
+    "notes": "Delaware recognizes the federal election and imposes no entity-level income tax, but every Delaware-incorporated corporation owes annual franchise tax with a $175 minimum under the authorized shares method (or $400 minimum under assumed par value capital) plus a $50 annual report fee, regardless of where it operates or whether it profits.",
     "sources": [
       "corp.delaware.gov franchise tax and calculator",
       "revenue.delaware.gov gross receipts FAQs"
@@ -154,7 +154,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": 150,
-    "notes": "Florida recognises the federal election and S corps are generally exempt from corporate income tax with no annual F-1120 filing; the exception is an S corp with income taxable under IRC 1374 or 1375. Florida has no individual income tax. The $150 annual report is due by 1 May with a non-waivable $400 late penalty.",
+    "notes": "Florida recognizes the federal election and S corps are generally exempt from corporate income tax with no annual F-1120 filing; the exception is an S corp with income taxable under IRC 1374 or 1375. Florida has no individual income tax. The $150 annual report is due by May 1 with a non-waivable $400 late penalty.",
     "sources": [
       "floridarevenue.com corporate tax",
       "dos.fl.gov sunbiz annual report"
@@ -200,7 +200,7 @@
     "minimumAnnualTax": 20,
     "grossReceiptsTax": null,
     "annualReportFee": 0,
-    "notes": "Idaho accepts the federal approval of the S election — no separate state election, just Form 41S. Every S corp doing business in or registered in Idaho owes a $20 minimum tax on Form 41S even at zero or negative income; income otherwise passes through. Idaho also disallows NOL carryback/carryforward at S corp level and requires pass-through withholding or a composite return for nonresident shareholders. Annual report is free online via SOSBiz. Independently confirmed by a second researcher against Idaho Code 63-3025 and 63-3025A and IDAPA 35.01.01 Rule 285.01: the $20 minimum is required of EVERY S corporation that must file a return, including name-holder and inactive corporations, so a dormant Idaho S corp still writes a cheque.",
+    "notes": "Idaho accepts the federal approval of the S election — no separate state election, just Form 41S. Every S corp doing business in or registered in Idaho owes a $20 minimum tax on Form 41S even at zero or negative income; income otherwise passes through. Idaho also disallows NOL carryback/carryforward at S corp level and requires pass-through withholding or a composite return for nonresident shareholders. Annual report is free online via SOSBiz. Independently confirmed by a second researcher against Idaho Code 63-3025 and 63-3025A and IDAPA 35.01.01 Rule 285.01: the $20 minimum is required of EVERY S corporation that must file a return, including name-holder and inactive corporations, so a dormant Idaho S corp still writes a check.",
     "sources": [
       "tax.idaho.gov income tax for S corporations",
       "tax.idaho.gov Form 41S (tax before credits cannot be less than $20)",
@@ -216,7 +216,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": 75,
-    "notes": "Illinois charges the S corporation itself a 1.5% Personal Property Replacement Tax on its net Illinois income — IDOR verbatim: 'Partnerships, trusts, and S corporations pay a 1.5 percent replacement tax on their net Illinois income.' The election is recognised automatically by reference to IRC 1361(a); the entity files IL-1120-ST and is subject to replacement tax but not Illinois income tax. Owners who assume S corp income is untaxed at entity level in Illinois are wrong — 1.5% comes off the top before anything passes through. The separate franchise tax still exists in statute but the first $10,000 of liability is exempt for tax years from 1/1/2025, zeroing it for essentially all small corporations. Independently confirmed by a second researcher against tax.illinois.gov and the IL-1120-ST instructions (R-07/26), which compute the tax as Line 3 x .015. On the franchise tax: claims that no payment is required from 1/1/2026 trace to PENDING bills (HB2846/HB2861/SB3441, 104th General Assembly), not to enacted law — the compiled statute 805 ILCS 5/15.35 still shows only the $10,000 exemption from 1/1/2025. Re-check before publishing in case a 2026 Public Act has not yet reached the compilation.",
+    "notes": "Illinois charges the S corporation itself a 1.5% Personal Property Replacement Tax on its net Illinois income — IDOR verbatim: 'Partnerships, trusts, and S corporations pay a 1.5 percent replacement tax on their net Illinois income.' The election is recognized automatically by reference to IRC 1361(a); the entity files IL-1120-ST and is subject to replacement tax but not Illinois income tax. Owners who assume S corp income is untaxed at entity level in Illinois are wrong — 1.5% comes off the top before anything passes through. The separate franchise tax still exists in statute but the first $10,000 of liability is exempt for tax years from 1/1/2025, zeroing it for essentially all small corporations. Independently confirmed by a second researcher against tax.illinois.gov and the IL-1120-ST instructions (R-07/26), which compute the tax as Line 3 x .015. On the franchise tax: claims that no payment is required from 1/1/2026 trace to PENDING bills (HB2846/HB2861/SB3441, 104th General Assembly), not to enacted law — the compiled statute 805 ILCS 5/15.35 still shows only the $10,000 exemption from 1/1/2025. Re-check before publishing in case a 2026 Public Act has not yet reached the compilation.",
     "sources": [
       "tax.illinois.gov personal property replacement tax",
       "tax.illinois.gov subchapters guidance",
@@ -297,7 +297,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": 30,
-    "notes": "LOUISIANA FLIPPED FOR 2026 and is the single biggest change in this dataset. Act 382 of the 2025 Regular Session, effective for income tax periods beginning on or after 1 January 2026, makes S corporations pass-through automatically with no election required — reversing decades of Louisiana taxing them like C corporations under a partial S corporation exclusion. They are no longer subject to Louisiana corporation income tax and file CIT-620 as an informational return. Separately the 0.275% corporation franchise tax is repealed for periods from 1 January 2026 under Act 6 of the 2024 Third Extraordinary Session, so there is no longer any Louisiana entity-level minimum. WARNING: the LDR FAQ page on the pass-through election still reflects pre-2026 law and states Louisiana does not recognise Subchapter S — it is stale relative to Act 382, and most secondary sources repeat it.",
+    "notes": "LOUISIANA FLIPPED FOR 2026 and is the single biggest change in this dataset. Act 382 of the 2025 Regular Session, effective for income tax periods beginning on or after January 1, 2026, makes S corporations pass-through automatically with no election required — reversing decades of Louisiana taxing them like C corporations under a partial S corporation exclusion. They are no longer subject to Louisiana corporation income tax and file CIT-620 as an informational return. Separately the 0.275% corporation franchise tax is repealed for periods from January 1, 2026 under Act 6 of the 2024 Third Extraordinary Session, so there is no longer any Louisiana entity-level minimum. WARNING: the LDR FAQ page on the pass-through election still reflects pre-2026 law and states Louisiana does not recognize Subchapter S — it is stale relative to Act 382, and most secondary sources repeat it.",
     "sources": [
       "LDR Revenue Information Bulletin 25-032 on Act 382",
       "revenue.louisiana.gov FAQ confirming franchise tax repeal from 1/1/2026",
@@ -379,7 +379,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": 0,
-    "notes": "Minnesota respects the federal election and does not tax ordinary S corp income at entity level, but Form M8 imposes the 9.8% corporate franchise rate on recognised built-in gains, net capital gain and excess passive investment income — a narrow base, not a general entity income tax. Separately an inflation-indexed minimum fee applies on Minnesota property + payroll + sales: $0 under $1,280,000, then $260, $770, $2,560, $5,140 and $12,830 at rising thresholds (2026). Because the fee is $0 below the first threshold there is no unconditional minimum. Annual renewal is free if filed on time.",
+    "notes": "Minnesota respects the federal election and does not tax ordinary S corp income at entity level, but Form M8 imposes the 9.8% corporate franchise rate on recognized built-in gains, net capital gain and excess passive investment income — a narrow base, not a general entity income tax. Separately an inflation-indexed minimum fee applies on Minnesota property + payroll + sales: $0 under $1,280,000, then $260, $770, $2,560, $5,140 and $12,830 at rising thresholds (2026). Because the fee is $0 below the first threshold there is no unconditional minimum. Annual renewal is free if filed on time.",
     "sources": [
       "revenue.state.mn.us minimum fee",
       "revenue.state.mn.us M8 instructions",
@@ -427,7 +427,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": 20,
-    "notes": "Montana respects the federal election; the S corp files Form PTE and owes no entity-level income tax, but must remit withholding or composite tax on nonresident owners' Montana-source income. The $20 annual report fee is waived for corporations filing by 15 April in 2024-2027, so the effective 2026 cost is $0 if filed on time ($35 late).",
+    "notes": "Montana respects the federal election; the S corp files Form PTE and owes no entity-level income tax, but must remit withholding or composite tax on nonresident owners' Montana-source income. The $20 annual report fee is waived for corporations filing by April 15 in 2024-2027, so the effective 2026 cost is $0 if filed on time ($35 late).",
     "sources": [
       "revenue.mt.gov Form PTE and Publication 4",
       "sosmt.gov fees"
@@ -458,11 +458,11 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": "Commerce Tax — only if Nevada gross revenue exceeds $4,000,000 in the fiscal year; rate varies by NAICS category, roughly 0.051% to 0.331%",
     "annualReportFee": 650,
-    "notes": "Nevada has no corporate or personal income tax, so the federal election is irrelevant for income tax and there is no entity-level income tax. The real recurring cost is the Secretary of State package: a $150 Annual List of Officers plus a $500 State Business License for corporations — $650 a year, due regardless of profit, but a filing/licence fee rather than a tax. A payroll-based Modified Business Tax also applies to employers.",
+    "notes": "Nevada has no corporate or personal income tax, so the federal election is irrelevant for income tax and there is no entity-level income tax. The real recurring cost is the Secretary of State package: a $150 Annual List of Officers plus a $500 State Business License for corporations — $650 a year, due regardless of profit, but a filing/license fee rather than a tax. A payroll-based Modified Business Tax also applies to employers.",
     "sources": [
       "tax.nv.gov commerce tax",
       "NRS 363C",
-      "nvsos.gov state business licence FAQ"
+      "nvsos.gov state business license FAQ"
     ],
     "confidence": "high",
     "minimumIsAlternative": false
@@ -489,7 +489,7 @@
     "minimumAnnualTax": 375,
     "grossReceiptsTax": null,
     "annualReportFee": 75,
-    "notes": "The old CBT-2553 requirement is GONE: for privilege periods from 22 December 2022 a federal S corporation is automatically a New Jersey S corporation, and an entity that does NOT want NJ S treatment must affirmatively opt out on CBT-2553-R. An NJ S corp files CBT-100S and normally pays only the minimum CBT, which scales with New Jersey gross receipts: $375 under $100,000, $562.50 to $249,999, $750 to $499,999, $1,125 to $999,999, $1,500 at $1,000,000 or more.",
+    "notes": "The old CBT-2553 requirement is GONE: for privilege periods from December 22, 2022 a federal S corporation is automatically a New Jersey S corporation, and an entity that does NOT want NJ S treatment must affirmatively opt out on CBT-2553-R. An NJ S corp files CBT-100S and normally pays only the minimum CBT, which scales with New Jersey gross receipts: $375 under $100,000, $562.50 to $249,999, $750 to $499,999, $1,125 to $999,999, $1,500 at $1,000,000 or more.",
     "sources": [
       "nj.gov/treasury TB-105, S-corp procedural changes, minimum CBT and CBT-100S instructions"
     ],
@@ -532,7 +532,7 @@
     "minimumAnnualTax": 200,
     "grossReceiptsTax": null,
     "annualReportFee": 25,
-    "notes": "The federal election is automatically recognised, but the S corporation still owes North Carolina franchise tax on Form CD-401S: a flat $200 on the first $1,000,000 of tax base plus $1.50 per $1,000 above that, with a $200 minimum regardless of profit. The corporate income tax (2.00% for 2026, phasing to zero) applies to C corporations, not to an S corp's ordinary income.",
+    "notes": "The federal election is automatically recognized, but the S corporation still owes North Carolina franchise tax on Form CD-401S: a flat $200 on the first $1,000,000 of tax base plus $1.50 per $1,000 above that, with a $200 minimum regardless of profit. The corporate income tax (2.00% for 2026, phasing to zero) applies to C corporations, not to an S corp's ordinary income.",
     "sources": [
       "ncdor.gov corporate income and franchise tax rates",
       "sosnc.gov annual report FAQs"
@@ -608,7 +608,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": 7,
-    "notes": "Since tax years after 31/12/2005 any corporation with a valid federal S election is AUTOMATICALLY a Pennsylvania S corporation; the only election available is the opt-OUT on Form REV-976, requiring 100% shareholder consent and irrevocable for five years. Corporate net income tax does not reach a PA S corporation's ordinary income and the capital stock/franchise tax expired after 2015. Under Act 122 of 2022 an annual report replaced the decennial report from 2025: $7 for business corporations, due 30 June. Pennsylvania has no PTET regime.",
+    "notes": "Since tax years after 31/12/2005 any corporation with a valid federal S election is AUTOMATICALLY a Pennsylvania S corporation; the only election available is the opt-OUT on Form REV-976, requiring 100% shareholder consent and irrevocable for five years. Corporate net income tax does not reach a PA S corporation's ordinary income and the capital stock/franchise tax expired after 2015. Under Act 122 of 2022 an annual report replaced the decennial report from 2025: $7 for business corporations, due June 30. Pennsylvania has no PTET regime.",
     "sources": [
       "revenue-pa.custhelp.com automatic PA S corporation ruling",
       "pa.gov REV-976 and annual reports"
@@ -623,7 +623,7 @@
     "minimumAnnualTax": 400,
     "grossReceiptsTax": null,
     "annualReportFee": 50,
-    "notes": "Rhode Island recognises the federal election with no separate state election, but every S corporation must file Form RI-1120S and pay the $400 annual minimum tax even with zero or negative income — a single flat amount, not tiered by receipts. The 7% corporate rate reaches an S corporation only on income taxable at federal corporate level.",
+    "notes": "Rhode Island recognizes the federal election with no separate state election, but every S corporation must file Form RI-1120S and pay the $400 annual minimum tax even with zero or negative income — a single flat amount, not tiered by receipts. The 7% corporate rate reaches an S corporation only on income taxable at federal corporate level.",
     "sources": [
       "tax.ri.gov corporate tax filing requirements",
       "docs.sos.ri.gov business corporation annual report"
@@ -638,7 +638,7 @@
     "minimumAnnualTax": 25,
     "grossReceiptsTax": null,
     "annualReportFee": null,
-    "notes": "South Carolina follows the federal election automatically, but the S corporation still owes an annual corporate licence fee of 0.1% of capital and paid-in surplus plus $15, minimum $25, paid with Form SC1120S and computed for the year FOLLOWING the income tax year. Under SC Code 12-6-590 the 5% corporate income tax reaches an S corporation only on built-in gains and excess net passive income. The annual report is Schedule D of the SC1120S rather than a separately priced filing.",
+    "notes": "South Carolina follows the federal election automatically, but the S corporation still owes an annual corporate license fee of 0.1% of capital and paid-in surplus plus $15, minimum $25, paid with Form SC1120S and computed for the year FOLLOWING the income tax year. Under SC Code 12-6-590 the 5% corporate income tax reaches an S corporation only on built-in gains and excess net passive income. The annual report is Schedule D of the SC1120S rather than a separately priced filing.",
     "sources": [
       "dor.sc.gov S corporation",
       "SC Code 12-6-590",
@@ -697,7 +697,7 @@
     "minimumAnnualTax": 250,
     "grossReceiptsTax": null,
     "annualReportFee": 45,
-    "notes": "Vermont respects the federal election but charges every S corporation a $250 minimum annual entity tax on Form BI-471 regardless of profit or loss — a zero-income Vermont S corp still writes a $250 cheque. Nonresident shareholder estimated payments also apply.",
+    "notes": "Vermont respects the federal election but charges every S corporation a $250 minimum annual entity tax on Form BI-471 regardless of profit or loss — a zero-income Vermont S corp still writes a $250 check. Nonresident shareholder estimated payments also apply.",
     "sources": [
       "tax.vermont.gov business entity income tax and FAQs",
       "Form BI-471 instructions"
@@ -712,7 +712,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": 100,
-    "notes": "Virginia automatically follows the federal election — the S corp files informational Form 502 and pays no entity-level income tax, though it withholds on nonresident shareholders. Virginia's optional PTET (Form 502PTET, 5.75%) sunsets after taxable year 2025 under current law, so do not assume it is available for 2026. The $100 registration fee is the minimum for up to 5,000 authorised shares.",
+    "notes": "Virginia automatically follows the federal election — the S corp files informational Form 502 and pays no entity-level income tax, though it withholds on nonresident shareholders. Virginia's optional PTET (Form 502PTET, 5.75%) sunsets after taxable year 2025 under current law, so do not assume it is available for 2026. The $100 registration fee is the minimum for up to 5,000 authorized shares.",
     "sources": [
       "tax.virginia.gov pass-through entities and PTET guidelines",
       "scc.virginia.gov annual registration fees"
@@ -742,7 +742,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": 25,
-    "notes": "West Virginia follows the federal election; the S corp files informational Form PTE-100 and owes no entity-level income tax, but must remit withholding on nonresident shareholders' distributive shares through that return. The $25 annual report is due between 1 January and 30 June (W. Va. Code 59-1-2a). An optional PTET exists.",
+    "notes": "West Virginia follows the federal election; the S corp files informational Form PTE-100 and owes no entity-level income tax, but must remit withholding on nonresident shareholders' distributive shares through that return. The $25 annual report is due between January 1 and June 30 (W. Va. Code 59-1-2a). An optional PTET exists.",
     "sources": [
       "tax.wv.gov PTE-100 instructions",
       "sos.wv.gov annual reports",
@@ -774,7 +774,7 @@
     "minimumAnnualTax": null,
     "grossReceiptsTax": null,
     "annualReportFee": 60,
-    "notes": "Wyoming has no corporate income tax, no personal income tax, no franchise tax on income and no gross receipts tax, so the federal election has no Wyoming income tax consequence. The only recurring charge is the annual report licence tax: the greater of $60 or $0.0002 per dollar of Wyoming assets, so the $60 floor holds until Wyoming assets exceed $300,000.",
+    "notes": "Wyoming has no corporate income tax, no personal income tax, no franchise tax on income and no gross receipts tax, so the federal election has no Wyoming income tax consequence. The only recurring charge is the annual report license tax: the greater of $60 or $0.0002 per dollar of Wyoming assets, so the $60 floor holds until Wyoming assets exceed $300,000.",
     "sources": [
       "sos.wyo.gov business fees schedule and FAQs"
     ],

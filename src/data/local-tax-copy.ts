@@ -49,7 +49,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     shape: 'An Earned Income Tax everywhere except Philadelphia, which runs its own wage tax and its own tax on self-employed profit — plus a flat annual Local Services Tax based on where you work.',
     traps: [
       'Pennsylvania runs two local tax systems that do not talk to each other. The Earned Income Tax covers the whole state except Philadelphia, which sits outside it entirely with its own wage tax and its own tax on self-employed profit.',
-      'Philadelphia changes its rates on 1 July rather than 1 January, so any figure for a full calendar year is a blend of two rates rather than one.',
+      'Philadelphia changes its rates on July 1 rather than January 1, so any figure for a full calendar year is a blend of two rates rather than one.',
       'The most valuable thing to know here if you own a business: profit that reaches you as an S-corporation shareholder is not subject to the local Earned Income Tax, while the same profit earned as a sole proprietor is. In an area charging 3% between the municipality and the school district, that is a real reason to consider the election — and it is invisible in the federal arithmetic, because federally the two are taxed much the same.',
       'If you work for yourself, nobody withholds this tax for you. Sole proprietors, single-member LLC owners and most individual partners owe Earned Income Tax on their business profit and have to send quarterly payments directly to their local collector. It is missed constantly for exactly that reason.',
       'The Local Services Tax is a separate flat charge in dollars rather than a percentage, based on where you work rather than where you live. It is capped at $52 a year in total however many places you work in, and anyone earning under $12,000 from work in that area is exempt. Self-employed people owe it too, and where it is more than $10 a year they pay it quarterly.',
@@ -63,17 +63,17 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
       'Four cities are allowed to charge more, and they do: Detroit at 2.4% and 1.2%, Highland Park at 2% and 1%, Grand Rapids and Saginaw at 1.5% and 0.75%. None of the other twenty qualifies to go above 1%.',
       'Profit from working for yourself is taxed, but which profit depends on where you live. If you live in the city, it taxes your business profit wherever you earned it. If you only work there, it taxes just the share you earned inside the city, worked out using the city’s own formula for splitting business income across places.',
       'Pensions, annuities and Social Security are not taxed by any of these cities.',
-      'East Lansing’s tax expires after 2030. It was authorised for twelve years from January 2019 and is the only one of the twenty-four with an end date, so do not assume it is permanent.',
+      'East Lansing’s tax expires after 2030. It was authorized for twelve years from January 2019 and is the only one of the twenty-four with an end date, so do not assume it is permanent.',
     ],
   },
   IN: {
-    headline: 'Your county is fixed on 1 January and does not change if you move — and rates run from 0.5% to 3%.',
+    headline: 'Your county is fixed on January 1 and does not change if you move — and rates run from 0.5% to 3%.',
     shape: 'A county income tax, charged on the same income Indiana taxes.',
     traps: [
       'Every one of Indiana’s 92 counties charges a local income tax, and it is calculated on the same income the state taxes. That means it reaches profit from working for yourself in full, along with everything else the state taxes.',
       'The spread between counties is enormous and has nothing to do with distance. Porter County charges 0.5% and Randolph County charges 3% — a six-fold difference, and neighbouring counties can be far apart.',
-      'Which county you pay is fixed on 1 January and does not change if you move during the year. If you live outside Indiana but your main place of work or business is in an Indiana county, you pay that county’s full rate — the reduced rate that used to apply to non-residents no longer exists.',
-      'Six counties changed their rate on 1 January 2026: Carroll, Grant, Greene, Howard, Shelby and Union.',
+      'Which county you pay is fixed on January 1 and does not change if you move during the year. If you live outside Indiana but your main place of work or business is in an Indiana county, you pay that county’s full rate — the reduced rate that used to apply to non-residents no longer exists.',
+      'Six counties changed their rate on January 1, 2026: Carroll, Grant, Greene, Howard, Shelby and Union.',
     ],
   },
   MD: {
@@ -87,18 +87,18 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
   },
   KY: {
     headline: 'A city and a county can both tax the same income, and forgetting the credit between them overstates the bill.',
-    shape: 'An occupational licence fee on both wages and self-employed profit, charged by cities, counties and some school districts.',
+    shape: 'An occupational license fee on both wages and self-employed profit, charged by cities, counties and some school districts.',
     traps: [
       'Kentucky’s local occupational taxes reach the profits of sole proprietors and contractors explicitly, and they do so with no personal allowances or deductions of any kind. The rate applies from the first dollar.',
       'A city and a county can both tax the same income. Where the county has more than 30,000 people, state law requires it to credit whatever you already paid to a city inside it — so you are not paying both in full. Adding a city rate and a county rate together without applying that credit is the easiest way to overstate a Kentucky bill, and it is a mistake made often.',
     ],
   },
   AL: {
-    headline: 'It reaches wages only. Work for yourself and it does not touch your profit — but a separate business licence tax does.',
+    headline: 'It reaches wages only. Work for yourself and it does not touch your profit — but a separate business license tax does.',
     shape: 'A city occupational tax on wages, for work done inside the city.',
     traps: [
       'Alabama’s occupational tax is a tax on wages, and only on wages. It applies where the person doing the work is an employee of the person paying for it. If you work for yourself, it does not reach your profit — and that is an unusual answer, which is why it is worth stating plainly.',
-      'That does not mean self-employed people in these cities owe nothing. They are reached instead by a separate municipal business licence tax, charged on turnover rather than profit, at rates that vary by the type of business. It is a different tax with different rules and is not included in the figures on this page.',
+      'That does not mean self-employed people in these cities owe nothing. They are reached instead by a separate municipal business license tax, charged on turnover rather than profit, at rates that vary by the type of business. It is a different tax with different rules and is not included in the figures on this page.',
       'New occupational taxes have been frozen without approval from the state legislature since 2020, so the list of cities charging one is stable. Cities that already have one can still change their rate.',
     ],
   },
@@ -106,7 +106,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     headline: 'Work partly outside the city and you can reclaim the days you were elsewhere, which most people never do.',
     shape: 'A 1% earnings tax on wages and on the profits of businesses and self-employed people.',
     traps: [
-      'Kansas City and St. Louis both charge a 1% earnings tax, and voters in both renewed it on 7 April 2026 for a further five years, so both are certain to be in force.',
+      'Kansas City and St. Louis both charge a 1% earnings tax, and voters in both renewed it on April 7, 2026 for a further five years, so both are certain to be in force.',
       'If you live in the city you pay on everything you earn, wherever you did the work. If you only work there, you pay on the work actually done inside the city — and you can claim a refund for the days you worked elsewhere, which is worth doing if you are partly remote.',
       'Both cities tax the profits of self-employed people explicitly, so a sole proprietor pays 1% on the share of profit attributable to the city.',
       'St. Louis also has a 0.5% payroll expense tax, but that is charged to employers rather than to individuals and is not part of your personal tax bill.',
@@ -136,7 +136,7 @@ export const LOCAL_COPY: Record<string, LocalCopy> = {
     headline: 'Both Portland-area taxes reach people who live in Washington, where there is no state income tax at all.',
     shape: 'Two taxes that only start above an income floor, plus one flat annual charge.',
     traps: [
-      'Both Portland-area taxes — Metro Supportive Housing Services and Multnomah County Preschool for All — are charged on Oregon taxable income. That means profit from working for yourself counts towards the thresholds and is taxed once you pass them.',
+      'Both Portland-area taxes — Metro Supportive Housing Services and Multnomah County Preschool for All — are charged on Oregon taxable income. That means profit from working for yourself counts toward the thresholds and is taxed once you pass them.',
       'Both reach people who live outside the district but earn income inside it. The well-known version of this is a Washington-state commuter who owes Metro Supportive Housing Services on income earned in Portland despite living in a state with no income tax at all.',
       'Where you physically work decides it. Travel into the district to work and that work is taxable. Work for a Portland employer entirely from home across the river in Vancouver, and it is not. That distinction settles the answer for most people crossing the Columbia, and it turns on where your body is rather than where your employer is.',
       'Oregon’s statewide transit tax and the TriMet and Lane transit taxes are not included here — they are either charged to employers or applied statewide rather than by district.',

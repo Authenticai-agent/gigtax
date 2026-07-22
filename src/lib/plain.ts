@@ -165,7 +165,7 @@ export const GLOSSARY: Term[] = [
   {
     term: 'Alternative minimum tax',
     pattern: /\bAMT\b|alternative minimum tax/i,
-    gloss: 'A parallel calculation that catches income the ordinary rules leave untaxed. Exercising incentive stock options can trigger it on a paper gain you have not sold and may never realise.',
+    gloss: 'A parallel calculation that catches income the ordinary rules leave untaxed. Exercising incentive stock options can trigger it on a paper gain you have not sold and may never realize.',
   },
   {
     term: 'Supplemental withholding rate',

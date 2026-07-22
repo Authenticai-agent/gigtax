@@ -64,7 +64,7 @@ const description = `Does electing S-corp status pay for itself in ${state.name}
     <h1>Is an S-corp election worth it in {state.name}?</h1>
     <p class="tagline" data-source={`overrides/state-scorp-tax-2026.json → ${code}`}>
       {entity.taxedAsCCorp
-        ? `${state.name} does not recognise the federal S election. It taxes the company as a C corporation, so electing here creates a state tax rather than avoiding one.`
+        ? `${state.name} does not recognize the federal S election. It taxes the company as a C corporation, so electing here creates a state tax rather than avoiding one.`
         : ex.saving > 0
           ? `On ${formatMoney(EXAMPLE)} of profit the election saves about ${formatMoney(ex.saving)} a year in ${state.name}, after everything ${state.name} charges the company.`
           : `On ${formatMoney(EXAMPLE)} of profit the election costs about ${formatMoney(Math.abs(ex.saving))} a year in ${state.name} once the state's own charges are counted.`}
@@ -170,7 +170,7 @@ const description = `Does electing S-corp status pay for itself in ${state.name}
   <h2>How much salary to pay yourself</h2>
   <p>
     Less salary means less payroll tax, so the arithmetic always points at the smallest salary you can
-    justify. That is exactly why it is not a number to optimise: compensation has to be reasonable for the
+    justify. That is exactly why it is not a number to optimize: compensation has to be reasonable for the
     work you do, and the penalty for getting it wrong is reclassification plus back payroll tax. The
     cheapest row here is the riskiest one.
   </p>
@@ -197,7 +197,7 @@ const description = `Does electing S-corp status pay for itself in ${state.name}
     <li>{DEFENSIBLE_SALARY_PCT}% of profit taken as salary in the headline figures.</li>
     <li>{formatMoney(PAYROLL_ADMIN_COST)} a year for payroll and a separate 1120-S — a cost estimate, not a tax figure, and it varies by provider.</li>
     <li>Comparing against a sole proprietorship. If you already trade through an LLC, some state fees are owed either way and are not a cost of electing.</li>
-    <li>Anything listed as not modelled above is genuinely owed — it is excluded because it does not depend on profit, not because it is nil.</li>
+    <li>Anything listed as not modeled above is genuinely owed — it is excluded because it does not depend on profit, not because it is nil.</li>
   </ul>
 
   <Terms terms={terms} />

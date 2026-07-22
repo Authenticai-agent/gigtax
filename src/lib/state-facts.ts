@@ -34,7 +34,7 @@ export interface StateFacts {
   sdi: { rate: number | string; wageBase?: number | string; note: string } | null;
   /** The dataset's own note on this state's 2026 rate changes. */
   note: string | null;
-  /** A known limitation in how this state is modelled, surfaced on the page. */
+  /** A known limitation in how this state is modeled, surfaced on the page. */
   caveat: string | null;
 }
 
@@ -69,7 +69,7 @@ export function describeStateFacts(
     out.push(`On the 2026 rate itself: ${lowerFirst(f.note)}`);
   }
 
-  // A known modelling limitation is worth more to a reader than a silently
+  // A known modeling limitation is worth more to a reader than a silently
   // wrong number, so it is stated on the page rather than buried in the data.
   if (f.caveat) {
     out.push(f.caveat);
@@ -86,7 +86,7 @@ export function describeStateFacts(
     const rate = typeof f.sdi.rate === 'number' ? `${(f.sdi.rate * 100).toFixed(2).replace(/\.?0+$/, '')}%` : f.sdi.rate;
     const base = typeof f.sdi.wageBase === 'number' ? ` up to ${formatMoney(f.sdi.wageBase)} of wages` : '';
     out.push(
-      `${state.name} runs a state disability insurance programme: ${rate}${base}. ${f.sdi.note}`,
+      `${state.name} runs a state disability insurance program: ${rate}${base}. ${f.sdi.note}`,
     );
   }
 

@@ -4,7 +4,7 @@
  * THE DESIGN PROBLEM. Twelve states levy something, in eight different shapes:
  * a percentage of state taxable income, a percentage of gross wages or net
  * profit, a percentage OF THE STATE TAX itself (Yonkers), an own bracket
- * schedule (NYC, Multnomah), a levy that only bites above a floor (Metro SHS),
+ * schedule (NYC, Multnomah), a levy that applies only above an income floor (Metro SHS),
  * flat dollars per week worked (West Virginia), flat dollars per year (the
  * Portland Arts Tax), and — in Ohio — a rate paired with a credit cap.
  *
@@ -190,7 +190,7 @@ export function levyExamples(code: string, income: number): Levy[] {
     const ph = d.philadelphia.wageTax2026[0];
     add({
       jurisdiction: 'Philadelphia', shape: 'percentOfIncome', amount: income * ph.resident,
-      basis: `${pct(ph.resident, 3)} resident, ${pct(ph.nonresident, 3)} nonresident — and the rate changes on 1 July, not 1 January, so a calendar year blends two`,
+      basis: `${pct(ph.resident, 3)} resident, ${pct(ph.nonresident, 3)} nonresident — and the rate changes on July 1, not January 1, so a calendar year blends two`,
       reachesSelfEmployment: true,
     });
     add({

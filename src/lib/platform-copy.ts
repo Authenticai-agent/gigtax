@@ -22,18 +22,18 @@ const mileage = selfEmploymentDeductions.mileage as Record<string, unknown>;
 /**
  * 2026 has two business mileage rates, not one.
  *
- * Notice 2026-10 set 72.5 cents from 1 January; Announcement 2026-11 raised it
- * to 76 cents for expenses paid or incurred on or after 1 July 2026. Mileage is
+ * Notice 2026-10 set 72.5 cents from January 1; Announcement 2026-11 raised it
+ * to 76 cents for expenses paid or incurred on or after July 1, 2026. Mileage is
  * the entire deduction on a driver page, so quoting the January figure for a
  * full year understated every one of them. A full-year worked example uses the
  * midpoint, and says that it does.
  */
 export const MILE_RATE_H1 = Number(mileage.businessRatePerMile);
 export const MILE_RATE_H2 = Number(mileage.businessRatePerMileFromJul1);
-/** A full year split evenly at 1 July. */
+/** A full year split evenly at July 1. */
 export const MILE_RATE = (MILE_RATE_H1 + MILE_RATE_H2) / 2;
 export const MILE_RATE_NOTE =
-  `${(MILE_RATE_H1 * 100).toFixed(1)}c a mile to 30 June 2026 and ${(MILE_RATE_H2 * 100).toFixed(0)}c from 1 July, ` +
+  `${(MILE_RATE_H1 * 100).toFixed(1)}c a mile to June 30, 2026 and ${(MILE_RATE_H2 * 100).toFixed(0)}c from July 1, ` +
   `so a full year averages ${(MILE_RATE * 100).toFixed(2)}c`;
 export const MILE_SOURCE = String(mileage.source);
 
