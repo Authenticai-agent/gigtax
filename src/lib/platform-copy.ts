@@ -112,10 +112,11 @@ export const CATEGORIES: PlatformCategory[] = [
  * rule, a host owes an occupancy tax the platform may or may not collect.
  */
 export function categoryStateAngle(c: PlatformCategory, stateName: string): { heading: string; body: string } {
+  const a = /^[AEIOU]/.test(stateName) ? 'an' : 'a';
   switch (c.slug) {
     case 'gig-driver-tax-calculator':
       return {
-        heading: `Driving across a ${stateName} line`,
+        heading: `Driving across ${a} ${stateName} line`,
         body: `Driving income is sourced to where the wheels were, not where you live. Take a fare or a `
           + `delivery that ends in the next state and that state can claim the income earned inside it. `
           + `Most drivers near a border never file the second return — the amounts are small and the `
@@ -132,7 +133,7 @@ export function categoryStateAngle(c: PlatformCategory, stateName: string): { he
       };
     case 'rental-host-tax-calculator':
       return {
-        heading: `Local taxes on a ${stateName} let`,
+        heading: `Local taxes on ${a} ${stateName} let`,
         body: `The income tax below is only part of it. Short-term lets attract occupancy, lodging or `
           + `transient taxes levied by the city or county rather than ${stateName}, often at rates that `
           + `dwarf the state income tax. Some platforms collect and remit them; some collect only part; `
@@ -149,7 +150,7 @@ export function categoryStateAngle(c: PlatformCategory, stateName: string): { he
       };
     default:
       return {
-        heading: `Working across a ${stateName} line`,
+        heading: `Working across ${a} ${stateName} line`,
         body: `Services income is sourced to where the work was physically done. A job over the line can `
           + `create a filing obligation in that state even for a single afternoon, and reciprocity `
           + `agreements do not help — they cover wages paid by an employer, not self-employment income.`,

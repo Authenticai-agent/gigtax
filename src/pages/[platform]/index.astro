@@ -1,0 +1,150 @@
+---
+/**
+ * One dynamic route, two page shapes:
+ *
+ *   /gig-driver-tax-calculator/    CATEGORY hub — methodology plus 51 states
+ *   /doordash-tax-calculator/      BRAND hub — no state layer, points at its
+ *                                  category for the state figures
+ *
+ * Brands inside a category share a tax answer, so a state page per brand made
+ * siblings 53% alike across brands. The brand hub keeps the brand-name search
+ * intent without 51 duplicate pages behind it.
+ */
+import Base from '../../layouts/Base.astro';
+import QuickEstimator from '../../components/calculators/QuickEstimator.tsx';
+import { stateList } from '../../data/states';
+import { stateSlug } from '../../lib/slug';
+import { formatMoney } from '../../lib/tax-engine';
+import {
+  findPlatform, platformExample, deductionLabel, MILE_RATE, MILE_SOURCE, isMileageDominant,
+  CATEGORIES, categoryFor, brandsIn, categoryOf,
+  platformsWithScenarios, platformSlug, platformName, platformWorker,
+} from '../../lib/platform-copy';
+
+export function getStaticPaths() {
+  return [
+    ...CATEGORIES.map((c) => ({ params: { platform: c.slug }, props: { kind: 'category', slug: c.slug } })),
+    ...platformsWithScenarios().map((p) => ({ params: { platform: platformSlug(p) }, props: { kind: 'brand', slug: p.slug } })),
+  ];
+}
+
+interface Props { kind: 'category' | 'brand'; slug: string }
+const { kind, slug } = Astro.props as Props;
+
+const aOrAn = (n: string) => (/^[AEIOU]/.test(n) ? 'an' : 'a');
+const category = kind === 'category' ? categoryFor(slug)! : null;
+const brand = kind === 'brand' ? findPlatform(slug)! : null;
+const brandCategory = brand ? categoryOf(brand)! : null;
+
+const exemplar = category ? findPlatform(category.exemplar)! : brand!;
+const ex = platformExample(exemplar)!;
+const MILEAGE_LED = isMileageDominant(exemplar);
+const NAME = category ? category.name : platformName(brand!);
+const WORKER = category ? category.worker : platformWorker(brand!);
+const biggest = ex.largest.label.split('—')[0].trim();
+const stateBase = category ? category.slug : brandCategory!.slug;
+
+const title = category
+  ? `${category.name} tax calculator (2026) — deductions by state`
+  : `${NAME} tax calculator (2026) — what ${WORKER}s owe`;
+const description = category
+  ? `What ${category.name.toLowerCase()}s owe for 2026: the deduction stack that actually applies, then your state's rate on what is left.`
+  : `What ${NAME} ${WORKER}s owe for 2026. Your gross is not what you are taxed on — the deductions, and where to find your state's figure.`;
+---
+
+<Base title={title} description={description}>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>{NAME} tax calculator</h1>
+    <p class="tagline">
+      {category
+        ? category.lead
+        : `${NAME} reports what it paid you and withholds nothing. The number on your ${brand!.incomeType} is not the number you are taxed on.`}
+    </p>
+  </section>
+
+  {brand && (
+    <div class="callout">
+      <strong>Same answer as the rest of the category</strong>
+      For tax purposes {NAME} works like every other {brandCategory!.worker} platform — same form, same
+      deductions, same treatment. Rather than repeat 51 near-identical state pages under each brand, the
+      state-by-state figures live on
+      {' '}<a href={`/${brandCategory!.slug}/`}>the {brandCategory!.name.toLowerCase()} pages</a>. What
+      follows is what is specific to {NAME}.
+    </div>
+  )}
+
+  <QuickEstimator client:load defaultSeIncome={ex.gross} stateHrefBase={`/${stateBase}/`} />
+
+  {MILEAGE_LED && (
+    <>
+      <h2>Mileage is the deduction that matters</h2>
+      <p data-source="data/federal.ts → selfEmploymentDeductions.mileage">
+        The 2026 standard business mileage rate is <strong>{(MILE_RATE * 100).toFixed(1)} cents a mile</strong>
+        {' '}({MILE_SOURCE}). Every mile driven for the work counts, including between jobs. You cannot
+        claim standard mileage and actual vehicle costs for the same car in the same year, and standard
+        mileage is unavailable if you have previously claimed MACRS depreciation on that vehicle.
+      </p>
+    </>
+  )}
+
+  <h2>{brand ? `What ${NAME} ${WORKER}s can deduct` : 'The deduction stack'}</h2>
+  <p data-source={`data/platforms.ts → ${exemplar.slug}.keyDeductions`}>
+    {brand
+      ? `The dataset lists ${brand.keyDeductions.length} deduction categories for ${NAME}: ${brand.keyDeductions.map(deductionLabel).join(', ')}.`
+      : `${biggest} is the largest line for this kind of work, which is what separates it from every other gig category.`}
+    {' '}They are only deductible if you kept the record.
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Deduction</th><th>Amount</th></tr></thead>
+    <tbody>
+      {ex.lines.map((l) => (
+        <tr><td data-source={l.source}>{l.label}</td><td>{formatMoney(l.amount)}</td></tr>
+      ))}
+      <tr class="total"><td>Total deductions</td><td>{formatMoney(ex.totalDeductions)}</td></tr>
+      <tr class="total"><td>Net profit — the taxable figure</td><td>{formatMoney(ex.netProfit)}</td></tr>
+    </tbody>
+  </table>
+  <p data-source="overrides/platform-scenarios.json (illustrative scenario)">
+    On {formatMoney(ex.gross)} of gross, {Math.round(ex.deductionShare * 100)}% never reaches taxable
+    profit. The gross and the cost figures illustrate the shape of the work — they are not a claim about
+    what anyone earns, and every rate applied to them is from the verified 2026 dataset.
+  </p>
+
+  <div class="callout">
+    <strong>Nothing is withheld</strong>
+    These platforms are not employers and take nothing out. What you owe is paid in four instalments
+    across the year — see <a href="/quarterly-tax-calculator/">quarterly estimated payments</a>.
+  </div>
+
+  <h2>{NAME} taxes by state</h2>
+  <p>
+    {category
+      ? "Your state's rate applies to that net profit. Each page works it through with that state's 2026 rules:"
+      : `Pick your state — the ${brandCategory!.name.toLowerCase()} pages carry ${NAME}'s treatment along with every other platform of its kind:`}
+  </p>
+  <ul class="link-columns">
+    {stateList.map(([, s]) => (
+      <li><a href={`/${stateBase}/${stateSlug(s.name)}/`}>{s.name}</a></li>
+    ))}
+  </ul>
+
+  {category && (
+    <>
+      <h2>Platforms this covers</h2>
+      <ul class="link-columns">
+        {brandsIn(category).map((b) => (
+          <li><a href={`/${platformSlug(b)}/`}>{platformName(b)}</a></li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  <h2>Other gig categories</h2>
+  <ul class="link-columns">
+    {CATEGORIES.filter((c) => c.slug !== stateBase).map((c) => (
+      <li><a href={`/${c.slug}/`}>{c.name}</a></li>
+    ))}
+    <li><a href="/1099-tax-calculator/">General 1099 tax calculator</a></li>
+  </ul>
+</Base>
