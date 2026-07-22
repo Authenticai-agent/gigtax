@@ -15,6 +15,8 @@
  *   4. Missing canonical.
  *   5. Missing the not-tax-advice disclaimer.
  *   6. Empty template slots — "file  with", "a Iowa", stray "undefined"/"NaN".
+ *   7. A state that has an income tax must not compute to $0.
+ *   8. Cross-section duplication: /1099.../ohio/ vs /paycheck.../ohio/.
  *
  * Usage:
  *   node scripts/check-quality.mjs            # gate, exits 1 on failure
@@ -170,6 +172,55 @@ for (const [section, group] of bySection) {
   });
 }
 
+/* ---- 1c. cross-section duplication --------------------------------------- */
+
+/**
+ * Two pages about the same state in different sections — /1099-tax-calculator/
+ * ohio/ and /paycheck-calculator/ohio/ — should be answering different
+ * questions. The sibling check above cannot see this: it only ever compares
+ * pages within one section, so an entire new section that quietly restated an
+ * existing one would pass it.
+ *
+ * That is the live risk at scale. Adding fifteen platforms x 51 states puts 765
+ * pages next to the 51 1099 state pages, and the thing that makes them worth
+ * having is the platform's own deduction profile and example income, not the
+ * state layer they share.
+ *
+ * Calibrated against the four sections that exist: the worst cross-section pair
+ * is 1099 vs quarterly for Maryland at 22%, median 15%. 45% leaves generous
+ * room and still catches a section that is mostly a restatement.
+ */
+const CROSS_FAIL_AT = 0.45;
+const CROSS_WARN_AT = 0.35;
+
+const bySpoke = new Map();
+for (const p of pages) {
+  const parts = p.url.split('/').filter(Boolean);
+  if (parts.length < 2) continue; // hubs have no spoke
+  const spoke = parts[parts.length - 1];
+  if (!bySpoke.has(spoke)) bySpoke.set(spoke, []);
+  bySpoke.get(spoke).push(p);
+}
+
+const crossWorst = [];
+for (const [spoke, group] of bySpoke) {
+  if (group.length < 2) continue;
+  const grams = group.map((p) => trigrams(p.text));
+  for (let i = 0; i < group.length; i++) {
+    for (let j = i + 1; j < group.length; j++) {
+      if (group[i].section === group[j].section) continue;
+      const sim = jaccard(grams[i], grams[j]);
+      crossWorst.push({ spoke, sim, a: group[i].url, b: group[j].url });
+      if (sim >= CROSS_FAIL_AT) {
+        failures.push(`cross-section ${(sim * 100).toFixed(0)}%: ${group[i].url} vs ${group[j].url}`);
+      } else if (sim >= CROSS_WARN_AT) {
+        warnings.push(`cross-section ${(sim * 100).toFixed(0)}%: ${group[i].url} vs ${group[j].url}`);
+      }
+    }
+  }
+}
+crossWorst.sort((a, b) => b.sim - a.sim);
+
 /* ---- 2. duplicate titles and descriptions -------------------------------- */
 
 for (const field of ['title', 'desc']) {
@@ -263,6 +314,15 @@ for (const w of worst) if (!perSection.has(w.section)) perSection.set(w.section,
 for (const [section, w] of perSection) {
   const flag = w.sim >= FAIL_AT ? 'FAIL' : w.sim >= WARN_AT ? 'warn' : 'ok  ';
   console.log(`  ${flag}  ${(w.sim * 100).toFixed(0).padStart(3)}%  ${section}  (${w.url} vs ${w.against})`);
+}
+
+if (crossWorst.length) {
+  const worstCross = crossWorst[0];
+  const flag = worstCross.sim >= CROSS_FAIL_AT ? 'FAIL' : worstCross.sim >= CROSS_WARN_AT ? 'warn' : 'ok  ';
+  console.log(`\nAcross sections, same spoke (${crossWorst.length} comparisons):`);
+  console.log(`  ${flag}  ${(worstCross.sim * 100).toFixed(0)}%  worst: ${worstCross.a} vs ${worstCross.b}`);
+  const cm = crossWorst[Math.floor(crossWorst.length / 2)];
+  console.log(`        ${(cm.sim * 100).toFixed(0)}%  median`);
 }
 
 console.log('\nUnique content per page (trigrams no sibling has):');
