@@ -39,11 +39,28 @@ export function stateScorpTax(code: string): StateScorpTax | null {
   return entry && !code.startsWith('_') ? (entry as StateScorpTax) : null;
 }
 
+export interface Disclosure {
+  /** What the charge is. */
+  label: string;
+  /** Why it is not in the number, in terms the reader can act on. */
+  why: string;
+}
+
 export interface EntityTax {
+  /** What we can actually compute from net profit alone. */
   amount: number;
-  /** True when we have no researched figure — pages must say so, not assume zero. */
+  /** True when the state has not been researched at all. */
   unknown: boolean;
   basis: string;
+  /**
+   * Charges that are real but not computable from net profit — a gross receipts
+   * tax needs turnover, a net worth tax needs a balance sheet. Silently omitting
+   * them would make the number look complete when it is not, so they are listed
+   * on the page instead.
+   */
+  disclosures: Disclosure[];
+  /** True when the election creates a tax rather than avoiding one. */
+  taxedAsCCorp: boolean;
 }
 
 /**
@@ -55,7 +72,49 @@ export interface EntityTax {
  */
 export function entityLevelTax(code: string, netProfit: number): EntityTax {
   const t = stateScorpTax(code);
-  if (!t) return { amount: 0, unknown: true, basis: 'not yet researched for this state' };
+  if (!t) {
+    return {
+      amount: 0, unknown: true, basis: 'not yet researched for this state',
+      disclosures: [], taxedAsCCorp: false,
+    };
+  }
+  const disclosures: Disclosure[] = [];
+  const state = states[code]?.name ?? code;
+  const raw = t as unknown as Record<string, unknown>;
+
+  // A gross receipts tax needs turnover, which this calculator does not ask for.
+  if (t.grossReceiptsTax) {
+    disclosures.push({
+      label: `${state} gross receipts tax`,
+      why: `${t.grossReceiptsTax}. It is charged on turnover rather than profit, so it cannot be worked `
+        + `out from net profit alone — and it is owed whether or not the business made money.`,
+    });
+  }
+  // Net worth and capital taxes need a balance sheet.
+  if (/net worth|capital employed|paid-in surplus|capital and paid/i.test(t.notes)) {
+    disclosures.push({
+      label: `${state} net worth or capital tax`,
+      why: `${state} charges the company on its net worth or capital rather than its income. That needs a `
+        + `balance sheet, so it is not in the figure above.`,
+    });
+  }
+  // Thresholds that switch a charge on above a size this calculator cannot see.
+  const above = raw.appliesAboveGrossReceipts ?? raw.rateAppliesAboveReceipts ?? raw.minimumAppliesAboveBase;
+  if (typeof above === 'number') {
+    disclosures.push({
+      label: 'A threshold this calculator cannot check',
+      why: `Part of ${state}'s charge only applies above ${formatMoney(above)} of receipts or base, which `
+        + `depends on turnover rather than profit. The figure above assumes you are below it.`,
+    });
+  }
+  // Nonresident shareholder obligations are an entity-level cash cost.
+  if (/nonresident/i.test(t.notes)) {
+    disclosures.push({
+      label: 'Withholding for out-of-state shareholders',
+      why: `${state} makes the company withhold or pay on behalf of shareholders who live elsewhere. It is `
+        + `a real obligation of the company, not of you personally, and it depends on who owns it.`,
+    });
+  }
 
   const deduction = t.entityTaxDeduction ?? 0;
   const base = Math.max(0, netProfit - deduction);
@@ -80,7 +139,9 @@ export function entityLevelTax(code: string, netProfit: number): EntityTax {
   return {
     amount,
     unknown: false,
-    basis: parts.join(' ') || 'no entity-level tax',
+    basis: parts.join(' ') || 'nothing on net income',
+    disclosures,
+    taxedAsCCorp: t.recognizesFederalSElection === false,
   };
 }
 
