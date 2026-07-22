@@ -393,6 +393,12 @@ if (existsSync(FORMATION_PATH)) {
       if (hasFigure && !row.source) {
         failures.push(`formation dataset: ${code}.${kind} has a figure but no source`);
       }
+      // A fee that scales cannot be represented by one number. Where the
+      // research found one that does, the stored figure is a MINIMUM and the
+      // engine has to say so — otherwise a floor reads as a price.
+      if (row.feeVaries === true && !row.feeVariesNote) {
+        failures.push(`formation dataset: ${code}.${kind} is marked feeVaries with no note explaining what it scales with`);
+      }
       if (row.source && BAD_SOURCE.test(row.source)) {
         failures.push(`formation dataset: ${code}.${kind} cites an incorporation-service site, which bundles its own fees: ${row.source}`);
       }

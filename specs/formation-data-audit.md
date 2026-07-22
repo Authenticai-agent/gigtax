@@ -65,6 +65,22 @@ The owner asked for the fees to be researched rather than hand-filled. That rese
 
 Two of the first research passes failed by delegating instead of searching and returned nothing usable; they were re-run with explicit instructions. That is worth recording because it is the failure mode to watch for if this is repeated: an agent that reports success without having done the work.
 
+## 6b. What the research changed (updated during S1)
+
+Research ran against state `.gov` sources only. Findings that matter beyond filling a cell:
+
+**A legacy figure was wrong.** Legacy recorded Wyoming formation at **$102**. The current Secretary of State schedule is **$100**. Every Wyoming figure inherited from legacy should be treated as suspect until re-checked — this is the case for the spec's instruction to re-verify rather than re-use.
+
+**Nevada has a buried annual cost.** On top of the $150 annual list, Nevada charges a **State Business License every year — $200 for an LLC, $500 for a corporation**. A Nevada column that shows only the list fee understates the state by two-thirds. This is the single most misleading omission available in this dataset, because Nevada is marketed on being cheap.
+
+**Fees are not always flat, and a minimum is not a price.** Research found scaling fees in Delaware (corp, by stock), Nevada (corp formation and annual list, by authorized share value, to a $35,000 and $11,125 maximum), Oklahoma (by authorized capital), Massachusetts and Michigan (by shares), Maryland (by par value), Arkansas, Nebraska, New Mexico and South Carolina. The schema gained `feeVaries` and `feeVariesNote` for exactly this: where true, the stored number is a **minimum**, the engine must render it as "from $X", and the column must be flagged unquantified. Storing a floor as if it were a fee is the quietest way this dataset could lie, and the gate now fails a `feeVaries` row that carries no explanation.
+
+**Domestic and foreign are different prices, sometimes very different.** Oregon charges $100 domestic and $275 foreign for everything. Alaska's biennial report doubles from $100 to $200 for foreign entities. Delaware corporations file a $50 domestic report due 1 March but a $125 foreign report due 30 June. The engine must use the foreign figure on out-of-state columns, not the domestic one — otherwise the myth math understates exactly the thing the tool exists to show.
+
+**Two sourcing caveats to carry forward.** Nevada's Secretary of State blocks automated fetching, so all Nevada figures come from the statutes on `leg.state.nv.us` rather than the fee-schedule PDF. New Hampshire's site also blocked fetching and its figures came from indexed pages. Both are state sources; both deserve a human look.
+
+**One state stayed empty on purpose.** New Mexico publishes no current online fee schedule, so its formation and foreign fees are null. That is the correct outcome.
+
 ## 7. What S2 must not do
 
 - Never let a comparison column omit the operating state's obligations. If a Wyoming total comes out below the home-state total for a business physically operating elsewhere, that is a bug until proven otherwise, and there is an acceptance check for it.
