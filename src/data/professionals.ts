@@ -448,7 +448,7 @@ export const professionals = {
       "vehicle",
       "subcontractors_1099",
       "liability_insurance",
-      "permits_and_licences",
+      "permits_and_licenses",
       "materials_and_supplies",
       "equipment_rental",
       "workers_comp",
@@ -531,7 +531,7 @@ export const professionals = {
       "vehicle",
       "materials_and_supplies",
       "liability_insurance",
-      "permits_and_licences",
+      "permits_and_licenses",
       "equipment",
       "marketing",
       "phone"
@@ -659,7 +659,7 @@ export const professionals = {
       "equipment",
       "vehicle",
       "liability_insurance",
-      "permits_and_licences",
+      "permits_and_licenses",
       "staff_wages",
       "equipment_rental",
       "uniforms"
@@ -1136,7 +1136,7 @@ export const professionals = {
       "guides_and_staff",
       "equipment",
       "vehicle",
-      "permits_and_licences",
+      "permits_and_licenses",
       "marketing",
       "training_costs"
     ],
@@ -1150,7 +1150,7 @@ export const professionals = {
       "rent",
       "equipment",
       "liability_insurance",
-      "permits_and_licences",
+      "permits_and_licenses",
       "utilities",
       "marketing"
     ],
@@ -1175,7 +1175,7 @@ export const professionals = {
       "food_and_ingredients",
       "fuel",
       "vehicle",
-      "permits_and_licences",
+      "permits_and_licenses",
       "equipment",
       "commissary_rent",
       "liability_insurance",
@@ -1295,7 +1295,7 @@ export const professionals = {
       "maintenance",
       "phone",
       "routing_software",
-      "permits_and_licences"
+      "permits_and_licenses"
     ],
     "note": "Once you have more than one van the drivers are almost certainly employees, and that decides most of the return."
   },
@@ -1306,7 +1306,7 @@ export const professionals = {
       "driver_wages",
       "liability_insurance",
       "maintenance",
-      "permits_and_licences",
+      "permits_and_licenses",
       "booking_software",
       "detailing"
     ],
@@ -1328,7 +1328,7 @@ export const professionals = {
       "loan_interest",
       "liability_insurance",
       "contractor_payments",
-      "permits_and_licences",
+      "permits_and_licenses",
       "marketing"
     ],
     "note": "Flipping is a trade, not an investment: the profit is ordinary income with self-employment tax on it, and none of the capital gains treatment applies.",
@@ -1473,7 +1473,7 @@ export const professionals = {
     "keyDeductions": [
       "equipment",
       "depletion",
-      "permits_and_licences",
+      "permits_and_licenses",
       "staff_wages",
       "fuel",
       "reclamation_costs",
@@ -1622,7 +1622,7 @@ export const professionals = {
       "liability_insurance",
       "equipment",
       "marketing",
-      "permits_and_licences"
+      "permits_and_licenses"
     ],
     "note": "Tipping fees are the largest variable cost and are deductible in full; anything you resell instead of dumping is income."
   },
@@ -1634,7 +1634,7 @@ export const professionals = {
       "liability_insurance",
       "workers_comp",
       "equipment",
-      "permits_and_licences",
+      "permits_and_licenses",
       "packing_materials"
     ],
     "note": "Interstate moving is federally regulated, and valuation coverage you sell to customers is income rather than a pass-through."
@@ -1645,7 +1645,7 @@ export const professionals = {
       "fuel",
       "liability_insurance",
       "maintenance",
-      "permits_and_licences",
+      "permits_and_licenses",
       "storage_yard_rent",
       "staff_wages",
       "equipment"
@@ -1957,7 +1957,7 @@ export const professionals = {
       "equipment",
       "vehicle",
       "liability_insurance",
-      "permits_and_licences",
+      "permits_and_licenses",
       "marketing",
       "uniforms",
       "software_subscriptions"
@@ -2204,7 +2204,7 @@ export const professionals = {
       "liability_insurance",
       "operating_costs",
       "professional_fees",
-      "permits_and_licences",
+      "permits_and_licenses",
       "reclamation_costs"
     ],
     "note": "A working interest is excluded from the passive loss rules entirely, which no other investment of comparable passivity is.",
@@ -2549,7 +2549,7 @@ export const professionals = {
       "vessel_costs",
       "fuel",
       "gear_and_equipment",
-      "permits_and_licences",
+      "permits_and_licenses",
       "insurance",
       "crew_shares",
       "maintenance",
@@ -2577,7 +2577,7 @@ export const professionals = {
       "fuel",
       "staff_wages",
       "liability_insurance",
-      "permits_and_licences",
+      "permits_and_licenses",
       "maintenance",
       "depletion",
       "site_travel"
@@ -2605,7 +2605,7 @@ export const professionals = {
       "vehicle",
       "liability_insurance",
       "staff_wages",
-      "permits_and_licences",
+      "permits_and_licenses",
       "inventory_cogs",
       "training_costs"
     ],

@@ -106,7 +106,7 @@ export default function ScorpSalaryCalculator({ presetState = '' }: { presetStat
             <strong>The lowest row is not the answer</strong>
             <p>
               Tax falls as salary falls, so the arithmetic always points at 20%. That is precisely why it
-              is not a number to optimise: your salary has to be reasonable for the work you actually do,
+              is not a number to optimize: your salary has to be reasonable for the work you actually do,
               and the penalty for setting it too low is reclassification plus back payroll tax with
               interest. The cheapest row on this table is the riskiest one. Most defensible positions sit
               between 40% and 60% for an owner working full time in the business.
@@ -114,7 +114,7 @@ export default function ScorpSalaryCalculator({ presetState = '' }: { presetStat
             <p>
               Between the cheapest and dearest rows here the difference is{' '}
               {formatMoney(Math.max(...result.results.map((r) => r.totalTax)) - Math.min(...result.results.map((r) => r.totalTax)))}{' '}
-              a year. That is the size of the judgement you are making.
+              a year. That is the size of the judgment you are making.
             </p>
           </div>
 

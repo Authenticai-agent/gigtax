@@ -15,6 +15,7 @@ import { stateSlug } from '../lib/slug';
 import { PROFESSIONS } from '../lib/professions';
 import { INSTRUMENTS } from '../lib/equity';
 import { localTaxStates } from '../lib/local-tax';
+import { PAIRS } from '../lib/formation-pairs';
 import { states } from '../data/states';
 
 const localStates = localTaxStates();
@@ -74,6 +75,13 @@ const PLATFORMS = [
     <li><a href="/s-corp-tax-calculator/">S-corp election</a> — does it pay for itself here?</li>
     <li><a href="/benefits-tax-calculator/">Benefits and retirement</a> — SSDI, disability, Social Security</li>
     <li><a href="/entity-tax-calculator/">Sole proprietor, S corp or C corp?</a> — compare on your numbers</li>
+    <li><a href="/incorporation-tax-calculator/">Delaware franchise tax</a> — and whether to incorporate there</li>
+    <li><a href="/business-formation-state-calculator/">Where should I form my business?</a> — every state compared</li>
+  </ul>
+
+  <p class="section-label">Two states, head to head</p>
+  <ul class="link-columns">
+    {PAIRS.map((p) => <li><a href={`/${p.slug}/`}>{p.h1}</a></li>)}
   </ul>
 
   <h2>Tax where you live and where you work</h2>

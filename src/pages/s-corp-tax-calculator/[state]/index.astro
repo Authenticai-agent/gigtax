@@ -13,6 +13,8 @@
  * failure mode of this calculator.
  */
 import Base from '../../../layouts/Base.astro';
+import EntityCalculator from '../../../components/calculators/EntityCalculator.tsx';
+import ScorpSalaryCalculator from '../../../components/calculators/ScorpSalaryCalculator.tsx';
 import { states, stateList } from '../../../data/states';
 import { siblingStates } from '../../../data/neighbors';
 import { formatMoney } from '../../../lib/tax-engine';
@@ -79,6 +81,14 @@ const description = `Does electing S-corp status pay for itself in ${state.name}
       company itself, and that comes off the saving before you see any of it.
     </div>
   )}
+
+  <p class="section-label">Work it out on your own numbers</p>
+  <p>
+    The figures below use {formatMoney(EXAMPLE)} of profit and our standard assumptions. Put your own in
+    instead — this compares staying a sole proprietor against electing, with {state.name}'s own charges
+    on the company included:
+  </p>
+  <EntityCalculator client:load presetState={code} />
 
   <h2>What the election is worth on {formatMoney(EXAMPLE)} of profit</h2>
   <p>
@@ -168,6 +178,8 @@ const description = `Does electing S-corp status pay for itself in ${state.name}
   )}
 
   <h2>How much salary to pay yourself</h2>
+  <ScorpSalaryCalculator client:load presetState={code} />
+
   <p>
     Less salary means less payroll tax, so the arithmetic always points at the smallest salary you can
     justify. That is exactly why it is not a number to optimize: compensation has to be reasonable for the
