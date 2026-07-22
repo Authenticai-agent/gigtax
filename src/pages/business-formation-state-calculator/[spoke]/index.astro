@@ -12,26 +12,13 @@ import { SPOKES } from '../../../lib/formation-spokes';
 import formationFees from '../../../data/formation-fees';
 import { states } from '../../../data/states';
 import { formatMoney } from '../../../lib/tax-engine';
-import { compareFormationStates } from '../../../lib/formation-compare';
+import FormationComparisonCalculator from '../../../components/calculators/FormationComparisonCalculator.tsx';
 
 export function getStaticPaths() {
   return SPOKES.map((s) => ({ params: { spoke: s.slug }, props: { s } }));
 }
 const { s } = Astro.props as { s: (typeof SPOKES)[number] };
 const fees = formationFees as Record<string, any>;
-
-/** What it costs an Ohio consultant to use this state instead of their own. */
-const example = compareFormationStates({
-  homeState: 'OH', workState: 'OH', entity: 'llc',
-  annualRevenue: 150_000, annualProfit: 110_000,
-  ownerSalary: 0, ownerDistributions: 110_000,
-  numberOfOwners: 1, numberOfEmployees: 0,
-  agentTier: 'standard', filingStatus: 'single',
-});
-const home = example.columns.find((c) => c.state === 'OH')!;
-const shown = s.codes
-  .map((code) => example.columns.find((c) => c.state === code))
-  .filter(Boolean) as typeof example.columns;
 
 const money = (n: number | null | undefined) =>
   n === null || n === undefined ? 'not established' : formatMoney(n);
@@ -90,41 +77,13 @@ const money = (n: number | null | undefined) =>
   <h2>{s.catchHeading}</h2>
   {s.catch.map((p) => <p>{p}</p>)}
 
-  <h2>What it costs an Ohio consultant to use {s.codes.length > 1 ? 'these states' : states[s.codes[0]].name}</h2>
+  <p class="section-label">What it costs you to use {s.codes.length > 1 ? 'these states' : states[s.codes[0]].name}</p>
   <p>
-    An LLC on {formatMoney(150000)} of revenue and {formatMoney(110000)} of profit, with the work
-    happening in Ohio. Ohio's own obligations do not go away, so they are added to every column:
+    Set where you live and where the work actually happens. The comparison keeps your operating state's
+    obligations on every column — which is the whole point, because those do not go away when you form
+    somewhere else.
   </p>
-  <table class="data-table">
-    <thead>
-      <tr><th>Form in</th><th>Formation</th><th>Ohio foreign registration</th><th>Annual</th><th>Five-year total</th></tr>
-    </thead>
-    <tbody>
-      <tr class="total">
-        <td>Ohio — where the work happens</td>
-        <td>{money(home.formationFee.amount)}</td>
-        <td>{formatMoney(0)}</td>
-        <td>{formatMoney(home.annualTotal)}</td>
-        <td>{formatMoney(home.fiveYearTotal)}</td>
-      </tr>
-      {shown.map((c) => (
-        <tr>
-          <td>{c.stateName}</td>
-          <td>{money(c.formationFee.amount)}</td>
-          <td>{money(c.foreignRegistration.oneTime)}</td>
-          <td>{formatMoney(c.annualTotal)}</td>
-          <td>{formatMoney(c.fiveYearTotal)}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-  <p>
-    {shown.every((c) => c.fiveYearTotal > home.fiveYearTotal)
-      ? `Every one of these costs more than simply forming in Ohio, once Ohio's own requirements are counted — and they are counted, because they do not go away.`
-      : `Read the unquantified markers before drawing a conclusion from these totals.`}
-  </p>
-
-  <p><a href="/business-formation-state-calculator/">Run this on your own state and figures →</a></p>
+  <FormationComparisonCalculator client:load restrictStates={s.codes} />
 
   <h2>Questions</h2>
   {s.faqs.map((f) => (

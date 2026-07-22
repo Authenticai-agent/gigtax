@@ -99,7 +99,7 @@ const anyVaries = p.states.some((c) => fees[c]?.llc?.feeVaries || fees[c]?.corp?
     the work happens, and the comparison keeps that state's obligations on every column — which is what
     makes the totals honest.
   </p>
-  <FormationComparisonCalculator client:load pairStates={p.states} />
+  <FormationComparisonCalculator client:load restrictStates={p.states} />
 
   <h2>Questions</h2>
   {p.faqs.map((f) => (

@@ -45,19 +45,33 @@ const money = (n: number | null | undefined) =>
 
 interface Props {
   /**
-   * Restrict the comparison to two formation states, for the pair pages.
+   * Restrict the comparison to these formation states — two for the pair pages,
+   * one or two for the spokes.
    *
    * The operating state is always kept alongside them even when it is not one
-   * of the pair — dropping it would hide the obligations that make the
+   * of the set, because dropping it would hide the obligations that make the
    * comparison honest, which is the one thing this tool must never do.
    */
-  pairStates?: [string, string];
+  restrictStates?: string[];
 }
 
-export default function FormationComparisonCalculator({ pairStates }: Props = {}) {
-  const [homeState, setHomeState] = useState('OH');
-  const [workState, setWorkState] = useState('OH');
-  const [entity, setEntity] = useState<EntityChoice>('llc');
+/**
+ * A static site cannot preset a page from what the visitor typed on the last
+ * one — there is no server to carry it. So the carry happens in the URL: this
+ * reads ?home / ?work / ?entity on mount, and (below) writes them back and
+ * onto the on-page links after a comparison, so clicking through to a spoke or
+ * pair keeps the selection instead of resetting to a hardcoded example.
+ */
+function fromUrl(key: string, fallback: string): string {
+  if (typeof window === 'undefined') return fallback;
+  const v = new URLSearchParams(window.location.search).get(key);
+  return v && states[v] ? v : (key === 'entity' && ['llc', 'llc-s-elect', 's-corp', 'c-corp', 'sole-prop'].includes(v ?? '') ? v! : fallback);
+}
+
+export default function FormationComparisonCalculator({ restrictStates }: Props = {}) {
+  const [homeState, setHomeState] = useState(() => fromUrl('home', 'OH'));
+  const [workState, setWorkState] = useState(() => fromUrl('work', 'OH'));
+  const [entity, setEntity] = useState<EntityChoice>(() => fromUrl('entity', 'llc') as EntityChoice);
   const [annualRevenue, setAnnualRevenue] = useState(150_000);
   const [annualProfit, setAnnualProfit] = useState(110_000);
   const [ownerSalary, setOwnerSalary] = useState(0);
@@ -85,11 +99,34 @@ export default function FormationComparisonCalculator({ pairStates }: Props = {}
     };
     setResult(compareFormationStates(input));
     setStale(false);
+    carrySelectionToLinks(homeState, workState, entity);
   };
 
+  /*
+   * Put the current selection into the URL and onto every link that points at
+   * another formation page, so a reader who has entered Indiana and Oklahoma
+   * clicks through to the Delaware page and sees Delaware against THEIR states,
+   * not against a built-in Ohio example.
+   */
+  function carrySelectionToLinks(home: string, work: string, ent: string) {
+    if (typeof window === 'undefined') return;
+    const qs = `?home=${home}&work=${work}&entity=${ent}`;
+    window.history.replaceState(null, '', window.location.pathname + qs);
+    const targets = document.querySelectorAll<HTMLAnchorElement>(
+      'a[href*="/business-formation-state-calculator/"], a[href$="-vs-wyoming-llc/"], a[href$="-vs-nevada-llc/"], a[href$="-vs-wyoming-llc"], a[href$="-vs-nevada-llc"]',
+    );
+    targets.forEach((a) => {
+      const base = a.getAttribute('href')!.split('?')[0];
+      // Do not rewrite the "compare every state" link back to itself with params
+      // that would hide columns; only forward to spokes and pairs.
+      if (base === '/business-formation-state-calculator/') return;
+      a.setAttribute('href', base + qs);
+    });
+  }
+
   const allRanked = result ? rankByFiveYear(result) : [];
-  const ranked = pairStates
-    ? allRanked.filter((c) => pairStates.includes(c.state) || c.isOperatingState)
+  const ranked = restrictStates
+    ? allRanked.filter((c) => restrictStates.includes(c.state) || c.isOperatingState)
     : allRanked;
   const operating = workState || homeState;
 
