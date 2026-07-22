@@ -57,7 +57,7 @@ interface Plan {
 }
 
 export default function QuarterlyEstimator({
-  presetState = 'CA',
+  presetState = '',
   defaultSeIncome = 50000,
   stateHrefBase,
 }: Props) {
@@ -89,7 +89,7 @@ export default function QuarterlyEstimator({
     const priorHarborRate = priorYearAGI > 150000 ? 1.1 : 1.0;
     const priorHarbor = priorYearTax > 0 ? priorYearTax * priorHarborRate : null;
     setPlan({
-      stateName: states[stateCode]?.name ?? stateCode,
+      stateName: states[stateCode]?.name ?? '',
       federalYear,
       stateYear,
       totalYear,
@@ -115,6 +115,7 @@ export default function QuarterlyEstimator({
         <div className="form-group">
           <label htmlFor="q-state">State</label>
           <select id="q-state" value={stateCode} onChange={(e) => goToState(e.target.value)} disabled={!stateHrefBase}>
+            {!stateCode && <option value="">Select your state…</option>}
             {stateOptions.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
           </select>
           {stateHrefBase && <p className="field-note">Switching state opens that state's page.</p>}
@@ -158,7 +159,7 @@ export default function QuarterlyEstimator({
         </div>
       ) : (
         <div className={stale ? 'results-box is-stale' : 'results-box'}>
-          <h3>Your 2026 payment schedule — {plan.stateName}</h3>
+          <h3>Your 2026 payment schedule{plan.stateName ? ` — ${plan.stateName}` : ''}</h3>
           {!plan.required && (
             <p className="results-note">
               Estimated tax of {formatMoney(plan.totalYear)} for the year is below the{' '}
@@ -167,7 +168,7 @@ export default function QuarterlyEstimator({
           )}
           <table className="quarter-table">
             <thead>
-              <tr><th>Due</th><th>Period</th><th>To the IRS</th><th>To {plan.stateName}</th></tr>
+              <tr><th>Due</th><th>Period</th><th>To the IRS</th><th>{plan.stateName || 'To your state'}</th></tr>
             </thead>
             <tbody>
               {QUARTERS.map((q) => (
@@ -175,7 +176,7 @@ export default function QuarterlyEstimator({
                   <td>{dueLabel(q.dueDate)}</td>
                   <td>{q.periodLabel}</td>
                   <td>{formatMoney(plan.perQuarterFederal)}</td>
-                  <td>{plan.stateYear > 0 ? formatMoney(plan.perQuarterState) : '—'}</td>
+                  <td>{!plan.stateName ? 'select a state' : plan.stateYear > 0 ? formatMoney(plan.perQuarterState) : '—'}</td>
                 </tr>
               ))}
             </tbody>

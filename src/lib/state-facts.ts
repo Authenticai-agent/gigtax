@@ -56,7 +56,12 @@ export function stateFacts(code: string, state: StateData): StateFacts {
  * 2026 rate-change note. Only facts that are actually true of this state are
  * emitted — no "this state does not have X" filler.
  */
-export function describeStateFacts(code: string, state: StateData, incomeNoun = 'self-employment income'): string[] {
+export function describeStateFacts(
+  code: string,
+  state: StateData,
+  incomeNoun = 'self-employment income',
+  opts: { skipSdi?: boolean } = {},
+): string[] {
   const f = stateFacts(code, state);
   const out: string[] = [];
 
@@ -77,7 +82,7 @@ export function describeStateFacts(code: string, state: StateData, incomeNoun = 
     );
   }
 
-  if (f.sdi) {
+  if (f.sdi && !opts.skipSdi) {
     const rate = typeof f.sdi.rate === 'number' ? `${(f.sdi.rate * 100).toFixed(2).replace(/\.?0+$/, '')}%` : f.sdi.rate;
     const base = typeof f.sdi.wageBase === 'number' ? ` up to ${formatMoney(f.sdi.wageBase)} of wages` : '';
     out.push(
@@ -126,7 +131,12 @@ export interface NeighbourRow {
  */
 export function neighbourComparison(code: string, income: number, status = 'single'): NeighbourRow[] {
   const own = calcStateTax(income, code, undefined, status).tax;
-  return (adjacency[code] ?? [])
+  // Alaska and Hawaii have no land border, so there are no neighbours to compare
+  // against — and without this their pages had almost nothing of their own. The
+  // comparison people actually make from there is against the big states they
+  // might move to or from.
+  const against = adjacency[code]?.length ? adjacency[code] : ['CA', 'TX', 'NY', 'FL'].filter((c) => c !== code);
+  return against
     .filter((c) => states[c])
     .map((c) => {
       const s = states[c];
@@ -145,9 +155,18 @@ export function neighbourComparison(code: string, income: number, status = 'sing
 
 /** One sentence summarising how the state sits against its neighbours. */
 export function describeNeighbours(code: string, state: StateData, rows: NeighbourRow[], income: number): string | null {
-  if (!rows.length) {
-    return `${state.name} has no land border with another state, so there is no neighbouring-state ` +
-      `rate to compare against and no realistic cross-border commute.`;
+  if (!rows.length) return null;
+  const borderless = !adjacency[code]?.length;
+  if (borderless) {
+    const cheapest = rows[0];
+    const dearest = rows[rows.length - 1];
+    const own = calcStateTax(income, code, undefined, 'single').tax;
+    return (
+      `${state.name} shares no land border, so there is no commuter comparison to make — but the ` +
+      `move-to-and-from comparison still holds. On ${formatMoney(income)}, ${state.name} charges ` +
+      `${own === 0 ? 'nothing' : formatMoney(own)} against ${formatMoney(cheapest.tax)} in ` +
+      `${cheapest.name} and ${formatMoney(dearest.tax)} in ${dearest.name}.`
+    );
   }
   const cheapest = rows[0];
   const dearest = rows[rows.length - 1];
@@ -184,5 +203,7 @@ export function neighbourSentences(state: StateData, rows: NeighbourRow[]): stri
 }
 
 function lowerFirst(s: string): string {
+  // Leave acronyms alone — "CA SDI applies…" must not become "cA SDI applies…".
+  if (/^[A-Z]{2}/.test(s)) return s;
   return s.charAt(0).toLowerCase() + s.slice(1);
 }

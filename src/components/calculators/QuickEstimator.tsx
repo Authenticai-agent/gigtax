@@ -17,7 +17,12 @@ import { states } from '../../data/states';
 import { stateSlug } from '../../lib/slug';
 
 interface Props {
-  /** Two-letter state code to preset the estimate to (e.g. "OH"). */
+  /**
+   * Two-letter state code to preset to. Omit on a hub or the homepage: the
+   * select then reads "Select your state" and the estimate is federal-only
+   * until one is picked. Defaulting to a state the URL does not name told the
+   * visitor they were looking at California when the page said otherwise.
+   */
   presetState?: string;
   defaultSeIncome?: number;
   defaultW2Income?: number;
@@ -42,7 +47,7 @@ const stateOptions = Object.entries(states)
 type Result = ReturnType<typeof calcCombined>;
 
 export default function QuickEstimator({
-  presetState = 'CA',
+  presetState = '',
   defaultSeIncome = 40000,
   defaultW2Income = 0,
   stateHrefBase,
@@ -53,6 +58,8 @@ export default function QuickEstimator({
   const [status, setStatus] = useState<string>('single');
   const stateCode = presetState;
 
+  // With no state chosen the engine returns zero state tax, which is what the
+  // results table then labels honestly rather than passing off as an answer.
   const compute = (): Result => calcCombined(w2Income, seIncome, seDeductions, status, stateCode);
 
   const [result, setResult] = useState<Result | null>(null);
@@ -88,6 +95,7 @@ export default function QuickEstimator({
             onChange={(e) => goToState(e.target.value)}
             disabled={!stateHrefBase}
           >
+            {!stateCode && <option value="">Select your state…</option>}
             {stateOptions.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
           </select>
           {stateHrefBase && <p className="field-note">Switching state opens that state's page.</p>}
@@ -126,15 +134,43 @@ export default function QuickEstimator({
           </div>
         ) : (
           <div className={stale ? 'results-box is-stale' : 'results-box'}>
-            <h3>Your 2026 estimate — {states[stateCode]?.name}</h3>
-            <Line label="Net self-employment income" value={formatMoney(result.netSE)} />
+            <h3>Your 2026 estimate{stateCode ? ` — ${states[stateCode]?.name}` : ''}</h3>
+
+            {w2Income > 0 && <Line label="W-2 wages" value={formatMoney(result.w2Income)} />}
+            <Line label="Self-employment income" value={formatMoney(seIncome)} />
+            {seDeductions > 0 && <Line label="Business deductions" value={`− ${formatMoney(seDeductions)}`} />}
+            {seDeductions > 0 && <Line label="Net self-employment profit" value={formatMoney(result.netSE)} />}
+            {w2Income > 0 && <Line label="Total income" value={formatMoney(result.totalIncome)} total />}
+
+            <Line label="Deductible half of self-employment tax" value={`− ${formatMoney(result.totalIncome - result.agi)}`} />
+            <Line label="Adjusted gross income" value={formatMoney(result.agi)} />
+            <Line label="Standard deduction" value={`− ${formatMoney(result.agi - result.taxableBeforeQBI)}`} />
+            {result.qbi > 0 && <Line label="QBI deduction (20% of qualified profit)" value={`− ${formatMoney(result.qbi)}`} />}
+            <Line label="Taxable income" value={formatMoney(result.taxable)} total />
+
             <Line label="Self-employment tax (15.3% × 92.35%)" value={formatMoney(result.seTax)} />
             <Line label="Federal income tax" value={formatMoney(result.fedTax)} />
-            <Line label={`${states[stateCode]?.name} income tax`} value={formatMoney(result.stateTax)} />
+            <Line
+              label={stateCode ? `${states[stateCode]?.name} income tax` : 'State income tax'}
+              value={stateCode ? formatMoney(result.stateTax) : 'select a state'}
+            />
             <Line label="Total tax" value={formatMoney(result.totalTax)} total />
-            <Line label="Effective rate" value={formatPct(result.effectiveRate)} />
-            <Line label="After-tax income" value={formatMoney(result.afterTax)} total />
-            <p className="results-note">Estimate only. Assumes the standard deduction and no credits. Not tax advice.</p>
+            <Line label="Effective rate on total income" value={formatPct(result.effectiveRate)} />
+            <Line label="After tax" value={formatMoney(result.afterTax)} total />
+
+            {w2Income > 0 && (
+              <p className="results-note">
+                Your W-2 wages are in the total because they decide which brackets the 1099 profit
+                lands in — the side income stacks on top of the day job, not beside it. Tax already
+                withheld from those wages is not deducted here, so the total is the whole year's
+                liability, not what is left to pay.
+              </p>
+            )}
+            <p className="results-note">
+              {stateCode
+                ? 'Estimate only. Assumes the standard deduction and no credits. Not tax advice.'
+                : 'Federal and self-employment tax only until you pick a state. Not tax advice.'}
+            </p>
           </div>
         )}
       </div>

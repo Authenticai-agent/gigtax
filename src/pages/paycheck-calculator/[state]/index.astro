@@ -11,6 +11,7 @@ import { paycheckEstimate } from '../../../lib/paycheck';
 import { formatMoney, formatPct } from '../../../lib/tax-engine';
 import { describeStateTax } from '../../../lib/state-copy';
 import { stateSlug } from '../../../lib/slug';
+import { adjacency } from '../../../data/adjacency';
 import { siblingStates } from '../../../data/neighbors';
 import { describeStateFacts, neighbourComparison, describeNeighbours, neighbourSentences } from '../../../lib/state-facts';
 import { getStandardDeduction } from '../../../lib/tax-engine';
@@ -26,12 +27,14 @@ const { code, state } = Astro.props as Props;
 const EXAMPLE = 75000;
 const r = paycheckEstimate(EXAMPLE, code, 'single');
 const ladder = [45000, 75000, 120000].map((g) => paycheckEstimate(g, code, 'single'));
-const facts = describeStateFacts(code, state, 'wages');
+const facts = describeStateFacts(code, state, 'wages', { skipSdi: true });
 const neighbours = neighbourComparison(code, EXAMPLE);
 const neighbourSummary = describeNeighbours(code, state, neighbours, EXAMPLE);
 const neighbourLines = neighbourSentences(state, neighbours);
+const neighbourBorderless = !adjacency[code]?.length;
 const siblings = siblingStates(code, 4).map((c) => states[c]).filter(Boolean);
 const noTax = state.noIncomeTax === true || state.type === 'none';
+const sdi = r.sdi;
 
 const title = `Paycheck calculator — ${state.name} (2026 take-home pay)`;
 const description = `Estimate 2026 take-home pay in ${state.name}: federal income tax, FICA, and ${state.name} state income tax on a W-2 salary. Free calculator with a worked example.`;
@@ -50,42 +53,60 @@ const description = `Estimate 2026 take-home pay in ${state.name}: federal incom
 
   <PaycheckCalculator client:load presetState={code} defaultGross={EXAMPLE} stateBaseUrl="/paycheck-calculator" />
 
-  <h2>Worked example: {formatMoney(EXAMPLE)} salary in {state.name}</h2>
-  <p>A single filer earning {formatMoney(EXAMPLE)} in {state.name}, taking the standard deduction, keeps an estimated:</p>
-  <table class="data-table">
-    <tbody>
-      <tr><td>Federal income tax</td><td>{formatMoney(r.federalTax)}</td></tr>
-      <tr><td>FICA (employee share)</td><td>{formatMoney(r.fica)}</td></tr>
-      <tr><td>{state.name} state income tax</td><td>{formatMoney(r.stateTax)}</td></tr>
-      <tr class="total"><td>Total tax</td><td>{formatMoney(r.totalTax)}</td></tr>
-      <tr><td>Effective rate</td><td>{formatPct(r.effectiveRate)}</td></tr>
-      <tr class="total"><td>Annual take-home</td><td>{formatMoney(r.takeHome)}</td></tr>
-    </tbody>
-  </table>
+  <h2>What actually lands, per paycheck</h2>
+  <p data-source="lib/paycheck.ts paycheckEstimate()">
+    On {formatMoney(EXAMPLE)} in {state.name}, {formatMoney(r.takeHome)} a year survives everything
+    withheld — {formatMoney(r.takeHome / 12)} a month, or {formatMoney(r.takeHome / 26)} in each of 26
+    fortnightly paychecks. The gap between that and the {formatMoney(EXAMPLE / 26)} a fortnight the
+    salary implies is {formatMoney((EXAMPLE - r.takeHome) / 26)} per paycheck.
+  </p>
 
-  <div class="callout">
-    <strong>Take-home</strong>
-    On {formatMoney(EXAMPLE)} in {state.name}, about {formatPct(r.effectiveRate)} goes to
-    tax, leaving roughly {formatMoney(r.takeHome)}. Adjust the amount above for your own salary.
-  </div>
-
-  <h2>Take-home at three salary levels in {state.name}</h2>
+  <h2>Everything that comes out of a paycheck in {state.name}</h2>
+  <p>
+    A single filer taking the standard deduction, at three salaries. Every line the employer
+    withholds is in the total{sdi ? `, ${state.name}'s disability insurance included` : ''}:
+  </p>
   <table class="data-table">
     <thead>
-      <tr><th>Gross salary</th><th>{state.name} income tax</th><th>Total tax</th><th>Take-home</th><th>Effective rate</th></tr>
+      <tr>
+        <th>Gross salary</th>
+        <th>Federal</th>
+        <th>FICA</th>
+        <th>{state.name}</th>
+        {sdi && !sdi.unmodelled && <th>SDI</th>}
+        <th>Take-home</th>
+        <th>Rate</th>
+      </tr>
     </thead>
     <tbody>
       {ladder.map((row) => (
         <tr>
           <td>{formatMoney(row.gross)}</td>
+          <td>{formatMoney(row.federalTax)}</td>
+          <td>{formatMoney(row.fica)}</td>
           <td>{noTax ? '—' : formatMoney(row.stateTax)}</td>
-          <td>{formatMoney(row.totalTax)}</td>
+          {sdi && !sdi.unmodelled && <td>{formatMoney(row.sdi?.amount ?? 0)}</td>}
           <td>{formatMoney(row.takeHome)}</td>
           <td>{formatPct(row.effectiveRate)}</td>
         </tr>
       ))}
     </tbody>
   </table>
+  {sdi && !sdi.unmodelled && (
+    <p data-source="data/states.ts → stateMetadata.statesWithSDI">
+      {state.name} is one of five states that withholds for disability insurance. It is
+      {' '}{sdi.label.replace('State disability insurance ', '').replace(/[()]/g, '')}, it comes out of
+      every paycheck on top of income tax and FICA, and it is in the take-home figures above.
+      {' '}{sdi.note}
+    </p>
+  )}
+  {sdi?.unmodelled && (
+    <p data-source="data/states.ts → stateMetadata.statesWithSDI">
+      {state.name} also requires disability coverage, but the premium varies by employer plan rather
+      than a fixed statutory rate, so it is not in the figures above — your real take-home is slightly
+      lower than shown. {sdi.note}
+    </p>
+  )}
 
   {facts.length > 0 && (
     <>
@@ -94,7 +115,7 @@ const description = `Estimate 2026 take-home pay in ${state.name}: federal incom
     </>
   )}
 
-  <h2>Take-home in the states {state.name} borders</h2>
+  <h2>{neighbourBorderless ? `Take-home in ${state.name} against the biggest states` : `Take-home in the states ${state.name} borders`}</h2>
   {neighbourSummary && <p data-source="lib/tax-engine.ts calcStateTax() + data/adjacency.ts">{neighbourSummary}</p>}
   {neighbours.length > 0 && (
     <table class="data-table">
