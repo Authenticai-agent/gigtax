@@ -13,7 +13,76 @@
  */
 import { compareEntities, optimizeSCorpSalary, calcStateTax, formatMoney } from './tax-engine';
 import { states, stateMetadata } from '../data/states';
+import scorpTax from '../data/overrides/state-scorp-tax-2026.json';
 import type { StateData } from '../data/types';
+
+export interface StateScorpTax {
+  recognizesFederalSElection: boolean;
+  separateStateElectionRequired: boolean | string;
+  /** Rate the state charges the CORPORATION on its net income. */
+  entityLevelIncomeTaxRate: number | null;
+  /** Owed regardless of profit. */
+  minimumAnnualTax: number | null;
+  grossReceiptsTax: string | null;
+  annualReportFee: number | null;
+  notes: string;
+  confidence: 'high' | 'medium' | 'low';
+  /** Deduction against the entity-level base, where a state grants one. */
+  entityTaxDeduction?: number | null;
+  /** True when the minimum replaces the income-based charge rather than adding to it. */
+  minimumIsAlternative?: boolean;
+}
+
+/** The researched entry for a state, or null when we have not confirmed it. */
+export function stateScorpTax(code: string): StateScorpTax | null {
+  const entry = (scorpTax as Record<string, any>)[code];
+  return entry && !code.startsWith('_') ? (entry as StateScorpTax) : null;
+}
+
+export interface EntityTax {
+  amount: number;
+  /** True when we have no researched figure — pages must say so, not assume zero. */
+  unknown: boolean;
+  basis: string;
+}
+
+/**
+ * What the state charges the corporation itself on this profit.
+ *
+ * Returns unknown rather than zero when the state has not been researched. A
+ * missing figure silently treated as zero is how a calculator ends up telling
+ * someone an election saves money when it costs them.
+ */
+export function entityLevelTax(code: string, netProfit: number): EntityTax {
+  const t = stateScorpTax(code);
+  if (!t) return { amount: 0, unknown: true, basis: 'not yet researched for this state' };
+
+  const deduction = t.entityTaxDeduction ?? 0;
+  const base = Math.max(0, netProfit - deduction);
+  const onIncome = t.entityLevelIncomeTaxRate === null ? 0 : base * t.entityLevelIncomeTaxRate;
+  const minimum = t.minimumAnnualTax ?? 0;
+
+  // Whether the minimum replaces the income-based charge or stacks on top of it
+  // is an explicit field. It was briefly inferred by looking for "greater of" in
+  // the notes, which found the phrase inside Tennessee's description of a
+  // DIFFERENT tax and quietly dropped $100 from the answer. Prose is not a
+  // specification.
+  const greaterOf = t.minimumIsAlternative === true;
+  const amount = greaterOf ? Math.max(onIncome, minimum) : onIncome + minimum;
+
+  const parts: string[] = [];
+  if (t.entityLevelIncomeTaxRate) {
+    parts.push(`${(t.entityLevelIncomeTaxRate * 100).toFixed(2).replace(/\.?0+$/, '')}% of net income`
+      + (deduction ? ` above ${formatMoney(deduction)}` : ''));
+  }
+  if (minimum) parts.push(`${greaterOf ? 'or' : 'plus'} a ${formatMoney(minimum)} minimum`);
+
+  return {
+    amount,
+    unknown: false,
+    basis: parts.join(' ') || 'no entity-level tax',
+  };
+}
 
 const meta = stateMetadata as {
   passthroughEntityTaxStates: { note: string; statesWithPTET: string[]; howItWorks: string };
@@ -47,10 +116,14 @@ export const DEFENSIBLE_SALARY_PCT = 40;
 export interface ScorpOutcome {
   netProfit: number;
   solePropTax: number;
+  /** Federal + personal state tax under the election, before the entity tax. */
+  sCorpTaxBeforeEntity: number;
+  entityTax: EntityTax;
   sCorpTax: number;
-  /** Positive means the election saves money after admin cost. */
+  /** Positive means the election saves money once everything is counted. */
   saving: number;
-  /** The salary split the optimiser landed on. */
+  /** The saving the federal payroll maths alone would suggest. */
+  federalOnlySaving: number;
   salary: number;
   salaryPct: number;
   distribution: number;
@@ -60,11 +133,16 @@ export function scorpOutcome(netProfit: number, stateCode: string, status = 'sin
   const cmp = compareEntities(netProfit, 0, status, stateCode);
   const opt = optimizeSCorpSalary(netProfit, 0, status, stateCode, undefined, PAYROLL_ADMIN_COST);
   const atDefensible = opt.results.find((r) => r.pct === DEFENSIBLE_SALARY_PCT) ?? opt.best;
+  const entityTax = entityLevelTax(stateCode, netProfit);
+  const federalOnlySaving = cmp.soleProp.totalTax - atDefensible.totalTax;
   return {
     netProfit,
     solePropTax: cmp.soleProp.totalTax,
-    sCorpTax: atDefensible.totalTax,
-    saving: cmp.soleProp.totalTax - atDefensible.totalTax,
+    sCorpTaxBeforeEntity: atDefensible.totalTax,
+    entityTax,
+    sCorpTax: atDefensible.totalTax + entityTax.amount,
+    saving: federalOnlySaving - entityTax.amount,
+    federalOnlySaving,
     salary: atDefensible.salary,
     salaryPct: atDefensible.pct,
     distribution: atDefensible.distribution,
@@ -102,7 +180,13 @@ export function salarySplits(netProfit: number, stateCode: string, status = 'sin
 /**
  * The profit at which the election starts paying for itself in this state.
  *
- * INCOMPLETE — do not put this on a page yet. It counts federal payroll tax
+ * Now counts the state entity-level tax, so it is meaningful where that state
+ * has been researched. Returns null when the state is unresearched OR when the
+ * election never pays inside the searched range — callers must distinguish the
+ * two via entityLevelTax().unknown, because "we do not know" and "never worth
+ * it" are very different answers.
+ *
+ * Previously INCOMPLETE — do not put this on a page yet. It counts federal payroll tax
  * against a payroll admin cost, and nothing else. Several states levy a tax the
  * S-corp election itself creates: California charges 1.5% of net income with an
  * $800 minimum, and others have fixed-dollar minimums or franchise fees. None of
@@ -115,17 +199,43 @@ export function salarySplits(netProfit: number, stateCode: string, status = 'sin
  * Ground rule 2 says a missing figure means stop and ask, so this stays unused
  * until the per-state figures are researched the way the brackets were.
  */
-export function breakEvenProfit(stateCode: string, status = 'single'): number | null {
-  let low = 20000;
-  let high = 400000;
-  if (scorpOutcome(high, stateCode, status).saving <= 0) return null;
-  if (scorpOutcome(low, stateCode, status).saving > 0) return low;
-  for (let i = 0; i < 40; i++) {
-    const mid = (low + high) / 2;
-    if (scorpOutcome(mid, stateCode, status).saving > 0) high = mid;
-    else low = mid;
+export interface WorthwhileBand {
+  /** Lowest profit at which the election pays, or null if it never does. */
+  from: number | null;
+  /** Profit above which it stops paying, or null if it keeps paying. */
+  until: number | null;
+  /** True when the state has not been researched, so the band is federal-only. */
+  unknownState: boolean;
+}
+
+/**
+ * The band of profit over which the election actually pays for itself.
+ *
+ * A single break-even point is the wrong shape for this question. It assumes the
+ * saving only ever grows with profit, and in states that tax the corporation on
+ * its income that is false: the federal payroll saving plateaus at the Social
+ * Security wage base while the state's charge keeps scaling, so the election can
+ * be worth it at $100,000 and cost money at $250,000. Tennessee does exactly
+ * that. A break-even search returned null there, which reads as "never worth it"
+ * and is wrong in the opposite direction.
+ */
+export function worthwhileBand(stateCode: string, status = 'single'): WorthwhileBand {
+  const STEP = 5000;
+  const MAX = 500000;
+  const pays = (p: number) => scorpOutcome(p, stateCode, status).saving > 0;
+
+  let from: number | null = null;
+  let until: number | null = null;
+  for (let p = 20000; p <= MAX; p += STEP) {
+    if (pays(p)) {
+      if (from === null) from = p;
+      until = null;
+    } else if (from !== null && until === null) {
+      until = p;
+      break;
+    }
   }
-  return Math.round(high / 1000) * 1000;
+  return { from, until, unknownState: entityLevelTax(stateCode, 100000).unknown };
 }
 
 /** Profit levels for the comparison table. */

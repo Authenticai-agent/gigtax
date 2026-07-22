@@ -15,6 +15,12 @@
  *   2. Ohio's exempt-below-$26,050 threshold, which legacy does not apply.
  *   3. Maryland, Nebraska, South Carolina and West Virginia brackets, which
  *      legacy does not have at all, so it returns $0 tax for all four.
+ *   4. The QBI wage limitation. IRC 199A(b)(3)(B) phases the limitation in
+ *      across the threshold range; legacy applies it as a switch at the top,
+ *      so the deduction falls off a cliff. For a sole proprietor — who pays
+ *      themselves no W-2 wages, making their wage limit zero — the whole
+ *      deduction vanished at once: $19,050 of extra tax on $2,000 more profit,
+ *      at about $308,000 of profit for a single filer. The port now ramps it.
  *
  * Anything outside those three is a regression and fails the run.
  *
@@ -54,11 +60,11 @@ const KNOWN_STATE_FIXES = {
 
 const STATES = Object.keys(cfg.states);
 const STATUSES = ['single', 'mfj', 'hoh', 'mfs'];
-const INCOMES = [0, 12000, 30000, 50000, 75000, 120000, 200000, 400000, 1200000];
+const INCOMES = [0, 12000, 30000, 50000, 75000, 120000, 200000, 240000, 260000, 400000, 1200000];
 const near = (a, b) => Math.abs((a ?? 0) - (b ?? 0)) < 0.02;
 
 let compared = 0;
-const expected = { addMedicare: 0, stateFix: 0 };
+const expected = { addMedicare: 0, stateFix: 0, qbiPhaseIn: 0 };
 const regressions = [];
 
 for (const status of STATUSES) {
@@ -89,7 +95,12 @@ for (const status of STATUSES) {
       }[fn];
       const a = L[fn](...args[0]);
       const b = P[fn](...args[1]);
-      if (!near(a, b)) regressions.push(`${fn} (${status}, ${income}): ${a} vs ${b}`);
+      if (!near(a, b)) {
+        // Inside the phase-in range the port deliberately gives LESS than legacy,
+        // because legacy grants the full deduction right up to the cliff edge.
+        if (fn === 'calcQBI' && b < a) expected.qbiPhaseIn++;
+        else regressions.push(`${fn} (${status}, ${income}): ${a} vs ${b}`);
+      }
     }
 
     for (const st of STATES) {
@@ -107,6 +118,7 @@ for (const status of STATUSES) {
 console.log(`\nEngine parity — ${compared.toLocaleString()} figures compared`);
 console.log(`  ${expected.stateFix} state-tax differences, all in ${Object.keys(KNOWN_STATE_FIXES).join('/')} (known legacy bugs)`);
 console.log(`  ${expected.addMedicare} SE/FICA differences, all the Additional Medicare Tax legacy omits`);
+console.log(`  ${expected.qbiPhaseIn} QBI differences, all the wage-limitation phase-in legacy applies as a cliff`);
 
 if (regressions.length) {
   console.log(`\n${regressions.length} UNEXPLAINED difference(s) — the port has drifted:`);
