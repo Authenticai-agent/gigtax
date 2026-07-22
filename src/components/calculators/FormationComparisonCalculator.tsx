@@ -264,12 +264,7 @@ export default function FormationComparisonCalculator({ pairStates }: Props = {}
                     <td>{money(c.agentCost)}</td>
                     <td>{money(c.foreignRegistration.oneTime)}</td>
                     <td>{money(c.annualTotal)}</td>
-                    <td>
-                      {money(c.fiveYearTotal)}
-                      {c.unquantified.length > 0 && (
-                        <span className="pill">+ {c.unquantified.length} unquantified</span>
-                      )}
-                    </td>
+                    <td>{money(c.fiveYearTotal)}</td>
                   </tr>
                 ))}
               </tbody>

@@ -582,9 +582,9 @@ export const formationFees = {
         "applies": true,
         "rate": 0.0015,
         "minimumInitial": 25,
-        "annualExemption": null
+        "annualExemption": 10000
       },
-      "note": "APPLIES. PA 102-0016 reversed the repeal in PA 101-0009, so Illinois franchise tax is live. Rate is 0.15%, $1.50 per $1,000 of paid-in capital allocated to Illinois; minimum initial $25. THE ANNUAL EXEMPTION IS NOT ESTABLISHED for 2026 and is stored null. Commentary reports $1,000 for 2021-23, $5,000 for 2024 and $10,000 for 2025, but no Public Act is cited for any increase above $1,000 while every other step in the chain names one. Practical effect is small — almost every business this tool serves owes $0 — so show it as unquantified rather than asserting a threshold."
+      "note": "APPLIES. PA 102-0016 reversed the repeal in PA 101-0009. Rate 0.15% ($1.50 per $1,000 of paid-in capital allocated to Illinois); minimum initial $25. THE ANNUAL EXEMPTION IS $10,000 for 2025 and after, so $10,000 in 2026 — settled by the Commission on Government Forecasting and Accountability's Tax Handbook for Legislators 2026, page 33, which sets out the whole schedule: $30 exempt in 2020, $1,000 for 2021-23, $5,000 for 2024, $10,000 from 2025. Caveat carried forward: the handbook states the schedule but cites no Public Act for the increases above $1,000, and its only statutory citation is 805 ILCS 5/15.05 and following. Practical effect remains small — almost every business this tool serves owes $0."
     },
     "llc": {
       "formationFee": 150,
@@ -1020,7 +1020,7 @@ export const formationFees = {
     },
     "llc": {
       "formationFee": 135,
-      "foreignQualificationFee": null,
+      "foreignQualificationFee": 185,
       "annualReport": {
         "amount": null,
         "frequency": null,
@@ -1832,7 +1832,7 @@ export const formationFees = {
     },
     "corp": {
       "formationFee": 150,
-      "foreignQualificationFee": null,
+      "foreignQualificationFee": 750,
       "annualReport": {
         "amount": 55,
         "frequency": "annual",

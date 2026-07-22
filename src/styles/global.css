@@ -379,6 +379,33 @@ main ol li { margin-bottom: .4rem; line-height: 1.68; }
   .comparison-cards { display: block; }
 }
 
+/* ---------------------------------------------------------------------------
+ * Narrow-viewport overflow fixes.
+ *
+ * Two real bugs, both found by driving a browser at 375px rather than by
+ * reading the CSS:
+ *
+ *  1. The nav overflowed the viewport by 168px on EVERY page. It has flex-wrap,
+ *     but header-inner is a flex row with the logo, so the nav could not
+ *     actually wrap — it just grew. Nine links accumulated over time and no
+ *     single addition looked like the one that broke it.
+ *
+ *  2. Any .data-table with more than about four columns pushed past 375px. The
+ *     comparison island already handles this by swapping to cards, but the
+ *     build-time tables on ~700 pages had nothing.
+ * ------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .header-inner { flex-direction: column; align-items: flex-start; gap: .6rem; }
+  .logo { font-size: 1.1rem; }
+  .main-nav { gap: .55rem 1rem; width: 100%; }
+  .main-nav a { font-size: 11px; letter-spacing: .06em; }
+
+  /* Scroll the table rather than the page. A table that scrolls is readable;
+     a page that scrolls sideways is not. */
+  .data-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .data-table thead, .data-table tbody { display: table; width: 100%; min-width: 22rem; }
+}
+
 @media (max-width: 720px) {
   main { padding: 1.25rem 1rem 4rem; }
   .hero { padding: 1.75rem 0 1.25rem; }

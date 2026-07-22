@@ -40,6 +40,7 @@ import {
   calcFederalTax, calcSETax, calcFICA, calcQBI, calcStateTax,
   calcDelawareFranchiseTax, getStandardDeduction,
 } from './tax-engine';
+import { entityLevelTax } from './scorp';
 
 const DATA = formationData as Record<string, any>;
 
@@ -174,16 +175,36 @@ function franchiseFor(state: string, entity: EntityChoice, input: FormationInput
     return { amount: t, note: DATA.DE.llc?.annualTax?.note ?? null };
   }
 
-  // A flat annual tax the state charges the entity — California's $800, Nevada's license.
+  // A flat annual tax the formation dataset records — California's $800,
+  // Nevada's business licence, Rhode Island's minimum.
   const flat = row(state, entity)?.annualTax?.amount ?? null;
   if (flat !== null) {
     return { amount: flat, note: row(state, entity)?.annualTax?.note ?? null };
   }
-  if (ft?.structured?.capitalBased === false || ft?.structured?.repealed) {
-    return { amount: 0, note: ft.note ?? null };
+
+  /*
+   * Everything else defers to the researched S-corp dataset, which already
+   * distinguishes the two cases this used to conflate:
+   *
+   *   a state that charges NOTHING  -> $0, and should say so
+   *   a state we could not price    -> null, and should be flagged
+   *
+   * The old code returned null for both, so Ohio, Texas, Wyoming, South Dakota
+   * and Florida — none of which has a franchise tax at all — were reported as
+   * costs we "cannot put a number on". That is not an unknown, it is a zero,
+   * and dressing it up as an unknown put a caveat on every column that did not
+   * belong there.
+   */
+  const entityTax = entityLevelTax(state, Math.max(0, input.annualProfit));
+  if (!entityTax.unknown) {
+    return {
+      amount: entityTax.amount,
+      note: entityTax.amount > 0
+        ? `${states[state]?.name} charges the company ${entityTax.basis}.`
+        : (ft?.note ?? `${states[state]?.name} charges no franchise or entity-level tax on an ${feeKind(entity) === 'llc' ? 'LLC' : 'S corporation'}.`),
+    };
   }
-  // Structure known, figures not. Null, with the note surfaced.
-  return { amount: null, note: ft?.note ?? null };
+  return { amount: null, note: ft?.note ?? entityTax.basis ?? null };
 }
 
 /* --------------------------------------------------------- gross receipts ---- */

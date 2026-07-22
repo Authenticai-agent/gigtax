@@ -146,14 +146,23 @@ console.log('\n5. nulls become unquantified, never zero');
    * not of the state in the column heading. Getting that backwards is what the
    * first draft of this test did.
    */
-  const sdOperating = compareFormationStates({ ...base, homeState: 'SD', workState: 'SD', entity: 's-corp' });
-  const viewFromWy = sdOperating.columns.find((c) => c.state === 'WY');
-  ok('South Dakota corp foreign fee is null after the data fix',
-    viewFromWy.foreignRegistration.oneTime === null,
-    money(viewFromWy.foreignRegistration.oneTime));
-  ok('and surfaces as unquantified on the column',
-    viewFromWy.unquantified.some((u) => /foreign registration/i.test(u)),
+  // New Mexico is the genuine null case — no confirmed formation fee.
+  const nmOperating = compareFormationStates({ ...base, homeState: 'NM', workState: 'NM', entity: 'llc' });
+  const viewFromWy = nmOperating.columns.find((c) => c.state === 'WY');
+  ok('New Mexico foreign fee is null and surfaces as unquantified',
+    viewFromWy.foreignRegistration.oneTime === null
+      && viewFromWy.unquantified.some((u) => /foreign registration/i.test(u)),
     viewFromWy.unquantified.join(' | '));
+  // South Dakota's $750 corp foreign fee is confirmed and equal to its LLC fee
+  // ON PURPOSE — the state charges both the same. This is the case the earlier
+  // draft got backwards.
+  const sdCorp = compareFormationStates({ ...base, homeState: 'SD', workState: 'SD', entity: 's-corp' })
+    .columns.find((c) => c.state === 'WY');
+  const sdLlc = compareFormationStates({ ...base, homeState: 'SD', workState: 'SD', entity: 'llc' })
+    .columns.find((c) => c.state === 'WY');
+  ok('South Dakota charges $750 foreign for BOTH entity types, confirmed not copied',
+    sdCorp.foreignRegistration.oneTime === 750 && sdLlc.foreignRegistration.oneTime === 750,
+    `corp ${money(sdCorp.foreignRegistration.oneTime)}, llc ${money(sdLlc.foreignRegistration.oneTime)}`);
 
   const wa = compareFormationStates({ ...base, homeState: 'WA', workState: 'WA', annualRevenue: 3_000_000 })
     .columns.find((c) => c.state === 'WA');
@@ -162,6 +171,20 @@ console.log('\n5. nulls become unquantified, never zero');
 }
 
 /* --------------------------------------------------------- 6. self-agent rule */
+console.log('\n5b. no franchise tax is $0, not an unknown');
+{
+  const r = compareFormationStates({ ...base, homeState: 'KY', workState: 'KY', entity: 'llc' });
+  const noTax = ['TX', 'FL', 'WY', 'SD'];
+  for (const st of noTax) {
+    const c = r.columns.find((x) => x.state === st);
+    ok(`${st} reports $0 franchise, not null, and does not flag it unquantified`,
+      c.franchiseTax.amount === 0 && !c.unquantified.some((u) => /franchise/i.test(u)),
+      `${money(c.franchiseTax.amount)} | ${c.unquantified.join(', ')}`);
+  }
+  const ky = r.columns.find((x) => x.state === 'KY');
+  ok('Kentucky reports its real $175 minimum', ky.franchiseTax.amount === 175, money(ky.franchiseTax.amount));
+}
+
 console.log('\n6. self-agent restriction');
 {
   const r = compareFormationStates({ ...base, agentTier: 'self' });

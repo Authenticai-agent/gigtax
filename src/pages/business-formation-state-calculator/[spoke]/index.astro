@@ -113,7 +113,7 @@ const money = (n: number | null | undefined) =>
           <td>{money(c.formationFee.amount)}</td>
           <td>{money(c.foreignRegistration.oneTime)}</td>
           <td>{formatMoney(c.annualTotal)}</td>
-          <td>{formatMoney(c.fiveYearTotal)}{c.unquantified.length > 0 ? ' +' : ''}</td>
+          <td>{formatMoney(c.fiveYearTotal)}</td>
         </tr>
       ))}
     </tbody>
