@@ -12,7 +12,7 @@
       "flat dollars per year (Portland Arts Tax)",
       "threshold levies on income above a floor (Oregon Metro SHS, Multnomah PFA)"
     ],
-    "status": "Ohio and Pennsylvania — the two most complex local-tax states — are still being researched and are absent from this file.",
+    "status": "All 12 local-tax states captured. Ohio and Pennsylvania completed last, and are the most complex by a distance.",
     "crossChecked": "Indiana, Kentucky and Alabama were researched twice independently. The second pass RESOLVED Alabama's open question — the occupational tax does not reach self-employment profit — and resolved Kentucky's contested school levy. It also surfaced that Indiana's 2026 STATE rate is 2.95%, not the 3.00% in the legacy dataset, which is now corrected in state-brackets-2026.json. Michigan, Missouri, Delaware, West Virginia and Oregon were also researched twice. The second pass confirmed Saginaw's rate against the city's own form and identified the widely-used Grand Rapids aggregate table as stale; corrected Delaware's head tax from the commonly quoted $10 to $15; found Weirton's 2026 increase from $2 to $5 and Fairmont's inverted resident rule; and established that Oregon's statewide transit tax stayed at 0.1% because Measure 120 failed in May 2026, contradicting many payroll guides. Michigan was then researched a THIRD time to verify the 20 cities that had rested on the statutory default: all 20 confirmed 1%/0.5% from their own pages or forms, so the whole state is now high confidence. That pass also found two more bad sources — Portland's and Muskegon Heights' instruction PDFs both carry copy-paste boilerplate quoting Grand Rapids' 1.5/0.75 alongside their own correct 1%/0.5%. Scraping either would have produced wrong rates.",
     "fetchBlocked": "michigan.gov, kcmo.gov and wilmingtonde.gov all refuse automated fetching. Figures for those came from alternative official sources — Michigan Treasury form PDFs, the St. Louis Comptroller's comparison page, and Wilmington's own budget portal."
   },
@@ -683,5 +683,258 @@
       "Lane Transit payroll": 0.008,
       "note": "Employer-side, not part of an individual's calculation — but both have parallel SELF-EMPLOYMENT versions charged on net earnings over $400 from services in the district, which are."
     }
+  },
+  "OH": {
+    "shape": "municipal income tax on wages and net profit, PLUS a separate additive school district income tax",
+    "appliesToSelfEmploymentNetProfit": true,
+    "nonresidentsPay": true,
+    "confidence": "high",
+    "statutoryMaxWithoutVote": 0.01,
+    "statutoryNote": "ORC 718.04(G): no municipality may exceed 1% without majority voter approval. Once approved there is NO ceiling — the highest rates in the state exceed 3%.",
+    "baseIsNotStateTaxableIncome": {
+      "wages": true,
+      "selfEmploymentNetProfit": true,
+      "rentalIncome": true,
+      "pensionsAnnuitiesRetirement": false,
+      "socialSecurity": false,
+      "individualInterestDividendsCapitalGains": false,
+      "note": "Municipalities are statutorily barred from taxing retirement income. A retiree in Columbus with $80,000 of pension income owes $0 municipal tax. This base is unlike any other state's in the file."
+    },
+    "businessIncomeDeductionApplies": false,
+    "businessIncomeDeductionNote": "THE BIGGEST SURPRISE FOR OWNER-OPERATORS: Ohio's state Business Income Deduction — the $250,000 / 3% break — does NOT apply at the municipal level. Schedule C profit is fully municipally taxable, both where the work was performed and where the owner lives.",
+    "creditRule": "The residence municipality taxes all a resident's income wherever earned; the workplace municipality taxes it at source; the residence city then grants a credit. STATE LAW MANDATES NO CREDIT — each city sets its own credit percentage AND its own credit rate limit by ordinance.",
+    "creditCapsAreNotUniform": "A calculator that assumes a full credit UNDERSTATES liability for six of the twenty largest cities.",
+    "cities": {
+      "Columbus": {
+        "rate": 0.025,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.025,
+        "admin": "self"
+      },
+      "Cleveland": {
+        "rate": 0.025,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.025,
+        "admin": "CCA"
+      },
+      "Cincinnati": {
+        "rate": 0.018,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.018,
+        "admin": "self"
+      },
+      "Toledo": {
+        "rate": 0.025,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.025,
+        "admin": "self",
+        "confirmed2026": false
+      },
+      "Akron": {
+        "rate": 0.025,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.025,
+        "admin": "self"
+      },
+      "Dayton": {
+        "rate": 0.025,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.025,
+        "admin": "self"
+      },
+      "Parma": {
+        "rate": 0.025,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.02,
+        "admin": "self",
+        "creditBelowRate": true
+      },
+      "Canton": {
+        "rate": 0.025,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.025,
+        "admin": "self"
+      },
+      "Youngstown": {
+        "rate": 0.0275,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.0275,
+        "admin": "RITA"
+      },
+      "Lorain": {
+        "rate": 0.025,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.02,
+        "admin": "self",
+        "creditBelowRate": true
+      },
+      "Hamilton": {
+        "rate": 0.02,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.02,
+        "admin": "RITA"
+      },
+      "Springfield": {
+        "rate": 0.024,
+        "creditPct": 0.5,
+        "creditRateLimit": null,
+        "admin": "RITA",
+        "creditBelowRate": true,
+        "creditNote": "50% credit, additionally capped at 50% of Springfield's own tax. A resident working elsewhere ALWAYS owes Springfield at least 1.2%."
+      },
+      "Kettering": {
+        "rate": 0.0225,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.0225,
+        "admin": "self"
+      },
+      "Elyria": {
+        "rate": 0.0225,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.0225,
+        "admin": "RITA"
+      },
+      "Lakewood": {
+        "rate": 0.015,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.005,
+        "admin": "self",
+        "creditBelowRate": true,
+        "creditNote": "Credit capped at a 0.5% rate against a 1.5% tax. A Lakewood resident working elsewhere still owes Lakewood 1.0%."
+      },
+      "Cuyahoga Falls": {
+        "rate": 0.02,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.02,
+        "admin": "RITA"
+      },
+      "Middletown": {
+        "rate": 0.02,
+        "creditPct": null,
+        "creditRateLimit": null,
+        "admin": "self",
+        "confidence": "medium",
+        "creditNote": "UNRESOLVED — the ordinance implies a 100% credit up to 2.0% but the current return form still prints 'not to exceed 1.75%'. Left null; needs a phone call to the city."
+      },
+      "Euclid": {
+        "rate": 0.0285,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.0285,
+        "admin": "RITA"
+      },
+      "Newark": {
+        "rate": 0.0175,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.01,
+        "admin": "self",
+        "creditBelowRate": true,
+        "creditNote": "Credit capped at 1.0% against a 1.75% tax; a resident working elsewhere still owes 0.75%."
+      },
+      "Mansfield": {
+        "rate": 0.0225,
+        "creditPct": 1.0,
+        "creditRateLimit": 0.01,
+        "admin": "self",
+        "creditBelowRate": true,
+        "confirmed2026": false,
+        "creditNote": "Credit capped at 1.0% of gross wage per W-2, residents only; a resident working elsewhere still owes 1.25%."
+      }
+    },
+    "schoolDistrictIncomeTax": {
+      "separateAndAdditive": true,
+      "administeredBy": "Ohio Department of Taxation, filed on form SD 100 with the STATE return — not by RITA or CCA",
+      "trigger": "residency in the district on the last day of the year. Workplace is irrelevant.",
+      "districtsLevying": 203,
+      "districtsNote": "parsed from ODT's official 2026 withholding list; secondary sources say roughly 210. Approximate.",
+      "rateRange": [
+        0.0025,
+        0.02
+      ],
+      "increment": 0.0025,
+      "traditionalBase": {
+        "count": 139,
+        "taxesRetirement": true,
+        "taxesInvestmentIncome": true,
+        "taxesSelfEmployment": true,
+        "personalExemption2026": {
+          "magiUnder40000": 2350,
+          "magi40001to80000": 2100,
+          "magiOver80000": 1850
+        }
+      },
+      "earnedIncomeBase": {
+        "count": 64,
+        "taxesRetirement": false,
+        "taxesInvestmentIncome": false,
+        "taxesSelfEmployment": true,
+        "taxesSCorpDistributiveShare": false,
+        "note": "wages, salaries, tips and net self-employment earnings ONLY — no exemptions, no deductions"
+      }
+    },
+    "_notes": "Ohio is the most complex local-tax state in the country and the traps are structural, not arithmetic. FOUR things a calculator must get right. (1) The base is NOT state taxable income — no pensions, no Social Security, no individual investment income. (2) Self-employment IS fully taxed and the state Business Income Deduction does NOT apply municipally, which is the single most common surprise for owner-operators. (3) Credit caps are not uniform: six of the twenty largest cities cap the credit BELOW their own rate, so assuming a full credit understates liability — a Lakewood resident working elsewhere still owes 1.0%, a Springfield resident at least 1.2%. (4) School district tax is a SEPARATE additive tax filed with the state, triggered by residency alone, and half the districts use a base that taxes retirement income while the other half do not."
+  },
+  "PA": {
+    "shape": "Act 32 Earned Income Tax everywhere except Philadelphia, which runs its own wage and net profits taxes, plus a flat-dollar Local Services Tax",
+    "appliesToSelfEmploymentNetProfit": true,
+    "nonresidentsPay": true,
+    "confidence": "high on mechanics, medium on rate ranges",
+    "eit": {
+      "typicalRange": [
+        0.0,
+        0.038
+      ],
+      "mostCommon": 0.01,
+      "residentRule": "home municipality rate + home school district rate, on all earned income and net profits wherever earned",
+      "nonresidentRule": "the worksite municipality's non-resident rate, which is the municipal share only — school districts cannot levy on non-residents",
+      "withholdingRule": "Act 32 makes the employer withhold the GREATER of the employee's resident rate or the worksite non-resident rate, and remit to the employee's HOME collection district. That is why most employees never see a bill.",
+      "selfEmploymentTaxed": true,
+      "selfEmploymentNote": "Sole proprietors, single-member LLCs and generally individual partners owe EIT on Schedule C and K-1 ordinary business income, and must file QUARTERLY ESTIMATES directly with their collector. No employer withholds it, so it is routinely missed.",
+      "sCorpDistributiveShareTaxed": false,
+      "sCorpNote": "S-CORP DISTRIBUTIVE SHARE IS NOT SUBJECT TO PA LOCAL EIT. This is the largest planning difference for Pennsylvania business owners and a common calculator error — it makes the S-corp election worth materially more in PA than the federal maths alone suggests.",
+      "act511Cap": "Combined municipal + school EIT is generally capped at 1% unless separately authorised by home rule charter, Act 1 referendum or distressed-city status. Where the cap binds and both levy, the split is typically 0.5/0.5."
+    },
+    "philadelphia": {
+      "outsideAct32": true,
+      "wageTax2026": [
+        {
+          "period": "1 Jan – 30 Jun 2026",
+          "resident": 0.0374,
+          "nonresident": 0.0343
+        },
+        {
+          "period": "1 Jul 2026 – 30 Jun 2027",
+          "resident": 0.03735,
+          "nonresident": 0.03425
+        }
+      ],
+      "rateChangeDate": "1 July, NOT 1 January — a calendar-2026 calculation must blend two rates",
+      "netProfitsTax": {
+        "resident": 0.03735,
+        "nonresident": 0.03425,
+        "confidence": "low",
+        "flag": "NOT CONFIRMED FOR 2026. The convention is that the NPT rate for a tax year equals the wage tax rate effective 1 July of that year, which gives these figures, but no official City page stating the 2026 NPT rate was found. Do not ship without confirming. NPT filers generally also owe BIRT, with a partial credit."
+      },
+      "note": "The Wage Tax does not cover the self-employed at all — they pay the separate Net Profits Tax, and usually BIRT on top."
+    },
+    "pittsburgh": {
+      "residentTotal": 0.03,
+      "cityShare": 0.01,
+      "schoolShare": 0.02,
+      "confidence": "medium",
+      "nonresidentRule": "the 1% city non-resident rate only; the 2% school share does not reach non-residents",
+      "flag": "Confirmed from consistent institutional sources only — pittsburghpa.gov refuses automated fetching and the DCED register is an ASPX postback."
+    },
+    "localServicesTax": {
+      "shape": "flat annual dollars, not a percentage",
+      "statutoryMaxPerYear": 52,
+      "aggregateCap": "$52 total per taxpayer per year across all subdivisions worked in; the taxpayer claims a refund for any excess",
+      "lowIncomeExemptionThreshold": 12000,
+      "exemptionRule": "Any subdivision levying more than $10 a year MUST exempt anyone with under $12,000 of earned income and net profits from sources within it.",
+      "appliesToSelfEmployed": true,
+      "selfEmploymentNote": "The self-employed owe it on the same earned-income-and-net-profits basis and, where the rate exceeds $10, must pay QUARTERLY. There is no employer to withhold it, so sole proprietors routinely miss it.",
+      "basis": "work location, not residence"
+    },
+    "officialRegister": "munstats.pa.gov FindLocalTax and the DCED Official Tax Register",
+    "_notes": "Two systems that do not talk to each other. Act 32 EIT covers the whole state except Philadelphia, which sits outside it entirely with its own wage tax, its own net profits tax for the self-employed, and rates that change on 1 JULY rather than 1 January — so any calendar-2026 figure blends two rates. The single most valuable fact here for our audience: S-corp distributive share is NOT subject to PA local EIT, while sole-proprietor net profit is. In a jurisdiction at 3% combined that is a real reason to elect, and it is invisible in the federal calculation. The LST is a flat dollar tax the self-employed owe quarterly with nobody withholding it."
   }
 }
