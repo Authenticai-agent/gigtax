@@ -51,7 +51,7 @@ const ladder = platformLadder(platform, code);
 // Not every state has a cross-border guide: the no-income-tax states are covered
 // from the other direction, and Hawaii has no land border at all.
 const crossBorder = homeCommutePages().some((e) => e.homeCode === code)
-  ? `/working-in-one-state-living-in-another/${homeCommuteSlug(code)}/`
+  ? `/cross-border-tax/${homeCommuteSlug(code)}/`
   : null;
 
 const title = `DoorDash tax calculator — ${state.name} (2026)`;

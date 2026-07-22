@@ -3,8 +3,9 @@
  * "Live in one state, work in another" — two page shapes, grouped so each page
  * carries substance no sibling has.
  *
- *   living-in-ohio-working-in-another-state          one per taxing home state
- *   living-in-a-no-income-tax-state-working-in-ohio  one per taxing work state
+ *   /cross-border-tax/ohio/ — one page per state that taxes income, covering
+ *   both directions: commuting out of it, and commuting into it from a
+ *   neighbour that has no income tax.
  *
  * This used to be one page per home/work pair, 231 of them. They measured a
  * median of 17 trigrams that no sibling had, against 98-152 for the state
@@ -23,7 +24,7 @@ import { states } from '../../../data/states';
 import {
   pairOutcome, stateSlug,
   homeCommutePages, homeCommuteSlug,
-  noTaxHomePages, noTaxHomeSlug,
+  noTaxHomePages,
 } from '../../../lib/state-pair';
 import { reciprocity } from '../../../data/reciprocity';
 import { formatMoney } from '../../../lib/tax-engine';
@@ -35,7 +36,7 @@ const INCOME = 70000;
 export function getStaticPaths() {
   const inbound = new Map(noTaxHomePages().map((e) => [e.workCode, e.homeCodes]));
   return homeCommutePages().map((e) => ({
-    params: { pair: homeCommuteSlug(e.homeCode) },
+    params: { state: homeCommuteSlug(e.homeCode) },
     props: { homeCode: e.homeCode, entry: e, inboundFrom: inbound.get(e.homeCode) ?? null },
   }));
 }
@@ -79,7 +80,7 @@ const description = `Commuting into or out of ${home.name}? Which state taxes yo
 
 <Base title={title} description={description}>
   <div class="breadcrumbs">
-    <a href="/">Home</a> / <a href="/working-in-one-state-living-in-another/">Living &amp; working in different states</a> /
+    <a href="/">Home</a> / <a href="/cross-border-tax/">Living &amp; working in different states</a> /
     {home.name}
   </div>
 
@@ -237,12 +238,12 @@ const description = `Commuting into or out of ${home.name}? Which state taxes yo
 
   <p style="font-family: var(--mono); font-size: .78rem; color: var(--muted);">
     State income tax on wages only, 2026 rates. Not tax advice —
-    <a href="/working-in-one-state-living-in-another/">what this does and doesn't cover</a>.
+    <a href="/cross-border-tax/">what this does and doesn't cover</a>.
   </p>
 
   <h2>Related</h2>
   <ul class="link-columns">
-    <li><a href="/working-in-one-state-living-in-another/">All cross-border guides</a></li>
+    <li><a href="/cross-border-tax/">All cross-border guides</a></li>
     <li><a href={`/paycheck-calculator/${stateSlug(detailState.name)}/`}>{detailState.name} paycheck calculator</a></li>
     <li><a href={`/1099-tax-calculator/${stateSlug(detailState.name)}/`}>1099 taxes in {detailState.name}</a></li>
   </ul>
