@@ -1,0 +1,131 @@
+---
+/**
+ * Hub: overtime pay under federal (weekly-only) and California (daily + weekly)
+ * rules. Worked example computed by overtimePay(), the same function the island
+ * calls.
+ */
+import Base from '../../layouts/Base.astro';
+import OvertimeCalculator from '../../components/calculators/OvertimeCalculator.tsx';
+import { overtimePay } from '../../lib/wage';
+import { formatMoney } from '../../lib/tax-engine';
+
+// Four 10-hour days and one 8-hour day at $25/hr: a 48-hour week that federal
+// and California score the same on totals but reach differently.
+const days = [['Mon', 10], ['Tue', 10], ['Wed', 10], ['Thu', 10], ['Fri', 8]]
+  .map(([day, hours]) => ({ day: day as string, hours: hours as number }));
+const ca = overtimePay(days, 25, 1.5, 'california');
+const fed = overtimePay(days, 25, 1.5, 'federal');
+---
+
+<Base
+  title="Overtime pay calculator — federal and California rules"
+  description="Work out your weekly overtime pay from daily hours. Federal time-and-a-half over 40, or California's over-8-a-day rule, with your blended hourly rate."
+>
+  <section class="hero">
+    <p class="hero-label">Wage and hour</p>
+    <h1>Overtime pay calculator</h1>
+    <p class="tagline">Enter a week of daily hours and see regular pay, overtime pay, and your real blended rate.</p>
+  </section>
+
+  <p>
+    Federal law pays overtime at one and a half times your rate for hours over 40
+    in a week. California adds a second trigger — over 8 hours in a single day —
+    and pays overtime on whichever is larger. The two rules can produce the same
+    weekly total from very different daily patterns, which is exactly where people
+    miscount.
+  </p>
+
+  <OvertimeCalculator client:load />
+
+  <h2>Worked example — four 10-hour days and one 8-hour day at {formatMoney(25)}/hour</h2>
+  <p>
+    That is a 48-hour week. Under both rule sets it comes to {ca.regularHours} regular
+    hours and {ca.overtimeHours} overtime hours, and the same {formatMoney(ca.totalPay)}
+    of pay — but they get there differently:
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Rule</th><th>Regular hours</th><th>Overtime hours</th><th>Total pay</th><th>Blended rate</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Federal (over 40/week)</td>
+        <td>{fed.regularHours}</td>
+        <td>{fed.overtimeHours}</td>
+        <td>{formatMoney(fed.totalPay)}</td>
+        <td>{formatMoney(fed.effectiveHourly)}/hr</td>
+      </tr>
+      <tr>
+        <td>California (over 8/day or 40/week)</td>
+        <td>{ca.regularHours}</td>
+        <td>{ca.overtimeHours}</td>
+        <td>{formatMoney(ca.totalPay)}</td>
+        <td>{formatMoney(ca.effectiveHourly)}/hr</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    The totals match here because the four long days each cross 8 hours by the
+    same amount the week crosses 40. Change the pattern — five 9.6-hour days, say —
+    and California pays more, because each day's overtime counts even though the
+    week is still 48 hours.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Do I get overtime for working over 8 hours in a day?</h3>
+    <p>
+      Only in states with a daily overtime rule. California is the main one, at
+      time-and-a-half over 8 hours and double time over 12. Under federal law and
+      in most states, overtime is measured only by the weekly total, so a 10-hour
+      day inside a 35-hour week earns no overtime.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is my overtime taxed more?</h3>
+    <p>
+      No. Overtime pay is ordinary wages, taxed in your regular brackets. A single
+      big paycheck can be <em>withheld</em> at a higher rate because payroll
+      annualizes it, but that evens out at filing. This calculator shows gross
+      overtime pay; for take-home, use the <a href="/paycheck-calculator/">paycheck
+      calculator</a>.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What counts as time-and-a-half?</h3>
+    <p>
+      Your regular rate multiplied by 1.5. On a {formatMoney(25)} wage that is
+      {formatMoney(37.5)} an overtime hour. The multiplier is adjustable in the
+      calculator for double-time or contractual rates.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Are salaried workers owed overtime?</h3>
+    <p>
+      Some are. Being paid a salary does not by itself make you exempt — exemption
+      depends on your duties and on earning above a federal salary threshold.
+      Many salaried workers are non-exempt and owed overtime. A wage-and-hour
+      agency or lawyer answers this for your job, not a calculator.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How is my blended rate useful?</h3>
+    <p>
+      It is total pay divided by total hours — what each hour of the week actually
+      earned once overtime is counted. It is the honest number to compare against
+      a flat-rate offer or a salaried role.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/hourly-to-salary-calculator/">Hourly to salary calculator</a> — annualize a wage, overtime included</li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — take-home after tax</li>
+    <li><a href="/raise-calculator/">Raise calculator</a> — compare two pay rates</li>
+  </ul>
+
+  <p class="results-note">
+    Gross pay estimate. Overtime eligibility depends on your job's exemption
+    status and your state's wage law. Not legal or tax advice.
+  </p>
+</Base>

@@ -1,0 +1,101 @@
+---
+/** Hub: 2026 mileage deduction with the mid-year rate split. */
+import Base from '../../layouts/Base.astro';
+import MileageDeductionCalculator from '../../components/calculators/MileageDeductionCalculator.tsx';
+import { mileageDeduction, MILEAGE_RATE_H1, MILEAGE_RATE_H2 } from '../../lib/gig-economics';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = mileageDeduction(6000, 6000);
+const flatOld = 12000 * MILEAGE_RATE_H1;
+---
+
+<Base
+  title="Mileage deduction calculator 2026 — split rate 72.5¢/76¢"
+  description="Work out your 2026 business mileage deduction with the mid-year rate change: 72.5¢ through June 30, 76¢ from July 1. A full year splits at that date."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Mileage deduction calculator</h1>
+    <p class="tagline">2026 has two mileage rates, not one — miss the July change and you shortchange yourself.</p>
+  </section>
+
+  <p>
+    The IRS standard mileage rate lets you deduct a flat amount per business mile
+    instead of tracking actual car costs. For 2026 there are two rates: 72.5¢ a
+    mile through June 30, then 76¢ from July 1 (Notice 2026-10 and Announcement
+    2026-11). A full calendar year must be split at that date, so this asks for
+    your miles in each half.
+  </p>
+
+  <MileageDeductionCalculator client:load />
+
+  <h2>Worked example — 12,000 miles, split evenly</h2>
+  <p>
+    Drive 6,000 business miles in each half of 2026:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Period</th><th>Miles</th><th>Rate</th><th>Deduction</th></tr></thead>
+    <tbody>
+      <tr><td>Jan 1 – Jun 30</td><td>{formatMoney(6000)}</td><td>{(MILEAGE_RATE_H1 * 100).toFixed(1)}¢</td><td>{formatMoney(ex.deductionFirstHalf)}</td></tr>
+      <tr><td>Jul 1 – Dec 31</td><td>{formatMoney(6000)}</td><td>{(MILEAGE_RATE_H2 * 100).toFixed(1)}¢</td><td>{formatMoney(ex.deductionSecondHalf)}</td></tr>
+      <tr><td>Total</td><td>{formatMoney(ex.totalMiles)}</td><td>{(ex.blendedRate * 100).toFixed(2)}¢ blended</td><td>{formatMoney(ex.totalDeduction)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    That is {formatMoney(ex.totalDeduction)}. Using only the old 72.5¢ rate for the
+    whole year would give {formatMoney(flatOld)} — {formatMoney(ex.totalDeduction - flatOld)}
+    less. On 12,000 miles the mid-year change is real money, and calculators that
+    haven't updated will understate the second half of the year.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What is the 2026 standard mileage rate?</h3>
+    <p data-review="legal">
+      72.5 cents per business mile for miles driven January 1 through June 30, and
+      76 cents from July 1 through December 31 (IRS Notice 2026-10, raised by
+      Announcement 2026-11). Medical and moving miles are 20.5¢ then 23.5¢;
+      charitable miles stay at 14¢, set by statute.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Standard mileage or actual expenses — which is better?</h3>
+    <p>
+      Whichever deducts more. The standard rate is simpler and usually wins for
+      fuel-efficient cars driven a lot; the actual-expense method (gas, insurance,
+      depreciation, repairs × business-use percentage) can win for expensive or
+      thirsty vehicles. Compare with the
+      <a href="/vehicle-cost-calculator/">vehicle cost calculator</a>.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I switch methods between years?</h3>
+    <p>
+      Only in one direction for a given car. If you use actual expenses with
+      accelerated depreciation (MACRS, Section 179, bonus) the first year, you can
+      never use the standard rate on that vehicle. If you start with the standard
+      rate, you can usually switch to actual later. Choose the first year carefully.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do I still need a mileage log?</h3>
+    <p>
+      Yes — the standard rate does not remove the record-keeping. You need a
+      contemporaneous log of business miles: date, purpose, distance. An app that
+      tracks trips automatically is the practical way, and it is what backs up the
+      deduction if the IRS asks.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/vehicle-cost-calculator/">Vehicle cost calculator</a> — standard vs actual expenses</li>
+    <li><a href="/gig-income-calculator/">Gig income calculator</a> — mileage in your per-hour pay</li>
+    <li><a href="/self-employed-tax-calculator/deductions/">Deductions checklist</a></li>
+  </ul>
+
+  <p class="results-note">
+    Deduction estimate for the 2026 tax year. It reduces taxable profit, not your
+    tax dollar for dollar. Not tax advice.
+  </p>
+</Base>

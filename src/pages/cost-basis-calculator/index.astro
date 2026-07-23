@@ -1,0 +1,110 @@
+---
+/**
+ * Hub: cost basis / lot matching. Worked example computed by costBasis().
+ */
+import Base from '../../layouts/Base.astro';
+import CostBasisCalculator from '../../components/calculators/CostBasisCalculator.tsx';
+import { costBasis } from '../../lib/capital-gains';
+import { formatMoney } from '../../lib/tax-engine';
+
+// Two lots: 100 @ $10 held long-term, 100 @ $20 held short-term. Sell 100 @ $30.
+const lots = [
+  { shares: 100, cost: 1000, daysHeld: 400 },
+  { shares: 100, cost: 2000, daysHeld: 100 },
+];
+const fifo = costBasis(lots, 'fifo', 100, 30);
+const lifo = costBasis(lots, 'lifo', 100, 30);
+const avg = costBasis(lots, 'average', 100, 30);
+---
+
+<Base
+  title="Cost basis calculator — FIFO, LIFO, specific-lot gain"
+  description="Work out the cost basis and the short vs long-term gain on a stock or fund sale, under FIFO, LIFO, specific-identification or average-cost lot matching."
+>
+  <section class="hero">
+    <p class="hero-label">Capital gains</p>
+    <h1>Cost basis calculator</h1>
+    <p class="tagline">Which shares you sell decides your gain. Pick the method and see the difference.</p>
+  </section>
+
+  <p>
+    When you have bought the same stock at different prices and sell only some of
+    it, the basis depends on which lots you are treated as selling. The default is
+    FIFO — oldest first — but you can specifically identify lots, and funds often
+    use average cost. The method changes your basis, your gain, and how much is
+    long-term. Enter your lots and compare.
+  </p>
+
+  <CostBasisCalculator client:load />
+
+  <h2>Worked example — two lots of 100 shares, selling 100 at {formatMoney(30)}</h2>
+  <p>
+    You bought 100 shares at {formatMoney(10)} over a year ago (long-term) and
+    another 100 at {formatMoney(20)} recently (short-term). You sell 100 at
+    {formatMoney(30)} — {formatMoney(3000)} of proceeds. The basis, and the gain,
+    depend entirely on the method:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Method</th><th>Basis</th><th>Gain</th><th>Short-term</th><th>Long-term</th></tr></thead>
+    <tbody>
+      <tr><td>FIFO (oldest first)</td><td>{formatMoney(fifo.basis)}</td><td>{formatMoney(fifo.gain)}</td><td>{formatMoney(fifo.shortTermGain)}</td><td>{formatMoney(fifo.longTermGain)}</td></tr>
+      <tr><td>LIFO (newest first)</td><td>{formatMoney(lifo.basis)}</td><td>{formatMoney(lifo.gain)}</td><td>{formatMoney(lifo.shortTermGain)}</td><td>{formatMoney(lifo.longTermGain)}</td></tr>
+      <tr><td>Average cost</td><td>{formatMoney(avg.basis)}</td><td>{formatMoney(avg.gain)}</td><td>{formatMoney(avg.shortTermGain)}</td><td>{formatMoney(avg.longTermGain)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    FIFO reports a {formatMoney(fifo.gain)} gain, all long-term — more gain, but at
+    the lower rate. LIFO reports {formatMoney(lifo.gain)}, all short-term at
+    ordinary rates. Same sale, {formatMoney(fifo.gain - lifo.gain)} apart in
+    reported gain and taxed differently. Take the split into the
+    <a href="/capital-gains-tax-calculator/">capital gains calculator</a> for the tax.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What is cost basis?</h3>
+    <p>
+      What you paid for an investment, including commissions and fees — the number
+      subtracted from your sale proceeds to find the gain. For reinvested
+      dividends and shares bought over time, basis is tracked lot by lot.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Which method should I use?</h3>
+    <p>
+      FIFO is the default and often maximizes long-term treatment. Specific
+      identification gives the most control — you can sell your highest-basis lots
+      to minimize the gain, or your loss lots to harvest losses — but you must
+      designate the lots at the time of sale. Mutual funds commonly use average cost.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I change methods later?</h3>
+    <p>
+      Once you use average cost for a fund, you generally must keep using it for
+      shares already held. For individual stocks you can specifically identify
+      lots at each sale. The rules differ by account and security, so confirm with
+      your broker's records, which the IRS also receives on Form 1099-B.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How does the holding period work per lot?</h3>
+    <p>
+      Each lot has its own clock, running from the day after purchase. Selling
+      across lots can produce both short and long-term gain on a single sale — the
+      calculator splits them, because they are taxed at different rates.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/capital-gains-tax-calculator/">Capital gains tax calculator</a> — the tax on the gain</li>
+    <li><a href="/crypto-tax-calculator/">Crypto tax calculator</a> — basis for coins and tokens</li>
+    <li><a href="/dividend-tax-calculator/">Dividend tax calculator</a> — reinvested dividends add basis</li>
+  </ul>
+
+  <p class="results-note">
+    A basis and gain estimate. Your broker's 1099-B is the record the IRS matches
+    against. Not tax advice.
+  </p>
+</Base>

@@ -12,6 +12,7 @@
  */
 import Base from '../../layouts/Base.astro';
 import QuickEstimator from '../../components/calculators/QuickEstimator.tsx';
+import SellerProfitCalculator from '../../components/calculators/SellerProfitCalculator.tsx';
 import { stateList } from '../../data/states';
 import { stateSlug } from '../../lib/slug';
 import { formatMoney } from '../../lib/tax-engine';
@@ -43,6 +44,9 @@ const NAME = category ? category.name : platformName(brand!);
 const WORKER = category ? category.worker : platformWorker(brand!);
 const biggest = ex.largest.label.split('—')[0].trim();
 const stateBase = category ? category.slug : brandCategory!.slug;
+// Sellers get the profit calculator (revenue → cost of goods → margin → tax);
+// every other category gets the SE-income tax estimator.
+const isSeller = (category ? category.worker : brandCategory!.worker) === 'seller';
 
 const title = category
   ? `${category.name} tax calculator (2026) — deductions by state`
@@ -74,7 +78,14 @@ const description = category
     </div>
   )}
 
-  <QuickEstimator client:load defaultSeIncome={ex.gross} stateHrefBase={`/${stateBase}/`} />
+  {isSeller
+    ? <SellerProfitCalculator client:load defaultRevenue={ex.gross} defaultFees={Math.round(ex.gross * 0.1)} />
+    : <QuickEstimator client:load defaultSeIncome={ex.gross} stateHrefBase={`/${stateBase}/`} />}
+  {isSeller && (
+    <p style="font-family: var(--mono); font-size: .8rem; color: var(--muted);">
+      Your 1099-K shows gross, not profit — <a href="/1099-k-calculator/">reconcile it here</a>. Full profit tool: <a href="/seller-profit-calculator/">seller profit calculator</a>.
+    </p>
+  )}
 
   {MILEAGE_LED && (
     <>

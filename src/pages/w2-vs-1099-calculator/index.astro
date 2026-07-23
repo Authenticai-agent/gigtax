@@ -1,0 +1,123 @@
+---
+/**
+ * Hub: W-2 vs 1099 offer comparison. Worked example computed by compareOffers().
+ */
+import Base from '../../layouts/Base.astro';
+import W2Vs1099Calculator from '../../components/calculators/W2Vs1099Calculator.tsx';
+import { compareOffers } from '../../lib/withholding';
+import { formatMoney } from '../../lib/tax-engine';
+
+// W-2 $85k with benefits vs 1099 $95k, Ohio, single.
+const ex = compareOffers(
+  { salary: 85000, employerHealth: 8000, match401kPct: 4, ptoWeeks: 3 },
+  { income: 95000, deductions: 8000, healthCost: 6000, solo401k: 0 },
+  'OH', 'single',
+);
+---
+
+<Base
+  title="W-2 vs 1099 calculator — compare two job offers (2026)"
+  description="Compare a W-2 salary against a 1099 contract on real take-home. Values employer benefits, self-employment tax, and the 1099 gross that breaks even."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>W-2 vs 1099 calculator</h1>
+    <p class="tagline">A 1099 offer has to clear a higher number just to match a salary — this shows how much higher.</p>
+  </section>
+
+  <p>
+    A 1099 contract at a bigger headline number is not automatically the better
+    deal. As a contractor you pay both halves of Social Security and Medicare
+    (self-employment tax), buy your own health insurance, and get no paid time off
+    or 401(k) match. This weighs a W-2 salary against a 1099 rate on take-home,
+    and tells you the 1099 gross that would actually break even.
+  </p>
+
+  <W2Vs1099Calculator client:load presetState="OH" />
+
+  <h2>Worked example — a {formatMoney(85000)} salary vs a {formatMoney(95000)} contract</h2>
+  <p>
+    The W-2 offer is {formatMoney(85000)} plus {formatMoney(8000)} of employer-paid
+    health insurance, a 4% 401(k) match and three weeks of paid leave. The 1099
+    offer is {formatMoney(95000)} gross, against which the contractor has
+    {formatMoney(8000)} of business deductions and {formatMoney(6000)} of health
+    insurance to buy. In Ohio, single:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Figure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>W-2 take-home</td><td>{formatMoney(ex.w2TakeHome)}</td></tr>
+      <tr><td>1099 take-home</td><td>{formatMoney(ex.c1099TakeHome)}</td></tr>
+      <tr><td>Difference</td><td>{formatMoney(ex.difference)} for the 1099</td></tr>
+      <tr><td>True value of the W-2 with benefits</td><td>{formatMoney(ex.w2TotalValue)}</td></tr>
+      <tr><td>1099 gross needed to match the W-2 take-home</td><td>{formatMoney(ex.breakEven1099)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(95000)} contract edges the salary on take-home here, by
+    {formatMoney(ex.difference)} — but once the employer-paid health insurance,
+    match and paid leave are counted, the W-2 is worth {formatMoney(ex.w2TotalValue)}
+    in total. And a 1099 offer only has to reach {formatMoney(ex.breakEven1099)}
+    gross to tie the salary on take-home alone, before any of those benefits. Below
+    that, the salary wins outright.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How much more should a 1099 rate be than a W-2 salary?</h3>
+    <p>
+      Enough to cover the employer's half of FICA (7.65%), the benefits you now
+      buy yourself, and the paid time off you no longer get — often 25–50% more,
+      depending on the benefits involved. This calculator computes the exact
+      break-even for your numbers rather than a rule of thumb.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is self-employment tax?</h3>
+    <p>
+      The 15.3% a 1099 worker pays for Social Security and Medicare — both the
+      employee and employer halves, because you are both. A W-2 employee pays only
+      the 7.65% employee half; the employer covers the rest invisibly. Half of
+      self-employment tax is deductible, which the calculation accounts for.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does the 1099 side get any tax advantages?</h3>
+    <p>
+      Yes — business deductions for real expenses, the qualified business income
+      (QBI) deduction on pass-through profit, and larger retirement contributions
+      through a solo 401(k) or SEP. The calculator includes deductions, QBI and a
+      solo 401(k) input, which is why a 1099 offer can pull ahead on take-home.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What's the catch with a higher 1099 take-home?</h3>
+    <p>
+      Volatility and no safety net. Contractors have no unemployment insurance, no
+      employer disability or life cover, no paid leave, and income that can stop
+      without notice. A few thousand dollars more in take-home may not offset the
+      loss of a benefits package and stability — which is why the "true value"
+      row matters as much as take-home.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do I pay quarterly taxes as a 1099 worker?</h3>
+    <p>
+      Usually yes. No one withholds tax from a 1099 payment, so you send estimated
+      payments four times a year. The <a href="/quarterly-tax-calculator/">quarterly
+      tax calculator</a> sizes each one.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — full self-employment tax by state</li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — W-2 take-home in detail</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — estimated payments for 1099 income</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year, single primary earner, standard deduction.
+    Benefit values depend on the figures you enter. Not tax or career advice.
+  </p>
+</Base>

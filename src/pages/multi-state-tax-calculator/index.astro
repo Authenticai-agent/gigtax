@@ -1,0 +1,124 @@
+---
+/**
+ * Hub: multi-state income tax. The interactive counterpart to the cross-border
+ * guides — those explain one paycheck two states claim; this sums tax when
+ * income is sourced to several states. Worked example computed by multiStateTax().
+ */
+import Base from '../../layouts/Base.astro';
+import MultiStateCalculator from '../../components/calculators/MultiStateCalculator.tsx';
+import { multiStateTax } from '../../lib/multi-state';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = multiStateTax({
+  status: 'single', dependents: 0,
+  totalW2: 85000, total1099: 25000, totalDeductions: 5000,
+  states: [{ code: 'CA', w2: 50000, se1099: 15000 }, { code: 'NY', w2: 35000, se1099: 10000 }],
+});
+const ca = ex.states.find((s) => s.code === 'CA')!;
+const ny = ex.states.find((s) => s.code === 'NY')!;
+---
+
+<Base
+  title="Multi-state tax calculator 2026 — income in two states"
+  description="Earned income in more than one state in 2026? Federal tax on your total plus each state's tax on the income sourced to it, with wage reciprocity."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Multi-state tax calculator</h1>
+    <p class="tagline">Federal tax is on your whole income; each state taxes only the slice earned there. This adds it all up.</p>
+  </section>
+
+  <p>
+    Moved mid-year, worked remotely across state lines, or held a W-2 job in one
+    state and 1099 work in another? Federal tax and self-employment tax are figured
+    once on your total income. Then each state taxes the income sourced to it, and
+    your business deductions are split across states in proportion to income. Enter
+    your income by state and this returns the full picture.
+  </p>
+
+  <MultiStateCalculator client:load />
+
+  <h2>Worked example — {formatMoney(85000)} W-2 and {formatMoney(25000)} of 1099, split California and New York</h2>
+  <p>
+    A single filer earned {formatMoney(50000)} of wages and {formatMoney(15000)} of
+    1099 income in California, and {formatMoney(35000)} of wages and {formatMoney(10000)}
+    of 1099 income in New York — {formatMoney(ex.totalIncome)} of income after
+    {formatMoney(5000)} of business deductions. The tax lands like this:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Component</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Federal tax after credits (on total income)</td><td>{formatMoney(ex.federalAfterCredits)}</td></tr>
+      <tr><td>Self-employment tax</td><td>{formatMoney(ex.seTax)}</td></tr>
+      <tr><td>California tax on {formatMoney(ca.income)} sourced there</td><td>{formatMoney(ca.tax)}</td></tr>
+      <tr><td>New York tax on {formatMoney(ny.income)} sourced there</td><td>{formatMoney(ny.tax)}</td></tr>
+      <tr><td>Total tax</td><td>{formatMoney(ex.totalTax)}</td></tr>
+      <tr><td>Effective rate</td><td>{formatPct(ex.effectiveRate)}</td></tr>
+      <tr><td>Take-home</td><td>{formatMoney(ex.takeHome)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The federal figure is computed once, on the whole {formatMoney(ex.totalIncome)} —
+    it does not change with the split. Only the state tax depends on where the
+    income was earned, and here the two states together take {formatMoney(ex.totalStateTax)}.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Do I file a tax return in every state I earned money?</h3>
+    <p>
+      Generally yes — a nonresident or part-year return in each state where you
+      had income, plus a resident return in your home state. This calculator sizes
+      the state tax on each slice; it does not file the returns. Reciprocity and
+      part-year rules can change which state a given dollar belongs to.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Will I be taxed twice on the same income?</h3>
+    <p>
+      Not if the income is cleanly sourced — each dollar is taxed by one state
+      here. Double taxation arises in a different case: you live in one state and
+      commute to work in another, so both claim the <em>same</em> wages. That is
+      resolved by reciprocity or a credit for taxes paid, and the
+      <a href="/cross-border-tax/">cross-border guides</a> work it state by state.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What does the home-state reciprocity option do?</h3>
+    <p>
+      If you set a home state and a work state has a wage-reciprocity agreement
+      with it, the wages you earned in that work state are exempt there and taxed
+      by your home state instead — which is what reciprocity actually does. It
+      covers wages only, so 1099 income stays sourced where it was earned.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How are my business deductions split between states?</h3>
+    <p>
+      In proportion to the income earned in each state. If 60% of your income was
+      from California, 60% of your deductions are allocated against California
+      income. It is an approximation — a state's own apportionment rules can
+      differ — but it keeps deductions from being double-counted.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does moving to a no-income-tax state mid-year cut my tax?</h3>
+    <p>
+      Only for income earned after the move and sourced to the new state. Wages
+      you earned while a resident of the old state remain taxable there. Add each
+      state with the income earned during your time in it to see the effect.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/cross-border-tax/">Cross-border guides</a> — live in one state, work in another</li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — self-employment tax in one state</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — estimated payments by state</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Assumes income is cleanly sourced to each
+    state and each state's own 2026 rules; state apportionment can differ. Not tax advice.
+  </p>
+</Base>

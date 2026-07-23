@@ -1,0 +1,100 @@
+---
+/** Hub: gig unit economics. Worked example by gigUnitEconomics(). */
+import Base from '../../layouts/Base.astro';
+import GigIncomeCalculator from '../../components/calculators/GigIncomeCalculator.tsx';
+import { gigUnitEconomics } from '../../lib/gig-economics';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = gigUnitEconomics(20000, 500, 4000, 4000, 500);
+---
+
+<Base
+  title="Gig income calculator 2026 — what an hour really pays"
+  description="See what your gig work actually pays per hour and per mile after the mileage deduction and a tax set-aside — the number the app's gross earnings hide."
+>
+  <section class="hero">
+    <p class="hero-label">Gig economy</p>
+    <h1>Gig income calculator</h1>
+    <p class="tagline">The app shows gross. This shows what an hour is worth after mileage and taxes.</p>
+  </section>
+
+  <p>
+    A rideshare or delivery app tells you what you earned, not what you made. Every
+    mile costs gas and wear, and no one withholds your taxes. This works out your
+    real net profit, what an hour and a mile pay once the mileage deduction comes
+    out, and what is left after setting aside for tax.
+  </p>
+
+  <GigIncomeCalculator client:load />
+
+  <h2>Worked example — {formatMoney(20000)} over 500 hours</h2>
+  <p>
+    A driver earns {formatMoney(20000)} across 500 hours, driving 8,000 business
+    miles, with {formatMoney(500)} of other costs:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Gross per hour</td><td>{formatMoney(ex.grossPerHour)}/hr</td></tr>
+      <tr><td>Mileage deduction (a real cost)</td><td>− {formatMoney(ex.mileageDeduction)}</td></tr>
+      <tr><td>Net profit</td><td>{formatMoney(ex.netProfit)}</td></tr>
+      <tr><td>Net per hour</td><td>{formatMoney(ex.netPerHour)}/hr</td></tr>
+      <tr><td>Take-home per hour after a 30% tax set-aside</td><td>{formatMoney(ex.afterSetAsidePerHour)}/hr</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The app's {formatMoney(ex.grossPerHour)} an hour becomes {formatMoney(ex.netPerHour)}
+    once mileage is counted, and about {formatMoney(ex.afterSetAsidePerHour)} once you
+    set aside for taxes. That gap is why the headline rate is misleading — the miles
+    are a cost even when the standard deduction, not cash, is how you claim them.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why count the mileage deduction as a cost?</h3>
+    <p>
+      Because driving really does cost money — fuel, tires, maintenance, the car
+      wearing out. The IRS standard mileage rate (72.5¢ then 76¢ in 2026) is a fair
+      proxy for that per-mile cost, so subtracting it shows your true profit, and it
+      is also exactly what you deduct on Schedule C.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How much should I set aside for taxes?</h3>
+    <p>
+      Around 25–35% of net profit for self-employment tax (15.3%) plus federal and
+      state income tax. This calculator uses 30% as a middle estimate. For a precise
+      figure by state, use the <a href="/1099-tax-calculator/">1099 tax calculator</a>.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Which miles count?</h3>
+    <p>
+      Miles driven for the work — between deliveries, waiting for the next ping while
+      logged on, driving to a busy zone. Commuting from home to where you start is
+      not deductible. Track them with an app; the deduction is too large to estimate.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is a low net-per-hour normal?</h3>
+    <p>
+      For driving gigs, often yes — the mileage cost is high. If your net-per-hour is
+      well below local wages, it can mean you are driving too far for each job, or a
+      less efficient car is eating the margin. The
+      <a href="/vehicle-cost-calculator/">vehicle cost calculator</a> shows your real
+      per-mile cost.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/mileage-deduction-calculator/">Mileage deduction calculator</a> — the 2026 split rate</li>
+    <li><a href="/vehicle-cost-calculator/">Vehicle cost calculator</a> — your real cost per mile</li>
+    <li><a href="/gig-tax-calculator/">Gig tax by category</a> — driver, seller, creator and more</li>
+  </ul>
+
+  <p class="results-note">
+    Economics estimate for the 2026 tax year, before the exact tax on the profit.
+    Not tax advice.
+  </p>
+</Base>

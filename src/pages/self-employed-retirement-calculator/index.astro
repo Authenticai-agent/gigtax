@@ -1,0 +1,102 @@
+---
+/** Hub: self-employed retirement (solo 401k / SEP). Worked example by seRetirement(). */
+import Base from '../../layouts/Base.astro';
+import SERetirementCalculator from '../../components/calculators/SERetirementCalculator.tsx';
+import { seRetirement } from '../../lib/se-business';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = seRetirement(100000, 40);
+---
+
+<Base
+  title="Self-employed retirement calculator 2026 — solo 401k, SEP"
+  description="How much you can contribute to a solo 401(k) or SEP-IRA in 2026 from self-employment profit — employee deferral plus the ~20% employer piece, by age."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Self-employed retirement calculator</h1>
+    <p class="tagline">A solo 401(k) lets a freelancer shelter far more than a regular IRA — here's how much.</p>
+  </section>
+
+  <p>
+    Self-employment comes with the most generous retirement accounts in the code. A
+    solo 401(k) or SEP-IRA lets you contribute as both employee and employer — well
+    beyond the {formatMoney(7500)} IRA limit — and the contributions are deductible.
+    This works out your 2026 limit from your net profit and age.
+  </p>
+
+  <SERetirementCalculator client:load />
+
+  <h2>Worked example — {formatMoney(100000)} of net profit at 40</h2>
+  <p>
+    A freelancer with {formatMoney(100000)} of Schedule C profit, under 50:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Component</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Net self-employment earnings (after ½ SE tax)</td><td>{formatMoney(ex.netSEEarnings)}</td></tr>
+      <tr><td>Solo 401(k) employee deferral</td><td>{formatMoney(ex.soloEmployeeDeferral)}</td></tr>
+      <tr><td>Employer profit-sharing (≈20%)</td><td>{formatMoney(ex.employerContribution)}</td></tr>
+      <tr><td>Solo 401(k) total</td><td>{formatMoney(ex.soloTotal)}</td></tr>
+      <tr><td>SEP-IRA total (employer piece only)</td><td>{formatMoney(ex.sepTotal)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The solo 401(k) reaches {formatMoney(ex.soloTotal)} — the {formatMoney(ex.soloEmployeeDeferral)}
+    employee deferral plus {formatMoney(ex.employerContribution)} employer piece —
+    while the SEP, which has no deferral, tops out at {formatMoney(ex.sepTotal)}. At
+    this income the solo 401(k) shelters {formatMoney(ex.soloTotal - ex.sepTotal)}
+    more, and every dollar cuts this year's taxable income.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Solo 401(k) or SEP-IRA?</h3>
+    <p>
+      At low-to-mid incomes the solo 401(k) wins, because it adds a flat employee
+      deferral (up to {formatMoney(24500)} in 2026) on top of the ~20%-of-earnings
+      employer piece — a SEP only has the employer piece. At very high incomes both
+      hit the same {formatMoney(72000)} cap. The SEP is simpler to open and has no
+      annual filing until assets are large.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How is the employer contribution calculated?</h3>
+    <p data-review="legal">
+      For the self-employed it is 20% of net self-employment earnings — your profit
+      minus half your self-employment tax. That 20% is the equivalent of a 25% plan
+      rate once the contribution's own effect is backed out. The calculator does this
+      adjustment for you.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What are the 2026 catch-up rules?</h3>
+    <p data-review="legal">
+      At 50–59 the solo 401(k) employee deferral rises by {formatMoney(8000)}, lifting
+      the combined cap to {formatMoney(80000)}. A special window at ages 60–63 adds
+      {formatMoney(11250)} instead, for a combined {formatMoney(83250)}. At 64 and up
+      the standard 50+ catch-up applies again.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>When must I set it up and fund it?</h3>
+    <p>
+      A solo 401(k) generally must be established by December 31 of the tax year to
+      make an employee deferral, though the employer piece can be funded up to the
+      filing deadline. A SEP can be both opened and funded up to the filing deadline
+      including extensions — useful if you are deciding after year-end.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — the profit these limits build on</li>
+    <li><a href="/s-corp-tax-calculator/">S-corp calculator</a> — another way to cut SE tax</li>
+    <li><a href="/savers-credit-calculator/">Saver's credit</a> — a bonus for lower-income savers</li>
+  </ul>
+
+  <p class="results-note">
+    Contribution estimate for the 2026 tax year. Plan-specific rules and compensation
+    limits can apply. Not tax or investment advice.
+  </p>
+</Base>

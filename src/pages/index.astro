@@ -20,26 +20,9 @@ import { states } from '../data/states';
 
 const localStates = localTaxStates();
 
-// The five gig categories, which replaced per-brand pages once it was clear the
-// tax answer varies by expense profile and not by which app pays you.
-const GIG = [
-  { href: '/gig-driver-tax-calculator/', name: 'Driving and delivery', note: 'mileage is the whole deduction' },
-  { href: '/gig-services-tax-calculator/', name: 'Services and tasks', note: 'tools, supplies, travel between jobs' },
-  { href: '/creator-tax-calculator/', name: 'Creators', note: 'equipment, software, home studio' },
-  { href: '/seller-tax-calculator/', name: 'Sellers', note: 'cost of goods, fees, shipping' },
-  { href: '/rental-host-tax-calculator/', name: 'Rental hosts', note: 'the 14-day rule and depreciation' },
-];
-
-const PLATFORMS = [
-  'uber', 'lyft', 'doordash', 'grubhub', 'instacart', 'shipt', 'amazon-flex',
-  'taskrabbit', 'rover', 'turo', 'airbnb', 'etsy', 'ebay', 'shopify',
-  'youtube', 'onlyfans',
-].map((k) => ({
-  href: `/${k}-tax-calculator/`,
-  name: { 'amazon-flex': 'Amazon Flex', doordash: 'DoorDash', ebay: 'eBay', onlyfans: 'OnlyFans',
-          taskrabbit: 'TaskRabbit', youtube: 'YouTube' }[k]
-        ?? k.charAt(0).toUpperCase() + k.slice(1),
-}));
+// The five gig categories and their platforms live in one shared module, so the
+// home page and the /gig-tax-calculator/ hub never drift.
+import { GIG_CATEGORIES as GIG, GIG_PLATFORMS as PLATFORMS } from '../lib/gig';
 ---
 
 <Base
@@ -84,6 +67,22 @@ const PLATFORMS = [
     {PAIRS.map((p) => <li><a href={`/${p.slug}/`}>{p.h1}</a></li>)}
   </ul>
 
+  <h2>Pay, offers and withholding</h2>
+  <p>
+    The questions that come up between paychecks, not at filing time — what a bonus really keeps, whether
+    a raise beat inflation, what an hourly rate is a year, and whether the contract pays more than the salary.
+  </p>
+  <ul class="link-columns">
+    <li><a href="/w4-withholding-calculator/">W-4 withholding</a> — heading for a refund or a bill?</li>
+    <li><a href="/bonus-tax-calculator/">Bonus tax</a> — flat 22% vs the aggregate method</li>
+    <li><a href="/w2-vs-1099-calculator/">W-2 vs 1099</a> — compare two offers on take-home</li>
+    <li><a href="/overtime-pay-calculator/">Overtime pay</a> — federal and California rules</li>
+    <li><a href="/hourly-to-salary-calculator/">Hourly to salary</a> — convert a wage either way</li>
+    <li><a href="/raise-calculator/">Raise</a> — is it a raise after inflation?</li>
+    <li><a href="/marriage-tax-calculator/">Marriage penalty or bonus</a> — two incomes, single vs joint</li>
+    <li><a href="/multi-state-tax-calculator/">Multi-state</a> — income earned across several states</li>
+  </ul>
+
   <h2>Tax where you live and where you work</h2>
   <p>
     Two layers most calculators skip. Cross a state line to work and two states have a claim on the same
@@ -114,11 +113,11 @@ const PLATFORMS = [
     ))}
   </ul>
 
-  <h2>Gig and platform income</h2>
+  <h2><a href="/gig-tax-calculator/">Gig and platform income</a></h2>
   <p>
     Grouped by what you can deduct rather than by which app pays you, because that is what changes the
     answer — a Lyft driver and an Uber driver have the same tax question, and a driver and an Etsy seller
-    do not:
+    do not. The <a href="/gig-tax-calculator/">gig hub</a> lays out every category:
   </p>
   <ul class="link-columns">
     {GIG.map((g) => <li><a href={g.href}>{g.name}</a> — {g.note}</li>)}
@@ -126,6 +125,59 @@ const PLATFORMS = [
   <p class="section-label">By platform</p>
   <ul class="link-columns">
     {PLATFORMS.map((p) => <li><a href={p.href}>{p.name}</a></li>)}
+  </ul>
+
+  <h2>Running a self-employed business</h2>
+  <p>
+    The economics behind the tax — what an hour of gig work really pays, what a mile costs, your seller margin,
+    the rate to charge, and how much you can shelter for retirement.
+  </p>
+  <ul class="link-columns">
+    <li><a href="/gig-income-calculator/">Gig income</a> — real $/hour and $/mile</li>
+    <li><a href="/mileage-deduction-calculator/">Mileage deduction</a> — the 2026 split rate</li>
+    <li><a href="/vehicle-cost-calculator/">Vehicle cost</a> — real cost per mile</li>
+    <li><a href="/seller-profit-calculator/">Seller profit</a> — Etsy, eBay, Shopify margin + tax</li>
+    <li><a href="/1099-k-calculator/">1099-K reconciliation</a> — gross to taxable</li>
+    <li><a href="/freelance-rate-calculator/">Freelance rate</a> — the hourly rate you need</li>
+    <li><a href="/self-employed-retirement-calculator/">Self-employed retirement</a> — solo 401(k), SEP</li>
+  </ul>
+
+  <h2>Tax credits</h2>
+  <p>
+    The credits that phase in and out with income — where a small change can swing hundreds or thousands of
+    dollars, and where getting the threshold wrong hurts most.
+  </p>
+  <ul class="link-columns">
+    <li><a href="/earned-income-credit-calculator/">Earned income credit</a> — refundable, up to $8,231</li>
+    <li><a href="/child-tax-credit-calculator/">Child tax credit</a> — $2,200 per child under 17</li>
+    <li><a href="/child-care-tax-credit-calculator/">Child &amp; dependent care</a> — 20–35% of care costs</li>
+    <li><a href="/savers-credit-calculator/">Saver's credit</a> — for retirement contributions</li>
+    <li><a href="/aca-subsidy-calculator/">ACA subsidy</a> — premium tax credit and the 400% cliff</li>
+  </ul>
+
+  <h2>Windfalls, gifts and inheritance</h2>
+  <p>
+    Money that arrives outside a paycheck is taxed by its own rules — a gambling win, a gift, an inheritance where
+    the asset type decides everything. These never just say "taxable" or "tax-free".
+  </p>
+  <ul class="link-columns">
+    <li><a href="/gambling-tax-calculator/">Gambling tax</a> — winnings, and the 2026 90% loss rule</li>
+    <li><a href="/inheritance-tax-calculator/">Inheritance tax</a> — by what you inherit, with step-up basis</li>
+    <li><a href="/estate-tax-calculator/">Estate tax</a> — the $15M exclusion</li>
+    <li><a href="/gift-tax-calculator/">Gift tax</a> — the $19k annual exclusion and Form 709</li>
+  </ul>
+
+  <h2>Investments and capital gains</h2>
+  <p>
+    What you owe on gains, dividends, interest and crypto — the holding period, the 0/15/20% long-term rates,
+    the 3.8% surtax, and which lot you sell — federal and your state, including the states that tax gains differently.
+  </p>
+  <ul class="link-columns">
+    <li><a href="/capital-gains-tax-calculator/">Capital gains</a> — short vs long-term, losses, NIIT</li>
+    <li><a href="/cost-basis-calculator/">Cost basis</a> — FIFO, LIFO and specific-lot gain</li>
+    <li><a href="/dividend-tax-calculator/">Dividends</a> — qualified vs ordinary</li>
+    <li><a href="/investment-income-tax-calculator/">Interest income</a> — savings, CDs, Treasuries, munis</li>
+    <li><a href="/crypto-tax-calculator/">Crypto</a> — coins, staking and NFTs</li>
   </ul>
 
   <h2>Equity compensation</h2>

@@ -1,0 +1,131 @@
+---
+/**
+ * Hub: bonus withholding, flat vs aggregate. The worked example is computed here
+ * by the same bonusTax() the island uses, so the prose figures cannot drift from
+ * the calculator.
+ */
+import Base from '../../layouts/Base.astro';
+import BonusTaxCalculator from '../../components/calculators/BonusTaxCalculator.tsx';
+import { bonusTax } from '../../lib/withholding';
+import { formatMoney } from '../../lib/tax-engine';
+
+// Ohio, single: a $10,000 bonus on a $50,000 salary. Chosen because the marginal
+// bracket sits below 22%, so the two methods visibly disagree.
+const ex = bonusTax(10000, 50000, 'OH', 'single');
+const flatOver = ex.flat.total - ex.aggregate.total;
+---
+
+<Base
+  title="Bonus tax calculator 2026 — flat vs aggregate withholding"
+  description="See how much of your bonus you actually keep in 2026. Compare the 22% flat method against the aggregate method, with federal, FICA and state withholding."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Bonus tax calculator</h1>
+    <p class="tagline">Your bonus is not taxed at a higher rate — it is <em>withheld</em> differently, and the difference is temporary.</p>
+  </section>
+
+  <p>
+    The single most common belief about bonuses is wrong: a bonus is not taxed
+    more than your salary. It is often <em>withheld</em> more, because employers
+    can use a flat 22% federal rate on supplemental pay instead of your normal
+    marginal rate. At tax time both methods settle to the same bill — the only
+    question is whether you lend the IRS money in the meantime.
+  </p>
+
+  <BonusTaxCalculator client:load presetState="OH" />
+
+  <h2>Worked example — a {formatMoney(10000)} bonus on a {formatMoney(50000)} salary</h2>
+  <p>
+    A single filer in Ohio earning {formatMoney(50000)} receives a {formatMoney(10000)}
+    bonus. FICA takes {formatMoney(ex.flat.fica)} and Ohio takes {formatMoney(ex.flat.state)}
+    either way. The federal piece is where the two methods split:
+  </p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Method</th><th>Federal withheld</th><th>FICA</th><th>State</th><th>Take-home now</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Flat 22%</td>
+        <td>{formatMoney(ex.flat.federal)}</td>
+        <td>{formatMoney(ex.flat.fica)}</td>
+        <td>{formatMoney(ex.flat.state)}</td>
+        <td>{formatMoney(ex.flat.net)}</td>
+      </tr>
+      <tr>
+        <td>Aggregate (marginal)</td>
+        <td>{formatMoney(ex.aggregate.federal)}</td>
+        <td>{formatMoney(ex.aggregate.fica)}</td>
+        <td>{formatMoney(ex.aggregate.state)}</td>
+        <td>{formatMoney(ex.aggregate.net)}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    Here the flat method withholds {formatMoney(flatOver)} more than the aggregate
+    method, because this filer's marginal bracket is below 22%. That extra
+    {formatMoney(flatOver)} is not lost — it comes back as a larger refund. The
+    flip happens above roughly {formatMoney(200000)}, where the marginal rate
+    passes 22% and the flat method starts withholding too <em>little</em>, leaving
+    a bill in April instead.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Is my bonus taxed at 22%?</h3>
+    <p>
+      No. 22% is a federal <em>withholding</em> rate your employer may apply to
+      supplemental pay, not a tax rate. Your bonus is ordinary income, taxed in
+      your regular brackets when you file. If 22% was withheld and your real rate
+      is lower, the difference returns as a refund.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why did my employer take out so much?</h3>
+    <p>
+      Most likely the flat 22% method on a bonus that, for you, sits in the 10%
+      or 12% bracket. That over-withholds now and evens out at filing. Some
+      payroll systems also lump the bonus into one paycheck and use the aggregate
+      method, which can withhold at a high marginal rate for that one check.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I have less withheld from a bonus?</h3>
+    <p>
+      The method is your employer's choice, not yours. What you can do is adjust
+      your regular W-4 so the rest of your year withholds less, offsetting a bonus
+      that was over-withheld. The <a href="/w4-withholding-calculator/">W-4
+      withholding calculator</a> shows whether you are on track for the year.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What about a bonus over $1 million?</h3>
+    <p>
+      Federal withholding on supplemental pay above $1 million in a year is a flat
+      37% on the excess, not 22%. This calculator models the ordinary case below
+      that threshold.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does a bonus affect my Social Security tax?</h3>
+    <p>
+      Only up to the annual wage base. Social Security tax stops once your wages
+      for the year pass that base; Medicare has no cap, so its 1.45% applies to
+      the whole bonus. The calculator accounts for how much of the wage base your
+      salary has already used.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/w4-withholding-calculator/">W-4 withholding calculator</a> — are you on track for the year?</li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — take-home on your regular salary</li>
+    <li><a href="/raise-calculator/">Raise calculator</a> — is a raise worth more than a one-off bonus?</li>
+  </ul>
+
+  <p class="results-note">
+    Withholding estimate for the 2026 tax year. Your final tax is settled on your
+    return, not by the withholding method. Not tax advice.
+  </p>
+</Base>

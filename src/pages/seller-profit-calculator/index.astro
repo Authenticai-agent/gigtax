@@ -1,0 +1,102 @@
+---
+/** Hub: seller profit + tax. Worked example by sellerProfit(). */
+import Base from '../../layouts/Base.astro';
+import SellerProfitCalculator from '../../components/calculators/SellerProfitCalculator.tsx';
+import { sellerProfit } from '../../lib/se-business';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = sellerProfit(50000, 15000, 5000, 2000, 1000, 'OH', 'single');
+---
+
+<Base
+  title="Seller profit calculator 2026 — Etsy, eBay, Shopify"
+  description="Turn online sales into real profit and take-home: revenue less cost of goods, fees and shipping, then self-employment and income tax. Any marketplace."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Seller profit calculator</h1>
+    <p class="tagline">Your sales total isn't your income. Cost of goods, fees and shipping come out first.</p>
+  </section>
+
+  <p>
+    Selling on Etsy, eBay, Shopify or any marketplace, your taxable income is
+    profit, not revenue. Cost of goods sold, platform and payment fees, and shipping
+    all come off first — then self-employment tax and income tax apply to what is
+    left. This shows your profit, your margin, and your real take-home.
+  </p>
+
+  <SellerProfitCalculator client:load defaultRevenue={50000} defaultFees={5000} />
+
+  <h2>Worked example — {formatMoney(50000)} in sales</h2>
+  <p>
+    An Ohio seller does {formatMoney(50000)} in sales with {formatMoney(15000)} cost
+    of goods, {formatMoney(5000)} in fees, {formatMoney(2000)} shipping and
+    {formatMoney(1000)} other costs:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Revenue</td><td>{formatMoney(ex.revenue)}</td></tr>
+      <tr><td>Total expenses</td><td>− {formatMoney(ex.totalExpenses)}</td></tr>
+      <tr><td>Net profit</td><td>{formatMoney(ex.netProfit)}</td></tr>
+      <tr><td>Net margin</td><td>{formatPct(ex.netMargin)}</td></tr>
+      <tr><td>Self-employment + income tax</td><td>− {formatMoney(ex.totalTax)}</td></tr>
+      <tr><td>Take-home</td><td>{formatMoney(ex.takeHome)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(50000)} of sales is really {formatMoney(ex.netProfit)} of profit
+    — a {formatPct(ex.netMargin)} margin — and {formatMoney(ex.takeHome)} of take-home
+    after tax. Being taxed on revenue instead of profit would roughly double the bill,
+    which is why tracking cost of goods sold matters more than any other number here.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What is cost of goods sold for a seller?</h3>
+    <p>
+      What the items you sold cost you. For resale it is the purchase price; for
+      handmade goods it is materials (and sometimes a labor allocation); for
+      print-on-demand it is the base product cost. It is deducted only when the item
+      sells, and it is usually a seller's largest deduction.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Are platform fees deductible?</h3>
+    <p>
+      Fully. Etsy listing and transaction fees, eBay final-value fees, Shopify
+      subscription and payment processing, Amazon referral and FBA fees — all are
+      100% deductible business expenses. So are shipping supplies and postage.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do I owe tax if I sold personal items?</h3>
+    <p>
+      Selling your own used things at a loss is not taxable and the loss is not
+      deductible. Selling them at a gain is taxable. Buying to resell is a business —
+      that is what this calculator models. If your 1099-K mixes personal and business
+      sales, separate them.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why is my 1099-K higher than my profit?</h3>
+    <p>
+      Because it reports gross payments — including the fees, refunds and shipping
+      that never became profit. Reconcile it down with the
+      <a href="/1099-k-calculator/">1099-K calculator</a> so you are taxed on profit,
+      not on money that passed through.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-k-calculator/">1099-K reconciliation calculator</a></li>
+    <li><a href="/gig-tax-calculator/">Gig tax by category</a> — sellers, drivers, creators</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — paying as you go</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year using the standard deduction. Pick your state for
+    the state tax line. Not tax advice.
+  </p>
+</Base>

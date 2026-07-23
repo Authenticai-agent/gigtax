@@ -1,0 +1,101 @@
+---
+/** Hub: vehicle cost per mile vs the standard deduction. */
+import Base from '../../layouts/Base.astro';
+import VehicleCostCalculator from '../../components/calculators/VehicleCostCalculator.tsx';
+import { vehicleCost, MILEAGE_RATE_H2 } from '../../lib/gig-economics';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = vehicleCost(20000, 28, 3.5, 2000, 1800, 3500, 0);
+---
+
+<Base
+  title="Vehicle cost calculator — real cost per mile to drive"
+  description="What it really costs to drive a mile for gig work — fuel, maintenance, insurance, depreciation — compared to the standard mileage deduction."
+>
+  <section class="hero">
+    <p class="hero-label">Gig economy</p>
+    <h1>Vehicle cost calculator</h1>
+    <p class="tagline">What a mile actually costs you — and whether the standard deduction covers it.</p>
+  </section>
+
+  <p>
+    Driving for work costs more than gas: maintenance, insurance, and the car losing
+    value with every mile. This adds them up into a real cost per mile, then compares
+    it to the 76¢ standard mileage deduction — the comparison that decides whether
+    the simple standard rate or the actual-expense method saves you more.
+  </p>
+
+  <VehicleCostCalculator client:load />
+
+  <h2>Worked example — 20,000 miles in an efficient car</h2>
+  <p>
+    A driver covers 20,000 business miles at 28 mpg with gas at {formatMoney(3.5)},
+    plus {formatMoney(2000)} maintenance, {formatMoney(1800)} insurance and
+    {formatMoney(3500)} of depreciation:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Fuel</td><td>{formatMoney(ex.fuelCost)}</td></tr>
+      <tr><td>Total yearly cost</td><td>{formatMoney(ex.totalCost)}</td></tr>
+      <tr><td>Real cost per mile</td><td>{(ex.costPerMile * 100).toFixed(1)}¢</td></tr>
+      <tr><td>Standard deduction those miles earn (76¢)</td><td>{formatMoney(ex.standardDeductionValue)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Real cost is {(ex.costPerMile * 100).toFixed(1)}¢ a mile, but the standard
+    deduction is worth 76¢ — so the standard rate deducts {formatMoney(Math.abs(ex.costOverStandard))}
+    <em>more</em> than this car actually costs. That is the usual result for an
+    efficient car: the standard mileage method both is simpler and deducts more, so
+    tracking every gas receipt would lower the deduction here.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What goes into the cost of driving?</h3>
+    <p>
+      Fuel, maintenance and repairs, insurance, registration, and depreciation — the
+      value the car loses. Depreciation is the biggest and least visible: a car used
+      hard for gig work can lose thousands a year, which is why high-mileage drivers
+      wear vehicles out faster than the odometer suggests.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>When does the actual-expense method win?</h3>
+    <p>
+      When your real cost per mile is above the standard rate — typically an
+      expensive vehicle, poor fuel economy, or heavy repair bills. Luxury cars, large
+      trucks and older vehicles with big maintenance costs are the usual cases. For
+      most economy cars, the standard rate is higher.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is this cost the same as my tax deduction?</h3>
+    <p>
+      No. This is your real economic cost. Your deduction is either the standard
+      mileage rate or your actual expenses times the business-use percentage — you
+      pick the method. This calculator compares the two so you can pick the larger.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How do I estimate depreciation?</h3>
+    <p>
+      A rough approach: how much the car's resale value drops over the year. A newer
+      car driven 20,000+ business miles can lose {formatMoney(3000)}–{formatMoney(6000)}
+      a year. If you claim actual expenses, tax depreciation follows its own IRS
+      schedule; this figure is for the economic comparison, not the tax form.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/mileage-deduction-calculator/">Mileage deduction calculator</a> — the standard-rate deduction</li>
+    <li><a href="/gig-income-calculator/">Gig income calculator</a> — cost per mile in your hourly pay</li>
+    <li><a href="/gig-driver-tax-calculator/">Driver tax calculator</a> — the full tax picture</li>
+  </ul>
+
+  <p class="results-note">
+    Cost estimate for comparison. Your actual tax deduction depends on the method you
+    choose and your business-use percentage. Not tax advice.
+  </p>
+</Base>

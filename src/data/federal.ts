@@ -291,10 +291,14 @@ export const federal = {
       "rate": 0.038,
       "thresholdSingle": 200000,
       "thresholdMFJ": 250000,
-      "note": "Not indexed for inflation. Unchanged since 2013."
+      "note": "Not indexed for inflation. Unchanged since 2013.",
+      "thresholdHOH": 200000,
+      "thresholdMFS": 125000
     },
     "collectibles": 0.28,
-    "unrecaptured1250": 0.25
+    "unrecaptured1250": 0.25,
+    "annualLossLimit": 3000,
+    "annualLossLimitMFS": 1500
   },
   "alternativeMinimumTax": {
     "exemptionSingle": 90100,
@@ -373,25 +377,37 @@ export const federal = {
         "children": 0,
         "maxCredit": 664,
         "incomeLimit": 19540,
-        "phaseoutStart": 10860
+        "phaseoutStart": 10860,
+        "phaseInRate": 0.0765,
+        "mfjPhaseoutStart": 18140,
+        "mfjIncomeLimit": 26820
       },
       {
         "children": 1,
         "maxCredit": 4427,
         "incomeLimit": 51593,
-        "phaseoutStart": 23890
+        "phaseoutStart": 23890,
+        "phaseInRate": 0.34,
+        "mfjPhaseoutStart": 31160,
+        "mfjIncomeLimit": 58863
       },
       {
         "children": 2,
         "maxCredit": 7316,
         "incomeLimit": 58629,
-        "phaseoutStart": 23890
+        "phaseoutStart": 23890,
+        "phaseInRate": 0.4,
+        "mfjPhaseoutStart": 31160,
+        "mfjIncomeLimit": 65899
       },
       {
         "children": 3,
         "maxCredit": 8231,
         "incomeLimit": 62974,
-        "phaseoutStart": 23890
+        "phaseoutStart": 23890,
+        "phaseInRate": 0.45,
+        "mfjPhaseoutStart": 31160,
+        "mfjIncomeLimit": 70244
       }
     ],
     "investmentIncomeLimit": 12200,
@@ -403,7 +419,9 @@ export const federal = {
     "creditRateMin": 0.2,
     "creditRateMax": 0.35,
     "phaseoutStartIncome": 15000,
-    "note": "Non-refundable. Rate phases down from 35% to 20% as income rises above $15,000."
+    "note": "Non-refundable. Rate phases down from 35% to 20% as income rises above $15,000.",
+    "phaseoutStep": 2000,
+    "phaseoutRatePerStep": 0.01
   },
   "saltDeduction": {
     "cap": 40400,
@@ -421,12 +439,14 @@ export const federal = {
   "giftAndEstate": {
     "annualGiftExclusion": 19000,
     "lifetimeEstateTaxExemption": 15000000,
-    "topEstateTaxRate": 0.4
+    "topEstateTaxRate": 0.4,
+    "noncitizenSpouseAnnualExclusion": 194000
   },
   "foreignEarnedIncomeExclusion": {
     "amount": 132900,
     "note": "For US citizens/residents working abroad who meet bona fide residence or physical presence test."
-  }
+  },
+  "gamblingLossDeductionRate": 0.9
 } satisfies FederalData;
 
 export const selfEmploymentDeductions = {
@@ -725,7 +745,13 @@ export const retirement = {
     "hoh_max": 60375,
     "single_max": 40250,
     "maxCredit": 1000,
-    "maxCreditMFJ": 2000
+    "maxCreditMFJ": 2000,
+    "tier50MaxSingle": 24250,
+    "tier20MaxSingle": 26250,
+    "tier50MaxHOH": 36375,
+    "tier20MaxHOH": 39375,
+    "tier50MaxMFJ": 48500,
+    "tier20MaxMFJ": 52500
   }
 };
 

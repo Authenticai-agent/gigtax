@@ -1,0 +1,118 @@
+---
+/**
+ * Hub: crypto tax. Port of cryptoTaxView on the shared engine. Worked example by
+ * investmentTax(). Federal plus the state layer: gains use each state's treatment,
+ * staking is ordinary state income.
+ */
+import Base from '../../layouts/Base.astro';
+import CryptoTaxCalculator from '../../components/calculators/CryptoTaxCalculator.tsx';
+import { investmentTax } from '../../lib/capital-gains';
+import { formatMoney } from '../../lib/tax-engine';
+
+// $90k wages, $3k staking, $5k short-term and $15k long-term crypto gains, single.
+const ex = investmentTax({
+  status: 'single', otherOrdinaryIncome: 93000,
+  shortTermGains: 5000, longTermGains: 15000, applyStandardDeduction: true,
+});
+---
+
+<Base
+  title="Crypto tax calculator 2026 — Bitcoin, staking, NFTs"
+  description="Calculate 2026 federal tax on crypto: short vs long-term gains at 0/15/20%, staking as ordinary income, and why wash-sale rules don't apply."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Crypto tax calculator</h1>
+    <p class="tagline">The IRS treats crypto as property, not currency — so every sale is a taxable gain or loss.</p>
+  </section>
+
+  <p>
+    Selling, swapping or spending crypto is a taxable event: you owe tax on the
+    gain since you acquired it. Held a year or less, it is a short-term gain at
+    ordinary rates; held longer, it is long-term at 0/15/20%. Staking rewards are
+    ordinary income when you receive them. This works out the federal tax across
+    all of it, and — unlike stocks — no wash-sale rule limits your losses.
+  </p>
+
+  <CryptoTaxCalculator client:load />
+
+  <h2>Worked example — {formatMoney(5000)} short-term, {formatMoney(15000)} long-term, {formatMoney(3000)} staking</h2>
+  <p>
+    A single filer with {formatMoney(90000)} of wages has {formatMoney(5000)} of
+    short-term crypto gains, {formatMoney(15000)} of long-term gains, and
+    {formatMoney(3000)} of staking rewards:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Component</th><th>Tax</th></tr></thead>
+    <tbody>
+      <tr><td>Wages, staking and short-term gains at ordinary rates</td><td>{formatMoney(ex.ordinaryTaxTotal)}</td></tr>
+      <tr><td>Long-term gains ({formatMoney(15000)}) at 0/15/20%</td><td>{formatMoney(ex.preferentialTax)}</td></tr>
+      <tr><td>Total federal tax</td><td>{formatMoney(ex.totalFederalTax)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(15000)} long-term gain is taxed at 15% — {formatMoney(ex.preferentialTax)} —
+    while the short-term gain and staking are folded into ordinary income at this
+    filer's regular rate. Holding the coins that produced the short-term gain past
+    a year would have moved them to the 15% rate too.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How is cryptocurrency taxed?</h3>
+    <p>
+      As property. When you dispose of it — sell for dollars, swap one coin for
+      another, or pay for something — you realize a capital gain or loss equal to
+      the change in value since you acquired it. Short-term (≤1 year) is taxed at
+      ordinary rates, long-term (&gt;1 year) at 0/15/20%.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Are staking rewards taxed?</h3>
+    <p>
+      Yes — as ordinary income at their fair market value when you gain control of
+      them, per IRS Revenue Ruling 2023-14, whether or not you sell. That value
+      becomes your cost basis, so a later sale is a capital gain or loss from
+      there. Mining as a business can instead be self-employment income.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do wash-sale rules apply to crypto?</h3>
+    <p>
+      Not currently. The wash-sale rule that blocks a loss when you rebuy a
+      security within 30 days applies to stocks, not to crypto, because crypto is
+      property rather than a security. You can sell a coin at a loss, claim it, and
+      buy it straight back — a live tax-loss-harvesting advantage, though proposed
+      law could close it.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is swapping one coin for another taxable?</h3>
+    <p>
+      Yes. Trading Bitcoin for Ethereum is a sale of the Bitcoin at its dollar
+      value that day, and a taxable gain or loss — there is no like-kind exchange
+      for crypto. The same applies to spending crypto on goods.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What about NFTs?</h3>
+    <p>
+      NFTs are property too. A flip within a year is a short-term gain; held
+      longer, long-term. Some NFTs may count as collectibles, which carry a top
+      long-term rate of 28% rather than 20% — a nuance beyond this calculator, so
+      check an NFT's classification if it is a large gain.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/capital-gains-tax-calculator/">Capital gains tax calculator</a> — stocks use the same rates</li>
+    <li><a href="/cost-basis-calculator/">Cost basis calculator</a> — track basis across coin lots</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — no one withholds on crypto gains</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Pick a state to add its tax — crypto gains use
+    your state's capital-gains treatment, staking is ordinary state income. Not tax advice.
+  </p>
+</Base>

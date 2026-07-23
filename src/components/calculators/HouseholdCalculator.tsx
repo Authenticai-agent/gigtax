@@ -6,7 +6,7 @@
  * 1099 income and a part-time W-2, another on SSDI and a long-term disability
  * policy, a 401(k) drawdown alongside Social Security.
  *
- * Two deliberate behaviours carried over from the other calculators:
+ * Two deliberate behaviors carried over from the other calculators:
  *  - Results stay hidden until Calculate is pressed and are marked stale when
  *    an input changes, so it is never ambiguous whether the number on screen
  *    reflects the form.

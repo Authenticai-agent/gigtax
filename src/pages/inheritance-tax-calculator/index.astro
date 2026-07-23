@@ -1,0 +1,117 @@
+---
+/** Hub: inheritance tax by asset type (step-up basis, IRD, tax-free). */
+import Base from '../../layouts/Base.astro';
+import InheritanceTaxCalculator from '../../components/calculators/InheritanceTaxCalculator.tsx';
+import { inheritanceTreatment } from '../../lib/estate';
+import { formatMoney } from '../../lib/tax-engine';
+
+const brokerage = inheritanceTreatment('brokerage', 100000, 80000, 'single', 120000, 0);
+const ira = inheritanceTreatment('traditional_ira', 100000, 80000, 'single', 100000);
+---
+
+<Base
+  title="Inheritance tax calculator 2026 — by what you inherit"
+  description="How an inheritance is taxed depends on the asset: cash and Roth are tax-free, a house or brokerage gets stepped-up basis, an IRA is fully taxable."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Inheritance tax calculator</h1>
+    <p class="tagline">"Is my inheritance taxable?" has no single answer — it depends entirely on what you inherited.</p>
+  </section>
+
+  <p>
+    There is no federal inheritance tax, and inheriting is not itself a taxable event.
+    But what you owe later ranges from nothing to a full ordinary-income bill,
+    depending on the asset. Cash and a Roth cost nothing; a house or brokerage account
+    gets a stepped-up basis so only later gains are taxed; a traditional IRA is fully
+    taxable as you withdraw it. Pick the asset to see its rule.
+  </p>
+
+  <InheritanceTaxCalculator client:load />
+
+  <h2>Worked example — {formatMoney(100000)}, two very different assets</h2>
+  <p>
+    You inherit a {formatMoney(100000)} brokerage account worth {formatMoney(100000)}
+    at death and later sell it for {formatMoney(120000)}; separately you inherit a
+    {formatMoney(100000)} traditional IRA and withdraw it. Same headline value,
+    opposite tax:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Asset</th><th>Taxable amount</th><th>Estimated tax</th></tr></thead>
+    <tbody>
+      <tr><td>Brokerage account (stepped-up basis)</td><td>{formatMoney(brokerage.taxableAmount)}</td><td>{formatMoney(brokerage.estimatedTax)}</td></tr>
+      <tr><td>Traditional IRA (ordinary income)</td><td>{formatMoney(ira.taxableAmount)}</td><td>{formatMoney(ira.estimatedTax)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The brokerage account's basis steps up to its {formatMoney(100000)} date-of-death
+    value, so only the {formatMoney(brokerage.taxableAmount)} of gain after you
+    inherited it is taxed — as a long-term capital gain, {formatMoney(brokerage.estimatedTax)}.
+    The IRA has no step-up: the whole {formatMoney(ira.taxableAmount)} is ordinary income
+    when withdrawn, {formatMoney(ira.estimatedTax)}. Same {formatMoney(100000)}, roughly
+    {formatMoney(ira.estimatedTax - brokerage.estimatedTax)} apart in tax.
+  </p>
+
+  <h2>How each asset is taxed</h2>
+  <table class="data-table">
+    <thead><tr><th>You inherit…</th><th>Tax treatment</th></tr></thead>
+    <tbody>
+      <tr><td>Cash</td><td>Not taxable income to you.</td></tr>
+      <tr><td>Life-insurance payout</td><td>Tax-free to the beneficiary.</td></tr>
+      <tr><td>Roth IRA</td><td>Tax-free withdrawals; empty within 10 years.</td></tr>
+      <tr><td>Stocks / brokerage</td><td>Basis steps up to date-of-death value; only later gain is taxed, as LTCG.</td></tr>
+      <tr><td>House or property</td><td>Same step-up; sell near the inherited value and there is little or no gain.</td></tr>
+      <tr><td>Traditional IRA / 401(k)</td><td>Fully ordinary income as withdrawn; no step-up; 10-year rule.</td></tr>
+      <tr><td>Annuity</td><td>Return of basis tax-free; the gain is ordinary income.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Is inherited money taxable?</h3>
+    <p>
+      Inherited cash is not taxable income to you, and there is no federal inheritance
+      tax. What can be taxed is income the inherited asset later produces — a gain when
+      you sell inherited property above its stepped-up basis, or a withdrawal from an
+      inherited retirement account.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is stepped-up basis?</h3>
+    <p data-review="legal">
+      When you inherit most property, your cost basis is reset to its fair-market value
+      on the date of death. So decades of the deceased's appreciation are never taxed —
+      if you sell right away near that value, there is little or no gain. Only
+      appreciation after you inherit is taxed, as a long-term capital gain.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why is an inherited IRA taxed so differently?</h3>
+    <p data-review="legal">
+      A traditional IRA or 401(k) holds pre-tax money that was never taxed, so it does
+      not get a step-up — it is "income in respect of a decedent," fully taxable as
+      ordinary income when withdrawn. Most non-spouse heirs must empty the account
+      within 10 years, which can push large withdrawals into high-tax years.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do any states tax inheritances?</h3>
+    <p>
+      A handful of states levy an inheritance tax on the heir (rates often depend on how
+      closely related you are to the deceased), and some levy an estate tax on the estate.
+      This calculator is the federal picture; check your state separately.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/estate-tax-calculator/">Estate tax calculator</a> — the tax on the estate itself</li>
+    <li><a href="/capital-gains-tax-calculator/">Capital gains calculator</a> — selling inherited assets</li>
+    <li><a href="/gift-tax-calculator/">Gift tax calculator</a> — giving vs bequeathing</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Inheriting is not a taxable event; the tax depends
+    on the asset and what you do with it. Not tax or legal advice.
+  </p>
+</Base>

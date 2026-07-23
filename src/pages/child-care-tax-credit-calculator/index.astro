@@ -1,0 +1,110 @@
+---
+/**
+ * Hub: child & dependent care credit. Worked example by dependentCareCredit().
+ */
+import Base from '../../layouts/Base.astro';
+import DependentCareCalculator from '../../components/calculators/DependentCareCalculator.tsx';
+import { dependentCareCredit } from '../../lib/credits';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const low = dependentCareCredit(6000, 2, 15000);
+const mid = dependentCareCredit(6000, 2, 25000);
+const high = dependentCareCredit(6000, 2, 60000);
+---
+
+<Base
+  title="Child care tax credit calculator 2026 — dependent care"
+  description="Estimate the 2026 child and dependent care credit: 20–35% of up to $3,000 (one child) or $6,000 (two or more) in care costs, by income. Non-refundable."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Child &amp; dependent care credit calculator</h1>
+    <p class="tagline">A credit for paying someone to care for your kids so you can work.</p>
+  </section>
+
+  <p>
+    If you paid for child care — daycare, after-school, day camp, a nanny — so you
+    (and a spouse) could work, the child and dependent care credit returns 20% to
+    35% of it. Eligible costs are capped at {formatMoney(3000)} for one qualifying
+    person and {formatMoney(6000)} for two or more, and the rate falls as income
+    rises. It is non-refundable.
+  </p>
+
+  <DependentCareCalculator client:load />
+
+  <h2>Worked example — {formatMoney(6000)} of care for two children</h2>
+  <p>
+    The expense cap is the same at every income; the rate is what changes:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Income</th><th>Rate</th><th>Credit on {formatMoney(6000)}</th></tr></thead>
+    <tbody>
+      <tr><td>{formatMoney(15000)}</td><td>{formatPct(low.rate)}</td><td>{formatMoney(low.credit)}</td></tr>
+      <tr><td>{formatMoney(25000)}</td><td>{formatPct(mid.rate)}</td><td>{formatMoney(mid.credit)}</td></tr>
+      <tr><td>{formatMoney(60000)}</td><td>{formatPct(high.rate)}</td><td>{formatMoney(high.credit)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    At {formatMoney(15000)} the rate is the full 35%, worth {formatMoney(low.credit)}.
+    It drops one point for every {formatMoney(2000)} of income above {formatMoney(15000)},
+    reaching the 20% floor by about {formatMoney(43000)} — so most working families
+    land at 20%, or {formatMoney(high.credit)} on {formatMoney(6000)} of costs.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How much is the child and dependent care credit?</h3>
+    <p data-review="legal">
+      Between 20% and 35% of eligible care costs, capped at {formatMoney(3000)} for
+      one qualifying person and {formatMoney(6000)} for two or more. The maximum
+      credit is therefore {formatMoney(1050)} for one and {formatMoney(2100)} for two
+      at the top rate, falling to {formatMoney(600)} and {formatMoney(1200)} at the
+      20% floor.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How does the rate phase down?</h3>
+    <p data-review="legal">
+      It starts at 35% for incomes up to {formatMoney(15000)} and drops one
+      percentage point for each {formatMoney(2000)} of income above that, stopping at
+      a 20% floor. There is no upper income limit — even high earners get 20%.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is this credit refundable?</h3>
+    <p>
+      No. It reduces the tax you owe but is not paid back if it exceeds your tax. If
+      your tax is already zero, the credit does nothing — unlike the earned income
+      credit or the refundable part of the child tax credit.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What expenses count?</h3>
+    <p>
+      Care for a child under 13, or a spouse or dependent unable to care for
+      themselves, that lets you work or look for work: daycare, a nanny, before and
+      after-school programs, day camp. Overnight camp, school tuition and care by
+      your own dependent do not count.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I use this and a dependent care FSA?</h3>
+    <p>
+      Partly. Money run through a dependent care FSA cannot also be claimed here,
+      and the FSA reduces the {formatMoney(6000)} cap dollar for dollar. Many
+      families use the FSA first, then claim the credit on any remaining eligible
+      costs up to the cap.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/child-tax-credit-calculator/">Child tax credit calculator</a> — the bigger per-child credit</li>
+    <li><a href="/earned-income-credit-calculator/">Earned income credit calculator</a></li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — model a dependent care FSA</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Not tax advice.
+  </p>
+</Base>

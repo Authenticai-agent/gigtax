@@ -1,0 +1,116 @@
+---
+/**
+ * Hub: W-4 withholding check — projected annual tax vs what is being withheld.
+ * Worked example computed by w4Check().
+ */
+import Base from '../../layouts/Base.astro';
+import W4Calculator from '../../components/calculators/W4Calculator.tsx';
+import { w4Check } from '../../lib/withholding';
+import { formatMoney } from '../../lib/tax-engine';
+
+// $80,000 salary, $700 withheld biweekly (26 checks), Ohio, single.
+const ex = w4Check(80000, 700, 26, 'OH', 'single');
+---
+
+<Base
+  title="W-4 withholding calculator 2026 — refund or a bill?"
+  description="Check whether your 2026 paycheck withholding is on track: projected federal, state and FICA tax against what you withhold, plus the per-check fix."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>W-4 withholding calculator</h1>
+    <p class="tagline">Are you heading for a refund, a bill, or roughly even? Check before December, when you can still change it.</p>
+  </section>
+
+  <p>
+    Your W-4 tells your employer how much federal tax to hold back from each
+    paycheck. Get it wrong and you either lend the IRS money interest-free all
+    year (a big refund) or owe a lump sum — sometimes with a penalty — at filing.
+    This compares your projected tax for the year against what you are actually
+    withholding, and shows the per-check figure that lands you near zero.
+  </p>
+
+  <W4Calculator client:load presetState="OH" />
+
+  <h2>Worked example — {formatMoney(80000)}, {formatMoney(700)} withheld every two weeks</h2>
+  <p>
+    A single filer in Ohio earning {formatMoney(80000)} withholds {formatMoney(700)}
+    of federal tax from each of 26 biweekly paychecks — {formatMoney(ex.withheldForYear)}
+    across the year. Their projected tax for the year, federal plus Ohio plus FICA,
+    is {formatMoney(ex.totalTaxForYear)}:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Figure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Projected tax for the year</td><td>{formatMoney(ex.totalTaxForYear)}</td></tr>
+      <tr><td>Withheld across the year</td><td>{formatMoney(ex.withheldForYear)}</td></tr>
+      <tr><td>{ex.difference >= 0 ? 'Heading for a refund of' : 'Heading for a bill of'}</td><td>{formatMoney(Math.abs(ex.difference))}</td></tr>
+      <tr><td>Per-check withholding to land near zero</td><td>{formatMoney(ex.suggestedPerCheck!)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    This filer is over-withholding by {formatMoney(Math.abs(ex.difference))} — a
+    refund, but also an interest-free loan to the government. Dropping withholding
+    to about {formatMoney(ex.suggestedPerCheck!)} a check would put roughly that
+    money back into each paycheck instead.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Is a big refund a good thing?</h3>
+    <p>
+      Not really. A refund means you overpaid tax all year and the IRS is
+      returning your own money without interest. Withholding closer to your actual
+      tax puts that money in your paychecks, where it can earn interest or pay
+      down debt. The trade-off is the discipline of not spending it.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How do I stop owing money at tax time?</h3>
+    <p>
+      Increase your withholding — on the W-4, add a dollar amount on the "extra
+      withholding" line, or account for a second job or spouse's income. This
+      calculator shows the per-check figure that closes the gap. Do it early in
+      the year so the change is spread over more paychecks.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why do two-income households often owe?</h3>
+    <p>
+      Each employer withholds as if its salary were your only income, so together
+      they can under-withhold against your combined, higher-bracket total. The W-4
+      has a multiple-jobs step for exactly this; skipping it is the usual reason a
+      dual-income couple gets a surprise bill.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Will I be penalized for owing?</h3>
+    <p>
+      Possibly, if you owe too much. The IRS charges an underpayment penalty
+      unless you paid at least 90% of this year's tax or 100–110% of last year's
+      through withholding and estimated payments. Staying near zero, or slightly
+      over, avoids it.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does this replace the IRS estimator?</h3>
+    <p>
+      No. This is a fast projection from salary, state, filing status and
+      dependents to show whether you are broadly on track. For a precise W-4 with
+      credits, multiple jobs and itemized deductions, the IRS Tax Withholding
+      Estimator on IRS.gov is the authoritative tool.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — full take-home breakdown</li>
+    <li><a href="/bonus-tax-calculator/">Bonus tax calculator</a> — withholding on a bonus</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — for income without withholding</li>
+  </ul>
+
+  <p class="results-note">
+    Projection for the 2026 tax year using the standard deduction and the credits
+    you enter. Not a substitute for the IRS Tax Withholding Estimator. Not tax advice.
+  </p>
+</Base>

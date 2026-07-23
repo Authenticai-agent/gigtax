@@ -1,0 +1,111 @@
+---
+/**
+ * Hub: hourly ↔ salary conversion. Worked example computed by hourlyToSalary().
+ */
+import Base from '../../layouts/Base.astro';
+import HourlySalaryConverter from '../../components/calculators/HourlySalaryConverter.tsx';
+import { hourlyToSalary } from '../../lib/wage';
+import { formatMoney } from '../../lib/tax-engine';
+
+const base = hourlyToSalary(30, 40, 52);
+const withUnpaid = hourlyToSalary(30, 40, 50, 1.5, 0, 2);
+---
+
+<Base
+  title="Hourly to salary calculator — convert your wage (2026)"
+  description="Convert an hourly wage to annual, monthly and weekly salary, or a salary back to an hourly rate. Accounts for overtime hours and unpaid weeks off."
+>
+  <section class="hero">
+    <p class="hero-label">Wage conversion</p>
+    <h1>Hourly to salary calculator</h1>
+    <p class="tagline">What an hourly rate works out to across a year — and what a salary is really worth per hour.</p>
+  </section>
+
+  <p>
+    The quick version of this conversion — rate times 2,080 hours — assumes 40
+    paid hours every week of the year. Real years have unpaid weeks, overtime, and
+    schedules that are not 40 hours. This does the conversion both directions and
+    lets you say how many weeks you are actually paid for.
+  </p>
+
+  <HourlySalaryConverter client:load direction="toSalary" />
+
+  <h2>Worked example — {formatMoney(30)} an hour, full time</h2>
+  <p>
+    At {formatMoney(30)} an hour, 40 hours a week, every week of the year, the
+    annual figures are:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Period</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Per year</td><td>{formatMoney(base.annual)}</td></tr>
+      <tr><td>Per month</td><td>{formatMoney(base.monthly)}</td></tr>
+      <tr><td>Every two weeks</td><td>{formatMoney(base.biweekly)}</td></tr>
+      <tr><td>Per week</td><td>{formatMoney(base.weekly)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Take two weeks of unpaid leave — 50 paid weeks instead of 52 — and the same
+    {formatMoney(30)} rate annualizes to {formatMoney(withUnpaid.annual)} rather
+    than {formatMoney(base.annual)}. The difference, {formatMoney(base.annual - withUnpaid.annual)},
+    is exactly two weeks of pay, and it is the gap the naive 2,080-hour formula
+    hides.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How do I convert hourly to salary?</h3>
+    <p>
+      Multiply your hourly rate by hours worked per week, then by the number of
+      weeks you are paid. The common shorthand is rate × 2,080 (40 hours × 52
+      weeks), but that overstates pay if you take unpaid time. This calculator
+      lets you set both figures.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What salary is $30 an hour?</h3>
+    <p>
+      About {formatMoney(base.annual)} a year at 40 hours a week for 52 weeks,
+      before tax. Fewer paid weeks or fewer hours lowers it; regular overtime
+      raises it. The figure here is gross — for take-home after federal, FICA and
+      state tax, use the <a href="/paycheck-calculator/">paycheck calculator</a>.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does this include overtime?</h3>
+    <p>
+      It can. Add your typical overtime hours per week and the multiplier, and
+      they are annualized alongside your regular hours. The blended-rate line
+      shows what every hour averaged out to once overtime is counted.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How do I convert a salary back to an hourly rate?</h3>
+    <p>
+      Switch the calculator to salary-to-hourly and enter your annual pay plus
+      your real hours and weeks. A {formatMoney(base.annual)} salary at 40 hours
+      over 52 weeks is {formatMoney(30)} an hour — but if that salary quietly
+      expects 50-hour weeks, the true rate is lower, which is the point of doing
+      the math.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is a salary better than the same money hourly?</h3>
+    <p>
+      It depends on hours and overtime rights. Salaried exempt roles are not paid
+      for extra hours; non-exempt and hourly roles are. Convert both to a blended
+      hourly rate at the hours you actually expect to work, then compare.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/overtime-pay-calculator/">Overtime pay calculator</a> — a week of daily hours</li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — take-home from a salary</li>
+    <li><a href="/raise-calculator/">Raise calculator</a> — compare an old and new rate</li>
+  </ul>
+
+  <p class="results-note">
+    Gross figures for the 2026 tax year, before any tax or deduction. Not tax advice.
+  </p>
+</Base>

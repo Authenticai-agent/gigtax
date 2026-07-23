@@ -1,0 +1,107 @@
+---
+/**
+ * Hub: saver's credit. Eligibility + maximum only — the exact 50/20/10 tier
+ * thresholds are not in the dataset, and the page says so. Worked example by
+ * saversCredit().
+ */
+import Base from '../../layouts/Base.astro';
+import SaversCreditCalculator from '../../components/calculators/SaversCreditCalculator.tsx';
+import { saversCredit } from '../../lib/credits';
+import { formatMoney } from '../../lib/tax-engine';
+
+const tier50 = saversCredit(24000, 'single', 2000);
+const tier10 = saversCredit(30000, 'single', 2000);
+const over = saversCredit(45000, 'single', 2000);
+const mfj = saversCredit(50000, 'mfj', 4000);
+---
+
+<Base
+  title="Saver's credit calculator 2026 — who qualifies"
+  description="Check 2026 saver's credit eligibility: up to $1,000 ($2,000 joint) for retirement contributions, by AGI and filing status. Non-refundable."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Saver's credit calculator</h1>
+    <p class="tagline">A credit that pays you back for saving for retirement — if your income is modest enough.</p>
+  </section>
+
+  <p>
+    The saver's credit (the retirement savings contributions credit) rewards
+    lower-income workers for paying into a 401(k) or IRA. It is worth 50%, 20% or
+    10% of up to {formatMoney(2000)} of contributions ({formatMoney(4000)} if
+    married filing jointly), depending on which income tier you fall in — a maximum
+    of {formatMoney(1000)} ({formatMoney(2000)} joint). This works out your exact
+    credit from your income, status and contribution.
+  </p>
+
+  <SaversCreditCalculator client:load />
+
+  <h2>Worked example — the same contribution, three incomes</h2>
+  <p>
+    The rate steps down as income rises, so where you land matters more than how
+    much you put in:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Filer</th><th>AGI</th><th>Rate</th><th>Credit</th></tr></thead>
+    <tbody>
+      <tr><td>Single, {formatMoney(2000)} contributed</td><td>{formatMoney(24000)}</td><td>{Math.round(tier50.rate * 100)}%</td><td>{formatMoney(tier50.credit)}</td></tr>
+      <tr><td>Single, {formatMoney(2000)} contributed</td><td>{formatMoney(30000)}</td><td>{Math.round(tier10.rate * 100)}%</td><td>{formatMoney(tier10.credit)}</td></tr>
+      <tr><td>Single, {formatMoney(2000)} contributed</td><td>{formatMoney(45000)}</td><td>0%</td><td>{formatMoney(over.credit)}</td></tr>
+      <tr><td>Married joint, {formatMoney(4000)} contributed</td><td>{formatMoney(50000)}</td><td>{Math.round(mfj.rate * 100)}%</td><td>{formatMoney(mfj.credit)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    A single filer at {formatMoney(24000)} is in the 50% tier — {formatMoney(tier50.credit)}
+    on a {formatMoney(2000)} contribution. The same contribution at {formatMoney(30000)}
+    falls to the 10% tier, just {formatMoney(tier10.credit)}, and at {formatMoney(45000)}
+    the credit is gone. The tier thresholds shift the credit far more than the
+    contribution does.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What contributions count?</h3>
+    <p>
+      Contributions to a traditional or Roth IRA, a 401(k), 403(b), 457, SIMPLE or
+      SEP, and to an ABLE account, up to {formatMoney(2000)} per person
+      ({formatMoney(4000)} on a joint return). Rollovers do not count.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What are the 2026 income tiers?</h3>
+    <p data-review="legal">
+      For single filers: 50% of your contribution up to {formatMoney(24250)} of AGI,
+      20% up to {formatMoney(26250)}, 10% up to {formatMoney(40250)}, then nothing.
+      Head-of-household and joint filers use higher tiers, topping out at
+      {formatMoney(60375)} and {formatMoney(80500)}. The rate steps rather than
+      slides, so a few hundred dollars of income can drop you a whole tier.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is the saver's credit refundable?</h3>
+    <p>
+      No. It reduces the tax you owe but is not paid back beyond that. A worker with
+      very low income and little tax liability may not be able to use the full
+      credit — an irony of a credit aimed at lower earners.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can students claim it?</h3>
+    <p>
+      No. Full-time students, anyone claimed as a dependent, and those under 18 are
+      ineligible, regardless of income or contributions.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — model a 401(k) contribution</li>
+    <li><a href="/benefits-tax-calculator/">Benefits and retirement</a></li>
+    <li><a href="/earned-income-credit-calculator/">Earned income credit calculator</a></li>
+  </ul>
+
+  <p class="results-note">
+    Eligibility estimate for the 2026 tax year. The exact credit needs your income
+    tier from Form 8880. Not tax advice.
+  </p>
+</Base>

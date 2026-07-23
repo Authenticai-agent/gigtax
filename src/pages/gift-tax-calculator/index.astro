@@ -1,0 +1,101 @@
+---
+/** Hub: gift tax — annual exclusion, when a 709 is required, lifetime draw-down. */
+import Base from '../../layouts/Base.astro';
+import GiftTaxCalculator from '../../components/calculators/GiftTaxCalculator.tsx';
+import { giftTax, ANNUAL_GIFT_EXCLUSION, NONCITIZEN_SPOUSE_EXCLUSION, BASIC_EXCLUSION } from '../../lib/estate';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = giftTax(50000, 3, 0, false);
+---
+
+<Base
+  title="Gift tax calculator 2026 — annual exclusion & Form 709"
+  description="See whether a gift triggers a gift-tax return in 2026. The annual exclusion is $19,000 per recipient; larger gifts use the lifetime exclusion."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Gift tax calculator</h1>
+    <p class="tagline">Almost no one actually pays gift tax — but a large gift can still mean a return to file.</p>
+  </section>
+
+  <p>
+    You can give up to {formatMoney(ANNUAL_GIFT_EXCLUSION)} per person per year with no
+    filing and no effect on your lifetime exclusion. Above that, you file Form 709 and
+    the excess counts against your {formatMoney(BASIC_EXCLUSION)} lifetime gift-and-estate
+    exclusion — but no tax is actually due until that is used up. This shows whether a
+    gift needs a return and how much exclusion it uses.
+  </p>
+
+  <GiftTaxCalculator client:load />
+
+  <h2>Worked example — {formatMoney(50000)} to each of three children</h2>
+  <p>
+    A parent gives {formatMoney(50000)} to each of three children in 2026:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Figure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Annual exclusion per child</td><td>{formatMoney(ex.annualExclusion)}</td></tr>
+      <tr><td>Taxable gift per child</td><td>{formatMoney(ex.taxablePerRecipient)}</td></tr>
+      <tr><td>Total taxable gifts</td><td>{formatMoney(ex.totalTaxableGifts)}</td></tr>
+      <tr><td>Lifetime exclusion remaining</td><td>{formatMoney(ex.remainingLifetimeExclusion)}</td></tr>
+      <tr><td>Gift tax actually due</td><td>{formatMoney(ex.giftTaxDue)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Each {formatMoney(50000)} gift is {formatMoney(ex.taxablePerRecipient)} over the
+    exclusion, so {formatMoney(ex.totalTaxableGifts)} of taxable gifts must be reported
+    on Form 709 — but no tax is due, because it simply reduces the lifetime exclusion
+    to {formatMoney(ex.remainingLifetimeExclusion)}. A married couple could have split
+    the gifts and doubled the annual exclusion, avoiding the return entirely.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How much can I give without filing a gift-tax return?</h3>
+    <p data-review="legal">
+      {formatMoney(ANNUAL_GIFT_EXCLUSION)} per recipient per year for 2026, to any number
+      of people. Give more to one person and you file Form 709 — though you almost
+      certainly owe no tax, because the excess just draws down your {formatMoney(BASIC_EXCLUSION)}
+      lifetime exclusion.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does the recipient pay tax on a gift?</h3>
+    <p>
+      No. The recipient owes no income tax on a gift and files nothing. Gift tax, if any,
+      is the giver's responsibility. The recipient does take the giver's cost basis on
+      gifted property, though — unlike inherited property, which gets a stepped-up basis.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What does not count as a taxable gift?</h3>
+    <p>
+      Gifts to a US-citizen spouse (unlimited), tuition paid directly to a school, medical
+      bills paid directly to a provider, and gifts to charity — none use your exclusion.
+      Gifts to a noncitizen spouse have their own larger annual exclusion of
+      {formatMoney(NONCITIZEN_SPOUSE_EXCLUSION)} for 2026.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What about generation-skipping gifts?</h3>
+    <p>
+      Large gifts that skip a generation — to grandchildren or trusts for them — can also
+      trigger the separate generation-skipping transfer (GST) tax, which has its own
+      exclusion. This calculator covers ordinary gift tax; a GST situation warrants
+      professional advice.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/estate-tax-calculator/">Estate tax calculator</a> — the same exclusion at death</li>
+    <li><a href="/inheritance-tax-calculator/">Inheritance tax calculator</a> — gifting vs bequeathing</li>
+    <li><a href="/capital-gains-tax-calculator/">Capital gains calculator</a> — gifted-property basis</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. A return can be required even with no tax due. Not
+    tax or legal advice.
+  </p>
+</Base>

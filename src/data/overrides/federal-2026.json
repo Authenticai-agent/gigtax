@@ -44,5 +44,207 @@
     "_authority": "Announcement 2026-11, IRB 2026-29",
     "_url": "https://www.irs.gov/irb/2026-29_irb",
     "_confidence": "high"
+  },
+  "federal.capitalGains.niit.thresholdHOH": {
+    "was": null,
+    "now": 200000,
+    "_why": "The dataset carried the Net Investment Income Tax MAGI thresholds only for single ($200,000) and MFJ ($250,000). Head of household uses the same $200,000 threshold as single. Added so the 3.8% NIIT computes for HOH filers on the investment calculators.",
+    "_effect": "An HOH filer's net investment income above $200,000 MAGI is now correctly subject to the 3.8% NIIT.",
+    "_authority": "IRC §1411(b); the statutory thresholds are fixed and not inflation-indexed (single/HOH $200,000, MFJ $250,000, MFS $125,000), unchanged since 2013.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/1411",
+    "_confidence": "high"
+  },
+  "federal.capitalGains.niit.thresholdMFS": {
+    "was": null,
+    "now": 125000,
+    "_why": "Married filing separately has the lowest NIIT threshold, $125,000. It was absent from the dataset, which held only single and MFJ. Added so NIIT computes for MFS filers.",
+    "_effect": "An MFS filer's net investment income above $125,000 MAGI is now correctly subject to the 3.8% NIIT.",
+    "_authority": "IRC §1411(b)(1); statutory, not inflation-indexed, unchanged since 2013.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/1411",
+    "_confidence": "high"
+  },
+  "federal.capitalGains.annualLossLimit": {
+    "was": null,
+    "now": 3000,
+    "_why": "A net capital loss offsets up to $3,000 of ordinary income per year, with the remainder carried forward indefinitely. This statutory limit was not in the dataset; the capital-gains calculators need it to model loss deduction and carryover.",
+    "_effect": "A taxpayer with a $10,000 net capital loss deducts $3,000 this year and carries $7,000 forward.",
+    "_authority": "IRC §1211(b); $3,000 limit fixed by statute, not inflation-indexed.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/1211",
+    "_confidence": "high"
+  },
+  "federal.capitalGains.annualLossLimitMFS": {
+    "was": null,
+    "now": 1500,
+    "_why": "The net-capital-loss ordinary-income offset is halved to $1,500 for married filing separately.",
+    "_effect": "An MFS filer with a $10,000 net capital loss deducts $1,500 this year and carries $8,500 forward.",
+    "_authority": "IRC §1211(b)(1); statutory.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/1211",
+    "_confidence": "high"
+  },
+  "federal.childDependentCareCredit.phaseoutStep": {
+    "was": null,
+    "now": 2000,
+    "_why": "The dataset gave the 35% top rate, the 20% floor and the $15,000 phase-down start, but not the step. The child and dependent care credit rate drops by one percentage point for each $2,000 (or fraction) of AGI above $15,000, until it reaches 20%. The step and per-step rate are needed to compute the exact rate.",
+    "_effect": "At $25,000 AGI the rate is 35% − 5×1% = 30%; at $43,000 or more it hits the 20% floor.",
+    "_authority": "IRC §21(a)(2); statutory step, not inflation-indexed.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/21",
+    "_confidence": "high"
+  },
+  "federal.childDependentCareCredit.phaseoutRatePerStep": {
+    "was": null,
+    "now": 0.01,
+    "_why": "The one-percentage-point reduction per $2,000 step, paired with phaseoutStep.",
+    "_authority": "IRC §21(a)(2).",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/21",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.0.phaseInRate": {
+    "was": null,
+    "now": 0.0765,
+    "_why": "The dataset gave each EIC bracket its maximum credit, plateau start and income limit, but not the phase-in credit rate. Without it, the calculator would hand a low earner the full credit at any income, overstating it — the EIC phases IN from zero at a statutory rate before it plateaus. For no children the phase-in rate is 7.65%.",
+    "_effect": "A childless worker earning $4,000 gets 7.65% × $4,000 = $306, not the full $664.",
+    "_authority": "IRC §32(b)(1); statutory credit percentages, not inflation-indexed.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/32",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.1.phaseInRate": {
+    "was": null,
+    "now": 0.34,
+    "_why": "Phase-in credit rate for one child.",
+    "_authority": "IRC §32(b)(1).",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/32",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.2.phaseInRate": {
+    "was": null,
+    "now": 0.4,
+    "_why": "Phase-in credit rate for two children.",
+    "_authority": "IRC §32(b)(1).",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/32",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.3.phaseInRate": {
+    "was": null,
+    "now": 0.45,
+    "_why": "Phase-in credit rate for three or more children.",
+    "_authority": "IRC §32(b)(1).",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/32",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.0.mfjPhaseoutStart": {
+    "was": null,
+    "now": 18140,
+    "_why": "Exact 2026 married-filing-jointly EIC threshold phase-out amount, no children. Replaces the earlier approximate +$7,270 shift with the published figure. The MFJ completed-phaseout shift varies by bracket because the phase-out rate differs, so a single shift constant could not be exact.",
+    "_authority": "Rev. Proc. 2025-32 §3.06(1), Number of Qualifying Children table, 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.0.mfjIncomeLimit": {
+    "was": null, "now": 26820,
+    "_why": "Exact 2026 MFJ completed phase-out amount, no children.",
+    "_authority": "Rev. Proc. 2025-32 §3.06(1), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.1.mfjPhaseoutStart": {
+    "was": null, "now": 31160,
+    "_why": "Exact 2026 MFJ threshold phase-out amount, one child.",
+    "_authority": "Rev. Proc. 2025-32 §3.06(1), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.1.mfjIncomeLimit": {
+    "was": null, "now": 58863,
+    "_why": "Exact 2026 MFJ completed phase-out amount, one child.",
+    "_authority": "Rev. Proc. 2025-32 §3.06(1), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.2.mfjPhaseoutStart": {
+    "was": null, "now": 31160,
+    "_why": "Exact 2026 MFJ threshold phase-out amount, two children.",
+    "_authority": "Rev. Proc. 2025-32 §3.06(1), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.2.mfjIncomeLimit": {
+    "was": null, "now": 65899,
+    "_why": "Exact 2026 MFJ completed phase-out amount, two children.",
+    "_authority": "Rev. Proc. 2025-32 §3.06(1), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.3.mfjPhaseoutStart": {
+    "was": null, "now": 31160,
+    "_why": "Exact 2026 MFJ threshold phase-out amount, three or more children.",
+    "_authority": "Rev. Proc. 2025-32 §3.06(1), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.3.mfjIncomeLimit": {
+    "was": null, "now": 70244,
+    "_why": "Exact 2026 MFJ completed phase-out amount, three or more children.",
+    "_authority": "Rev. Proc. 2025-32 §3.06(1), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
+  },
+  "retirement.saversCredit.tier50MaxSingle": {
+    "was": null, "now": 24250,
+    "_why": "2026 saver's credit AGI ceiling for the 50% rate, single / MFS / all-other filers (§25B(b)(1)(A)). The dataset had only the top income limit ($40,250); the 50%/20%/10% tier breakpoints were missing, so the calculator could only show a maximum. These make it exact.",
+    "_authority": "IRS Notice 2025-67, section 25B(b)(1)(A), 2026 amounts (all other filers: $24,250).",
+    "_url": "https://www.irs.gov/pub/irs-drop/n-25-67.pdf",
+    "_confidence": "high"
+  },
+  "retirement.saversCredit.tier20MaxSingle": {
+    "was": null, "now": 26250,
+    "_why": "2026 saver's credit AGI ceiling for the 20% rate, single / MFS / all-other filers (§25B(b)(1)(B)). Above this and up to $40,250 the rate is 10%.",
+    "_authority": "IRS Notice 2025-67, section 25B(b)(1)(B), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/n-25-67.pdf",
+    "_confidence": "high"
+  },
+  "retirement.saversCredit.tier50MaxHOH": {
+    "was": null, "now": 36375,
+    "_why": "2026 saver's credit AGI ceiling for the 50% rate, head of household.",
+    "_authority": "IRS Notice 2025-67, section 25B(b)(1)(A), 2026 (head of household: $36,375).",
+    "_url": "https://www.irs.gov/pub/irs-drop/n-25-67.pdf",
+    "_confidence": "high"
+  },
+  "retirement.saversCredit.tier20MaxHOH": {
+    "was": null, "now": 39375,
+    "_why": "2026 saver's credit AGI ceiling for the 20% rate, head of household.",
+    "_authority": "IRS Notice 2025-67, section 25B(b)(1)(B), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/n-25-67.pdf",
+    "_confidence": "high"
+  },
+  "retirement.saversCredit.tier50MaxMFJ": {
+    "was": null, "now": 48500,
+    "_why": "2026 saver's credit AGI ceiling for the 50% rate, married filing jointly.",
+    "_authority": "IRS Notice 2025-67, section 25B(b)(1)(A), 2026 (joint: $48,500).",
+    "_url": "https://www.irs.gov/pub/irs-drop/n-25-67.pdf",
+    "_confidence": "high"
+  },
+  "retirement.saversCredit.tier20MaxMFJ": {
+    "was": null, "now": 52500,
+    "_why": "2026 saver's credit AGI ceiling for the 20% rate, married filing jointly.",
+    "_authority": "IRS Notice 2025-67, section 25B(b)(1)(B), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/n-25-67.pdf",
+    "_confidence": "high"
+  },
+  "federal.giftAndEstate.noncitizenSpouseAnnualExclusion": {
+    "was": null,
+    "now": 194000,
+    "_why": "The annual gift-tax exclusion for gifts to a spouse who is not a US citizen is separate from and larger than the ordinary $19,000 annual exclusion. For 2026 it is $194,000.",
+    "_authority": "Rev. Proc. 2025-32 §4.42(2); IRC §2523(i)(2).",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
+  },
+  "federal.gamblingLossDeductionRate": {
+    "was": null,
+    "now": 0.90,
+    "_why": "Beginning in 2026 the OBBBA amended IRC §165(d): the itemized deduction for wagering losses is limited to 90% of losses, still capped at the amount of gambling winnings. Previously losses were deductible at 100% up to winnings. This year-specific rate is needed so the gambling calculator applies the new limit rather than the old full deduction.",
+    "_effect": "A gambler with $50,000 of winnings and $50,000 of losses can now deduct only $45,000 (90%), so $5,000 of net winnings is taxed even though they broke even.",
+    "_authority": "IRC §165(d) as amended by the One Big Beautiful Bill Act (2025); IRS Internal Revenue Bulletin 2026-19. Effective for tax years beginning after December 31, 2025.",
+    "_url": "https://www.irs.gov/irb/2026-19_IRB",
+    "_confidence": "high"
   }
 }
