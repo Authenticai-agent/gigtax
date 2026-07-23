@@ -133,3 +133,52 @@ export function gigUnitEconomics(
     afterSetAsidePerHour: hours > 0 ? (netProfit - setAside) / hours : 0,
   };
 }
+
+/* --------------------------- trucking cost per mile ------------------------ */
+
+export interface TruckingResult {
+  fuelCostPerMile: number;
+  variableCostPerMile: number;
+  fixedCostPerMile: number;
+  totalCostPerMile: number;
+  netPerMile: number;
+  annualRevenue: number;
+  annualCost: number;
+  annualNet: number;
+}
+
+/**
+ * Owner-operator trucking economics: revenue per mile against the real cost per
+ * mile. Fuel is diesel price over miles-per-gallon; maintenance is a per-mile
+ * figure; insurance, the truck payment and other fixed costs are spread across
+ * the year's miles. The net-per-mile is the number that decides whether a load
+ * or a lane pays — the freight rate alone never does.
+ */
+export function truckingCostPerMile(
+  milesPerYear: number,
+  revenuePerMile: number,
+  mpg: number,
+  dieselPricePerGallon: number,
+  maintenancePerMile: number,
+  insurancePerYear: number,
+  truckPaymentPerYear: number,
+  otherFixedPerYear: number,
+): TruckingResult {
+  const miles = Math.max(0, milesPerYear);
+  const fuelCostPerMile = mpg > 0 ? Math.max(0, dieselPricePerGallon) / mpg : 0;
+  const variableCostPerMile = fuelCostPerMile + Math.max(0, maintenancePerMile);
+  const fixedPerYear = Math.max(0, insurancePerYear) + Math.max(0, truckPaymentPerYear) + Math.max(0, otherFixedPerYear);
+  const fixedCostPerMile = miles > 0 ? fixedPerYear / miles : 0;
+  const totalCostPerMile = variableCostPerMile + fixedCostPerMile;
+  const rev = Math.max(0, revenuePerMile);
+  return {
+    fuelCostPerMile,
+    variableCostPerMile,
+    fixedCostPerMile,
+    totalCostPerMile,
+    netPerMile: rev - totalCostPerMile,
+    annualRevenue: rev * miles,
+    annualCost: totalCostPerMile * miles,
+    annualNet: (rev - totalCostPerMile) * miles,
+  };
+}

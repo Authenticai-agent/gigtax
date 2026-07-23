@@ -246,5 +246,23 @@
     "_authority": "IRC §165(d) as amended by the One Big Beautiful Bill Act (2025); IRS Internal Revenue Bulletin 2026-19. Effective for tax years beginning after December 31, 2025.",
     "_url": "https://www.irs.gov/irb/2026-19_IRB",
     "_confidence": "high"
+  },
+  "federal.residentialRentalDepreciationYears": {
+    "was": null,
+    "now": 27.5,
+    "_why": "Residential rental real estate is depreciated straight-line over 27.5 years under IRC §168(c) (the building only, not the land). The rental calculator needs this recovery period to compute the annual depreciation deduction from a property's building basis.",
+    "_effect": "A $275,000 building basis produces a $10,000 annual depreciation deduction.",
+    "_authority": "IRC §168(c), 168(e)(2)(A); MACRS residential rental property, 27.5-year recovery period.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/168",
+    "_confidence": "high"
+  },
+  "retirement.earlyWithdrawalPenalty": {
+    "was": null,
+    "now": 0.10,
+    "_why": "A withdrawal from a traditional IRA or 401(k) before age 59½ generally incurs a 10% additional tax on top of ordinary income tax, unless an exception applies. The retirement-withdrawal calculator needs this rate.",
+    "_effect": "A $20,000 early withdrawal owes an extra $2,000 penalty beyond the income tax.",
+    "_authority": "IRC §72(t); 10% additional tax on early distributions.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/72",
+    "_confidence": "high"
   }
 }

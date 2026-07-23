@@ -1,0 +1,106 @@
+---
+/** Hub: second-income breakeven. Worked example by secondIncomeBreakeven(). */
+import Base from '../../layouts/Base.astro';
+import SecondIncomeCalculator from '../../components/calculators/SecondIncomeCalculator.tsx';
+import { secondIncomeBreakeven } from '../../lib/work-decisions';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = secondIncomeBreakeven(90000, 40000, 'mfj', 'OH', 12000, 3000);
+---
+
+<Base
+  title="Second income calculator — is the second job worth it?"
+  description="What a second household income really keeps after marginal tax, childcare and commuting — the honest keep-rate on a second salary."
+>
+  <section class="hero">
+    <p class="hero-label">Household</p>
+    <h1>Second income calculator</h1>
+    <p class="tagline">A second salary is taxed on top of the first — so it keeps far less per dollar than it looks.</p>
+  </section>
+
+  <p>
+    When a second earner takes a job, that income does not start at the 0% bracket —
+    it stacks on top of the first income and is taxed at the household's marginal
+    rate. Then childcare, commuting and work costs come out. What is left is often a
+    surprisingly small fraction of the salary. This shows the real keep-rate.
+  </p>
+
+  <SecondIncomeCalculator client:load />
+
+  <h2>Worked example — a {formatMoney(40000)} second job</h2>
+  <p>
+    A household with {formatMoney(90000)} of first income adds a {formatMoney(40000)}
+    second salary that needs {formatMoney(12000)} of childcare and {formatMoney(3000)}
+    of commuting:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Second salary</td><td>{formatMoney(ex.secondIncome)}</td></tr>
+      <tr><td>FICA (7.65%)</td><td>− {formatMoney(ex.fica)}</td></tr>
+      <tr><td>Federal tax (marginal)</td><td>− {formatMoney(ex.marginalFederalTax)}</td></tr>
+      <tr><td>State tax</td><td>− {formatMoney(ex.marginalStateTax)}</td></tr>
+      <tr><td>Childcare + work costs</td><td>− {formatMoney(ex.childcareCost + ex.workCosts)}</td></tr>
+      <tr><td>Actually kept</td><td>{formatMoney(ex.netKept)}</td></tr>
+      <tr><td>Keep-rate</td><td>{formatPct(ex.keepRate)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Of the {formatMoney(40000)} salary, the household keeps just {formatMoney(ex.netKept)}
+    — a {formatPct(ex.keepRate)} keep-rate — because the income is taxed at the
+    marginal rate and childcare eats much of the rest. This is the number to weigh,
+    not the gross salary. It also leaves out the long-term career value of staying
+    employed and any dependent-care credit, both of which push the other way.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why does a second income keep so little?</h3>
+    <p>
+      Because it is taxed from the top, not the bottom. The first income already used
+      up the low brackets, so every dollar of the second is taxed at the household's
+      highest rate, plus 7.65% FICA. Childcare needed to work the second job then comes
+      straight off the top.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does childcare cost really change the decision?</h3>
+    <p>
+      Often it is the decision. Full-time childcare for young children can cost
+      {formatMoney(12000)}–{formatMoney(24000)} a child, and it is paid with after-tax
+      dollars. For a modest second salary, childcare plus marginal tax can leave almost
+      nothing — which is why some families find the second job barely breaks even while
+      children are young.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is this leaving out?</h3>
+    <p>
+      Two things that favor working: the child-and-dependent-care credit and a
+      dependent-care FSA can offset some childcare cost, and staying in the workforce
+      protects future earnings, raises and retirement contributions. Weigh those
+      against the low short-term keep-rate.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Would filing separately help?</h3>
+    <p>
+      Almost never. Married filing separately usually raises the combined tax and
+      disallows credits like the dependent-care credit and the earned income credit.
+      The second income is taxed at the marginal rate either way; separate filing does
+      not carve it out at low brackets.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/marriage-tax-calculator/">Marriage tax calculator</a> — two incomes, joint vs single</li>
+    <li><a href="/child-care-tax-credit-calculator/">Child &amp; dependent care credit</a></li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — the second salary's take-home</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year, married filing jointly. Excludes the dependent-care
+    credit and the long-term value of working. Not financial advice.
+  </p>
+</Base>

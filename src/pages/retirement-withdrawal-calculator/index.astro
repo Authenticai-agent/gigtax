@@ -1,0 +1,102 @@
+---
+/** Hub: retirement withdrawal + Roth conversion. Worked examples by the lib. */
+import Base from '../../layouts/Base.astro';
+import RetirementWithdrawalCalculator from '../../components/calculators/RetirementWithdrawalCalculator.tsx';
+import { retirementWithdrawal, rothConversion } from '../../lib/retirement-planning';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const early = retirementWithdrawal(20000, 45, 60000, 'single', 'OH', false);
+const conv = rothConversion(30000, 50000, 'single', '');
+---
+
+<Base
+  title="Retirement withdrawal calculator 2026 — tax & penalty"
+  description="Tax on a traditional IRA or 401(k) withdrawal, including the 10% early-withdrawal penalty before 59½, plus the cost of a Roth conversion by bracket."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Retirement withdrawal calculator</h1>
+    <p class="tagline">Pulling money out early can lose a third of it to tax and penalty. Converting is the same tax, no penalty.</p>
+  </section>
+
+  <p>
+    A withdrawal from a traditional IRA or 401(k) is ordinary income, and before age
+    59½ it usually carries a 10% penalty on top. A Roth conversion is the same
+    taxable event — you move money from traditional to Roth and pay income tax now —
+    but with no penalty, and the payoff is tax-free growth later. This works out both.
+  </p>
+
+  <RetirementWithdrawalCalculator client:load />
+
+  <h2>Worked example — a {formatMoney(20000)} early withdrawal at 45</h2>
+  <p>
+    Someone aged 45 with {formatMoney(60000)} of other income pulls {formatMoney(20000)}
+    from a traditional IRA:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Federal income tax</td><td>− {formatMoney(early.federalTax)}</td></tr>
+      <tr><td>State income tax</td><td>− {formatMoney(early.stateTax)}</td></tr>
+      <tr><td>10% early-withdrawal penalty</td><td>− {formatMoney(early.earlyPenalty)}</td></tr>
+      <tr><td>You actually receive</td><td>{formatMoney(early.netReceived)}</td></tr>
+      <tr><td>Effective rate on the withdrawal</td><td>{formatPct(early.effectiveRate)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Of the {formatMoney(20000)}, only {formatMoney(early.netReceived)} reaches your
+    pocket — an effective {formatPct(early.effectiveRate)}, because the {formatMoney(early.earlyPenalty)}
+    penalty stacks on income tax. A {formatMoney(30000)} Roth conversion at a lower
+    income, by contrast, costs {formatMoney(conv.totalTax)} with no penalty — and
+    every future dollar of growth comes out tax-free.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How much tax on an early 401(k) or IRA withdrawal?</h3>
+    <p data-review="legal">
+      Your ordinary income tax rate plus a 10% penalty if you are under 59½, plus any
+      state tax — often 30–45% all in. Exceptions to the penalty exist: a first home
+      (IRA, up to $10,000), disability, large medical bills, higher education, and
+      substantially equal periodic payments.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is a Roth conversion good for?</h3>
+    <p>
+      Paying tax on retirement money now, at a known rate, so it grows tax-free and
+      comes out tax-free later — valuable if you expect higher rates or a low-income
+      year (early retirement, a gap year, a business loss). Convert only enough to
+      fill a low bracket; the calculator's marginal-bracket line shows where you are.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Should I pay the conversion tax from the IRA?</h3>
+    <p>
+      No. Pay it from outside the account, so the full converted balance keeps growing
+      tax-free. Paying the tax from the IRA both shrinks the balance and, if you are
+      under 59½, can itself be a penalized early withdrawal.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What about required minimum distributions?</h3>
+    <p>
+      Traditional accounts require withdrawals starting at age 73, taxed as ordinary
+      income. Roth IRAs have no lifetime RMD for the owner — another reason conversions
+      appeal to those who do not need the money. This calculator covers voluntary
+      withdrawals and conversions, not the RMD schedule.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/self-employed-retirement-calculator/">Self-employed retirement</a> — contributing</li>
+    <li><a href="/benefits-tax-calculator/">Benefits calculator</a> — Social Security taxation</li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — your marginal bracket</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Penalty exceptions and RMD rules can change the
+    outcome. Not tax or investment advice.
+  </p>
+</Base>

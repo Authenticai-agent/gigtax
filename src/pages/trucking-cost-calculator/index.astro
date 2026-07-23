@@ -1,0 +1,103 @@
+---
+/** Hub: owner-operator trucking cost per mile. Worked example by truckingCostPerMile(). */
+import Base from '../../layouts/Base.astro';
+import TruckingCalculator from '../../components/calculators/TruckingCalculator.tsx';
+import { truckingCostPerMile } from '../../lib/gig-economics';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = truckingCostPerMile(120000, 2.00, 6.5, 4.00, 0.15, 12000, 24000, 8000);
+const cpm = (n: number) => `${(n * 100).toFixed(1)}¢`;
+---
+
+<Base
+  title="Trucking cost per mile calculator — owner-operators"
+  description="Your real cost per mile as an owner-operator — fuel, maintenance, insurance, truck payment — against your freight rate, to see what a load nets."
+>
+  <section class="hero">
+    <p class="hero-label">Owner-operator</p>
+    <h1>Trucking cost per mile calculator</h1>
+    <p class="tagline">The freight rate never tells you if a load pays. Your cost per mile does.</p>
+  </section>
+
+  <p>
+    An owner-operator lives or dies by cost per mile. Fuel, tires and maintenance are
+    variable; insurance, the truck payment and permits are fixed and get spread over
+    the miles you run. Subtract cost per mile from your freight rate and you have the
+    only number that matters — net per mile. This works it out.
+  </p>
+
+  <TruckingCalculator client:load />
+
+  <h2>Worked example — {formatMoney(2)} a mile over 120,000 miles</h2>
+  <p>
+    A driver runs 120,000 miles at {formatMoney(2)} a mile, 6.5 mpg, diesel at
+    {formatMoney(4)}, with {formatMoney(0.15)} a mile maintenance and {formatMoney(44000)}
+    of fixed costs:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Component</th><th>Per mile</th></tr></thead>
+    <tbody>
+      <tr><td>Fuel</td><td>{cpm(ex.fuelCostPerMile)}</td></tr>
+      <tr><td>Variable (fuel + maintenance)</td><td>{cpm(ex.variableCostPerMile)}</td></tr>
+      <tr><td>Fixed (insurance, payment, permits)</td><td>{cpm(ex.fixedCostPerMile)}</td></tr>
+      <tr><td>Total cost per mile</td><td>{cpm(ex.totalCostPerMile)}</td></tr>
+      <tr><td>Net per mile</td><td>{cpm(ex.netPerMile)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    At {cpm(ex.totalCostPerMile)} a mile in cost against {formatMoney(2)} of revenue,
+    this truck nets {cpm(ex.netPerMile)} a mile — {formatMoney(ex.annualNet)} a year
+    before income tax. Because fixed costs are spread over miles, running fewer miles
+    (or deadheading empty) raises the real cost per mile fast, which is why a low
+    freight rate on a long empty leg can quietly lose money.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What is a good cost per mile for an owner-operator?</h3>
+    <p>
+      Many owner-operators run somewhere around {cpm(1.0)}–{cpm(1.5)} all-in,
+      excluding their own pay, but it depends heavily on fuel economy, the truck
+      payment and miles run. The point is to know yours: a load below your cost per
+      mile loses money no matter how the rate looks.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why do empty miles matter so much?</h3>
+    <p>
+      Fixed costs — insurance, the payment, permits — are the same whether the truck is
+      loaded or empty, so they are spread across every mile. Deadhead miles earn nothing
+      but still carry fuel and fixed cost, dragging up your average cost per loaded mile.
+      Minimizing empty miles is often the biggest lever on profit.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How is a trucker taxed on the net?</h3>
+    <p>
+      As self-employment income: the net profit owes the 15.3% self-employment tax plus
+      income tax, and no one withholds it — so quarterly estimated payments are needed.
+      Truckers subject to DOT hours-of-service rules can also deduct a per-diem meal
+      allowance for nights away, which is a real deduction this economics view leaves out.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Standard mileage or actual expenses for the truck?</h3>
+    <p>
+      Heavy trucks over 13,000 pounds cannot use the standard mileage rate at all — you
+      must use actual expenses, including depreciation or Section 179. So for a
+      semi, the actual-cost approach here is also how the deduction works, unlike a car.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — tax on the net profit</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — paying as you go</li>
+    <li><a href="/vehicle-cost-calculator/">Vehicle cost calculator</a> — for lighter vehicles</li>
+  </ul>
+
+  <p class="results-note">
+    Pre-tax economics for comparison. Net profit is then subject to self-employment and
+    income tax; per-diem and depreciation add deductions. Not tax advice.
+  </p>
+</Base>
