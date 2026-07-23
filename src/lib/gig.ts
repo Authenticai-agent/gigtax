@@ -34,6 +34,7 @@ export interface GigPlatform {
 const PLATFORM_NAMES: Record<string, string> = {
   'amazon-flex': 'Amazon Flex', doordash: 'DoorDash', ebay: 'eBay',
   onlyfans: 'OnlyFans', taskrabbit: 'TaskRabbit', youtube: 'YouTube',
+  'amazon-fba': 'Amazon FBA', 'stockx-goat': 'StockX & GOAT', tiktok: 'TikTok',
 };
 
 const PLATFORM_CATEGORY: Array<[string, string]> = [
@@ -42,7 +43,9 @@ const PLATFORM_CATEGORY: Array<[string, string]> = [
   ['taskrabbit', 'services'], ['rover', 'services'],
   ['turo', 'rental'], ['airbnb', 'rental'],
   ['etsy', 'seller'], ['ebay', 'seller'], ['shopify', 'seller'],
+  ['amazon-fba', 'seller'], ['poshmark', 'seller'], ['mercari', 'seller'], ['stockx-goat', 'seller'],
   ['youtube', 'creator'], ['onlyfans', 'creator'],
+  ['tiktok', 'creator'], ['instagram', 'creator'], ['twitch', 'creator'], ['patreon', 'creator'],
 ];
 
 export const GIG_PLATFORMS: GigPlatform[] = PLATFORM_CATEGORY.map(([slug, category]) => ({
