@@ -1,0 +1,115 @@
+---
+/**
+ * Hub: raise calculator — percentage change and whether it beats inflation.
+ * Worked example computed by raise().
+ */
+import Base from '../../layouts/Base.astro';
+import RaiseCalculator from '../../components/calculators/RaiseCalculator.tsx';
+import { raise } from '../../lib/wage';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = raise(60000, 65000, 3);
+const lagging = raise(60000, 61000, 3);
+---
+
+<Base
+  title="Raise calculator — is your raise real after inflation?"
+  description="Turn a pay raise into a percentage and test it against inflation: the dollar change, the percent change, and whether your raise beats rising prices."
+>
+  <section class="hero">
+    <p class="hero-label">Pay</p>
+    <h1>Raise calculator</h1>
+    <p class="tagline">A raise that trails inflation is a pay cut in slow motion. This shows which one you got.</p>
+  </section>
+
+  <p>
+    Two numbers decide whether a raise is good news: the percentage increase, and
+    the inflation rate over the same period. If prices rose 3% and your pay rose
+    2%, your money buys less than it did — a raise on paper, a cut in practice.
+    Enter your old and new pay to see both, plus the dollar change.
+  </p>
+
+  <RaiseCalculator client:load />
+
+  <h2>Worked example — {formatMoney(60000)} to {formatMoney(65000)} against 3% inflation</h2>
+  <p>
+    That is a {formatMoney(ex.dollarChange)} raise, or {ex.percentChange.toFixed(1)}%.
+    To merely keep pace with 3% inflation, the salary would have needed to reach
+    {formatMoney(ex.inflationTarget)}. It landed above that, so the raise beats
+    inflation by {formatMoney(ex.vsInflation)} in real terms:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Figure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Dollar change</td><td>{formatMoney(ex.dollarChange)}</td></tr>
+      <tr><td>Percent change</td><td>{ex.percentChange.toFixed(1)}%</td></tr>
+      <tr><td>Salary needed to match 3% inflation</td><td>{formatMoney(ex.inflationTarget)}</td></tr>
+      <tr><td>Real gain above inflation</td><td>{formatMoney(ex.vsInflation)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Contrast a {formatMoney(1000)} raise on the same salary: {lagging.percentChange.toFixed(1)}%,
+    which trails 3% inflation and leaves you {formatMoney(Math.abs(lagging.vsInflation))}
+    <em>behind</em> in buying power despite the bigger paycheck. That is the
+    distinction the raw percentage hides.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How do I calculate my raise percentage?</h3>
+    <p>
+      Subtract your old pay from your new pay, divide by your old pay, and
+      multiply by 100. A {formatMoney(60000)}-to-{formatMoney(65000)} move is
+      {formatMoney(5000)} ÷ {formatMoney(60000)} = {ex.percentChange.toFixed(1)}%.
+      The calculator also folds in bonuses on each side if you enter them.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is a 3% raise good?</h3>
+    <p>
+      Only if inflation is below 3%. A 3% raise exactly matches 3% inflation,
+      leaving your buying power flat. Above that inflation rate, a 3% raise is a
+      real-terms cut. The "good raise" question is always a comparison to prices,
+      not a fixed number.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What inflation rate should I use?</h3>
+    <p>
+      A common reference is the year-over-year change in the Consumer Price Index,
+      published monthly by the Bureau of Labor Statistics. Use the most recent
+      figure, or your own sense of how your costs have moved. The calculator lets
+      you set the rate rather than assuming one.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does a raise push me into a higher tax bracket and cost me money?</h3>
+    <p>
+      No — brackets are marginal. Only the portion of income above a threshold is
+      taxed at the higher rate; the rest is unchanged. A raise never leaves you
+      with less take-home. To see the take-home on new pay, use the
+      <a href="/paycheck-calculator/">paycheck calculator</a>.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Should I count my bonus in the comparison?</h3>
+    <p>
+      Compare like with like. If both years include a bonus, enter both. A raise
+      to base pay is more valuable than a one-off bonus of the same size because
+      it compounds into future raises and benefits — a distinction worth keeping
+      in view when an employer offers a bonus in place of a raise.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/bonus-tax-calculator/">Bonus tax calculator</a> — a one-off bonus, after withholding</li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — take-home on the new salary</li>
+    <li><a href="/hourly-to-salary-calculator/">Hourly to salary calculator</a> — compare two rates</li>
+  </ul>
+
+  <p class="results-note">
+    Compares gross pay against an inflation rate you supply. Not investment or
+    tax advice.
+  </p>
+</Base>
