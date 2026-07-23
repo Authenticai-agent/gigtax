@@ -24,6 +24,8 @@ const ms = await load('src/lib/multi-state.ts');
 const mar = await load('src/lib/marriage.ts');
 const cg = await load('src/lib/capital-gains.ts');
 const cr = await load('src/lib/credits.ts');
+const ge = await load('src/lib/gig-economics.ts');
+const sb = await load('src/lib/se-business.ts');
 const te = await load('src/lib/tax-engine.ts');
 
 let pass = 0, fail = 0;
@@ -408,6 +410,70 @@ console.log('\nstate cap-gains layer');
   // Ordinary state: marginal rate on the whole gain.
   const ca = cg.stateGainsTax('CA', 100000, 0, 50000, 'single');
   ok('CA taxes gains as ordinary income (positive)', ca.stateTax > 0 && ca.treatment === 'ordinary');
+}
+
+/* ------------------------------ gig economics ------------------------------ */
+console.log('\ngig economics');
+{
+  // Mileage: 5,000 miles each half at 72.5c / 76c = $3,625 + $3,800 = $7,425.
+  const m = ge.mileageDeduction(5000, 5000);
+  ok('mileage splits at the July rate change ($7,425 on 10k miles)', near(m.totalDeduction, 7425), `${m.totalDeduction}`);
+  ok('mileage blended rate is between the two rates', m.blendedRate > 0.725 && m.blendedRate < 0.76);
+  // Vehicle: 12,000 miles at 25 mpg, $3.50/gal -> fuel = 480 gal * $3.50 = $1,680.
+  const v = ge.vehicleCost(12000, 25, 3.50, 2000, 1500, 3000, 0);
+  ok('vehicle fuel cost = gallons x price', near(v.fuelCost, (12000 / 25) * 3.50), `${v.fuelCost}`);
+  ok('vehicle cost per mile = total / miles', near(v.costPerMile, v.totalCost / 12000));
+  // Gig unit: $20k over 500 hours, 8,000 first-half miles -> profit $14,200, $28.40/hr.
+  const g = ge.gigUnitEconomics(20000, 500, 8000, 0, 0);
+  ok('gig net profit = gross - mileage', near(g.netProfit, 20000 - 8000 * 0.725), `${g.netProfit}`);
+  ok('gig net per hour = profit / hours', near(g.netPerHour, g.netProfit / 500));
+  ok('gig gross per hour = gross / hours', near(g.grossPerHour, 40));
+}
+
+/* ------------------------------ SE business -------------------------------- */
+console.log('\nSE business');
+{
+  // seRetirement: employer piece is 20% of net SE earnings; solo adds the deferral.
+  const r = sb.seRetirement(100000, 40);
+  ok('SE retirement net earnings = profit - half SE tax', near(r.netSEEarnings, 100000 - r.seTaxDeductibleHalf));
+  ok('employer contribution is 20% of net SE earnings', near(r.employerContribution, 0.20 * r.netSEEarnings));
+  ok('solo total = employee deferral + employer, under the cap', near(r.soloTotal, Math.min(r.soloEmployeeDeferral + r.employerContribution, r.combinedMax)));
+  ok('SEP total is the employer piece, capped', near(r.sepTotal, Math.min(r.employerContribution, 72000)));
+  // Age 62 gets the special 60-63 combined cap.
+  const older = sb.seRetirement(400000, 62);
+  ok('age 60-63 uses the higher combined cap ($83,250)', older.combinedMax === 83250 && older.soloTotal <= 83250);
+
+  // sellerProfit port: transcribe the tax composition and match on 3 input sets.
+  const legacySeller = (rev, cogs, fees, ship, other, state, status) => {
+    const expenses = cogs + fees + ship + other;
+    const net = Math.max(0, rev - expenses);
+    const se = te.calcSETax(net, undefined, 0, status);
+    const agi = net - se.deductibleHalf;
+    const std = te.getStandardDeduction(status, false);
+    const bq = Math.max(0, agi - std);
+    const qbi = te.calcQBI(net, bq, status);
+    const fed = te.calcFederalTax(Math.max(0, bq - qbi), status);
+    const stTax = state ? te.calcStateTax(agi, state, undefined, status).tax : 0;
+    return { net, total: se.totalSE + fed + stTax };
+  };
+  const sellerCases = [
+    [50000, 15000, 5000, 3000, 2000, 'OH', 'single'],
+    [120000, 40000, 12000, 8000, 5000, 'CA', 'mfj'],
+    [30000, 5000, 3000, 1000, 500, 'TX', 'single'],
+  ];
+  for (const [i, c] of sellerCases.entries()) {
+    const [rev, cogs, fees, ship, other, state, status] = c;
+    const L = legacySeller(rev, cogs, fees, ship, other, state, status);
+    const r2 = sb.sellerProfit(rev, cogs, fees, ship, other, state, status);
+    ok(`seller case ${i + 1} net profit matches`, near(r2.netProfit, L.net));
+    ok(`seller case ${i + 1} total tax matches legacy composition`, near(r2.totalTax, L.total), `${Math.round(r2.totalTax)} vs ${Math.round(L.total)}`);
+  }
+
+  // freelanceRate port: the solved gross revenue reproduces the target take-home.
+  const fr = sb.freelanceRate(90000, 5000, 'CA', 'single', 4, 25, 40);
+  ok('freelance solved take-home hits the target', near(fr.takeHome, 90000, 100), `${Math.round(fr.takeHome)}`);
+  ok('freelance hourly rate = gross / billable hours', near(fr.hourlyRate, fr.grossRevenue / fr.annualBillableHours));
+  ok('freelance project rate = hourly x project hours', near(fr.projectRate, fr.hourlyRate * 40));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

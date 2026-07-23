@@ -1,0 +1,99 @@
+---
+/** Hub: 1099-K reconciliation. Worked example by reconcile1099K(). */
+import Base from '../../layouts/Base.astro';
+import Reconcile1099KCalculator from '../../components/calculators/Reconcile1099KCalculator.tsx';
+import { reconcile1099K } from '../../lib/se-business';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = reconcile1099K(30000, 3000, 1500, 2000, 9000, 1000);
+---
+
+<Base
+  title="1099-K calculator 2026 — reconcile gross to taxable"
+  description="Your 1099-K reports gross payments, not income. Reconcile it down to actual taxable profit by subtracting fees, refunds, shipping and cost of goods sold."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>1099-K reconciliation calculator</h1>
+    <p class="tagline">The number on your 1099-K is money that passed through you — not money you kept.</p>
+  </section>
+
+  <p>
+    A 1099-K reports the gross payments a platform processed for you, including fees,
+    refunds, and shipping you collected. Taxed on that figure, you would overpay
+    badly. This reconciles the gross down to your actual taxable profit — the number
+    that belongs on your return after every legitimate cost.
+  </p>
+
+  <Reconcile1099KCalculator client:load />
+
+  <h2>Worked example — a {formatMoney(30000)} 1099-K</h2>
+  <p>
+    A seller's 1099-K shows {formatMoney(30000)} gross, against {formatMoney(3000)}
+    fees, {formatMoney(1500)} refunds, {formatMoney(2000)} shipping and
+    {formatMoney(9000)} cost of goods, plus {formatMoney(1000)} other costs:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>1099-K gross (box 1a)</td><td>{formatMoney(ex.gross)}</td></tr>
+      <tr><td>Deductions to reconcile</td><td>− {formatMoney(ex.deductions)}</td></tr>
+      <tr><td>Actual taxable profit</td><td>{formatMoney(ex.netTaxable)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The real taxable figure is {formatMoney(ex.netTaxable)}, not {formatMoney(ex.gross)}.
+    Reporting the gross as income would tax you on more than twice what you made.
+    Report the gross where the form asks, then take each of these as a deduction so
+    the tax lands on the {formatMoney(ex.netTaxable)}.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What is the 2026 1099-K threshold?</h3>
+    <p>
+      Platforms issue a 1099-K to far more sellers now that the threshold has dropped
+      from the old $20,000-and-200-transactions to a much lower dollar amount. Whether
+      or not you receive one, the income is taxable — the form changes reporting, not
+      what you owe. Reconcile whatever gross is reported.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why does the 1099-K include shipping and refunds?</h3>
+    <p>
+      It reports the gross payment volume the processor handled. When a buyer pays for
+      the item plus shipping, that whole amount is processed; when you refund an order,
+      the original payment still counts. So the gross overstates income until you back
+      out shipping costs and refunds.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What if my 1099-K includes personal payments?</h3>
+    <p>
+      Personal reimbursements — splitting rent, repaying a friend — should not be on a
+      business 1099-K, but sometimes are if a business account was used. Separate them
+      out; only business sales are taxable income. Keep records showing which payments
+      were personal.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What records should I keep?</h3>
+    <p>
+      A running total for each line here: platform fee reports, refund records,
+      shipping receipts, and cost of goods for what sold. If the IRS questions the gap
+      between your 1099-K and your reported profit, these are what close it.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/seller-profit-calculator/">Seller profit calculator</a> — profit into take-home</li>
+    <li><a href="/gig-tax-calculator/">Gig tax by category</a></li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a></li>
+  </ul>
+
+  <p class="results-note">
+    Reconciliation estimate for the 2026 tax year. Keep documentation for every line.
+    Not tax advice.
+  </p>
+</Base>
