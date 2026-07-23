@@ -329,11 +329,11 @@ console.log('\ncredits: EITC');
   ok('EITC is zero past the income limit', phasedOut.credit === 0);
   const invest = cr.eitc(20000, 20000, 1, 'single');
   ok('too much investment income disqualifies EITC', invest.credit === 0 && invest.investmentDisqualified);
-  // MFJ shifts the phase-out and is flagged approximate.
-  const mfj = cr.eitc(30000, 0, 2, 'mfj');
-  const single = cr.eitc(30000, 0, 2, 'single');
-  ok('MFJ EITC is flagged approximate', mfj.approximate === true && single.approximate === false);
-  ok('MFJ phase-out starts higher than single', mfj.phaseoutStart === single.phaseoutStart + 7270);
+  // MFJ uses the exact 2026 phase-out figures (Rev. Proc. 2025-32).
+  const mfj2 = cr.eitc(40000, 0, 2, 'mfj');
+  ok('MFJ EITC uses exact 2026 phase-out (2 kids: 31160 / 65899)', mfj2.phaseoutStart === 31160 && mfj2.incomeLimit === 65899);
+  const single2 = cr.eitc(40000, 0, 2, 'single');
+  ok('MFJ credit beats single at the same income (wider phase-out)', mfj2.credit > single2.credit);
 }
 
 console.log('\ncredits: CTC');
@@ -363,12 +363,16 @@ console.log('\ncredits: dependent care');
 
 console.log('\ncredits: saver\'s');
 {
-  const elig = cr.saversCredit(30000, 'single', 2000);
-  ok('saver\'s eligible below the income limit', elig.eligible && elig.maxPossibleCredit === 1000);
+  // Exact tiers (Notice 2025-67): single 50% ≤$24,250, 20% ≤$26,250, 10% ≤$40,250.
+  const fifty = cr.saversCredit(24000, 'single', 2000);
+  ok('saver\'s 50% tier at low AGI gives $1,000', fifty.rate === 0.5 && fifty.credit === 1000);
+  const ten = cr.saversCredit(30000, 'single', 2000);
+  ok('saver\'s 10% tier at $30k single gives $200', ten.rate === 0.1 && ten.credit === 200);
   const over = cr.saversCredit(45000, 'single', 2000);
-  ok('saver\'s ineligible above $40,250 single', !over.eligible && over.maxPossibleCredit === 0);
-  const mfj = cr.saversCredit(50000, 'mfj', 5000);
-  ok('MFJ saver\'s max credit is $2,000 on a $4,000 cap', mfj.maxPossibleCredit === 2000);
+  ok('saver\'s ineligible above $40,250 single', !over.eligible && over.credit === 0);
+  // MFJ 50% ≤$48,500, 20% ≤$52,500: $50k lands in the 20% tier on a $4,000 cap.
+  const mfj = cr.saversCredit(50000, 'mfj', 4000);
+  ok('MFJ saver\'s 20% tier at $50k gives $800', mfj.rate === 0.2 && mfj.credit === 800);
 }
 
 console.log('\ncredits: ACA (engine)');

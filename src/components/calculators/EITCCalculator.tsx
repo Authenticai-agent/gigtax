@@ -48,12 +48,6 @@ export default function EITCCalculator() {
               <div className="result-line"><span>Credit reaches zero at</span><span className="num">{formatMoney(result.incomeLimit)}</span></div>
             </>
           )}
-          {result.approximate && (
-            <p className="results-note">
-              Married-filing-jointly figures are approximate: our dataset shifts the single phase-out up by the
-              stated amount, but confirm against the IRS EITC tables before relying on it.
-            </p>
-          )}
           <p className="results-note">
             The EITC is fully refundable — you get it even if you owe no tax. It phases in as you earn, plateaus,
             then phases out. Estimate only; the IRS EITC Assistant is the authoritative check. Not tax advice.

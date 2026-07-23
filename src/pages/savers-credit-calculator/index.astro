@@ -9,9 +9,10 @@ import SaversCreditCalculator from '../../components/calculators/SaversCreditCal
 import { saversCredit } from '../../lib/credits';
 import { formatMoney } from '../../lib/tax-engine';
 
-const single = saversCredit(30000, 'single', 2000);
-const mfj = saversCredit(50000, 'mfj', 4000);
+const tier50 = saversCredit(24000, 'single', 2000);
+const tier10 = saversCredit(30000, 'single', 2000);
 const over = saversCredit(45000, 'single', 2000);
+const mfj = saversCredit(50000, 'mfj', 4000);
 ---
 
 <Base
@@ -28,42 +29,34 @@ const over = saversCredit(45000, 'single', 2000);
     The saver's credit (the retirement savings contributions credit) rewards
     lower-income workers for paying into a 401(k) or IRA. It is worth 50%, 20% or
     10% of up to {formatMoney(2000)} of contributions ({formatMoney(4000)} if
-    married filing jointly), depending on your income — a maximum of {formatMoney(1000)}
-    ({formatMoney(2000)} joint). This checks whether you qualify and the most you
-    could get.
+    married filing jointly), depending on which income tier you fall in — a maximum
+    of {formatMoney(1000)} ({formatMoney(2000)} joint). This works out your exact
+    credit from your income, status and contribution.
   </p>
 
   <SaversCreditCalculator client:load />
 
-  <h2>Worked example — who qualifies</h2>
+  <h2>Worked example — the same contribution, three incomes</h2>
   <p>
-    Eligibility turns on adjusted gross income and filing status:
+    The rate steps down as income rises, so where you land matters more than how
+    much you put in:
   </p>
   <table class="data-table">
-    <thead><tr><th>Filer</th><th>AGI</th><th>Eligible?</th><th>Maximum credit</th></tr></thead>
+    <thead><tr><th>Filer</th><th>AGI</th><th>Rate</th><th>Credit</th></tr></thead>
     <tbody>
-      <tr><td>Single, {formatMoney(2000)} contributed</td><td>{formatMoney(30000)}</td><td>Yes</td><td>{formatMoney(single.maxPossibleCredit)}</td></tr>
-      <tr><td>Single, {formatMoney(2000)} contributed</td><td>{formatMoney(45000)}</td><td>No (over {formatMoney(40250)})</td><td>{formatMoney(over.maxPossibleCredit)}</td></tr>
-      <tr><td>Married joint, {formatMoney(4000)} contributed</td><td>{formatMoney(50000)}</td><td>Yes</td><td>{formatMoney(mfj.maxPossibleCredit)}</td></tr>
+      <tr><td>Single, {formatMoney(2000)} contributed</td><td>{formatMoney(24000)}</td><td>{Math.round(tier50.rate * 100)}%</td><td>{formatMoney(tier50.credit)}</td></tr>
+      <tr><td>Single, {formatMoney(2000)} contributed</td><td>{formatMoney(30000)}</td><td>{Math.round(tier10.rate * 100)}%</td><td>{formatMoney(tier10.credit)}</td></tr>
+      <tr><td>Single, {formatMoney(2000)} contributed</td><td>{formatMoney(45000)}</td><td>0%</td><td>{formatMoney(over.credit)}</td></tr>
+      <tr><td>Married joint, {formatMoney(4000)} contributed</td><td>{formatMoney(50000)}</td><td>{Math.round(mfj.rate * 100)}%</td><td>{formatMoney(mfj.credit)}</td></tr>
     </tbody>
   </table>
   <p>
-    The single filer at {formatMoney(30000)} could get up to {formatMoney(single.maxPossibleCredit)},
-    but the same filer at {formatMoney(45000)} is over the {formatMoney(40250)} income
-    limit and gets nothing. The married couple's higher {formatMoney(80500)} limit
-    keeps them eligible at {formatMoney(50000)}.
+    A single filer at {formatMoney(24000)} is in the 50% tier — {formatMoney(tier50.credit)}
+    on a {formatMoney(2000)} contribution. The same contribution at {formatMoney(30000)}
+    falls to the 10% tier, just {formatMoney(tier10.credit)}, and at {formatMoney(45000)}
+    the credit is gone. The tier thresholds shift the credit far more than the
+    contribution does.
   </p>
-
-  <div class="faq" data-review="legal">
-    <h3>Why does this show a maximum rather than my exact credit?</h3>
-    <p>
-      The credit rate is 50%, 20% or 10% depending on which income tier you fall in,
-      and the exact 2026 tier thresholds are set annually and are not yet in our
-      verified dataset. Rather than guess them, this calculator shows the maximum
-      (the 50% tier) and your eligibility. Your Form 8880 or the IRS instructions
-      give the tier for your income.
-    </p>
-  </div>
 
   <h2>Questions</h2>
   <div class="faq">
@@ -75,11 +68,13 @@ const over = saversCredit(45000, 'single', 2000);
     </p>
   </div>
   <div class="faq">
-    <h3>What are the 2026 income limits?</h3>
+    <h3>What are the 2026 income tiers?</h3>
     <p data-review="legal">
-      The credit disappears above {formatMoney(40250)} of AGI for single filers,
-      {formatMoney(60375)} for head of household, and {formatMoney(80500)} for married
-      filing jointly. Below those, a lower income means a higher credit rate.
+      For single filers: 50% of your contribution up to {formatMoney(24250)} of AGI,
+      20% up to {formatMoney(26250)}, 10% up to {formatMoney(40250)}, then nothing.
+      Head-of-household and joint filers use higher tiers, topping out at
+      {formatMoney(60375)} and {formatMoney(80500)}. The rate steps rather than
+      slides, so a few hundred dollars of income can drop you a whole tier.
     </p>
   </div>
   <div class="faq">

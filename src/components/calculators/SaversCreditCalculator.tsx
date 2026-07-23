@@ -1,11 +1,10 @@
 /**
- * SaversCreditCalculator — eligibility and the MAXIMUM possible credit. The
- * exact 50/20/10 tier needs the 2026 AGI thresholds, which are not in our
- * dataset, so this states that plainly rather than inventing them.
+ * SaversCreditCalculator — the exact saver's credit. The 50/20/10 tier by AGI
+ * comes from the researched 2026 thresholds in the dataset (Notice 2025-67).
  */
 import { useState } from 'react';
 import { saversCredit } from '../../lib/credits';
-import { formatMoney } from '../../lib/tax-engine';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
 
 const STATUSES = [
   ['single', 'Single'], ['hoh', 'Head of household'], ['mfj', 'Married filing jointly'],
@@ -42,13 +41,13 @@ export default function SaversCreditCalculator() {
           <h3>{result.eligible ? 'You qualify for the saver’s credit' : 'Over the income limit'}</h3>
           {result.eligible ? (
             <>
-              <div className="result-line"><span>Income limit for your status</span><span className="num">{formatMoney(result.incomeLimit)}</span></div>
-              <div className="result-line"><span>Contribution that counts (capped)</span><span className="num">{formatMoney(result.contributionCap)}</span></div>
-              <div className="result-line total"><span>Maximum possible credit (50% tier)</span><span className="num">{formatMoney(result.maxPossibleCredit)}</span></div>
+              <div className="result-line"><span>Contribution that counts (capped)</span><span className="num">{formatMoney(result.eligibleContribution)}</span></div>
+              <div className="result-line"><span>Your credit rate at this income</span><span className="num">{formatPct(result.rate)}</span></div>
+              <div className="result-line total"><span>Your credit</span><span className="num">{formatMoney(result.credit)}</span></div>
               <p className="results-note">
-                Your actual credit is 50%, 20% or 10% of the counted contribution, depending on which AGI tier you
-                fall in. The exact 2026 tier thresholds are not in our dataset, so we show the maximum (the 50%
-                tier). Check Form 8880 for your tier. This credit is non-refundable. Not tax advice.
+                The rate is {formatPct(result.rate)} of your counted contribution — the credit is 50%, 20% or 10%
+                depending on which AGI tier you fall in, and yours is the {formatPct(result.rate)} tier. This credit
+                is non-refundable. Not tax advice.
               </p>
             </>
           ) : (

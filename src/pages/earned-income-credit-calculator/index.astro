@@ -81,12 +81,13 @@ const noKids = eitc(12000, 0, 0, 'single');
     </p>
   </div>
   <div class="faq">
-    <h3>Are the married-filing-jointly figures exact here?</h3>
+    <h3>Does marriage change the EITC?</h3>
     <p data-review="legal">
-      The single and head-of-household figures are exact. For married filing
-      jointly the phase-out begins higher, and our estimate shifts it by the
-      dataset's stated amount — treat the MFJ result as approximate and confirm
-      against the IRS tables or the EITC Assistant before relying on it.
+      Yes — married filing jointly raises the phase-out, so a married couple keeps
+      the credit to a higher income than a single filer with the same children.
+      For one child in 2026 the credit runs out at {formatMoney(51593)} single but
+      {formatMoney(58863)} for a couple. This calculator uses the exact 2026
+      figures for every filing status.
     </p>
   </div>
   <div class="faq">

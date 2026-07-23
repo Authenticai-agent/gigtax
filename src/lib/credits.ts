@@ -6,12 +6,10 @@
  * starts and rates, the care-credit step, all sourced there. Two honest limits,
  * both surfaced in the UI rather than papered over:
  *
- *  - EITC married-filing-jointly: the dataset's brackets are the single/HOH
- *    figures, and its note gives the MFJ phase-out as "approximately $7,270
- *    higher". So single/HOH are exact and MFJ is returned with approximate:true.
- *  - Saver's credit: the 50/20/10 tier AGI thresholds are annually adjusted and
- *    are not in the dataset, so this returns eligibility and the MAXIMUM possible
- *    credit (the 50% tier), never a fabricated exact tier.
+ * EITC and the saver's credit are both exact for every filing status: the 2026
+ * married-filing-jointly EIC phase-out figures and the saver's-credit 50/20/10
+ * tier thresholds were researched from Rev. Proc. 2025-32 and Notice 2025-67 and
+ * added to the dataset with their citations.
  */
 import { federal, retirement } from '../data/federal';
 
@@ -27,28 +25,25 @@ export interface EICResult {
   maxCredit: number;
   phaseoutStart: number;
   incomeLimit: number;
-  /** True for MFJ, where the dataset's phase-out shift is an approximation. */
-  approximate: boolean;
   /** True when investment income disqualifies the filer. */
   investmentDisqualified: boolean;
 }
 
 /**
- * Earned income tax credit. Exact for single and head of household; for married
- * filing jointly the phase-out start and income limit are each raised by the
- * dataset's stated shift and the result is marked approximate.
+ * Earned income tax credit, exact for every filing status. Married filing jointly
+ * uses its own 2026 phase-out start and income limit per bracket; all other
+ * statuses use the single/HOH figures.
  */
 export function eitc(
   earnedIncome: number, investmentIncome: number, children: number, status = 'single',
 ): EICResult {
   const kids = Math.min(Math.max(0, children), 3);
   const bracket = EIC.brackets.find((b: any) => b.children === kids);
-  const shift = status === 'mfj' ? EIC.mfjPhaseoutShift : 0;
-  const phaseoutStart = bracket.phaseoutStart + shift;
-  const incomeLimit = bracket.incomeLimit + shift;
+  const phaseoutStart = status === 'mfj' ? bracket.mfjPhaseoutStart : bracket.phaseoutStart;
+  const incomeLimit = status === 'mfj' ? bracket.mfjIncomeLimit : bracket.incomeLimit;
   const base = {
     maxCredit: bracket.maxCredit, phaseoutStart, incomeLimit,
-    approximate: status === 'mfj', investmentDisqualified: false,
+    investmentDisqualified: false,
   };
   if (investmentIncome > EIC.investmentIncomeLimit) return { ...base, credit: 0, investmentDisqualified: true };
   const earned = Math.max(0, earnedIncome);
@@ -126,24 +121,33 @@ export interface SaversResult {
   eligible: boolean;
   incomeLimit: number;
   contributionCap: number;
-  /** The most this filer could get — the 50% tier. The actual tier needs the
-   *  2026 AGI thresholds, which are not in the dataset. */
-  maxPossibleCredit: number;
+  /** The 50/20/10 rate this filer's AGI lands in (0 if over the limit). */
+  rate: number;
+  /** Contribution that counts, after the cap. */
+  eligibleContribution: number;
+  /** The actual credit — rate × eligible contribution. */
+  credit: number;
 }
 
 /**
- * Saver's credit — eligibility and the MAXIMUM possible credit only. The credit
- * is 50%, 20% or 10% of up to $2,000 ($4,000 MFJ) of retirement contributions
- * depending on AGI tier; the exact 2026 tier thresholds are not in the dataset,
- * so this returns the 50%-tier ceiling and the copy states the actual amount
- * depends on the tier your AGI falls in.
+ * Saver's credit, exact. The rate is 50%, 20% or 10% of up to $2,000 ($4,000 MFJ)
+ * of retirement contributions, by AGI tier (§25B), zero above the top limit. The
+ * 2026 tier thresholds come from the dataset (researched from Notice 2025-67).
  */
 export function saversCredit(agi: number, status: string, contribution: number): SaversResult {
+  const tier50 = status === 'mfj' ? SAVERS.tier50MaxMFJ : status === 'hoh' ? SAVERS.tier50MaxHOH : SAVERS.tier50MaxSingle;
+  const tier20 = status === 'mfj' ? SAVERS.tier20MaxMFJ : status === 'hoh' ? SAVERS.tier20MaxHOH : SAVERS.tier20MaxSingle;
   const incomeLimit = status === 'mfj' ? SAVERS.mfj_max : status === 'hoh' ? SAVERS.hoh_max : SAVERS.single_max;
   const contributionCap = status === 'mfj' ? 4000 : 2000;
-  const maxCredit = status === 'mfj' ? SAVERS.maxCreditMFJ : SAVERS.maxCredit;
-  const eligible = Math.max(0, agi) <= incomeLimit;
+  const a = Math.max(0, agi);
+  const rate = a <= tier50 ? 0.5 : a <= tier20 ? 0.2 : a <= incomeLimit ? 0.1 : 0;
   const eligibleContribution = Math.min(Math.max(0, contribution), contributionCap);
-  const maxPossibleCredit = eligible ? Math.min(eligibleContribution * 0.5, maxCredit) : 0;
-  return { eligible, incomeLimit, contributionCap, maxPossibleCredit };
+  return {
+    eligible: rate > 0,
+    incomeLimit,
+    contributionCap,
+    rate,
+    eligibleContribution,
+    credit: Math.round(eligibleContribution * rate),
+  };
 }

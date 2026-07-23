@@ -378,33 +378,40 @@ export const federal = {
         "maxCredit": 664,
         "incomeLimit": 19540,
         "phaseoutStart": 10860,
-        "phaseInRate": 0.0765
+        "phaseInRate": 0.0765,
+        "mfjPhaseoutStart": 18140,
+        "mfjIncomeLimit": 26820
       },
       {
         "children": 1,
         "maxCredit": 4427,
         "incomeLimit": 51593,
         "phaseoutStart": 23890,
-        "phaseInRate": 0.34
+        "phaseInRate": 0.34,
+        "mfjPhaseoutStart": 31160,
+        "mfjIncomeLimit": 58863
       },
       {
         "children": 2,
         "maxCredit": 7316,
         "incomeLimit": 58629,
         "phaseoutStart": 23890,
-        "phaseInRate": 0.4
+        "phaseInRate": 0.4,
+        "mfjPhaseoutStart": 31160,
+        "mfjIncomeLimit": 65899
       },
       {
         "children": 3,
         "maxCredit": 8231,
         "incomeLimit": 62974,
         "phaseoutStart": 23890,
-        "phaseInRate": 0.45
+        "phaseInRate": 0.45,
+        "mfjPhaseoutStart": 31160,
+        "mfjIncomeLimit": 70244
       }
     ],
     "investmentIncomeLimit": 12200,
-    "note": "MFJ phaseout starts approximately $7,270 higher than single/hoh. Single/HOH figures shown; calcEIC does not currently adjust for filing status.",
-    "mfjPhaseoutShift": 7270
+    "note": "MFJ phaseout starts approximately $7,270 higher than single/hoh. Single/HOH figures shown; calcEIC does not currently adjust for filing status."
   },
   "childDependentCareCredit": {
     "maxExpenseOneChild": 3000,
@@ -736,7 +743,13 @@ export const retirement = {
     "hoh_max": 60375,
     "single_max": 40250,
     "maxCredit": 1000,
-    "maxCreditMFJ": 2000
+    "maxCreditMFJ": 2000,
+    "tier50MaxSingle": 24250,
+    "tier20MaxSingle": 26250,
+    "tier50MaxHOH": 36375,
+    "tier20MaxHOH": 39375,
+    "tier50MaxMFJ": 48500,
+    "tier20MaxMFJ": 52500
   }
 };
 
