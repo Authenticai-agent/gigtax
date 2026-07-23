@@ -1,0 +1,107 @@
+---
+/**
+ * Hub: ACA premium tax credit. Port of acaCalculatorView on the existing
+ * calcACASubsidy engine. Worked example computed at build.
+ */
+import Base from '../../layouts/Base.astro';
+import ACASubsidyCalculator from '../../components/calculators/ACASubsidyCalculator.tsx';
+import { calcACASubsidy, formatMoney } from '../../lib/tax-engine';
+
+// Household of 2, $40,000 MAGI, $1,000/mo benchmark premium.
+const ex = calcACASubsidy(40000, 2, 1000);
+// A household $1 over the 400% cliff.
+const cliff = calcACASubsidy(87000, 2, 1000);
+---
+
+<Base
+  title="ACA subsidy calculator 2026 — premium tax credit"
+  description="Estimate your 2026 ACA premium tax credit from your income and benchmark silver plan — including the 400% subsidy cliff that returned in 2026."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>ACA subsidy calculator</h1>
+    <p class="tagline">How much of your health insurance premium the government covers — and the cliff you can fall off.</p>
+  </section>
+
+  <p>
+    The ACA premium tax credit caps what you pay for a benchmark health plan at a
+    percentage of your income; the government covers the rest. In 2026 the enhanced
+    subsidies expired and the hard 400%-of-poverty cliff returned — earning $1 over
+    it drops the subsidy to zero. This estimates your credit from your income,
+    household size and benchmark premium.
+  </p>
+
+  <ACASubsidyCalculator client:load />
+
+  <h2>Worked example — a household of two at {formatMoney(40000)}</h2>
+  <p>
+    With a benchmark silver plan costing {formatMoney(1000)} a month, and income at
+    {Math.round(ex.fplPct * 100)}% of the poverty line:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Figure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Income as a percent of the poverty line</td><td>{Math.round(ex.fplPct * 100)}%</td></tr>
+      <tr><td>Benchmark plan premium</td><td>{formatMoney(1000)}/mo</td></tr>
+      <tr><td>What you pay after the credit</td><td>{formatMoney(ex.maxPremium)}/mo</td></tr>
+      <tr><td>Monthly subsidy</td><td>{formatMoney(ex.subsidy)}/mo</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The credit covers {formatMoney(ex.subsidy)} of the {formatMoney(1000)} premium,
+    leaving this household {formatMoney(ex.maxPremium)} a month. Push the same
+    household to {formatMoney(87000)} — just over 400% of the poverty line — and the
+    subsidy becomes {formatMoney(cliff.subsidy)}: they pay the full {formatMoney(1000)}.
+    That is the cliff.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How is the subsidy calculated?</h3>
+    <p data-review="legal">
+      The law sets the most you should pay for the benchmark (second-lowest silver)
+      plan as a percentage of your income, rising with income. Your credit is the
+      benchmark premium minus that expected contribution. The credit follows the
+      benchmark plan, but you can apply it to any metal-level plan.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is the 400% cliff?</h3>
+    <p data-review="legal">
+      For 2026, households above 400% of the federal poverty line get no premium tax
+      credit at all — a true cliff, not a phase-out. The 2021–2025 enhanced subsidies
+      that removed the cliff were not extended past December 31, 2025, so it returned
+      on January 1, 2026. One dollar of income can cost thousands.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What income does it use?</h3>
+    <p>
+      Modified adjusted gross income for your whole tax household, projected for the
+      coverage year. Because it is a projection, a mid-year raise or a good freelance
+      month can change your credit — and you reconcile the difference on your tax
+      return, sometimes paying some back.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is the benchmark premium?</h3>
+    <p>
+      The cost of the second-lowest-cost silver plan available to your household in
+      your area. It sets the size of your credit even if you buy a cheaper or dearer
+      plan. HealthCare.gov or your state exchange shows the exact figure for your zip
+      code and ages — enter that for an accurate estimate.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — self-employed health premiums are also deductible</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — projecting income for the year</li>
+    <li><a href="/self-employed-tax-calculator/">By profession</a> — self-employment and coverage</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Your actual credit uses the benchmark premium
+    for your exact plan and area. Not tax or health-coverage advice.
+  </p>
+</Base>

@@ -1,0 +1,113 @@
+---
+/**
+ * Hub: earned income tax credit. Worked example by eitc(). Single/HOH exact;
+ * page states MFJ is approximate.
+ */
+import Base from '../../layouts/Base.astro';
+import EITCCalculator from '../../components/calculators/EITCCalculator.tsx';
+import { eitc } from '../../lib/credits';
+import { formatMoney } from '../../lib/tax-engine';
+
+const phaseIn = eitc(8000, 0, 1, 'single');
+const plateau = eitc(22000, 0, 1, 'single');
+const noKids = eitc(12000, 0, 0, 'single');
+---
+
+<Base
+  title="Earned income credit calculator 2026 — EITC by income"
+  description="Estimate your 2026 earned income tax credit. Phase-in, plateau and phase-out by number of children, the $12,200 investment-income limit, fully refundable."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Earned income credit calculator</h1>
+    <p class="tagline">A refundable credit for working households — worth up to {formatMoney(8231)} with three children.</p>
+  </section>
+
+  <p>
+    The earned income tax credit (EITC) rewards work at lower incomes. It phases
+    in as you earn, plateaus at a maximum, then phases out — so both too little
+    and too much earned income shrink it. It is fully refundable: you receive it
+    even if you owe no income tax. This estimates it from your earned income,
+    family size and investment income.
+  </p>
+
+  <EITCCalculator client:load />
+
+  <h2>Worked example — a single parent with one child</h2>
+  <p>
+    The credit is not flat. It grows with each dollar earned up to a plateau, then
+    falls away. For one child, single, in 2026:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Earned income</th><th>EITC</th><th>Where on the curve</th></tr></thead>
+    <tbody>
+      <tr><td>{formatMoney(8000)}</td><td>{formatMoney(phaseIn.credit)}</td><td>Phasing in (34% of earnings)</td></tr>
+      <tr><td>{formatMoney(22000)}</td><td>{formatMoney(plateau.credit)}</td><td>At the maximum</td></tr>
+      <tr><td>{formatMoney(51593)}+</td><td>{formatMoney(0)}</td><td>Fully phased out</td></tr>
+    </tbody>
+  </table>
+  <p>
+    At {formatMoney(8000)} the credit is only {formatMoney(phaseIn.credit)} — 34% of
+    what was earned — because it is still phasing in. Earning more here <em>increases</em>
+    the credit, up to the {formatMoney(plateau.credit)} maximum. A childless worker
+    earning {formatMoney(12000)} gets just {formatMoney(noKids.credit)}: the childless
+    EITC is far smaller and phases out much sooner.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How much is the EITC worth?</h3>
+    <p data-review="legal">
+      For 2026 the maximum is {formatMoney(664)} with no children, {formatMoney(4427)}
+      with one, {formatMoney(7316)} with two, and {formatMoney(8231)} with three or
+      more. You only reach the maximum in the plateau range; below it the credit is
+      a percentage of your earnings, and above it the credit falls.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can investment income disqualify me?</h3>
+    <p data-review="legal">
+      Yes. If your investment income — interest, dividends, capital gains — exceeds
+      {formatMoney(12200)} in 2026, you cannot claim the EITC at all, no matter how
+      low your earned income. It is a hard cutoff, not a phase-out.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is the EITC refundable?</h3>
+    <p>
+      Fully. Unlike a non-refundable credit that only cancels tax you owe, the EITC
+      is paid to you even if your tax is zero. For many working families it is the
+      largest single line on the refund.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Are the married-filing-jointly figures exact here?</h3>
+    <p data-review="legal">
+      The single and head-of-household figures are exact. For married filing
+      jointly the phase-out begins higher, and our estimate shifts it by the
+      dataset's stated amount — treat the MFJ result as approximate and confirm
+      against the IRS tables or the EITC Assistant before relying on it.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Who counts as a qualifying child?</h3>
+    <p>
+      Broadly, your child, stepchild, foster child, sibling or their descendant,
+      under 19 (or 24 if a full-time student, or any age if permanently disabled),
+      who lived with you more than half the year. The IRS rules have detail the
+      calculator does not — it uses only the count.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/child-tax-credit-calculator/">Child tax credit calculator</a> — often claimed alongside the EITC</li>
+    <li><a href="/child-care-tax-credit-calculator/">Child &amp; dependent care credit</a></li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — self-employment counts as earned income</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. The IRS EITC Assistant is the authoritative
+    eligibility check. Not tax advice.
+  </p>
+</Base>

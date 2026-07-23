@@ -23,6 +23,7 @@ const wh = await load('src/lib/withholding.ts');
 const ms = await load('src/lib/multi-state.ts');
 const mar = await load('src/lib/marriage.ts');
 const cg = await load('src/lib/capital-gains.ts');
+const cr = await load('src/lib/credits.ts');
 const te = await load('src/lib/tax-engine.ts');
 
 let pass = 0, fail = 0;
@@ -314,6 +315,68 @@ console.log('\ncostBasis');
   // Selling across both lots splits the gain into short and long term.
   const split = cg.costBasis(lots, 'fifo', 150, 30);
   ok('a cross-lot sale splits short and long term', split.longTermGain > 0 && split.shortTermGain > 0);
+}
+
+/* --------------------------------- credits --------------------------------- */
+console.log('\ncredits: EITC');
+{
+  // 1 child, single: phase-in at 34%, plateau at $4,427, phase-out to $51,593.
+  const inRange = cr.eitc(6000, 0, 1, 'single');
+  ok('EITC phases in at 34% for a low earner', near(inRange.credit, Math.round(0.34 * 6000)), `${inRange.credit}`);
+  const plateau = cr.eitc(20000, 0, 1, 'single');
+  ok('EITC hits the max credit on the plateau', plateau.credit === 4427);
+  const phasedOut = cr.eitc(60000, 0, 1, 'single');
+  ok('EITC is zero past the income limit', phasedOut.credit === 0);
+  const invest = cr.eitc(20000, 20000, 1, 'single');
+  ok('too much investment income disqualifies EITC', invest.credit === 0 && invest.investmentDisqualified);
+  // MFJ shifts the phase-out and is flagged approximate.
+  const mfj = cr.eitc(30000, 0, 2, 'mfj');
+  const single = cr.eitc(30000, 0, 2, 'single');
+  ok('MFJ EITC is flagged approximate', mfj.approximate === true && single.approximate === false);
+  ok('MFJ phase-out starts higher than single', mfj.phaseoutStart === single.phaseoutStart + 7270);
+}
+
+console.log('\ncredits: CTC');
+{
+  const full = cr.childTaxCredit(2, 100000, 'single');
+  ok('CTC is $2,200/child below the phase-out', full.credit === 4400);
+  ok('CTC refundable portion caps at $1,700/child', full.refundablePortion === 3400);
+  // Single phase-out starts at $200k, $50 lost per $1,000 over.
+  const phasing = cr.childTaxCredit(2, 210000, 'single');
+  ok('CTC phases out $50 per $1,000 over $200k', near(phasing.credit, 4400 - 10 * 50), `${phasing.credit}`);
+  const mfjFull = cr.childTaxCredit(2, 210000, 'mfj');
+  ok('MFJ CTC is unreduced at $210k (phase-out starts $400k)', mfjFull.credit === 4400);
+}
+
+console.log('\ncredits: dependent care');
+{
+  const low = cr.dependentCareCredit(3000, 1, 15000);
+  ok('care credit rate is 35% at $15,000 AGI', low.rate === 0.35 && low.credit === 1050);
+  const high = cr.dependentCareCredit(6000, 2, 60000);
+  ok('care credit rate floors at 20% for high AGI', high.rate === 0.2 && high.credit === 1200);
+  const capped = cr.dependentCareCredit(10000, 1, 15000);
+  ok('one-child expenses cap at $3,000', capped.cappedExpenses === 3000);
+  const twoCap = cr.dependentCareCredit(10000, 2, 15000);
+  ok('two-child expenses cap at $6,000', twoCap.cappedExpenses === 6000);
+  ok('no qualifying persons means no credit', cr.dependentCareCredit(5000, 0, 20000).credit === 0);
+}
+
+console.log('\ncredits: saver\'s');
+{
+  const elig = cr.saversCredit(30000, 'single', 2000);
+  ok('saver\'s eligible below the income limit', elig.eligible && elig.maxPossibleCredit === 1000);
+  const over = cr.saversCredit(45000, 'single', 2000);
+  ok('saver\'s ineligible above $40,250 single', !over.eligible && over.maxPossibleCredit === 0);
+  const mfj = cr.saversCredit(50000, 'mfj', 5000);
+  ok('MFJ saver\'s max credit is $2,000 on a $4,000 cap', mfj.maxPossibleCredit === 2000);
+}
+
+console.log('\ncredits: ACA (engine)');
+{
+  const sub = te.calcACASubsidy(40000, 2, 12000);
+  ok('ACA subsidy is positive under 400% FPL', sub.eligible && sub.subsidy > 0, JSON.stringify(sub));
+  const cliff = te.calcACASubsidy(200000, 2, 12000);
+  ok('ACA over the 400% cliff gets no subsidy', !cliff.eligible && cliff.subsidy === 0);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

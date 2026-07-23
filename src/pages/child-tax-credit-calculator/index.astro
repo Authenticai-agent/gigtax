@@ -1,0 +1,102 @@
+---
+/**
+ * Hub: child tax credit. Worked example by childTaxCredit().
+ */
+import Base from '../../layouts/Base.astro';
+import ChildTaxCreditCalculator from '../../components/calculators/ChildTaxCreditCalculator.tsx';
+import { childTaxCredit } from '../../lib/credits';
+import { formatMoney } from '../../lib/tax-engine';
+
+const full = childTaxCredit(2, 100000, 'single');
+const phasing = childTaxCredit(2, 220000, 'single');
+---
+
+<Base
+  title="Child tax credit calculator 2026 — $2,200 per child"
+  description="Estimate your 2026 child tax credit: $2,200 per child under 17, the $200k/$400k income phase-out, and up to $1,700 per child refundable."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Child tax credit calculator</h1>
+    <p class="tagline">{formatMoney(2200)} per child under 17 — until your income starts to phase it out.</p>
+  </section>
+
+  <p>
+    The child tax credit is {formatMoney(2200)} for each qualifying child under 17.
+    It stays flat across most incomes, then reduces by $50 for every $1,000 of
+    income over {formatMoney(200000)} (single) or {formatMoney(400000)} (joint). Up
+    to {formatMoney(1700)} per child is refundable. Enter your children and income
+    to see your credit.
+  </p>
+
+  <ChildTaxCreditCalculator client:load />
+
+  <h2>Worked example — two children</h2>
+  <p>
+    A single filer with two qualifying children and {formatMoney(100000)} of income
+    gets the full amount; the same family at {formatMoney(220000)} has begun to
+    phase out:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Income</th><th>Credit (2 children)</th><th>Refundable portion</th></tr></thead>
+    <tbody>
+      <tr><td>{formatMoney(100000)}</td><td>{formatMoney(full.credit)}</td><td>{formatMoney(full.refundablePortion)}</td></tr>
+      <tr><td>{formatMoney(220000)}</td><td>{formatMoney(phasing.credit)}</td><td>{formatMoney(phasing.refundablePortion)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    At {formatMoney(220000)} the single filer is {formatMoney(20000)} over the
+    {formatMoney(200000)} threshold, so the credit drops by 20 × $50 = {formatMoney(1000)},
+    from {formatMoney(full.credit)} to {formatMoney(phasing.credit)}. A married couple
+    would still have the full credit here, because their phase-out does not start
+    until {formatMoney(400000)}.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How much is the child tax credit for 2026?</h3>
+    <p data-review="legal">
+      {formatMoney(2200)} per qualifying child under 17, made permanent by the 2025
+      law (OBBBA). Up to {formatMoney(1700)} per child is refundable as the
+      additional child tax credit — the part you can receive even if you owe no tax.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>When does it phase out?</h3>
+    <p data-review="legal">
+      Above {formatMoney(200000)} of income for single and head-of-household filers,
+      or {formatMoney(400000)} for married filing jointly. The credit falls by $50
+      for every $1,000 (or part) over the threshold, so a two-child credit is fully
+      gone about $88,000 above it.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is the difference between the credit and the refundable portion?</h3>
+    <p>
+      The full {formatMoney(2200)} first reduces the tax you owe. If that zeroes your
+      tax with credit to spare, up to {formatMoney(1700)} per child can still be paid
+      to you as a refund — that is the refundable portion. The remaining {formatMoney(500)}
+      is non-refundable.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Who is a qualifying child?</h3>
+    <p>
+      A child under 17 at year-end who is your dependent, related to you, lived with
+      you more than half the year, and has a Social Security number. A 17-year-old
+      does not qualify for this credit, though they may for the {formatMoney(500)}
+      credit for other dependents, which this calculator does not model.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/earned-income-credit-calculator/">Earned income credit calculator</a> — often claimed together</li>
+    <li><a href="/child-care-tax-credit-calculator/">Child &amp; dependent care credit</a></li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — how the credit affects withholding</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Not tax advice.
+  </p>
+</Base>

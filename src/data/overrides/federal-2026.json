@@ -80,5 +80,64 @@
     "_authority": "IRC §1211(b)(1); statutory.",
     "_url": "https://www.law.cornell.edu/uscode/text/26/1211",
     "_confidence": "high"
+  },
+  "federal.childDependentCareCredit.phaseoutStep": {
+    "was": null,
+    "now": 2000,
+    "_why": "The dataset gave the 35% top rate, the 20% floor and the $15,000 phase-down start, but not the step. The child and dependent care credit rate drops by one percentage point for each $2,000 (or fraction) of AGI above $15,000, until it reaches 20%. The step and per-step rate are needed to compute the exact rate.",
+    "_effect": "At $25,000 AGI the rate is 35% − 5×1% = 30%; at $43,000 or more it hits the 20% floor.",
+    "_authority": "IRC §21(a)(2); statutory step, not inflation-indexed.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/21",
+    "_confidence": "high"
+  },
+  "federal.childDependentCareCredit.phaseoutRatePerStep": {
+    "was": null,
+    "now": 0.01,
+    "_why": "The one-percentage-point reduction per $2,000 step, paired with phaseoutStep.",
+    "_authority": "IRC §21(a)(2).",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/21",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.0.phaseInRate": {
+    "was": null,
+    "now": 0.0765,
+    "_why": "The dataset gave each EIC bracket its maximum credit, plateau start and income limit, but not the phase-in credit rate. Without it, the calculator would hand a low earner the full credit at any income, overstating it — the EIC phases IN from zero at a statutory rate before it plateaus. For no children the phase-in rate is 7.65%.",
+    "_effect": "A childless worker earning $4,000 gets 7.65% × $4,000 = $306, not the full $664.",
+    "_authority": "IRC §32(b)(1); statutory credit percentages, not inflation-indexed.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/32",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.1.phaseInRate": {
+    "was": null,
+    "now": 0.34,
+    "_why": "Phase-in credit rate for one child.",
+    "_authority": "IRC §32(b)(1).",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/32",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.2.phaseInRate": {
+    "was": null,
+    "now": 0.4,
+    "_why": "Phase-in credit rate for two children.",
+    "_authority": "IRC §32(b)(1).",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/32",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.brackets.3.phaseInRate": {
+    "was": null,
+    "now": 0.45,
+    "_why": "Phase-in credit rate for three or more children.",
+    "_authority": "IRC §32(b)(1).",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/32",
+    "_confidence": "high"
+  },
+  "federal.earnedIncomeCredit.mfjPhaseoutShift": {
+    "was": null,
+    "now": 7270,
+    "_why": "The dataset's EIC brackets are the single/HOH figures; its own note states the MFJ phase-out begins approximately $7,270 higher. Added so the calculator can shift the phase-out for MFJ filers rather than overstating their phase-out. Because the source figure is the dataset's own 'approximately', the MFJ result is surfaced in the UI as approximate with a review flag, and single/HOH remain exact.",
+    "_effect": "An MFJ filer's EIC phase-out start and income limit are each raised by $7,270 before the credit is computed.",
+    "_authority": "Dataset note on federal.earnedIncomeCredit; approximate. Exact 2026 MFJ figures are Rev. Proc. 2025-32 and should replace this when researched.",
+    "_url": "https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit-eitc",
+    "_confidence": "medium"
   }
 }

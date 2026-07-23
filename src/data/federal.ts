@@ -377,29 +377,34 @@ export const federal = {
         "children": 0,
         "maxCredit": 664,
         "incomeLimit": 19540,
-        "phaseoutStart": 10860
+        "phaseoutStart": 10860,
+        "phaseInRate": 0.0765
       },
       {
         "children": 1,
         "maxCredit": 4427,
         "incomeLimit": 51593,
-        "phaseoutStart": 23890
+        "phaseoutStart": 23890,
+        "phaseInRate": 0.34
       },
       {
         "children": 2,
         "maxCredit": 7316,
         "incomeLimit": 58629,
-        "phaseoutStart": 23890
+        "phaseoutStart": 23890,
+        "phaseInRate": 0.4
       },
       {
         "children": 3,
         "maxCredit": 8231,
         "incomeLimit": 62974,
-        "phaseoutStart": 23890
+        "phaseoutStart": 23890,
+        "phaseInRate": 0.45
       }
     ],
     "investmentIncomeLimit": 12200,
-    "note": "MFJ phaseout starts approximately $7,270 higher than single/hoh. Single/HOH figures shown; calcEIC does not currently adjust for filing status."
+    "note": "MFJ phaseout starts approximately $7,270 higher than single/hoh. Single/HOH figures shown; calcEIC does not currently adjust for filing status.",
+    "mfjPhaseoutShift": 7270
   },
   "childDependentCareCredit": {
     "maxExpenseOneChild": 3000,
@@ -407,7 +412,9 @@ export const federal = {
     "creditRateMin": 0.2,
     "creditRateMax": 0.35,
     "phaseoutStartIncome": 15000,
-    "note": "Non-refundable. Rate phases down from 35% to 20% as income rises above $15,000."
+    "note": "Non-refundable. Rate phases down from 35% to 20% as income rises above $15,000.",
+    "phaseoutStep": 2000,
+    "phaseoutRatePerStep": 0.01
   },
   "saltDeduction": {
     "cap": 40400,
