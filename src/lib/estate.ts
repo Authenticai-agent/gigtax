@@ -22,6 +22,7 @@ export const BASIC_EXCLUSION = GE.lifetimeEstateTaxExemption as number; // 15,00
 export const ANNUAL_GIFT_EXCLUSION = GE.annualGiftExclusion as number;  // 19,000
 export const NONCITIZEN_SPOUSE_EXCLUSION = GE.noncitizenSpouseAnnualExclusion as number; // 194,000
 const TOP_RATE = GE.topEstateTaxRate as number; // 0.40
+const TRUST_BRACKETS = (federal as any).estateAndTrustBrackets as Array<{ min: number; max: number | null; rate: number }>;
 
 /* -------------------------------- estate ----------------------------------- */
 
@@ -167,4 +168,96 @@ export function inheritanceTreatment(
         treatment: 'An inherited annuity is part return of the owner’s basis (tax-free) and part gain (taxable as ordinary income). There is no step-up on the gain.' };
     }
   }
+}
+
+/* --------------------------- estate/trust income (1041) -------------------- */
+
+/** Income tax on income retained by an estate or trust, using the compressed brackets. */
+export function trustIncomeTax(taxableIncome: number): number {
+  let tax = 0;
+  const inc = Math.max(0, taxableIncome);
+  for (const b of TRUST_BRACKETS) {
+    if (inc <= b.min) break;
+    const top = b.max === null ? inc : Math.min(inc, b.max);
+    tax += (top - b.min) * b.rate;
+  }
+  return Math.round(tax);
+}
+
+export interface Trust1041Result {
+  totalIncome: number;
+  amountDistributed: number;
+  retainedIncome: number;
+  /** Tax the trust pays on retained income (compressed brackets). */
+  trustTax: number;
+  /** Tax the beneficiary pays on the distributed income (their individual rate). */
+  beneficiaryTax: number;
+  totalTax: number;
+  /** Tax if the trust retained everything instead of distributing. */
+  taxIfAllRetained: number;
+  /** Tax saved by distributing instead of retaining. */
+  savingsFromDistributing: number;
+}
+
+/**
+ * A Form 1041 comparison: income a trust or estate distributes to a beneficiary
+ * gets a distribution deduction and is taxed to the beneficiary at their
+ * (usually lower) individual rate; income it retains is taxed to the trust at the
+ * compressed brackets that hit 37% at $16,000. The gap is why distributing income
+ * out is the central 1041 planning move.
+ */
+export function estateTrust1041(
+  totalIncome: number, expenses: number, amountDistributed: number,
+  beneficiaryOtherIncome: number, beneficiaryStatus = 'single',
+): Trust1041Result {
+  const income = Math.max(0, totalIncome);
+  const exp = Math.max(0, expenses);
+  const distributable = Math.max(0, income - exp);
+  const distributed = Math.min(Math.max(0, amountDistributed), distributable);
+  const retained = Math.max(0, distributable - distributed);
+
+  const trustTax = trustIncomeTax(retained);
+  const std = getStandardDeduction(beneficiaryStatus, false);
+  const benWith = calcFederalTax(Math.max(0, beneficiaryOtherIncome + distributed - std), beneficiaryStatus);
+  const benWithout = calcFederalTax(Math.max(0, beneficiaryOtherIncome - std), beneficiaryStatus);
+  const beneficiaryTax = Math.max(0, benWith - benWithout);
+
+  return {
+    totalIncome: income,
+    amountDistributed: distributed,
+    retainedIncome: retained,
+    trustTax,
+    beneficiaryTax: Math.round(beneficiaryTax),
+    totalTax: trustTax + Math.round(beneficiaryTax),
+    taxIfAllRetained: trustIncomeTax(distributable),
+    savingsFromDistributing: trustIncomeTax(distributable) - (trustTax + Math.round(beneficiaryTax)),
+  };
+}
+
+/* ------------------------ generation-skipping transfer --------------------- */
+
+export interface GSTResult {
+  transfer: number;
+  exemptionAvailable: number;
+  taxableAmount: number;
+  gstTax: number;
+}
+
+/**
+ * Generation-skipping transfer tax: a flat 40% on transfers to a "skip person"
+ * (a grandchild or an unrelated person 37.5+ years younger) above the GST
+ * exemption, which is $15,000,000 for 2026 — the same amount as the estate
+ * exemption but a separate allowance. The GST tax is ON TOP of any gift or estate
+ * tax on the same transfer, which the copy stresses.
+ */
+export function gstTax(transfer: number, priorExemptionUsed = 0): GSTResult {
+  const t = Math.max(0, transfer);
+  const exemptionAvailable = Math.max(0, BASIC_EXCLUSION - Math.max(0, priorExemptionUsed));
+  const taxableAmount = Math.max(0, t - exemptionAvailable);
+  return {
+    transfer: t,
+    exemptionAvailable,
+    taxableAmount,
+    gstTax: Math.round(taxableAmount * TOP_RATE),
+  };
 }

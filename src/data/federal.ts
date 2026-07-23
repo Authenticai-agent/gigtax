@@ -448,7 +448,29 @@ export const federal = {
   },
   "gamblingLossDeductionRate": 0.9,
   "residentialRentalDepreciationYears": 27.5,
-  "gamblingWithholdingRate": 0.24
+  "gamblingWithholdingRate": 0.24,
+  "estateAndTrustBrackets": [
+    {
+      "min": 0,
+      "max": 3300,
+      "rate": 0.1
+    },
+    {
+      "min": 3300,
+      "max": 11700,
+      "rate": 0.24
+    },
+    {
+      "min": 11700,
+      "max": 16000,
+      "rate": 0.35
+    },
+    {
+      "min": 16000,
+      "max": null,
+      "rate": 0.37
+    }
+  ]
 } satisfies FederalData;
 
 export const selfEmploymentDeductions = {

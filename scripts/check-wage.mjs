@@ -612,5 +612,23 @@ console.log('\ngambling tax phase');
   ok('a win cuts the ACA subsidy', aca.subsidyLost >= 0 && aca.subsidyWith <= aca.subsidyWithout);
 }
 
+/* ---------------------- estate/trust income, GST -------------------------- */
+console.log('\nestate/trust income & GST');
+{
+  // Trust brackets (Table 5): tax at $16,000 = $3,851 (10/24/35 stacked).
+  ok('trust tax at $16,000 = $3,851 (compressed brackets)', near(est.trustIncomeTax(16000), 3851), `${est.trustIncomeTax(16000)}`);
+  ok('trust hits the 37% top bracket fast', est.trustIncomeTax(50000) === 3851 + Math.round((50000 - 16000) * 0.37));
+  // 1041: distributing to a low-bracket beneficiary beats retaining in the trust.
+  const t = est.estateTrust1041(50000, 0, 50000, 20000, 'single');
+  ok('1041 distribution shifts income to the beneficiary', t.retainedIncome === 0 && t.trustTax === 0 && t.beneficiaryTax > 0);
+  ok('distributing saves tax vs retaining in the trust', t.savingsFromDistributing > 0);
+  const retainAll = est.estateTrust1041(50000, 0, 0, 20000, 'single');
+  ok('retaining everything taxes it at the compressed rate', retainAll.trustTax === est.trustIncomeTax(50000));
+  // GST: 40% above the $15m exemption.
+  const g = est.gstTax(20000000, 0);
+  ok('GST tax = 40% of the transfer over $15m', near(g.gstTax, 2000000) && g.taxableAmount === 5000000);
+  ok('a transfer under the GST exemption owes nothing', est.gstTax(10000000).gstTax === 0);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail === 0 ? 0 : 1);
