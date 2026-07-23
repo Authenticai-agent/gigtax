@@ -1,0 +1,104 @@
+---
+/** Hub: rental income tax. Worked example by rentalIncome(). */
+import Base from '../../layouts/Base.astro';
+import RentalIncomeCalculator from '../../components/calculators/RentalIncomeCalculator.tsx';
+import { rentalIncome } from '../../lib/rental';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = rentalIncome(48000, 275000, 12000, 4500, 1800, 3000, 0, 80000, 'single', 'OH', false);
+---
+
+<Base
+  title="Rental income tax calculator 2026 — Schedule E or C"
+  description="Tax on rental income: gross rent less mortgage interest, property tax, depreciation and expenses. Schedule E (no SE tax) or Schedule C for services."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Rental income tax calculator</h1>
+    <p class="tagline">Depreciation is the deduction that makes rental income look larger on paper than it costs in tax.</p>
+  </section>
+
+  <p>
+    Rental income is taxed on the profit, not the rent. Mortgage interest, property
+    tax, insurance, repairs, and — quietly the largest — depreciation all come off
+    first. A simple rental is Schedule E with no self-employment tax; a short-term
+    rental where you provide substantial services (an Airbnb with cleaning and
+    concierge) is Schedule C and owes SE tax. This works out both.
+  </p>
+
+  <RentalIncomeCalculator client:load />
+
+  <h2>Worked example — {formatMoney(48000)} of rent</h2>
+  <p>
+    A landlord collects {formatMoney(48000)} on a property with a {formatMoney(275000)}
+    building basis, and {formatMoney(80000)} of other income:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Gross rent</td><td>{formatMoney(ex.grossRent)}</td></tr>
+      <tr><td>Depreciation (basis ÷ 27.5)</td><td>− {formatMoney(ex.depreciation)}</td></tr>
+      <tr><td>Total expenses incl. depreciation</td><td>− {formatMoney(ex.totalExpenses)}</td></tr>
+      <tr><td>Net rental income</td><td>{formatMoney(ex.netIncome)}</td></tr>
+      <tr><td>Income tax on the rental</td><td>− {formatMoney(ex.incomeTax + ex.stateTax)}</td></tr>
+      <tr><td>After-tax rental income</td><td>{formatMoney(ex.afterTax)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(10000)} of depreciation shelters that much rent from tax without
+    costing a dollar of cash — which is why real estate is tax-favored. But it is
+    recaptured (taxed) when you sell, so it is a deferral, not a free lunch. On
+    Schedule E there is no self-employment tax; the {formatMoney(ex.netIncome)} of
+    profit is taxed at ordinary rates only.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How is rental income taxed?</h3>
+    <p>
+      On net profit — rent minus deductible expenses and depreciation — at your
+      ordinary income rate. Most rentals are Schedule E, which is not subject to the
+      15.3% self-employment tax. That is a major advantage over active
+      self-employment income.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is depreciation and why does it matter?</h3>
+    <p data-review="legal">
+      You deduct the building's cost (not the land) over 27.5 years for residential
+      rental property — about 3.6% a year. It offsets rent you actually received, so
+      a cash-flow-positive rental can show little or no taxable income. It is
+      recaptured at up to 25% when you sell, so plan for that.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>When is a rental Schedule C instead of Schedule E?</h3>
+    <p>
+      When you provide substantial services beyond basic rental — daily cleaning,
+      meals, a concierge — as some short-term Airbnb-style rentals do. Then it is a
+      business on Schedule C and owes self-employment tax on the profit. A plain
+      long-term lease is almost always Schedule E.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I deduct a rental loss?</h3>
+    <p>
+      Sometimes. Rental losses are passive and generally offset only passive income —
+      but there is a special allowance of up to {formatMoney(25000)} for active
+      participants below an income limit, and real-estate professionals are exempt
+      from the passive rules. Disallowed losses carry forward.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/rental-host-tax-calculator/">Rental host tax calculator</a> — by platform</li>
+    <li><a href="/capital-gains-tax-calculator/">Capital gains calculator</a> — selling the property</li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — for Schedule C rentals</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Depreciation recapture and passive-loss limits
+    apply on sale and at a loss. Not tax advice.
+  </p>
+</Base>

@@ -1,0 +1,103 @@
+---
+/** Hub: FEIE with the stacking rule. Worked example by feie(). */
+import Base from '../../layouts/Base.astro';
+import FeieCalculator from '../../components/calculators/FeieCalculator.tsx';
+import { feie, FEIE_LIMIT } from '../../lib/feie';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = feie(100000, 20000, 'single');
+---
+
+<Base
+  title="Foreign earned income exclusion calculator 2026 (FEIE)"
+  description="Estimate your US tax with the 2026 foreign earned income exclusion — up to $132,900 excluded — including the stacking rule that limits the benefit."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Foreign earned income exclusion calculator</h1>
+    <p class="tagline">Working abroad, you can exclude the income — but the stacking rule quietly claws some of the benefit back.</p>
+  </section>
+
+  <p>
+    A US citizen or resident working abroad who meets the bona fide residence or
+    physical presence test can exclude up to {formatMoney(FEIE_LIMIT)} of foreign
+    earned income for 2026. The catch is the stacking rule: the excluded income
+    still sets your tax bracket, so your remaining income is taxed at the rate it
+    would face without the exclusion. This shows the real saving.
+  </p>
+
+  <FeieCalculator client:load />
+
+  <h2>Worked example — {formatMoney(100000)} abroad, {formatMoney(20000)} US income</h2>
+  <p>
+    A single filer earns {formatMoney(100000)} working overseas and has {formatMoney(20000)}
+    of US-source income:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Figure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Foreign income excluded</td><td>{formatMoney(ex.exclusion)}</td></tr>
+      <tr><td>Federal tax with the exclusion</td><td>{formatMoney(ex.taxWithFeie)}</td></tr>
+      <tr><td>Federal tax with no exclusion</td><td>{formatMoney(ex.taxWithoutFeie)}</td></tr>
+      <tr><td>Tax the exclusion saves</td><td>{formatMoney(ex.savings)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Excluding the {formatMoney(100000)} cuts the federal bill from {formatMoney(ex.taxWithoutFeie)}
+    to {formatMoney(ex.taxWithFeie)} — a {formatMoney(ex.savings)} saving. Notice the
+    remaining {formatMoney(20000)} is not taxed at zero: under stacking, it sits on
+    top of the excluded income for bracket purposes, so it is taxed at the rate it
+    would have faced anyway. The exclusion removes the amount, not the rate.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Who qualifies for the FEIE?</h3>
+    <p data-review="legal">
+      A US citizen or resident with a tax home abroad who meets either the bona fide
+      residence test (a full calendar year as a genuine resident of a foreign country)
+      or the physical presence test (330 full days abroad in any 12-month period). It
+      excludes earned income — wages and self-employment — not investment income.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is the stacking rule?</h3>
+    <p data-review="legal">
+      Since 2006, the excluded income is added back to determine your tax bracket, and
+      only its own tax is removed. So your non-excluded income is taxed as if the
+      excluded income were still there — you lose the benefit of the low brackets on
+      it. The exclusion still helps, just less than the headline suggests.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>FEIE or the foreign tax credit?</h3>
+    <p>
+      If you pay high foreign income tax, the foreign tax credit often beats the
+      exclusion — it offsets US tax dollar-for-dollar and can be carried forward. The
+      exclusion is usually better in low-tax or no-tax countries. You generally cannot
+      use both on the same income, and switching away from the FEIE locks you out for
+      five years.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is there a housing exclusion too?</h3>
+    <p>
+      Yes — a separate foreign housing exclusion or deduction covers qualifying housing
+      costs above a base amount, on top of the earned income exclusion. It has its own
+      limits that vary by city. This calculator models the earned income exclusion
+      only; add the housing exclusion on Form 2555 if it applies.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — self-employment abroad</li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — US wage tax</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — estimated payments</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year, earned income exclusion only. The housing
+    exclusion and foreign tax credit can change the result. Not tax advice.
+  </p>
+</Base>

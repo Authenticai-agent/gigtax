@@ -1,0 +1,103 @@
+---
+/** Hub: creator brand-deal tax. Worked example by brandDeal(). */
+import Base from '../../layouts/Base.astro';
+import BrandDealCalculator from '../../components/calculators/BrandDealCalculator.tsx';
+import { brandDeal } from '../../lib/se-business';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = brandDeal(18000, 50000, 2000, 'single', 'OH');
+---
+
+<Base
+  title="Brand deal tax calculator 2026 — for creators"
+  description="Tax on a creator brand deal: self-employment tax plus income tax, and why gifted PR products are taxable at fair-market value even though they aren't cash."
+>
+  <section class="hero">
+    <p class="hero-label">Creator economy</p>
+    <h1>Brand deal tax calculator</h1>
+    <p class="tagline">The free product a brand sends you is taxable income — even though you can't pay the tax with it.</p>
+  </section>
+
+  <p>
+    A brand deal is self-employment income: you owe the 15.3% self-employment tax plus
+    income tax, and nothing is withheld. The trap is gifted product — a "PR package" —
+    which is taxable at its fair-market value even though it is not cash. This works
+    out the tax on the cash and the product together, so you know what to set aside.
+  </p>
+
+  <BrandDealCalculator client:load presetState="OH" />
+
+  <h2>Worked example — {formatMoney(15000)} cash plus {formatMoney(3000)} of product</h2>
+  <p>
+    A creator with {formatMoney(50000)} of other income takes a deal worth {formatMoney(15000)}
+    in cash plus {formatMoney(3000)} of gifted product, with {formatMoney(2000)} of
+    business deductions:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Deal value (cash + product)</td><td>{formatMoney(ex.dealAmount)}</td></tr>
+      <tr><td>Net self-employment income</td><td>{formatMoney(ex.netSE)}</td></tr>
+      <tr><td>Self-employment tax</td><td>− {formatMoney(ex.seTax)}</td></tr>
+      <tr><td>Federal income tax on the deal</td><td>− {formatMoney(ex.federalTax)}</td></tr>
+      <tr><td>State income tax</td><td>− {formatMoney(ex.stateTax)}</td></tr>
+      <tr><td>After-tax from the deal</td><td>{formatMoney(ex.afterTax)}</td></tr>
+      <tr><td>Set aside about</td><td>{formatPct(ex.setAsidePct)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(18000)} deal keeps {formatMoney(ex.afterTax)} after tax — set aside
+    roughly {formatPct(ex.setAsidePct)}. The awkward part is the {formatMoney(3000)} of
+    gifted product: it is taxed as income, but you cannot pay the tax with a hoodie and
+    a ring light, so the cash has to cover the tax on the product too.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Is gifted product from a brand taxable?</h3>
+    <p data-review="legal">
+      Yes. Products a brand sends you in exchange for content, or as compensation, are
+      taxable at fair-market value — the IRS treats them like income. Truly unsolicited
+      gifts with no strings are a grey area, but anything you are expected to promote is
+      income. Track the value of PR packages.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What can a creator deduct?</h3>
+    <p>
+      Ordinary and necessary business costs: cameras, lighting, editing software, a home
+      studio, props bought for content, a manager or agency's cut, and travel for shoots.
+      These reduce the net self-employment income the tax is calculated on — enter them
+      as deductions above.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Will I get a 1099 for a brand deal?</h3>
+    <p>
+      A brand that pays you $600 or more usually issues a 1099-NEC. But the income is
+      taxable whether or not you receive one — including cash deals and the value of
+      gifted product that never appears on any form. Keep your own records.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Should I set up an S-corp?</h3>
+    <p>
+      Once creator profit is consistently high (often {formatMoney(80000)}+), an S-corp
+      election can cut self-employment tax on the distribution portion. Below that the
+      cost and complexity usually outweigh it. The
+      <a href="/s-corp-tax-calculator/">S-corp calculator</a> shows the savings at your numbers.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/creator-tax-calculator/">Creator tax calculator</a> — the full creator picture</li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — self-employment tax</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — no one withholds</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Gifted product is taxed at fair-market value. Not
+    tax advice.
+  </p>
+</Base>

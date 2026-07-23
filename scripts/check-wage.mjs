@@ -28,6 +28,10 @@ const ge = await load('src/lib/gig-economics.ts');
 const sb = await load('src/lib/se-business.ts');
 const gam = await load('src/lib/gambling.ts');
 const est = await load('src/lib/estate.ts');
+const rent = await load('src/lib/rental.ts');
+const rp = await load('src/lib/retirement-planning.ts');
+const fe = await load('src/lib/feie.ts');
+const wd = await load('src/lib/work-decisions.ts');
 const te = await load('src/lib/tax-engine.ts');
 
 let pass = 0, fail = 0;
@@ -527,6 +531,61 @@ console.log('\nestate, gift & inheritance');
   // Annuity: only the gain above basis is taxable.
   const ann = est.inheritanceTreatment('annuity', 100000, 80000, 'single', 0, 60000);
   ok('inherited annuity taxes only the gain above basis', ann.taxableAmount === 40000);
+}
+
+/* ---------------------------- Phase 14 remainder --------------------------- */
+console.log('\nrental income');
+{
+  // $48k rent, $275k building basis -> $10k depreciation; $31.3k expenses -> $16.7k profit.
+  const r = rent.rentalIncome(48000, 275000, 12000, 4500, 1800, 3000, 0, 80000, 'single', 'OH', false);
+  ok('rental depreciation = basis / 27.5', near(r.depreciation, 275000 / 27.5) && near(r.depreciation, 10000));
+  ok('rental net income = rent - expenses', near(r.netIncome, 16700), `${r.netIncome}`);
+  ok('Schedule E rental owes no SE tax', r.seTax === 0);
+  ok('Schedule C rental owes SE tax', rent.rentalIncome(48000, 275000, 12000, 4500, 1800, 3000, 0, 80000, 'single', 'OH', true).seTax > 0);
+}
+
+console.log('\nretirement withdrawal & Roth conversion');
+{
+  const early = rp.retirementWithdrawal(20000, 45, 80000, 'single', 'OH', false);
+  ok('early withdrawal adds a 10% penalty', near(early.earlyPenalty, 2000));
+  ok('withdrawal after 59.5 has no penalty', rp.retirementWithdrawal(20000, 65, 80000, 'single', 'OH', false).earlyPenalty === 0);
+  ok('Roth withdrawal is tax-free', rp.retirementWithdrawal(20000, 45, 80000, 'single', 'OH', true).totalTax === 0);
+  const conv = rp.rothConversion(30000, 50000, 'single', '');
+  ok('Roth conversion is taxed as ordinary income', conv.federalTax > 0 && conv.marginalBracket > 0);
+}
+
+console.log('\nFEIE (stacking)');
+{
+  const f = fe.feie(100000, 20000, 'single');
+  ok('FEIE excludes up to the earned income', f.exclusion === 100000);
+  ok('FEIE saves tax but stacking limits it', f.savings > 0 && f.taxWithFeie < f.taxWithoutFeie);
+  ok('FEIE exclusion is capped at the 2026 limit', fe.feie(200000, 0, 'single').exclusion === fe.FEIE_LIMIT);
+}
+
+console.log('\nsecond-income breakeven');
+{
+  const s = wd.secondIncomeBreakeven(90000, 40000, 'mfj', 'OH', 12000, 3000);
+  ok('second income is taxed at the marginal rate', s.marginalFederalTax > 0 && s.fica > 0);
+  ok('keep-rate is less than 100% after tax and costs', s.keepRate < 1 && s.netKept < 40000);
+  ok('childcare and work costs reduce what is kept', s.netKept === Math.round((40000 - s.totalTax - 15000) * 1) || near(s.netKept, 40000 - s.totalTax - 15000));
+}
+
+console.log('\ntrucking cost per mile');
+{
+  const t = ge.truckingCostPerMile(120000, 2.00, 6.5, 4.00, 0.15, 12000, 24000, 8000);
+  ok('trucking fuel cost = diesel / mpg', near(t.fuelCostPerMile, 4.00 / 6.5));
+  ok('trucking net per mile = revenue - total cost', near(t.netPerMile, 2.00 - t.totalCostPerMile));
+  ok('trucking annual net = net per mile x miles', near(t.annualNet, t.netPerMile * 120000));
+}
+
+console.log('\nbrand deal (marginal)');
+{
+  // The deal's tax is SE tax + the MARGINAL income tax it adds — not household tax.
+  const b = sb.brandDeal(18000, 60000, 2000, 'single', 'OH');
+  ok('brand deal SE tax is on net SE income', b.seTax > 0 && near(b.afterTax, b.dealAmount - b.totalTax));
+  // After-tax must be a sane fraction of the deal (roughly 55–75% kept), not negative.
+  ok('brand-deal after-tax is a sane share of the deal', b.afterTax > b.dealAmount * 0.5 && b.afterTax < b.dealAmount, `${Math.round(b.afterTax)} of ${b.dealAmount}`);
+  ok('brand-deal set-aside is under half the deal', b.setAsidePct < 0.5);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

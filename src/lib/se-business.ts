@@ -196,5 +196,49 @@ export function seRetirement(netProfit: number, age = 40): SERetirementResult {
   };
 }
 
+/* ------------------------------- brand deal -------------------------------- */
+
+export interface BrandDealResult {
+  dealAmount: number;
+  netSE: number;
+  seTax: number;
+  federalTax: number;
+  stateTax: number;
+  /** Tax the deal actually adds — SE tax plus the MARGINAL income tax on top of other income. */
+  totalTax: number;
+  afterTax: number;
+  setAsidePct: number;
+}
+
+/**
+ * Tax on a creator brand deal. The deal (cash plus the fair-market value of any
+ * gifted product) is self-employment income: it owes SE tax and the marginal
+ * income tax it adds on top of the creator's other income. Unlike the legacy
+ * engine's calcBrandDeal, this reports the tax attributable to the deal, not the
+ * whole household's tax, so "after-tax from the deal" means what it says.
+ */
+export function brandDeal(
+  dealAmount: number, otherIncome: number, deductions: number, status = 'single', stateCode = '',
+): BrandDealResult {
+  const deal = Math.max(0, dealAmount);
+  const netSE = Math.max(0, deal - Math.max(0, deductions));
+  const se = calcSETax(netSE, undefined, 0, status);
+  const std = getStandardDeduction(status, false);
+  const agiWith = otherIncome + netSE - se.deductibleHalf;
+  const qbi = calcQBI(netSE, Math.max(0, agiWith - std), status);
+  const fedWith = calcFederalTax(Math.max(0, agiWith - std - qbi), status);
+  const fedWithout = calcFederalTax(Math.max(0, otherIncome - std), status);
+  const federalTax = Math.max(0, fedWith - fedWithout);
+  const stateWith = stateCode ? calcStateTax(agiWith, stateCode, undefined, status).tax : 0;
+  const stateWithout = stateCode ? calcStateTax(otherIncome, stateCode, undefined, status).tax : 0;
+  const stateTax = Math.max(0, stateWith - stateWithout);
+  const totalTax = se.totalSE + federalTax + stateTax;
+  return {
+    dealAmount: deal, netSE, seTax: se.totalSE, federalTax, stateTax, totalTax,
+    afterTax: deal - totalTax,
+    setAsidePct: deal > 0 ? totalTax / deal : 0,
+  };
+}
+
 /** Re-exported so the 1099-K page imports its reconciliation from one place. */
 export { reconcile1099K } from './tax-engine';

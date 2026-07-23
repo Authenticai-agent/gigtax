@@ -446,7 +446,8 @@ export const federal = {
     "amount": 132900,
     "note": "For US citizens/residents working abroad who meet bona fide residence or physical presence test."
   },
-  "gamblingLossDeductionRate": 0.9
+  "gamblingLossDeductionRate": 0.9,
+  "residentialRentalDepreciationYears": 27.5
 } satisfies FederalData;
 
 export const selfEmploymentDeductions = {
@@ -752,7 +753,8 @@ export const retirement = {
     "tier20MaxHOH": 39375,
     "tier50MaxMFJ": 48500,
     "tier20MaxMFJ": 52500
-  }
+  },
+  "earlyWithdrawalPenalty": 0.1
 };
 
 export const acaSubsidy = {
