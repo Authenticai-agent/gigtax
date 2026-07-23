@@ -22,7 +22,7 @@ const terms = termsIn(...DEDUCTION_GROUPS.flatMap((g) => g.items.map((i) => `${i
   description="A working checklist of business deductions for the self-employed in 2026 — including the Augusta rule, solo 401(k), health insurance and employing your children, with the 2026 limits."
 >
   <div class="breadcrumbs">
-    <a href="/self-employed-tax-calculator/">By profession</a> / Deductions checklist
+    <a href="/business-deductions/">By profession</a> / Deductions checklist
   </div>
 
   <section class="hero">
@@ -83,7 +83,7 @@ const terms = termsIn(...DEDUCTION_GROUPS.flatMap((g) => g.items.map((i) => `${i
   </p>
   <ul class="link-columns">
     {PROFESSIONS.map((p) => (
-      <li><a href={`/self-employed-tax-calculator/${p.slug}/`}>{p.name}</a></li>
+      <li><a href={`/business-deductions/${p.slug}/`}>{p.name}</a></li>
     ))}
   </ul>
 
