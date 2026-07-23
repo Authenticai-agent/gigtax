@@ -1,0 +1,71 @@
+---
+/** Lifestyle: eldercare cost projection. */
+import Base from '../../layouts/Base.astro';
+import EldercareCostCalculator from '../../components/calculators/EldercareCostCalculator.tsx';
+import { eldercareCost } from '../../lib/lifestyle';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = eldercareCost('assisted', 'med', 4, 0.04);
+const nursing = eldercareCost('nursing', 'vhigh', 4, 0.04);
+---
+
+<Base
+  title="Eldercare cost calculator 2026"
+  description="What long-term care really costs: assisted living, memory care and nursing homes by state cost tier, projected over the years of care with inflation."
+>
+  <section class="hero">
+    <p class="hero-label">Lifestyle</p>
+    <h1>The cost of eldercare</h1>
+    <p class="tagline">Long-term care is the expense most retirement plans underestimate — and Medicare doesn't cover it. Here's what it runs, by type and state.</p>
+  </section>
+
+  <p>
+    Long-term care is the biggest gap in most retirement plans, because people assume Medicare covers it. It doesn't
+    cover custodial care — help with daily living, which is what most eldercare is. This projects the cost by care
+    type and state cost tier over the years it's needed, so the number is concrete rather than a vague worry.
+  </p>
+
+  <EldercareCostCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>Four years of assisted living in a medium-cost state, versus a nursing home in a very-high-cost state:</p>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th>Monthly</th><th>Total (4 years)</th></tr></thead>
+    <tbody>
+      <tr><td>Assisted living, medium-cost state</td><td>{formatMoney(ex.monthlyCost)}</td><td>{formatMoney(ex.totalCost)}</td></tr>
+      <tr><td>Nursing home, very-high-cost state</td><td>{formatMoney(nursing.monthlyCost)}</td><td>{formatMoney(nursing.totalCost)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Four years of assisted living runs about {formatMoney(ex.totalCost)}; a nursing home in an expensive state can be
+    {' '}{formatMoney(nursing.totalCost)}. These are the numbers that drain a lifetime of savings in a few years —
+    and why long-term-care insurance and Medicaid planning exist.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Doesn't Medicare pay for this?</h3>
+    <p>No. Medicare covers short rehab stays after a hospitalization, not ongoing custodial care — the help with
+      bathing, dressing and meals that makes up most long-term care. That cost falls on savings, insurance, or
+      Medicaid.</p>
+  </div>
+  <div class="faq">
+    <h3>When does Medicaid step in?</h3>
+    <p>Medicaid covers long-term care, but only after you've spent down assets to a low threshold. That's why families
+      plan years ahead — asset transfers have a five-year look-back, so last-minute moves don't work.</p>
+  </div>
+  <div class="faq">
+    <h3>How accurate are these figures?</h3>
+    <p>They're reference US averages by care type, scaled to a broad state cost tier and inflated 4%/year. Real quotes
+      vary widely by facility and city — treat this as a planning range, then get local quotes.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/when-can-i-retire-calculator/">When can I retire?</a> — build the care cost into the plan</li>
+    <li><a href="/net-worth-calculator/">Net worth</a> — what's available to fund it</li>
+    <li><a href="/death-and-money-calculator/">Death &amp; money</a> — what's left afterward</li>
+  </ul>
+
+  <p class="results-note">Care costs are approximate reference averages by state tier, not local quotes. Not financial advice.</p>
+</Base>

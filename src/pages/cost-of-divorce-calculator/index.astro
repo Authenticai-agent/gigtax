@@ -1,0 +1,73 @@
+---
+/** Lifestyle: the money side of a divorce. */
+import Base from '../../layouts/Base.astro';
+import DivorceCostCalculator from '../../components/calculators/DivorceCostCalculator.tsx';
+import { divorceCost } from '../../lib/lifestyle';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = divorceCost({ home: 400000, retirement: 200000, savings: 50000, otherAssets: 20000, debts: 100000, alimonyMonthly: 2000, alimonyYears: 5, childMonthly: 1500, childYears: 10, attorneyYou: 15000, attorneySpouse: 0, mediator: 5000 });
+---
+
+<Base
+  title="Cost of divorce calculator 2026"
+  description="The money side of a divorce: how the marital estate splits, total alimony and child support, and legal fees — the real cost, not just the lawyer's bill."
+>
+  <section class="hero">
+    <p class="hero-label">Lifestyle</p>
+    <h1>The cost of a divorce</h1>
+    <p class="tagline">The lawyer's fee is the small part. The real cost is the asset split, years of support, and running two households instead of one.</p>
+  </section>
+
+  <p>
+    A divorce's true cost isn't the attorney's invoice — it's the division of everything you built together, the
+    support that can run for years, and the jump from one household to two. This lays out the money side: how the
+    marital estate splits, the support totals, and the fees.
+  </p>
+
+  <DivorceCostCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A {formatMoney(670000)} gross estate less {formatMoney(100000)} of debt, with 5 years of alimony and 10 of child support:</p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Net marital estate</td><td>{formatMoney(ex.netMaritalEstate)}</td></tr>
+      <tr><td>Your half of the assets</td><td>{formatMoney(ex.yourAssetShare)}</td></tr>
+      <tr><td>Total alimony</td><td>{formatMoney(ex.totalAlimony)}</td></tr>
+      <tr><td>Total child support</td><td>{formatMoney(ex.totalChildSupport)}</td></tr>
+      <tr><td>Your out-of-pocket (fees + support)</td><td>{formatMoney(ex.totalCost)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(ex.netMaritalEstate)} estate splits to {formatMoney(ex.yourAssetShare)} a side, but the support
+    stream — {formatMoney(ex.totalSupport)} over the years — plus fees is the cash cost that keeps going long after
+    the decree. That ongoing obligation, not the settlement, is what reshapes a budget.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Is everything really split 50/50?</h3>
+    <p>Not always. Community-property states (California, Texas and seven others) lean toward a 50/50 split of marital
+      property; the rest use "equitable distribution," which aims at fair rather than equal and weighs income, length
+      of marriage and more. The even split here is a baseline.</p>
+  </div>
+  <div class="faq">
+    <h3>How is alimony taxed?</h3>
+    <p>For divorces finalized after 2018, alimony is not deductible by the payer and not taxable to the recipient —
+      a reversal of the old rule. Child support has never been taxable or deductible either way.</p>
+  </div>
+  <div class="faq">
+    <h3>What about retirement accounts?</h3>
+    <p>Splitting a 401(k) or pension needs a Qualified Domestic Relations Order (QDRO) to avoid taxes and penalties.
+      Done right, the transfer is tax-free; done wrong, it can trigger a taxable distribution.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/prenup-mismatch-calculator/">Prenup mismatch</a> — the conversation before, not after</li>
+    <li><a href="/net-worth-calculator/">Net worth</a> — what's on the table</li>
+    <li><a href="/marriage-tax-calculator/">Marriage penalty or bonus</a> — filing status after</li>
+  </ul>
+
+  <p class="results-note">An even split is illustrative; real division depends on state law and negotiation. Not legal or financial advice.</p>
+</Base>

@@ -1,0 +1,65 @@
+---
+/** Lifestyle: the true first-year cost of a baby. */
+import Base from '../../layouts/Base.astro';
+import BabyCostCalculator from '../../components/calculators/BabyCostCalculator.tsx';
+import { babyFirstYear } from '../../lib/lifestyle';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = babyFirstYear({ delivery: 5000, prenatal: 2000, gear: 3000, diapersMonthly: 80, formulaMonthly: 150, childcareMonthly: 1200, otherMonthly: 100, salary: 60000, salaryReducedPct: 1, monthsOut: 3, investmentReturn: 0.07 });
+---
+
+<Base
+  title="Cost of having a baby calculator 2026"
+  description="The true first-year cost of a baby — delivery, gear, childcare and the lost income from unpaid leave, usually the biggest line people miss."
+>
+  <section class="hero">
+    <p class="hero-label">Lifestyle</p>
+    <h1>The true cost of a baby's first year</h1>
+    <p class="tagline">Diapers are the least of it. The real first-year number is delivery, childcare, and the income lost to unpaid leave — here it is, all in.</p>
+  </section>
+
+  <p>
+    "Babies are expensive" is easy to say and hard to plan for. The sticker items — delivery, a crib, a stroller —
+    are the visible part. The big ones hide: childcare that can rival rent, and the income lost while a parent takes
+    unpaid leave. This adds up the whole first year, lost income included.
+  </p>
+
+  <BabyCostCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A typical first year — {formatMoney(1200)}/month childcare, a {formatMoney(60000)} salary, 3 months of unpaid leave:</p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>One-off costs (delivery, prenatal, gear)</td><td>{formatMoney(ex.oneOff)}</td></tr>
+      <tr><td>A year of recurring costs</td><td>{formatMoney(ex.annualized)}</td></tr>
+      <tr><td>Lost income (unpaid leave)</td><td>{formatMoney(ex.lostIncome)}</td></tr>
+      <tr><td>Total first-year cost</td><td>{formatMoney(ex.totalFirstYear)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    That's {formatMoney(ex.totalFirstYear)} in year one — and the {formatMoney(ex.lostIncome)} of lost income is the
+    line most budgets forget. Childcare and lost pay together dwarf every diaper and onesie combined.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What's the single biggest cost?</h3>
+    <p>Usually childcare or lost income, not baby gear. Full-time childcare runs {formatMoney(1000)}–{formatMoney(2000)}+
+      a month in much of the country, and unpaid leave removes a chunk of a salary at the same time.</p>
+  </div>
+  <div class="faq">
+    <h3>Does this include tax credits?</h3>
+    <p>No — a child brings the Child Tax Credit (up to $2,200) and possibly the child-and-dependent-care credit, which
+      offset some of this. Use those calculators for the tax side; this is the raw cost.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/child-tax-credit-calculator/">Child tax credit</a> — $2,200 back per child</li>
+    <li><a href="/child-care-tax-credit-calculator/">Child &amp; dependent care credit</a> — offset childcare</li>
+    <li><a href="/budget-calculator/">50/30/20 budget</a> — find room for it</li>
+  </ul>
+
+  <p class="results-note">A cost estimate from your own inputs; the 10-year figure is opportunity cost, not a bill. Not financial advice.</p>
+</Base>

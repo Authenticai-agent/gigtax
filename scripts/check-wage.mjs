@@ -41,6 +41,7 @@ const car = await load('src/lib/comp-audit-risk.ts');
 const eqt = await load('src/lib/equity.ts');
 const pf = await load('src/lib/personal-finance.ts');
 const fin = await load('src/lib/finance.ts');
+const ls = await load('src/lib/lifestyle.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -785,6 +786,33 @@ console.log('\npersonal finance: lifetime tax, profit margin, gender pay gap');
   ok('occupation gap = male − female median', g.occupationGap === 20000 && near(g.occupationGapPct, 20000 / 110000));
   ok('gap vs your gender median is signed', g.yourMedian === 90000 && g.vsYourMedian === -5000);
   ok('lifetime gap invested exceeds the plain sum', g.lifetimeGapInvested > g.lifetimeGapSimple);
+}
+
+/* ---------------------- lifestyle (batch 4) ------------------------------- */
+console.log('\nlifestyle: baby, divorce, eldercare, prenup, death & money');
+{
+  const baby = ls.babyFirstYear({ delivery: 5000, prenatal: 2000, gear: 3000, diapersMonthly: 80, formulaMonthly: 150, childcareMonthly: 1200, otherMonthly: 100, salary: 60000, salaryReducedPct: 1, monthsOut: 3, investmentReturn: 0.07 });
+  ok('baby first-year = one-off + annualized + lost income', baby.totalFirstYear === baby.oneOff + baby.annualized + baby.lostIncome);
+  ok('baby lost income = salary × reduction × months/12', near(baby.lostIncome, 60000 * 1 * 0.25));
+
+  const div = ls.divorceCost({ home: 400000, retirement: 200000, savings: 50000, otherAssets: 20000, debts: 100000, alimonyMonthly: 2000, alimonyYears: 5, childMonthly: 1500, childYears: 10, attorneyYou: 15000, attorneySpouse: 15000, mediator: 5000 });
+  ok('divorce splits the net marital estate in half', div.netMaritalEstate === 570000 && div.yourAssetShare === 285000);
+  ok('divorce support = alimony + child support totals', div.totalSupport === 2000 * 12 * 5 + 1500 * 12 * 10);
+
+  const eld = ls.eldercareCost('nursing', 'vhigh', 3, 0.04);
+  ok('eldercare monthly = base × state tier', eld.monthlyCost === Math.round(8800 * 1.5));
+  ok('eldercare total inflates each year over the span', eld.totalCost > eld.annualCost * 3);
+
+  const pn = ls.prenupMismatch({ aIncome: 200000, aAssets: 300000, aDebt: 0, bIncome: 40000, bAssets: 5000, bDebt: 90000 });
+  ok('a big income + net-worth gap scores a wide mismatch', pn.mismatchScore > 60 && pn.band === 'wide', `${pn.mismatchScore}`);
+  ok('two identical partners score near zero', ls.prenupMismatch({ aIncome: 80000, aAssets: 50000, aDebt: 10000, bIncome: 80000, bAssets: 50000, bDebt: 10000 }).mismatchScore < 15);
+
+  // Estate projected under the $15m exclusion from the verified dataset.
+  const dm = ls.deathAndMoney({ netWorth: 2000000, annualSavings: 50000, investmentReturn: 0.06, currentAge: 50, deathAge: 85, charity: 0, stateCode: 'TX', priorExemptionUsed: 0 });
+  ok('death & money projects net worth forward to death', dm.projectedEstate > 2000000);
+  ok('an estate under $15m owes no federal estate tax', dm.projectedEstate < 15000000 ? dm.federalEstateTax === 0 : dm.federalEstateTax > 0);
+  const big = ls.deathAndMoney({ netWorth: 20000000, annualSavings: 0, investmentReturn: 0, currentAge: 84, deathAge: 85, charity: 0, stateCode: 'TX', priorExemptionUsed: 0 });
+  ok('a $20m estate owes 40% over the $15m exclusion', near(big.federalEstateTax, 2000000), `${big.federalEstateTax}`);
 }
 
 /* ---------------------- finance primitives -------------------------------- */

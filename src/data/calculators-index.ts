@@ -30,4 +30,10 @@ export const personalFinance: CalcEntry[] = [
   { slug: 'profit-margin-calculator', title: 'Profit margin', blurb: 'gross margin, net margin and markup', group: 'Income & work' },
 ];
 
-export const lifestyle: CalcEntry[] = [];
+export const lifestyle: CalcEntry[] = [
+  { slug: 'cost-of-baby-calculator', title: 'Cost of a baby', blurb: 'the true first-year cost, lost income and all', group: 'Life events' },
+  { slug: 'cost-of-divorce-calculator', title: 'Cost of divorce', blurb: 'asset split, support and legal fees', group: 'Life events' },
+  { slug: 'eldercare-cost-calculator', title: 'Eldercare cost', blurb: 'assisted living, memory and nursing care by state', group: 'Life events' },
+  { slug: 'prenup-mismatch-calculator', title: 'Prenup financial mismatch', blurb: 'how far apart two partners’ finances are', group: 'Life events' },
+  { slug: 'death-and-money-calculator', title: 'Death & money', blurb: 'will your projected estate owe tax?', group: 'Life events' },
+];
