@@ -1,29 +1,30 @@
 {
   "_meta": {
     "purpose": "Per-state capital-gains treatment for a future state layer on the Phase 11 investment calculators. The federal calculators ship WITHOUT this layer; it turns on only when this file is signed off and a state layer is built.",
-    "status": "RESEARCHED 2026-07 — awaiting owner sign-off. Not yet used by the site.",
+    "status": "SIGNED OFF by owner 2026-07-22. Reviewer flags resolved. Still not wired into the site until a state layer is built.",
     "verified": "2026-07",
-    "signedOffBy": null,
+    "signedOffBy": "owner",
     "rule": "No figure enters this file without a source URL on a state government / revenue-department domain. A null is a correct, expected value; a guessed number is not.",
     "researchNote": "Every non-ordinary jurisdiction (special / reduced_rate / excluded / none) was document-verified against a state government source. The ~34 plain 'ordinary' jurisdictions cite each state's DOR individual-income-tax landing page (they conform to federal taxable income and tax gains at ordinary rates) rather than a deep-linked confirmation per state.",
     "schema": {
       "treatment": "'ordinary' | 'excluded' | 'special' | 'reduced_rate' | 'none' | null. ordinary = taxed at the state's normal income rate; excluded = a % of long-term gain is exempt; special = a standalone excise distinct from income tax (Washington); reduced_rate = a preferential flat rate replaces the ordinary rate on long-term gain (Hawaii, Montana); none = no state tax on the gain.",
-      "ordinaryRateApplies": "boolean|null — true when gains are taxed at the state's ordinary income rate.",
-      "ltcgExclusionPct": "number|null — fraction of LONG-term gain excluded (0..1). Only when treatment='excluded'.",
-      "specialRate": "number|null — the flat rate when treatment='special' or 'reduced_rate'.",
-      "specialRateThreshold": "number|null — the gain amount above which specialRate applies (Washington's annual exemption).",
+      "ordinaryRateApplies": "boolean|null \u2014 true when gains are taxed at the state's ordinary income rate.",
+      "ltcgExclusionPct": "number|null \u2014 fraction of LONG-term gain excluded (0..1). Only when treatment='excluded'.",
+      "specialRate": "number|null \u2014 the flat rate when treatment='special' or 'reduced_rate'.",
+      "specialRateThreshold": "number|null \u2014 the gain amount above which specialRate applies (Washington's annual exemption).",
       "shortTermTreatment": "'ordinary' | 'same_as_long' | null.",
-      "source": "string|null — URL on a state government / revenue-department domain.",
+      "source": "string|null \u2014 URL on a state government / revenue-department domain.",
       "confidence": "'high'|'medium'|'low'|null.",
       "note": "string|null."
     },
     "reviewerFlags": [
-      "MO: 2025 HB 594 may exempt individual capital gains entirely — marked 'ordinary' (confidence medium); confirm effective date/scope, could be 'none' for 2026.",
-      "NM: 40% exclusion is business-sale-only since Jan 1 2025 — marked 'ordinary' for general portfolio gains (confidence medium); confirm 2026 PIT-1/PIT-B.",
-      "WA: specialRateThreshold ($278,000) is the 2025 exemption; the 2026 inflation-adjusted figure was not yet published. WA also adds 2.9% over $1M (combined 9.9%).",
-      "HI and MT are reduced-RATE states (preferential flat rate), classified 'reduced_rate' rather than 'special' (WA-style excise) or 'excluded'.",
-      "Ordinary-state sources are DOR landing pages, not per-state deep-linked confirmations."
-    ]
+      "RESOLVED \u2014 MO: HB 594 (July 10, 2025) grants a 100% individual capital-gains deduction; reclassified 'none'.",
+      "RESOLVED \u2014 NM: general gains are ordinary (100% deduction only on the first $2,500; 40% deduction is business-sale-only); kept 'ordinary'.",
+      "OPEN (non-blocking) \u2014 WA: specialRateThreshold is the 2025 figure ($278,000, indexed); refresh with the 2026 amount when DOR publishes it.",
+      "ACCEPTED \u2014 HI and MT classified 'reduced_rate' (preferential rate), distinct from WA's 'special' excise.",
+      "ACCEPTED \u2014 ordinary-state sources are DOR landing pages, not per-state deep links."
+    ],
+    "signedOffDate": "2026-07-22"
   },
   "AL": {
     "treatment": "ordinary",
@@ -290,15 +291,15 @@
     "note": "Flat 4.4% (2025) on gains as ordinary income. Exemption exists only for gains on stock of certain Mississippi domestic companies."
   },
   "MO": {
-    "treatment": "ordinary",
-    "ordinaryRateApplies": true,
+    "treatment": "none",
+    "ordinaryRateApplies": false,
     "ltcgExclusionPct": null,
     "specialRate": null,
     "specialRateThreshold": null,
     "shortTermTreatment": null,
     "source": "https://dor.mo.gov/taxation/individual/",
-    "confidence": "medium",
-    "note": "REVIEWER FLAG: Missouri enacted 2025 legislation (HB 594) to exempt individual capital gains. Marked ordinary pending confirmation of effective date/scope; could be 'none' for 2025/2026. Verify against DOR guidance before sign-off."
+    "confidence": "high",
+    "note": "House Bill 594 (signed July 10, 2025) lets individuals deduct 100% of federal capital gains when computing Missouri taxable income, for tax years beginning on or after January 1, 2025. As of mid-2026 this effectively eliminates Missouri income tax on individual capital gains, subject to future legislation. Owner-confirmed."
   },
   "MT": {
     "treatment": "reduced_rate",
@@ -363,8 +364,8 @@
     "specialRateThreshold": null,
     "shortTermTreatment": "ordinary",
     "source": "https://www.tax.newmexico.gov/individuals/online-services-overview/personal-income-tax-forms/",
-    "confidence": "medium",
-    "note": "REVIEWER FLAG: CHANGED effective Jan 1, 2025 (Sec. 7-2-34). General net capital gains now get only a flat deduction up to $2,500; the 40% deduction (on up to $1M) now applies ONLY to the sale of a New Mexico business. So for typical portfolio gains NM is effectively ordinary. Confirm against 2026 PIT-1/PIT-B instructions before sign-off."
+    "confidence": "high",
+    "note": "For tax years beginning on or after January 1, 2025 (Sec. 7-2-34): a general deduction of 100% of up to $2,500 of net capital gain, plus a separate 40% deduction only for qualifying gains from the sale of a business (up to a statutory cap). Beyond these amounts, most capital gains are taxed as ordinary income. Treated 'ordinary' for the general case. Owner-confirmed."
   },
   "NY": {
     "treatment": "ordinary",
@@ -540,7 +541,7 @@
     "shortTermTreatment": null,
     "source": "https://dor.wa.gov/taxes-rates/other-taxes/capital-gains-tax",
     "confidence": "high",
-    "note": "Standalone 7% excise on LONG-term capital gains (RCW 82.87) above an annual standard deduction; PLUS an added 2.9% on gains over $1,000,000 (combined 9.9%), effective tax year 2025 (ESSB 5813). REVIEWER FLAG: specialRateThreshold $278,000 is the 2025 inflation-adjusted exemption; the 2026 figure was not yet published and will be higher. Short-term gains are NOT subject to the tax."
+    "note": "Standalone 7% excise on LONG-term capital gains (RCW 82.87) above an annual standard deduction that is indexed for inflation; PLUS an added 2.9% on gains over $1,000,000 (combined 9.9%), effective tax year 2025 (ESSB 5813). specialRateThreshold $278,000 is the 2025 standard deduction; the Department of Revenue publishes updated (higher) thresholds for later years as inflation adjustments take effect. Short-term gains are NOT subject to the tax. Owner-confirmed; refresh the 2026 threshold when DOR publishes it."
   },
   "WV": {
     "treatment": "ordinary",
