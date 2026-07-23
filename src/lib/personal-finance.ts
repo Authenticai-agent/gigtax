@@ -9,6 +9,11 @@
  * worth medians — is labeled as reference data, not a target.
  */
 import { futureValueLump, futureValueAnnuity, payoffMonths, loanPayment } from './finance';
+import { calcFederalTax, calcStateTax, getStandardDeduction } from './tax-engine';
+import { federal } from '../data/federal';
+import type { Occupation } from '../data/occupations-pay';
+
+const SS_WAGE_BASE: number = (federal as any).selfEmployment.socialSecurityWageBase;
 
 /* --------------------------------------------------------------- net worth -- */
 
@@ -326,6 +331,108 @@ export function subscriptionAudit(monthlyTotal: number, annualReturn: number, ye
     annualTotal: monthlyTotal * 12,
     investedOverYears: Math.round(futureValueAnnuity(monthlyTotal, annualReturn, years)),
     years,
+  };
+}
+
+/* ------------------------------------------------- lifetime IRS tax paid -- */
+
+export interface LifetimeTaxInput {
+  currentAge: number; careerStartAge: number; retireAge: number;
+  currentIncome: number; incomeGrowth: number; contribution401kPct: number;
+  status: string; stateCode: string;
+}
+export interface LifetimeTaxResult {
+  totalIncome: number; totalFederal: number; totalState: number;
+  totalEmployeeFICA: number; totalEmployerFICA: number;
+  totalPersonalPaid: number; totalIRSCollected: number;
+  effectiveLifetimeRate: number; workingYears: number;
+}
+
+/**
+ * A lifetime running total of tax on labor income across a whole career, front to
+ * back: federal income tax, state income tax, and FICA. Every rate is from the
+ * verified tax dataset — federal and state via the engine, FICA at the statutory
+ * 6.2%/1.45% up to the dataset Social Security wage base. Income is projected from
+ * the current salary, growing forward and de-growing to the career start.
+ */
+export function lifetimeTax(i: LifetimeTaxInput): LifetimeTaxResult {
+  let totalIncome = 0, totalFederal = 0, totalState = 0, totalEmployeeFICA = 0, totalEmployerFICA = 0;
+  const stdDed = getStandardDeduction(i.status, false);
+
+  for (let age = i.careerStartAge; age < i.retireAge; age++) {
+    const income = i.currentIncome * Math.pow(1 + i.incomeGrowth, age - i.currentAge);
+    const afterRetirement = income * (1 - i.contribution401kPct);
+    const fedTaxable = Math.max(0, afterRetirement - stdDed);
+    totalFederal += calcFederalTax(fedTaxable, i.status);
+    totalState += calcStateTax(afterRetirement, i.stateCode, undefined, i.status).tax || 0;
+    const oneSideFICA = Math.min(income, SS_WAGE_BASE) * 0.062 + income * 0.0145;
+    totalEmployeeFICA += oneSideFICA;
+    totalEmployerFICA += oneSideFICA;
+    totalIncome += income;
+  }
+
+  const totalPersonalPaid = totalFederal + totalState + totalEmployeeFICA;
+  return {
+    totalIncome: Math.round(totalIncome),
+    totalFederal: Math.round(totalFederal),
+    totalState: Math.round(totalState),
+    totalEmployeeFICA: Math.round(totalEmployeeFICA),
+    totalEmployerFICA: Math.round(totalEmployerFICA),
+    totalPersonalPaid: Math.round(totalPersonalPaid),
+    totalIRSCollected: Math.round(totalPersonalPaid + totalEmployerFICA),
+    effectiveLifetimeRate: totalIncome > 0 ? totalPersonalPaid / totalIncome : 0,
+    workingYears: Math.max(0, i.retireAge - i.careerStartAge),
+  };
+}
+
+/* ---------------------------------------------------------- profit margin -- */
+
+export interface ProfitMarginResult {
+  revenue: number; cogs: number; totalCosts: number;
+  grossProfit: number; grossMargin: number;
+  netProfit: number; netMargin: number; markup: number;
+}
+
+/** Gross margin, net margin and markup from revenue and costs. */
+export function profitMargin(revenue: number, cogs: number, operating: number, other = 0): ProfitMarginResult {
+  const totalCosts = cogs + operating + other;
+  const grossProfit = Math.max(0, revenue - cogs);
+  const netProfit = revenue - totalCosts;
+  return {
+    revenue, cogs, totalCosts, grossProfit, netProfit,
+    grossMargin: revenue > 0 ? grossProfit / revenue : 0,
+    netMargin: revenue > 0 ? netProfit / revenue : 0,
+    markup: cogs > 0 ? (revenue - cogs) / cogs : 0,
+  };
+}
+
+/* --------------------------------------------------------- gender pay gap -- */
+
+export interface PayGapResult {
+  occupationGap: number; occupationGapPct: number;
+  yourMedian: number; vsYourMedian: number;
+  lifetimeGapSimple: number; lifetimeGapInvested: number;
+}
+
+/**
+ * The male/female median gap for an occupation, where a salary sits against the
+ * relevant median, and the lifetime cost of the gap — the annual difference
+ * carried over the remaining career, both as a plain sum and invested. The
+ * medians are reference figures, never a claim about any individual's pay.
+ */
+export function genderPayGap(
+  occ: Occupation, userSalary: number, gender: 'male' | 'female' | 'all',
+  careerYearsRemaining: number, investmentReturn: number,
+): PayGapResult {
+  const gap = occ.maleMedian - occ.femaleMedian;
+  const yourMedian = gender === 'female' ? occ.femaleMedian : gender === 'male' ? occ.maleMedian : occ.median;
+  return {
+    occupationGap: gap,
+    occupationGapPct: occ.maleMedian > 0 ? gap / occ.maleMedian : 0,
+    yourMedian,
+    vsYourMedian: userSalary - yourMedian,
+    lifetimeGapSimple: gap * careerYearsRemaining,
+    lifetimeGapInvested: Math.round(futureValueAnnuity(gap / 12, investmentReturn, careerYearsRemaining)),
   };
 }
 

@@ -1,0 +1,73 @@
+---
+/** Personal finance: profit margin. */
+import Base from '../../layouts/Base.astro';
+import ProfitMarginCalculator from '../../components/calculators/ProfitMarginCalculator.tsx';
+import { profitMargin } from '../../lib/personal-finance';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = profitMargin(10000, 4000, 1500, 0);
+---
+
+<Base
+  title="Profit margin calculator 2026"
+  description="Revenue and costs to gross margin, net margin and markup in one view — the numbers Etsy, eBay, Amazon and Shopify sellers need before pricing a product."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance · business</p>
+    <h1>Profit margin calculator</h1>
+    <p class="tagline">Gross margin, net margin and markup from your revenue and costs — the three numbers to know before you price anything.</p>
+  </section>
+
+  <p>
+    "It sold for $40" tells you nothing about whether you made money. Profit margin does. This turns revenue and
+    costs into gross margin (after direct costs), net margin (after everything), and markup — and keeps markup and
+    margin straight, which is where most pricing mistakes start.
+  </p>
+
+  <ProfitMarginCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>{formatMoney(10000)} of revenue, {formatMoney(4000)} cost of goods, {formatMoney(1500)} operating expenses:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Gross profit</td><td>{formatMoney(ex.grossProfit)}</td></tr>
+      <tr><td>Gross margin</td><td>{formatPct(ex.grossMargin)}</td></tr>
+      <tr><td>Net profit</td><td>{formatMoney(ex.netProfit)}</td></tr>
+      <tr><td>Net margin</td><td>{formatPct(ex.netMargin)}</td></tr>
+      <tr><td>Markup on cost</td><td>{formatPct(ex.markup)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    A {formatPct(ex.grossMargin)} gross margin after product costs, {formatPct(ex.netMargin)} net after every
+    expense — {formatMoney(ex.netProfit)} of real profit. The {formatPct(ex.markup)} markup on cost describes the
+    same pricing from the cost side; quoting one when you mean the other is how sellers accidentally underprice.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What's the difference between margin and markup?</h3>
+    <p>Margin is measured on the selling price: (price − cost) / price. Markup is measured on cost: (price − cost) /
+      cost. A 50% margin is a 100% markup. They describe the same price from two directions, and mixing them up
+      underprices your product.</p>
+  </div>
+  <div class="faq">
+    <h3>What's a healthy margin?</h3>
+    <p>It varies by business, but for small e-commerce a gross margin of 40–60% and a net margin of 10–20% are common
+      targets. A net margin under 5% leaves little room for a bad month.</p>
+  </div>
+  <div class="faq">
+    <h3>Is this profit the same as taxable income?</h3>
+    <p>Roughly, net profit is what flows to your Schedule C bottom line — but tax adds its own adjustments (the QBI
+      deduction, self-employment tax, the home-office deduction). Use the self-employment calculators for the tax side.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/seller-profit-calculator/">Seller profit</a> — margin plus platform tax</li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — tax on the profit</li>
+    <li><a href="/freelance-rate-calculator/">Freelance rate</a> — pricing your time instead</li>
+  </ul>
+
+  <p class="results-note">Business arithmetic; not tax or financial advice.</p>
+</Base>

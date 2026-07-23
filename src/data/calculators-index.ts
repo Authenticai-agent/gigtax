@@ -25,6 +25,9 @@ export const personalFinance: CalcEntry[] = [
   { slug: 'salary-by-city-calculator', title: 'Salary by city', blurb: 'what your pay is worth in another city', group: 'Big decisions' },
   { slug: 'college-roi-calculator', title: 'College degree ROI', blurb: 'lifetime earnings with a degree vs without', group: 'Big decisions' },
   { slug: 'college-savings-gap-calculator', title: 'College savings gap', blurb: 'projected 529 savings vs the future cost', group: 'Big decisions' },
+  { slug: 'lifetime-tax-calculator', title: 'Lifetime tax paid', blurb: 'federal, state and FICA across a whole career', group: 'Income & work' },
+  { slug: 'gender-pay-gap-calculator', title: 'Gender pay gap', blurb: 'the gap in your occupation, and its lifetime cost', group: 'Income & work' },
+  { slug: 'profit-margin-calculator', title: 'Profit margin', blurb: 'gross margin, net margin and markup', group: 'Income & work' },
 ];
 
 export const lifestyle: CalcEntry[] = [];

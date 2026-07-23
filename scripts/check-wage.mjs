@@ -766,6 +766,27 @@ console.log('\npersonal finance: buy-vs-rent, college ROI, savings gap, city, su
   ok('subscription annual = 12× monthly, invested value beats spend', sub.annualTotal === 1200 && sub.investedOverYears > 100 * 12 * 20);
 }
 
+/* ---------------------- personal finance (batch 3) ------------------------ */
+console.log('\npersonal finance: lifetime tax, profit margin, gender pay gap');
+{
+  const lt = pf.lifetimeTax({ currentAge: 40, careerStartAge: 22, retireAge: 65, currentIncome: 75000, incomeGrowth: 0.03, contribution401kPct: 0, status: 'single', stateCode: 'CA' });
+  ok('lifetime tax sums federal + state + FICA', near(lt.totalPersonalPaid, lt.totalFederal + lt.totalState + lt.totalEmployeeFICA), `${lt.totalPersonalPaid}`);
+  ok('lifetime IRS collected adds employer FICA', lt.totalIRSCollected === lt.totalPersonalPaid + lt.totalEmployerFICA);
+  ok('lifetime effective rate is a sane share of income', lt.effectiveLifetimeRate > 0.1 && lt.effectiveLifetimeRate < 0.5, `${(lt.effectiveLifetimeRate * 100).toFixed(1)}%`);
+  ok('a no-income-tax state pays less lifetime tax', pf.lifetimeTax({ currentAge: 40, careerStartAge: 22, retireAge: 65, currentIncome: 75000, incomeGrowth: 0.03, contribution401kPct: 0, status: 'single', stateCode: 'TX' }).totalPersonalPaid < lt.totalPersonalPaid);
+
+  const pm = pf.profitMargin(10000, 4000, 1500, 0);
+  ok('gross margin = (revenue − COGS) / revenue', near(pm.grossMargin, 0.6));
+  ok('net margin = (revenue − all costs) / revenue', near(pm.netMargin, 0.45) && pm.netProfit === 4500);
+  ok('a 50% margin is a 100% markup', near(pf.profitMargin(200, 100, 0, 0).markup, 1));
+
+  const occ = { name: 'Test', median: 100000, maleMedian: 110000, femaleMedian: 90000, note: '' };
+  const g = pf.genderPayGap(occ, 85000, 'female', 25, 0.07);
+  ok('occupation gap = male − female median', g.occupationGap === 20000 && near(g.occupationGapPct, 20000 / 110000));
+  ok('gap vs your gender median is signed', g.yourMedian === 90000 && g.vsYourMedian === -5000);
+  ok('lifetime gap invested exceeds the plain sum', g.lifetimeGapInvested > g.lifetimeGapSimple);
+}
+
 /* ---------------------- finance primitives -------------------------------- */
 {
   ok('annuity FV exceeds total contributions', fin.futureValueAnnuity(500, 0.07, 30) > 500 * 12 * 30);

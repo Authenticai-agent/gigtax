@@ -1,0 +1,74 @@
+---
+/** Personal finance: gender pay gap. */
+import Base from '../../layouts/Base.astro';
+import GenderPayGapCalculator from '../../components/calculators/GenderPayGapCalculator.tsx';
+import { genderPayGap } from '../../lib/personal-finance';
+import { OCCUPATIONS } from '../../data/occupations-pay';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const phys = OCCUPATIONS.find((o) => o.name.startsWith('Physician'))!;
+const ex = genderPayGap(phys, 208000, 'female', 25, 0.07);
+---
+
+<Base
+  title="Gender pay gap calculator 2026"
+  description="See the male/female median pay gap in your occupation, where your salary sits, and the lifetime cost of the gap — compounded over a career if invested."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance</p>
+    <h1>Gender pay gap calculator</h1>
+    <p class="tagline">The gap is usually quoted as a single percentage. This shows it in dollars for your occupation — and what it compounds to over a career.</p>
+  </section>
+
+  <p>
+    The pay gap is easy to wave away as a statistic. In dollars, over a career, it isn't. This shows the male/female
+    median gap for your occupation, where your own salary falls against the relevant median, and — the part that
+    lands hardest — what that annual gap grows to if the difference had been invested over your remaining career.
+  </p>
+
+  <GenderPayGapCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>Physicians and surgeons — one of the widest gaps of any occupation — for a woman earning the female median, 25 years left:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Median gap (men vs women)</td><td>{formatMoney(ex.occupationGap)}</td></tr>
+      <tr><td>Women earn less by</td><td>{formatPct(ex.occupationGapPct)}</td></tr>
+      <tr><td>Lifetime cost of the gap (plain sum)</td><td>{formatMoney(ex.lifetimeGapSimple)}</td></tr>
+      <tr><td>Lifetime cost if invested (at 7%)</td><td>{formatMoney(ex.lifetimeGapInvested)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    A {formatMoney(ex.occupationGap)} annual gap — {formatPct(ex.occupationGapPct)} — is {formatMoney(ex.lifetimeGapSimple)}
+    {' '}across 25 years in plain dollars, and {formatMoney(ex.lifetimeGapInvested)} if that difference had been
+    invested. The compounding is the real story: an annual gap becomes a retirement-sized number.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Where do the occupation figures come from?</h3>
+    <p>They're reference medians for each occupation in the style of Bureau of Labor Statistics data — illustrative,
+      not a live feed. They describe typical pay for the field, not your pay, which you enter yourself.</p>
+  </div>
+  <div class="faq">
+    <h3>Does the gap mean equal work is paid unequally?</h3>
+    <p>Part of a raw gap reflects differences in role, specialty, hours and time out of the workforce; part remains
+      after those are accounted for. This shows the raw median difference — the starting point, not the whole
+      explanation.</p>
+  </div>
+  <div class="faq">
+    <h3>What can I do with this?</h3>
+    <p>Use it as leverage: knowing the median for your occupation and where you sit is the groundwork for a
+      negotiation. The lifetime figure is why closing even a small gap early is worth the harder conversation now.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/raise-calculator/">Raise calculator</a> — is an offer a real raise?</li>
+    <li><a href="/salary-by-city-calculator/">Salary by city</a> — pay in context of cost of living</li>
+    <li><a href="/net-worth-calculator/">Net worth</a> — where the compounding lands</li>
+  </ul>
+
+  <p class="results-note">Occupation medians are approximate reference data, not a statement about individual pay. Not financial advice.</p>
+</Base>

@@ -1,0 +1,78 @@
+---
+/** Personal finance: lifetime IRS tax paid. */
+import Base from '../../layouts/Base.astro';
+import LifetimeTaxCalculator from '../../components/calculators/LifetimeTaxCalculator.tsx';
+import { lifetimeTax } from '../../lib/personal-finance';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = lifetimeTax({ currentAge: 40, careerStartAge: 22, retireAge: 65, currentIncome: 75000, incomeGrowth: 0.03, contribution401kPct: 0.06, status: 'single', stateCode: 'CA' });
+const tx = lifetimeTax({ currentAge: 40, careerStartAge: 22, retireAge: 65, currentIncome: 75000, incomeGrowth: 0.03, contribution401kPct: 0.06, status: 'single', stateCode: 'TX' });
+---
+
+<Base
+  title="Lifetime tax calculator 2026 — what you pay over a career"
+  description="A running total of federal, state and FICA tax on your labor income across a whole career — and how much a no-income-tax state or a 401(k) changes it."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance · tax</p>
+    <h1>Lifetime tax paid</h1>
+    <p class="tagline">Tax is paid in slices you barely notice. Added up across a whole career, the total is a number worth seeing — here it is.</p>
+  </section>
+
+  <p>
+    Each paycheck's tax feels small, and that's the point — it's withheld before you see it. Summed across a
+    40-plus-year career, federal income tax, state income tax and FICA add up to one of the largest expenses of your
+    life. This projects that lifetime total from your income and career span, using the same verified 2026 rates as
+    the rest of the site.
+  </p>
+
+  <LifetimeTaxCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A {formatMoney(75000)} earner in California, age 22 to 65, 3% raises, contributing 6% to a 401(k):</p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Over the career</th></tr></thead>
+    <tbody>
+      <tr><td>Total career income</td><td>{formatMoney(ex.totalIncome)}</td></tr>
+      <tr><td>Federal income tax</td><td>{formatMoney(ex.totalFederal)}</td></tr>
+      <tr><td>California income tax</td><td>{formatMoney(ex.totalState)}</td></tr>
+      <tr><td>Your FICA</td><td>{formatMoney(ex.totalEmployeeFICA)}</td></tr>
+      <tr><td>Total you personally pay</td><td>{formatMoney(ex.totalPersonalPaid)}</td></tr>
+      <tr><td>Effective lifetime rate</td><td>{formatPct(ex.effectiveLifetimeRate)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    That's {formatMoney(ex.totalPersonalPaid)} in tax over a career — {formatPct(ex.effectiveLifetimeRate)} of
+    lifetime income, before counting the {formatMoney(ex.totalEmployerFICA)} of employer FICA the government also
+    collects on your labor. The same career in Texas, with no state income tax, pays
+    {' '}{formatMoney(ex.totalPersonalPaid - tx.totalPersonalPaid)} less — that's the lifetime value of the state line.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Does this include employer FICA?</h3>
+    <p>It shows both: what you personally pay from your paychecks, and the total the government collects including
+      your employer's matching FICA. Employer FICA is a tax on your labor you never see on a pay stub, but it's part
+      of the cost of employing you.</p>
+  </div>
+  <div class="faq">
+    <h3>Does it include sales, property or gas tax?</h3>
+    <p>No — only taxes on labor income: federal, state and FICA. Add consumption and property taxes and the true
+      lifetime total would be materially higher.</p>
+  </div>
+  <div class="faq">
+    <h3>How do I lower the number?</h3>
+    <p>Three big levers: pre-tax contributions (401(k), HSA, traditional IRA) that cut taxable income now; living in
+      a no-income-tax state, which zeroes the state line; and, for the self-employed, entity choices like an S-corp
+      election. The calculator lets you test the first two directly.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — one year's version of this</li>
+    <li><a href="/self-employed-retirement-calculator/">Self-employed retirement</a> — shelter more, pre-tax</li>
+    <li><a href="/fire-calculator/">FIRE calculator</a> — the wealth side of the same career</li>
+  </ul>
+
+  <p class="results-note">A projection from today's income across a whole career, on 2026 rates — an estimate, not a record. Not tax or financial advice.</p>
+</Base>
