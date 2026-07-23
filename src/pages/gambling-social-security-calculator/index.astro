@@ -1,0 +1,91 @@
+---
+/** Hub: gambling's impact on Social Security taxability. */
+import Base from '../../layouts/Base.astro';
+import GamblingSocialSecurityCalculator from '../../components/calculators/GamblingSocialSecurityCalculator.tsx';
+import { gamblingSocialSecurityImpact } from '../../lib/gambling';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = gamblingSocialSecurityImpact(30000, 20000, 24000, 'single');
+---
+
+<Base
+  title="Gambling & Social Security tax calculator 2026"
+  description="How a gambling win raises the taxable portion of your Social Security benefits — the hidden second tax that catches retirees, up to 85% of benefits."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Gambling &amp; Social Security calculator</h1>
+    <p class="tagline">A win is taxed twice for a retiree: once on the winnings, and again by making more of your benefits taxable.</p>
+  </section>
+
+  <p>
+    How much of your Social Security is taxed depends on your other income — and
+    gambling winnings count. A win can push more of your benefits into the taxable
+    range, up to 85% of them, on top of the tax on the winnings themselves. This
+    shows that hidden second tax, which retirees routinely miss.
+  </p>
+
+  <GamblingSocialSecurityCalculator client:load />
+
+  <h2>Worked example — a {formatMoney(30000)} win on {formatMoney(24000)} of benefits</h2>
+  <p>
+    A single retiree with {formatMoney(24000)} of Social Security and {formatMoney(20000)}
+    of other income has a {formatMoney(30000)} gambling win:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Figure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Taxable Social Security without the win</td><td>{formatMoney(ex.taxableSSWithout)}</td></tr>
+      <tr><td>Taxable Social Security with the win</td><td>{formatMoney(ex.taxableSSWith)}</td></tr>
+      <tr><td>Extra benefits pulled into tax</td><td>{formatMoney(ex.extraTaxableSS)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The win drags an extra {formatMoney(ex.extraTaxableSS)} of Social Security into
+    taxable income — so the retiree is taxed not just on the {formatMoney(30000)} win
+    but on {formatMoney(ex.extraTaxableSS)} more of their benefits too. That is why a
+    windfall can bump a retiree's effective tax rate far more than the winnings alone
+    suggest.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How is Social Security taxed?</h3>
+    <p data-review="legal">
+      By a "combined income" test: half your benefits plus your other income. Below
+      $25,000 (single) or $32,000 (joint) none is taxed; above higher thresholds up
+      to 85% of benefits becomes taxable. Gambling winnings raise the other-income
+      side, pushing more benefits into that range.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why is this a "second" tax?</h3>
+    <p>
+      Because one win triggers two tax increases: the tax on the winnings, and the
+      tax on the additional Social Security the win makes taxable. A modest win can
+      therefore raise your bill by more than its own tax — the marginal rate on that
+      band can effectively exceed your bracket.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I avoid it?</h3>
+    <p>
+      Not once the win happens — it is in your income for the year. What helps is
+      timing (spreading realized income across years where you control it), and
+      knowing that a big win in a year you also draw benefits stacks the two. This is
+      why lottery annuities appeal to some retirees over a lump sum.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/gambling-tax-calculator/">Gambling tax calculator</a> — tax on the winnings</li>
+    <li><a href="/benefits-tax-calculator/">Benefits calculator</a> — Social Security taxation</li>
+    <li><a href="/gambling-aca-subsidy-calculator/">Gambling &amp; ACA subsidy</a> — the same effect on coverage</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. The taxable-benefit thresholds are not
+    inflation-indexed. Not tax advice.
+  </p>
+</Base>

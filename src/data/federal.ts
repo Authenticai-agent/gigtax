@@ -447,7 +447,8 @@ export const federal = {
     "note": "For US citizens/residents working abroad who meet bona fide residence or physical presence test."
   },
   "gamblingLossDeductionRate": 0.9,
-  "residentialRentalDepreciationYears": 27.5
+  "residentialRentalDepreciationYears": 27.5,
+  "gamblingWithholdingRate": 0.24
 } satisfies FederalData;
 
 export const selfEmploymentDeductions = {

@@ -1,0 +1,98 @@
+---
+/** Hub: gambling's impact on ACA subsidies. */
+import Base from '../../layouts/Base.astro';
+import GamblingACACalculator from '../../components/calculators/GamblingACACalculator.tsx';
+import { gamblingACAImpact } from '../../lib/gambling';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = gamblingACAImpact(30000, 40000, 2, 1000);
+const cliff = gamblingACAImpact(50000, 80000, 2, 1000);
+---
+
+<Base
+  title="Gambling & ACA subsidy calculator 2026 — the cliff"
+  description="How a gambling win cuts your ACA premium subsidy by raising MAGI — and how crossing the 400% poverty cliff in 2026 can wipe out the whole subsidy."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Gambling &amp; ACA subsidy calculator</h1>
+    <p class="tagline">A win that raises your income can cost you your health-insurance subsidy — sometimes more than the win itself.</p>
+  </section>
+
+  <p>
+    Your ACA premium subsidy is set by your modified AGI, and gambling winnings
+    raise it. A win shrinks the subsidy — and in 2026, crossing 400% of the poverty
+    line loses it entirely, a hard cliff. Because the subsidy is reconciled at tax
+    time, a mid-year win can turn into a surprise clawback. This shows the hit.
+  </p>
+
+  <GamblingACACalculator client:load />
+
+  <h2>Worked example — a {formatMoney(30000)} win on {formatMoney(40000)} of income</h2>
+  <p>
+    A household of two with a {formatMoney(1000)}-a-month benchmark plan:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th>Monthly subsidy</th></tr></thead>
+    <tbody>
+      <tr><td>Before the win (MAGI {formatMoney(40000)})</td><td>{formatMoney(ex.subsidyWithout)}</td></tr>
+      <tr><td>After a {formatMoney(30000)} win (MAGI {formatMoney(70000)})</td><td>{formatMoney(ex.subsidyWith)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The win cuts the monthly subsidy by {formatMoney(ex.subsidyLost)} — {formatMoney(ex.subsidyLost * 12)}
+    over the year, clawed back at filing. Push a household near the top of the range
+    over the 400% line and it is worse: the entire subsidy vanishes, so a
+    {formatMoney(50000)} win can cost {formatMoney(cliff.subsidyLost * 12)} a year in
+    lost premium help — often more than the tax on the win itself.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Do gambling winnings affect ACA subsidies?</h3>
+    <p data-review="legal">
+      Yes. The premium tax credit is based on modified AGI, and gambling winnings are
+      part of it. More MAGI means a smaller subsidy, because the law expects you to
+      pay a higher share of the benchmark premium as income rises.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is the 400% cliff?</h3>
+    <p data-review="legal">
+      For 2026, a household above 400% of the federal poverty line gets no premium
+      subsidy at all — a true cliff, not a gradual phase-out, since the enhanced
+      subsidies that removed it expired at the end of 2025. A win that pushes you one
+      dollar over can cost the entire year's subsidy.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>When does the clawback happen?</h3>
+    <p>
+      At tax time. Subsidies are paid in advance based on estimated income; if a win
+      raises your actual income, you repay the excess subsidy when you reconcile on
+      your return. So a good night at the casino in June can become a bill the
+      following April.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I do anything about it?</h3>
+    <p>
+      Little, once the win is in the year's income. Awareness before filing matters —
+      set aside not just the tax on the winnings but the subsidy you will repay. If
+      you are near the cliff, even a modest win is disproportionately expensive; plan
+      income around that line where you can.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/aca-subsidy-calculator/">ACA subsidy calculator</a> — your base subsidy</li>
+    <li><a href="/gambling-tax-calculator/">Gambling tax calculator</a> — tax on the winnings</li>
+    <li><a href="/gambling-social-security-calculator/">Gambling &amp; Social Security</a> — the same effect on benefits</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. The subsidy is reconciled on your return, so a
+    win can create a clawback. Not tax advice.
+  </p>
+</Base>

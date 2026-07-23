@@ -1,0 +1,100 @@
+---
+/** Hub: W-2G withholding reconciliation. Worked example by w2gReconcile(). */
+import Base from '../../layouts/Base.astro';
+import W2GCalculator from '../../components/calculators/W2GCalculator.tsx';
+import { w2gReconcile } from '../../lib/gambling';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = w2gReconcile(10000, 60000, 0, 'single', 0);
+---
+
+<Base
+  title="W-2G calculator 2026 — gambling withholding vs tax"
+  description="Your W-2G withholds a flat 24% on gambling winnings — but that's a prepayment, not your final tax. See whether you'll get a refund or owe more at filing."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>W-2G calculator</h1>
+    <p class="tagline">The 24% the casino withheld is a guess, not your tax. It's usually wrong in one direction or the other.</p>
+  </section>
+
+  <p>
+    When a gambling win is large enough, the payer issues a W-2G and withholds a
+    flat 24% for federal tax. But 24% is rarely your actual rate — in a lower
+    bracket it over-withholds and you get money back; in a higher bracket it
+    under-withholds and you owe more. This reconciles the withholding against the
+    real tax the winnings cause.
+  </p>
+
+  <W2GCalculator client:load />
+
+  <h2>Worked example — a {formatMoney(10000)} W-2G</h2>
+  <p>
+    A filer with {formatMoney(60000)} of other income hits a {formatMoney(10000)}
+    jackpot reported on a W-2G:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Figure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>24% federal withheld</td><td>{formatMoney(ex.federalWithheld)}</td></tr>
+      <tr><td>Actual federal tax the winnings cause</td><td>{formatMoney(ex.actualFederalTax)}</td></tr>
+      <tr><td>{ex.difference >= 0 ? 'Refunded at filing' : 'Still owed at filing'}</td><td>{formatMoney(Math.abs(ex.difference))}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The casino withheld {formatMoney(ex.federalWithheld)}, but at this filer's 22%
+    bracket the winnings only cost {formatMoney(ex.actualFederalTax)} in federal tax —
+    so {formatMoney(Math.abs(ex.difference))} comes back as a refund. A high earner
+    in the 37% bracket would see the opposite: the 24% under-withholds and they owe
+    the difference plus state tax.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>When does a casino issue a W-2G?</h3>
+    <p data-review="legal">
+      At set thresholds by game: generally $1,200+ on slots or bingo, $1,500+ on
+      keno, $5,000+ in a poker tournament, and $600+ at 300-to-1 odds elsewhere.
+      Above the reporting level the payer often withholds 24%. Below it, no form is
+      issued — but the winnings are still fully taxable.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is the 24% my final tax?</h3>
+    <p>
+      No — it is a prepayment credited on your return, like paycheck withholding. Your
+      actual rate depends on your total income. You reconcile at filing: refund if
+      over-withheld, balance due if under. State tax is separate and usually not
+      withheld at all.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What if I have no W-2G?</h3>
+    <p>
+      You still owe tax. The W-2G is a reporting form, not the trigger for the tax —
+      all gambling winnings are taxable whether or not one is issued, and nothing was
+      withheld on them, so set money aside. The
+      <a href="/gambling-tax-calculator/">gambling tax calculator</a> handles the full picture.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I offset it with losses?</h3>
+    <p data-review="legal">
+      Only by itemizing, and for 2026 only 90% of losses are deductible, capped at
+      winnings. If you take the standard deduction, losses do nothing and the 24%
+      withheld may still fall short of your real tax. Keep a gambling diary either way.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/gambling-tax-calculator/">Gambling tax calculator</a> — the full picture</li>
+    <li><a href="/lottery-tax-calculator/">Lottery tax calculator</a> — lump sum vs annuity</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — setting aside for a win</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. The W-2G withholding is a prepayment; state tax
+    is extra. Not tax advice.
+  </p>
+</Base>

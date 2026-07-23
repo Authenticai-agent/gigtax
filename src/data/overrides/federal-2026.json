@@ -264,5 +264,14 @@
     "_authority": "IRC §72(t); 10% additional tax on early distributions.",
     "_url": "https://www.law.cornell.edu/uscode/text/26/72",
     "_confidence": "high"
+  },
+  "federal.gamblingWithholdingRate": {
+    "was": null,
+    "now": 0.24,
+    "_why": "Gambling winnings above the reporting thresholds are subject to 24% federal withholding, reported on a W-2G. Backup withholding on gambling winnings is also 24%. The W-2G calculator needs this rate to reconcile withholding against the actual tax owed.",
+    "_effect": "A $10,000 slot jackpot has $2,400 withheld up front, credited against your final tax on the return.",
+    "_authority": "IRC §3402(q); 24% withholding on certain gambling winnings.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/3402",
+    "_confidence": "high"
   }
 }

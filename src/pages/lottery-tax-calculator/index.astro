@@ -1,0 +1,101 @@
+---
+/** Hub: lottery tax, lump sum vs annuity. Worked example by lotteryTax(). */
+import Base from '../../layouts/Base.astro';
+import LotteryTaxCalculator from '../../components/calculators/LotteryTaxCalculator.tsx';
+import { lotteryTax } from '../../lib/gambling';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = lotteryTax(100000000, 60000000, 0, 'single', 'OH');
+---
+
+<Base
+  title="Lottery tax calculator 2026 — lump sum vs annuity"
+  description="What you keep from a lottery jackpot: the lump-sum cash value versus the 30-year annuity, after 37% federal tax, withholding and state tax."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Lottery tax calculator</h1>
+    <p class="tagline">The advertised jackpot is not the check. Between the cash discount and the top bracket, most of it never arrives.</p>
+  </section>
+
+  <p>
+    A jackpot winner faces two decisions the ticket does not mention: take the lump
+    sum (a cash value around 60% of the advertised jackpot, taxed all at once) or
+    the 30-year annuity (the full jackpot, taxed as each payment arrives). Either
+    way the top 37% federal bracket applies, 24% is withheld up front, and your
+    state usually takes a cut too. This shows both take-homes.
+  </p>
+
+  <LotteryTaxCalculator client:load />
+
+  <h2>Worked example — a {formatMoney(100000000)} jackpot in Ohio</h2>
+  <p>
+    A {formatMoney(100000000)} jackpot with a {formatMoney(60000000)} cash value:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Option</th><th>After-tax total</th></tr></thead>
+    <tbody>
+      <tr><td>Lump sum (cash value, taxed now)</td><td>{formatMoney(ex.lumpSumAfterTax)}</td></tr>
+      <tr><td>30-year annuity ({formatMoney(ex.annualPayment)}/yr)</td><td>{formatMoney(ex.annuityAfterTaxTotal)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The lump sum leaves {formatMoney(ex.lumpSumAfterTax)} — the {formatMoney(100000000)}
+    jackpot became a {formatMoney(60000000)} cash value, then tax took most of the
+    rest. The annuity delivers {formatMoney(ex.annuityAfterTaxTotal)} over 30 years:
+    more in total, because you skip the cash-value discount and do not cram every
+    dollar into one year's top bracket. The lump sum wins only if you can invest it
+    to beat that gap.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Lump sum or annuity?</h3>
+    <p>
+      The annuity almost always yields more after tax — it avoids the cash-value
+      haircut and spreads income across years. The lump sum is worth it only if you
+      will invest it and earn more than the gap, and if you trust yourself with a
+      large sum at once. Most financial advice leans annuity for the discipline;
+      most winners take the lump sum anyway.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How much tax on lottery winnings?</h3>
+    <p data-review="legal">
+      Federally, lottery winnings are ordinary income, so a jackpot is taxed at the
+      top 37% rate. {Math.round(24)}% is withheld up front on the payout, but the
+      full 37% is due at filing — so expect a further bill. Then most states tax it
+      too, from a few percent to over 10%; a handful of states do not.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why is the lump sum so much less than the jackpot?</h3>
+    <p>
+      Two haircuts. First, the "cash value" is what the lottery would have invested
+      to fund the 30-year annuity — usually about 60% of the advertised figure.
+      Then federal and state tax come off that. A {formatMoney(100000000)} headline
+      can become {formatMoney(ex.lumpSumAfterTax)} in hand.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I reduce the tax?</h3>
+    <p>
+      Not much on the winnings themselves — it is ordinary income. Winners sometimes
+      use a lottery trust or entity for privacy, spread a group win with a
+      documented sharing agreement (to avoid gift tax among the pool), and do heavy
+      charitable planning. None of that changes the top-bracket rate on what you keep.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/gambling-tax-calculator/">Gambling tax calculator</a> — winnings and the 90% loss rule</li>
+    <li><a href="/w2g-tax-calculator/">W-2G calculator</a> — withholding vs actual tax</li>
+    <li><a href="/capital-gains-tax-calculator/">Capital gains calculator</a> — investing a lump sum</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. The annuity is modeled as equal payments; real
+    annuities rise about 5% a year. State tax varies. Not tax or investment advice.
+  </p>
+</Base>

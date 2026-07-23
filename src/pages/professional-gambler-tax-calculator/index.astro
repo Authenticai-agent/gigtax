@@ -1,0 +1,99 @@
+---
+/** Hub: professional vs casual gambler. Worked example by professionalGambler(). */
+import Base from '../../layouts/Base.astro';
+import ProfessionalGamblerCalculator from '../../components/calculators/ProfessionalGamblerCalculator.tsx';
+import { professionalGambler } from '../../lib/gambling';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = professionalGambler(120000, 70000, 20000, 20000, 'single', 'OH');
+---
+
+<Base
+  title="Professional gambler tax calculator — casual vs pro"
+  description="Compare casual and professional gambler tax treatment: a pro files Schedule C and deducts losses and expenses, but pays self-employment tax on the net."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Professional gambler tax calculator</h1>
+    <p class="tagline">Filing as a professional unlocks expense deductions — but hands you a self-employment tax bill.</p>
+  </section>
+
+  <p>
+    A casual gambler reports winnings as income and can only itemize losses (at 90%,
+    capped at winnings) — no expenses, no self-employment tax. A professional gambler
+    files Schedule C: losses and business expenses (travel, data, software) become
+    deductible, but the net profit owes the 15.3% self-employment tax. This compares
+    the two on your numbers.
+  </p>
+
+  <ProfessionalGamblerCalculator client:load />
+
+  <h2>Worked example — {formatMoney(120000)} won, {formatMoney(70000)} lost, {formatMoney(20000)} expenses</h2>
+  <p>
+    A serious gambler with {formatMoney(20000)} of other income:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Treatment</th><th>Total tax</th></tr></thead>
+    <tbody>
+      <tr><td>Casual (itemized losses only)</td><td>{formatMoney(ex.casualTax)}</td></tr>
+      <tr><td>Professional (Schedule C, incl. SE tax {formatMoney(ex.professionalSeTax)})</td><td>{formatMoney(ex.professionalTotalTax)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Professional status wins here — {formatMoney(ex.professionalTotalTax)} vs
+    {formatMoney(ex.casualTax)} — because the {formatMoney(20000)} of expenses is only
+    deductible on Schedule C, and that saving outweighs the {formatMoney(ex.professionalSeTax)}
+    of self-employment tax. With small expenses the answer flips: the casual route
+    avoids the SE tax and comes out ahead.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Who qualifies as a professional gambler?</h3>
+    <p data-review="legal">
+      It is a facts-and-circumstances test, not an election: gambling must be your
+      genuine trade or business — pursued full-time, in good faith, and with
+      regularity to earn a living. Sporadic or hobby play does not qualify, and the
+      IRS scrutinizes the claim. You cannot simply choose it to deduct expenses.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What can a professional deduct that a casual gambler can't?</h3>
+    <p>
+      Business expenses: travel to tournaments, data and handicapping services,
+      software, a home office, and other ordinary costs of the trade — on Schedule C.
+      A casual gambler deducts none of these; only losses, only if itemizing, and
+      only at 90% up to winnings.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does the 90% loss limit apply to professionals?</h3>
+    <p data-review="legal">
+      Yes. The 2026 rule limiting wagering-loss deductions to 90% applies to
+      professionals too, and a professional still cannot deduct losses beyond
+      winnings to create a business loss. Expenses, however, can push the Schedule C
+      into a loss that offsets other income.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is professional status always better?</h3>
+    <p>
+      No. It adds the 15.3% self-employment tax on net profit, which can outweigh the
+      expense deductions when expenses are small. It helps most when you have
+      substantial deductible expenses or would otherwise take the standard deduction
+      (losing the loss deduction entirely). Run both.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/gambling-tax-calculator/">Gambling tax calculator</a> — casual treatment</li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — self-employment tax</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — a pro pays quarterly</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Professional status is a facts test, not a choice.
+    Not tax advice.
+  </p>
+</Base>
