@@ -1,0 +1,556 @@
+{
+  "_meta": {
+    "purpose": "Per-state estate and inheritance tax for 2026 deaths. Estate tax is on the estate above a state exemption; inheritance tax is on the heir and varies by relationship. Feeds the state estate/inheritance calculator.",
+    "status": "RESEARCHED 2026-07, government-sourced. High confidence. Owner should spot-check the flagged items (WA split-year, NY cliff, indexed exemptions) before treating as final.",
+    "verified": "2026-07",
+    "signedOffBy": null,
+    "rule": "Every figure carries a state government source. Estate tax is modeled as the top marginal rate on the amount over the exemption (the graduated lower brackets are an approximation, flagged in copy). Inheritance heir-class rates are the top rate for that class.",
+    "reviewerFlags": [
+      "WA: split-year 2026 — 35% top rate for deaths Jan-Jun, 20% Jul onward; exemption ~$3,076,000. estateTopRate stored as 0.35 (H1); note explains.",
+      "NY: 'cliff' — estates over 105% of the exemption are taxed from dollar one. Not modeled; flagged in the note.",
+      "Indexed exemptions (CT, ME, NY, RI, DC, WA) change yearly; fixed ones (HI, IL, MD, MA, MN, OR, VT) do not.",
+      "Estate tax uses top-rate-over-exemption; true schedules are graduated, so figures are approximate for smaller taxable estates."
+    ],
+    "heirClasses": "spouse / lineal (children, parents, grandchildren) / sibling / other. Rates are the top marginal rate for that class; 0 means exempt."
+  },
+  "CT": {
+    "hasEstateTax": true,
+    "estateExemption": 15000000,
+    "estateTopRate": 0.12,
+    "estateNote": "Exemption tied to the federal $15M; flat 12% above it. CT also has a state gift tax.",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://portal.ct.gov/drs/individuals/individual-income-tax-portal/estate-and-gift-taxes/tax-information",
+    "confidence": "high"
+  },
+  "HI": {
+    "hasEstateTax": true,
+    "estateExemption": 5490000,
+    "estateTopRate": 0.2,
+    "estateNote": "Graduated 10-20%; 20% (highest state rate) above $10M. Exemption fixed, not indexed.",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.hawaii.gov/",
+    "confidence": "high"
+  },
+  "IL": {
+    "hasEstateTax": true,
+    "estateExemption": 4000000,
+    "estateTopRate": 0.16,
+    "estateNote": "Graduated to ~16%; exemption $4M, not indexed. Administered by the Illinois Attorney General.",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://illinoisattorneygeneral.gov/",
+    "confidence": "high"
+  },
+  "ME": {
+    "hasEstateTax": true,
+    "estateExemption": 7160000,
+    "estateTopRate": 0.12,
+    "estateNote": "Graduated 8/10/12%; exemption indexed ($7,160,000 for 2026).",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.maine.gov/revenue/faq/estate-tax",
+    "confidence": "high"
+  },
+  "MN": {
+    "hasEstateTax": true,
+    "estateExemption": 3000000,
+    "estateTopRate": 0.16,
+    "estateNote": "Graduated 13-16%; exemption $3M fixed. 3-year gift claw-back.",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.revenue.state.mn.us/estate-tax",
+    "confidence": "high"
+  },
+  "MA": {
+    "hasEstateTax": true,
+    "estateExemption": 2000000,
+    "estateTopRate": 0.16,
+    "estateNote": "$2M threshold with a credit so estates at/below $2M owe nothing; graduated to 16%.",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.mass.gov/guides/massachusetts-estate-tax",
+    "confidence": "high"
+  },
+  "NY": {
+    "hasEstateTax": true,
+    "estateExemption": 7350000,
+    "estateTopRate": 0.16,
+    "estateNote": "Exemption indexed ($7,350,000 for 2026), graduated to 16%. CLIFF: an estate over 105% of the exemption (~$7,717,500) is taxed from the first dollar — not modeled here.",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.tax.ny.gov/pit/estate/etidx.htm",
+    "confidence": "high"
+  },
+  "OR": {
+    "hasEstateTax": true,
+    "estateExemption": 1000000,
+    "estateTopRate": 0.16,
+    "estateNote": "Lowest exemption in the US ($1M, fixed); graduated 10-16%. A natural-resource credit can exempt qualifying farm/forest property.",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.oregon.gov/dor/programs/businesses/pages/estate.aspx",
+    "confidence": "high"
+  },
+  "RI": {
+    "hasEstateTax": true,
+    "estateExemption": 1838056,
+    "estateTopRate": 0.16,
+    "estateNote": "Threshold $1,838,056 for 2026 (via a $87,940 credit), indexed; graduated to 16%.",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.ri.gov/",
+    "confidence": "high"
+  },
+  "VT": {
+    "hasEstateTax": true,
+    "estateExemption": 5000000,
+    "estateTopRate": 0.16,
+    "estateNote": "Flat 16% above a $5M exemption (fixed). No portability.",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.vermont.gov/individuals/estate-and-fiduciary-taxes",
+    "confidence": "high"
+  },
+  "WA": {
+    "hasEstateTax": true,
+    "estateExemption": 3076000,
+    "estateTopRate": 0.35,
+    "estateNote": "SPLIT-YEAR 2026: deaths Jan 1-Jun 30 use the 35% top-rate schedule (SB 5813); deaths Jul 1 onward revert to a 20% top rate (SB 6347). Exemption ~$3,076,000 (H1). The stored 0.35 is the H1 rate.",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://dor.wa.gov/taxes-rates/other-taxes/estate-tax-tables",
+    "confidence": "high"
+  },
+  "DC": {
+    "hasEstateTax": true,
+    "estateExemption": 4988400,
+    "estateTopRate": 0.16,
+    "estateNote": "Graduated ~11.2-16%; exemption indexed ($4,988,400 for 2026).",
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://otr.cfo.dc.gov/page/estate-tax",
+    "confidence": "high"
+  },
+  "KY": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": true,
+    "inheritance": {
+      "spouse": 0,
+      "lineal": 0,
+      "sibling": 0,
+      "other": 0.16
+    },
+    "inheritanceNote": "Class A (spouse, parents, children, siblings, grandchildren) fully exempt. Class B (nieces/nephews/aunts/uncles) 4-16%; Class C (others) 6-16%. Top 16%.",
+    "source": "https://revenue.ky.gov/Individual/Inheritance-Estate-Tax/Pages/default.aspx",
+    "confidence": "high"
+  },
+  "NE": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": true,
+    "inheritance": {
+      "spouse": 0,
+      "lineal": 0.01,
+      "sibling": 0.11,
+      "other": 0.15
+    },
+    "inheritanceNote": "County-levied. Spouse and anyone under 22 exempt. Immediate relatives 1% over $100k; remote relatives 11% over $40k; all others 15% over $25k.",
+    "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=77-2004",
+    "confidence": "high"
+  },
+  "NJ": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": true,
+    "inheritance": {
+      "spouse": 0,
+      "lineal": 0,
+      "sibling": 0.16,
+      "other": 0.16
+    },
+    "inheritanceNote": "Class A (spouse, children, parents, grandchildren) exempt. Class C (siblings, in-laws) first $25k exempt then 11-16%. Class D (others) 15% to $700k, 16% above. NJ repealed its estate tax in 2018.",
+    "source": "https://www.nj.gov/treasury/taxation/inheritance-estate/inheritance.shtml",
+    "confidence": "high"
+  },
+  "PA": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": true,
+    "inheritance": {
+      "spouse": 0,
+      "lineal": 0.045,
+      "sibling": 0.12,
+      "other": 0.15
+    },
+    "inheritanceNote": "Spouse 0%; lineal descendants/heirs 4.5%; siblings 12%; all others 15%. Applied from the first dollar. 5% discount if paid within 3 months.",
+    "source": "https://www.revenue.pa.gov/",
+    "confidence": "high"
+  },
+  "MD": {
+    "hasEstateTax": true,
+    "estateExemption": 5000000,
+    "estateTopRate": 0.16,
+    "estateNote": "Estate tax: $5M exemption (fixed), graduated to 16%. Portability allowed. Estate tax is reduced by inheritance tax paid.",
+    "hasInheritanceTax": true,
+    "inheritance": {
+      "spouse": 0,
+      "lineal": 0,
+      "sibling": 0,
+      "other": 0.1
+    },
+    "inheritanceNote": "Inheritance tax: 10% flat to heirs who are NOT spouse/lineal/sibling (those are exempt).",
+    "source": "https://www.marylandtaxes.gov/individual/estate-inheritance/estate-inheritance-tax.php",
+    "confidence": "high"
+  },
+  "AL": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.revenue.alabama.gov/",
+    "confidence": "high"
+  },
+  "AK": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.alaska.gov/",
+    "confidence": "high"
+  },
+  "AZ": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://azdor.gov/",
+    "confidence": "high"
+  },
+  "AR": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.dfa.arkansas.gov/",
+    "confidence": "high"
+  },
+  "CA": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.ftb.ca.gov/",
+    "confidence": "high"
+  },
+  "CO": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.colorado.gov/",
+    "confidence": "high"
+  },
+  "DE": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://revenue.delaware.gov/",
+    "confidence": "high"
+  },
+  "FL": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://floridarevenue.com/",
+    "confidence": "high"
+  },
+  "GA": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://dor.georgia.gov/",
+    "confidence": "high"
+  },
+  "ID": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.idaho.gov/",
+    "confidence": "high"
+  },
+  "IN": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.in.gov/dor/",
+    "confidence": "high"
+  },
+  "IA": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.iowa.gov/inheritance",
+    "confidence": "high"
+  },
+  "KS": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.ksrevenue.gov/",
+    "confidence": "high"
+  },
+  "LA": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://revenue.louisiana.gov/",
+    "confidence": "high"
+  },
+  "MI": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.michigan.gov/taxes",
+    "confidence": "high"
+  },
+  "MS": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.dor.ms.gov/",
+    "confidence": "high"
+  },
+  "MO": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://dor.mo.gov/",
+    "confidence": "high"
+  },
+  "MT": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://mtrevenue.gov/",
+    "confidence": "high"
+  },
+  "NV": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.nv.gov/",
+    "confidence": "high"
+  },
+  "NH": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.revenue.nh.gov/",
+    "confidence": "high"
+  },
+  "NM": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.tax.newmexico.gov/",
+    "confidence": "high"
+  },
+  "NC": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.ncdor.gov/",
+    "confidence": "high"
+  },
+  "ND": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.tax.nd.gov/",
+    "confidence": "high"
+  },
+  "OH": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.ohio.gov/",
+    "confidence": "high"
+  },
+  "OK": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://oklahoma.gov/tax.html",
+    "confidence": "high"
+  },
+  "SC": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://dor.sc.gov/",
+    "confidence": "high"
+  },
+  "SD": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://dor.sd.gov/",
+    "confidence": "high"
+  },
+  "TN": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.tn.gov/revenue.html",
+    "confidence": "high"
+  },
+  "TX": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://comptroller.texas.gov/",
+    "confidence": "high"
+  },
+  "UT": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.utah.gov/",
+    "confidence": "high"
+  },
+  "VA": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.tax.virginia.gov/",
+    "confidence": "high"
+  },
+  "WV": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://tax.wv.gov/",
+    "confidence": "high"
+  },
+  "WI": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://www.revenue.wi.gov/",
+    "confidence": "high"
+  },
+  "WY": {
+    "hasEstateTax": false,
+    "estateExemption": null,
+    "estateTopRate": null,
+    "estateNote": null,
+    "hasInheritanceTax": false,
+    "inheritance": null,
+    "source": "https://revenue.wyo.gov/",
+    "confidence": "high"
+  }
+}

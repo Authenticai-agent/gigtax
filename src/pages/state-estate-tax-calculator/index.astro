@@ -1,0 +1,125 @@
+---
+/** Hub: state estate & inheritance tax. Worked example + state tables from the dataset. */
+import Base from '../../layouts/Base.astro';
+import StateDeathTaxCalculator from '../../components/calculators/StateDeathTaxCalculator.tsx';
+import { stateEstateTax, stateInheritanceTax } from '../../lib/state-death-tax';
+import { stateDeathTax } from '../../data/state-inheritance';
+import { states } from '../../data/states';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const orEstate = stateEstateTax('OR', 2000000);
+const paInh = stateInheritanceTax('PA', 100000, 'sibling');
+const estateStates = Object.entries(stateDeathTax)
+  .filter(([, r]) => r.hasEstateTax)
+  .map(([c, r]) => ({ name: states[c]?.name ?? c, exemption: r.estateExemption, topRate: r.estateTopRate }))
+  .sort((a, b) => (a.exemption ?? 0) - (b.exemption ?? 0));
+const inheritanceStates = Object.entries(stateDeathTax)
+  .filter(([, r]) => r.hasInheritanceTax)
+  .map(([c]) => states[c]?.name ?? c);
+---
+
+<Base
+  title="State estate & inheritance tax calculator 2026"
+  description="Which states tax estates and inheritances in 2026. 13 states plus DC have an estate tax, 5 an inheritance tax — some from as little as $1 million."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>State estate &amp; inheritance tax calculator</h1>
+    <p class="tagline">The federal estate tax spares almost everyone. State death taxes start as low as $1 million — and hit far more estates.</p>
+  </section>
+
+  <p>
+    Two state taxes the federal $15 million exemption hides. An <strong>estate tax</strong>
+    is paid by the estate on value above a state exemption — {estateStates.length} states
+    have one, and Oregon's starts at just {formatMoney(1000000)}. An <strong>inheritance
+    tax</strong> is paid by the heir, at a rate that depends on the relationship —
+    {inheritanceStates.length} states have one. This shows both for your state.
+  </p>
+
+  <StateDeathTaxCalculator client:load />
+
+  <h2>Worked examples</h2>
+  <p>
+    A {formatMoney(2000000)} estate in Oregon, and a {formatMoney(100000)} inheritance
+    by a sibling in Pennsylvania — two states, two different taxes:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Situation</th><th>Tax</th></tr></thead>
+    <tbody>
+      <tr><td>Oregon estate tax on a {formatMoney(2000000)} estate</td><td>{formatMoney(orEstate.estimatedTax)}</td></tr>
+      <tr><td>Pennsylvania inheritance tax, {formatMoney(100000)} to a sibling (12%)</td><td>{formatMoney(paInh.estimatedTax)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Oregon taxes the {formatMoney(1000000)} above its {formatMoney(1000000)} exemption,
+    for {formatMoney(orEstate.estimatedTax)} — an estate that owes nothing federally.
+    Pennsylvania charges a sibling 12% of a {formatMoney(100000)} inheritance,
+    {formatMoney(paInh.estimatedTax)}; a spouse would pay nothing and a child 4.5%.
+    Relationship is everything with inheritance tax.
+  </p>
+
+  <h2>States with an estate tax (2026)</h2>
+  <p>Lowest exemption first — these are the estates most likely to be caught:</p>
+  <table class="data-table">
+    <thead><tr><th>State</th><th>Exemption</th><th>Top rate</th></tr></thead>
+    <tbody>
+      {estateStates.map((s) => (
+        <tr><td>{s.name}</td><td>{formatMoney(s.exemption ?? 0)}</td><td>{formatPct(s.topRate ?? 0)}</td></tr>
+      ))}
+    </tbody>
+  </table>
+  <p>
+    The {inheritanceStates.length} states with an <em>inheritance</em> tax are
+    {' '}{inheritanceStates.join(', ')} — Maryland is the only state with both.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What's the difference between estate and inheritance tax?</h3>
+    <p data-review="legal">
+      Estate tax is paid by the estate, out of its total value, before anything is
+      distributed. Inheritance tax is paid by each heir on what they personally
+      receive, at a rate set by their relationship to the deceased — spouses and
+      children are usually exempt or low-rate, distant heirs pay the most.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Which states have the lowest exemptions?</h3>
+    <p data-review="legal">
+      Oregon at {formatMoney(1000000)} is the lowest, then Rhode Island (~{formatMoney(1838056)})
+      and Massachusetts ({formatMoney(2000000)}). At these levels a paid-off home plus
+      retirement savings can be enough to owe state estate tax while owing nothing
+      federally — the reason state death taxes matter far more to ordinary families.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why is Washington's rate so high?</h3>
+    <p data-review="legal">
+      Washington's top estate-tax rate rose to 35% (the highest in the nation) for
+      deaths from July 2025, but reverts to 20% for deaths from July 2026 — so a 2026
+      death is 35% in the first half of the year and 20% in the second. The calculator
+      uses the first-half rate; confirm the date of death.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does my state have a death tax at all?</h3>
+    <p>
+      Most likely not — 34 states have neither. Pick your state above and the
+      calculator tells you. If it has neither, only the federal estate tax could
+      apply, and that spares all but the largest estates.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/estate-tax-calculator/">Federal estate tax calculator</a> — the $15M exclusion</li>
+    <li><a href="/inheritance-tax-calculator/">Inheritance tax calculator</a> — the federal income side</li>
+    <li><a href="/trust-tax-calculator/">Trust income tax calculator</a> — Form 1041</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. State estate tax uses the top rate over the
+    exemption; true schedules are graduated. New York's cliff and Washington's
+    mid-year change are noted, not modeled. Not tax or legal advice.
+  </p>
+</Base>

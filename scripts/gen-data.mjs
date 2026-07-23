@@ -263,5 +263,29 @@ const scgTs =
 writeFileSync(join(outDir, 'state-capital-gains.ts'), scgTs);
 console.log(`  state cap-gains: ${Object.keys(scgSlim).length} jurisdictions shipped`);
 
-console.log('Wrote src/data/{federal,states,platforms,professionals,formation-fees,state-capital-gains}.ts');
+// ---- state-inheritance.ts : UI slice of the state estate/inheritance dataset ----
+const siPath = join(root, 'src/data/overrides/state-inheritance-2026.json');
+const siFull = JSON.parse(readFileSync(siPath, 'utf8'));
+const SI_KEEP = ['hasEstateTax', 'estateExemption', 'estateTopRate', 'estateNote', 'hasInheritanceTax', 'inheritance', 'inheritanceNote'];
+const siSlim = {};
+for (const [code, entry] of Object.entries(siFull)) {
+  if (code.startsWith('_')) continue;
+  const slim = {};
+  for (const k of SI_KEEP) slim[k] = entry[k] ?? null;
+  siSlim[code] = slim;
+}
+const siTs =
+  banner('UI-facing projection of overrides/state-inheritance-2026.json. Sources and confidence stripped; compute fields only.') +
+  `export interface StateDeathTax {\n` +
+  `  hasEstateTax: boolean; estateExemption: number | null; estateTopRate: number | null; estateNote: string | null;\n` +
+  `  hasInheritanceTax: boolean;\n` +
+  `  inheritance: { spouse: number; lineal: number; sibling: number; other: number } | null;\n` +
+  `  inheritanceNote: string | null;\n` +
+  `}\n\n` +
+  `export const stateDeathTax: Record<string, StateDeathTax> = ${j(siSlim)};\n\n` +
+  `export default stateDeathTax;\n`;
+writeFileSync(join(outDir, 'state-inheritance.ts'), siTs);
+console.log(`  state estate/inheritance: ${Object.keys(siSlim).length} jurisdictions shipped`);
+
+console.log('Wrote src/data/{federal,states,platforms,professionals,formation-fees,state-capital-gains,state-inheritance}.ts');
 console.log(`  states: ${Object.keys(cfg.states).length}, platforms: ${summaries.length}, professions: ${Object.keys(allProfessions).length}, verified: ${VERIFIED}`);
