@@ -15,9 +15,11 @@
  * capital-loss limit, all sourced there.
  */
 import {
-  calcFederalTax, calcLTCGTax, getStandardDeduction,
+  calcFederalTax, calcLTCGTax, calcStateTax, getStandardDeduction,
 } from './tax-engine';
 import { federal } from '../data/federal';
+import { stateCapGains } from '../data/state-capital-gains';
+import { states } from '../data/states';
 
 const CG = (federal as any).capitalGains;
 const NIIT = CG.niit;
@@ -260,4 +262,87 @@ export function costBasis(
     shortTermGain, longTermGain,
     allLongTerm: shortTermGain === 0 && longTermGain !== 0,
   };
+}
+
+/* ------------------------------- state layer ------------------------------- */
+
+/**
+ * Marginal state tax on an ordinary-income amount (dividends, interest, staking)
+ * stacked on top of other income. Returns 0 for states with no income tax — which
+ * calcStateTax already reports as zero — so the no-income-tax and Washington cases
+ * fall out for free here. Capital gains are NOT ordinary-income everywhere, so
+ * gains use stateGainsTax() instead.
+ */
+export function stateOrdinaryTaxOn(stateCode: string, otherIncome: number, amount: number, status = 'single'): number {
+  if (!stateCode || amount <= 0) return 0;
+  const withAmt = calcStateTax(otherIncome + amount, stateCode, undefined, status).tax;
+  const without = calcStateTax(otherIncome, stateCode, undefined, status).tax;
+  return Math.max(0, withAmt - without);
+}
+
+export interface StateGainsResult {
+  stateTax: number;
+  treatment: string;
+  /** Plain-English description of how the state treats the gain. */
+  note: string;
+}
+
+/**
+ * State tax on capital gains, honoring each state's treatment from the
+ * signed-off dataset — which the ordinary-income path cannot capture. Missouri,
+ * for instance, still taxes wages but exempts capital gains (HB 594), so it is
+ * 'none' here even though calcStateTax would tax ordinary income there. Washington
+ * levies its 7% excise even though it has no income tax at all.
+ */
+export function stateGainsTax(
+  stateCode: string, otherIncome: number, netShortTerm: number, netLongTerm: number, status = 'single',
+): StateGainsResult {
+  const rule = (stateCapGains as any)[stateCode];
+  const name = states[stateCode]?.name ?? stateCode;
+  const st = Math.max(0, netShortTerm);
+  const lt = Math.max(0, netLongTerm);
+  if (!rule) return { stateTax: 0, treatment: 'unknown', note: 'No state selected.' };
+
+  switch (rule.treatment) {
+    case 'none':
+      return { stateTax: 0, treatment: 'none', note: `${name} does not tax capital gains.` };
+    case 'excluded': {
+      const excl = rule.ltcgExclusionPct ?? 0;
+      const taxable = st + lt * (1 - excl);
+      return {
+        stateTax: Math.round(stateOrdinaryTaxOn(stateCode, otherIncome, taxable, status)),
+        treatment: 'excluded',
+        note: `${name} excludes ${Math.round(excl * 100)}% of long-term gains, then taxes the rest as income.`,
+      };
+    }
+    case 'reduced_rate': {
+      // Long-term gains at the state's preferential flat rate; short-term ordinary.
+      const rate = rule.specialRate ?? 0;
+      const ltTax = lt * rate;
+      const stTax = stateOrdinaryTaxOn(stateCode, otherIncome, st, status);
+      return {
+        stateTax: Math.round(ltTax + stTax),
+        treatment: 'reduced_rate',
+        note: `${name} taxes long-term gains at a reduced ${(rate * 100).toFixed(2).replace(/\.?0+$/, '')}% rate; short-term as income.`,
+      };
+    }
+    case 'special': {
+      // Washington: a standalone excise on long-term gains above an exemption;
+      // short-term not taxed. The extra 2.9% over $1m is flagged in the note.
+      const rate = rule.specialRate ?? 0;
+      const threshold = rule.specialRateThreshold ?? 0;
+      const taxed = Math.max(0, lt - threshold);
+      return {
+        stateTax: Math.round(taxed * rate),
+        treatment: 'special',
+        note: `${name} levies a ${(rate * 100).toFixed(0)}% excise on long-term gains above $${threshold.toLocaleString()} (an extra 2.9% applies over $1,000,000); short-term gains are untaxed.`,
+      };
+    }
+    default: // 'ordinary'
+      return {
+        stateTax: Math.round(stateOrdinaryTaxOn(stateCode, otherIncome, st + lt, status)),
+        treatment: 'ordinary',
+        note: `${name} taxes capital gains as ordinary income — no preferential rate.`,
+      };
+  }
 }

@@ -383,5 +383,32 @@ console.log('\ncredits: ACA (engine)');
   ok('ACA over the 400% cliff gets no subsidy', !cliff.eligible && cliff.subsidy === 0);
 }
 
+/* ---------------------------- state cap-gains layer ------------------------ */
+console.log('\nstate cap-gains layer');
+{
+  // Washington: 7% excise on long-term gain above the $278,000 exemption; ST untaxed.
+  const wa = cg.stateGainsTax('WA', 200000, 30000, 500000, 'single');
+  ok('WA excise = 7% of long-term gain over $278k', near(wa.stateTax, (500000 - 278000) * 0.07), `${wa.stateTax}`);
+  const waShort = cg.stateGainsTax('WA', 200000, 50000, 0, 'single');
+  ok('WA does not tax short-term gains', waShort.stateTax === 0);
+  // Missouri exempts capital gains (HB 594) but still taxes dividends/interest.
+  const mo = cg.stateGainsTax('MO', 80000, 10000, 100000, 'single');
+  ok('MO taxes no capital gains (HB 594)', mo.stateTax === 0 && mo.treatment === 'none');
+  ok('MO still taxes ordinary investment income', cg.stateOrdinaryTaxOn('MO', 80000, 5000, 'single') > 0);
+  // Montana: reduced flat rate on long-term gains.
+  const mt = cg.stateGainsTax('MT', 60000, 0, 50000, 'single');
+  ok('MT taxes long-term gains at the reduced rate', near(mt.stateTax, 50000 * 0.041), `${mt.stateTax}`);
+  // South Carolina: 44% exclusion means less than the full ordinary tax.
+  const scExcl = cg.stateGainsTax('SC', 80000, 0, 100000, 'single');
+  const scFull = cg.stateOrdinaryTaxOn('SC', 80000, 100000, 'single');
+  ok('SC exclusion taxes less than full ordinary', scExcl.stateTax > 0 && scExcl.stateTax < scFull, `${scExcl.stateTax} vs ${Math.round(scFull)}`);
+  // No-income-tax and Washington: ordinary investment income is untaxed.
+  ok('TX taxes no ordinary investment income', cg.stateOrdinaryTaxOn('TX', 80000, 5000, 'single') === 0);
+  ok('WA taxes no ordinary investment income (dividends/interest)', cg.stateOrdinaryTaxOn('WA', 80000, 5000, 'single') === 0);
+  // Ordinary state: marginal rate on the whole gain.
+  const ca = cg.stateGainsTax('CA', 100000, 0, 50000, 'single');
+  ok('CA taxes gains as ordinary income (positive)', ca.stateTax > 0 && ca.treatment === 'ordinary');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail === 0 ? 0 : 1);

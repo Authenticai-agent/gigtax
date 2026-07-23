@@ -223,5 +223,35 @@ const fullKb = (JSON.stringify(formationFull).length / 1024).toFixed(1);
 const slimKb = (JSON.stringify(formationSlim).length / 1024).toFixed(1);
 console.log(`  formation fees: ${fullKb} KB source -> ${slimKb} KB shipped`);
 
-console.log('Wrote src/data/{federal,states,platforms,professionals,formation-fees}.ts');
+// ---- state-capital-gains.ts : UI slice of the signed-off cap-gains dataset ----
+/**
+ * The cap-gains override carries sources, confidence and reviewer notes; the
+ * engine needs only the compute fields. Same projection idea as formation-fees.
+ */
+const scgPath = join(root, 'src/data/overrides/state-capital-gains-2026.json');
+const scgFull = JSON.parse(readFileSync(scgPath, 'utf8'));
+const SCG_KEEP = ['treatment', 'ordinaryRateApplies', 'ltcgExclusionPct', 'specialRate', 'specialRateThreshold', 'shortTermTreatment'];
+const scgSlim = {};
+for (const [code, entry] of Object.entries(scgFull)) {
+  if (code.startsWith('_')) continue;
+  const slim = {};
+  for (const k of SCG_KEEP) slim[k] = entry[k];
+  scgSlim[code] = slim;
+}
+const scgTs =
+  banner('UI-facing projection of overrides/state-capital-gains-2026.json (owner-signed-off). Sources, confidence and notes are stripped; only the compute fields ship.') +
+  `export interface StateCapGains {\n` +
+  `  treatment: 'ordinary' | 'excluded' | 'special' | 'reduced_rate' | 'none';\n` +
+  `  ordinaryRateApplies: boolean;\n` +
+  `  ltcgExclusionPct: number | null;\n` +
+  `  specialRate: number | null;\n` +
+  `  specialRateThreshold: number | null;\n` +
+  `  shortTermTreatment: 'ordinary' | 'same_as_long' | null;\n` +
+  `}\n\n` +
+  `export const stateCapGains: Record<string, StateCapGains> = ${j(scgSlim)};\n\n` +
+  `export default stateCapGains;\n`;
+writeFileSync(join(outDir, 'state-capital-gains.ts'), scgTs);
+console.log(`  state cap-gains: ${Object.keys(scgSlim).length} jurisdictions shipped`);
+
+console.log('Wrote src/data/{federal,states,platforms,professionals,formation-fees,state-capital-gains}.ts');
 console.log(`  states: ${Object.keys(cfg.states).length}, platforms: ${summaries.length}, professions: ${Object.keys(allProfessions).length}, verified: ${VERIFIED}`);

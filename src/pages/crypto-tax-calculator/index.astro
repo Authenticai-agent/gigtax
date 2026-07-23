@@ -1,7 +1,8 @@
 ---
 /**
  * Hub: crypto tax. Port of cryptoTaxView on the shared engine. Worked example by
- * investmentTax(). Federal only; state deferred with the rest of the block.
+ * investmentTax(). Federal plus the state layer: gains use each state's treatment,
+ * staking is ordinary state income.
  */
 import Base from '../../layouts/Base.astro';
 import CryptoTaxCalculator from '../../components/calculators/CryptoTaxCalculator.tsx';
@@ -111,7 +112,7 @@ const ex = investmentTax({
   </ul>
 
   <p class="results-note">
-    Federal estimate for the 2026 tax year. State tax on crypto gains is extra and
-    not modeled here. Not tax advice.
+    Estimate for the 2026 tax year. Pick a state to add its tax — crypto gains use
+    your state's capital-gains treatment, staking is ordinary state income. Not tax advice.
   </p>
 </Base>

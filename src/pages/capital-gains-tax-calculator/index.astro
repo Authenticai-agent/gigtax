@@ -5,8 +5,9 @@
  */
 import Base from '../../layouts/Base.astro';
 import CapitalGainsCalculator from '../../components/calculators/CapitalGainsCalculator.tsx';
-import { investmentTax } from '../../lib/capital-gains';
+import { investmentTax, stateGainsTax } from '../../lib/capital-gains';
 import { formatMoney, formatPct } from '../../lib/tax-engine';
+import { states } from '../../data/states';
 
 const ex = investmentTax({
   status: 'single', otherOrdinaryIncome: 80000,
@@ -16,6 +17,8 @@ const ex = investmentTax({
 const asShort = investmentTax({
   status: 'single', otherOrdinaryIncome: 80000, shortTermGains: 25000, applyStandardDeduction: true,
 });
+// The same $5k short-term / $20k long-term gains across four state treatments.
+const stateEx = ['CA', 'SC', 'MO', 'WA'].map((c) => ({ name: states[c].name, ...stateGainsTax(c, 80000, 5000, 20000, 'single') }));
 ---
 
 <Base
@@ -61,6 +64,33 @@ const asShort = investmentTax({
     the reward for holding past a year.
   </p>
 
+  <h2>How your state changes it</h2>
+  <p>
+    Federal is only half the story. On the same {formatMoney(5000)} short-term and
+    {formatMoney(20000)} long-term gains, four states show the whole range of how
+    states treat gains:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>State</th><th>Treatment</th><th>State tax on the gains</th></tr></thead>
+    <tbody>
+      {stateEx.map((s) => (
+        <tr>
+          <td>{s.name}</td>
+          <td>{s.treatment === 'none' ? 'No tax on gains' : s.treatment === 'excluded' ? 'Excludes part of long-term gains' : s.treatment === 'special' ? 'Standalone excise' : 'Taxed as ordinary income'}</td>
+          <td>{formatMoney(s.stateTax)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p>
+    California taxes the gains at its full ordinary rate. South Carolina excludes
+    44% of the long-term gain first. Missouri, which exempted capital gains in 2025,
+    charges nothing. Washington's {formatMoney(0)} here is not a mistake — its 7%
+    excise only bites on long-term gains above a large annual exemption
+    (about {formatMoney(278000)}), so a {formatMoney(20000)} gain is under it. Pick
+    your state in the calculator to see your own figure.
+  </p>
+
   <h2>Questions</h2>
   <div class="faq">
     <h3>What is the difference between short and long-term gains?</h3>
@@ -100,11 +130,13 @@ const asShort = investmentTax({
   </div>
   <div class="faq">
     <h3>Does my state tax capital gains too?</h3>
-    <p>
-      Usually yes, and this calculator is federal only for now. Most states tax
-      gains as ordinary income with no preferential rate; Washington levies a
-      standalone 7% tax on large gains, and a few states grant partial exclusions.
-      A verified state layer is planned; until then, treat state tax as extra.
+    <p data-review="legal">
+      Usually yes — pick your state above and the calculator adds it. Most states
+      tax gains as ordinary income with no preferential rate. A handful differ:
+      Washington levies a standalone 7% excise on large long-term gains, several
+      states (South Carolina, Wisconsin, North Dakota and others) exclude part of
+      long-term gains, Hawaii and Montana apply a reduced rate, and nine states —
+      including Missouri, which exempted capital gains in 2025 — do not tax them.
     </p>
   </div>
 
@@ -117,7 +149,7 @@ const asShort = investmentTax({
   </ul>
 
   <p class="results-note">
-    Federal estimate for the 2026 tax year using the standard deduction. State tax
-    not included. Not tax advice.
+    Estimate for the 2026 tax year using the standard deduction. Federal by default;
+    pick a state to add its treatment of gains. Not tax advice.
   </p>
 </Base>
