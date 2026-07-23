@@ -743,6 +743,29 @@ console.log('\npersonal finance: net worth, FIRE, procrastination, budget, card 
   ok('the minimum takes longer than a fixed payment', trap.minMonths > trap.fixedMonths && trap.interestSaved > 0);
 }
 
+/* ---------------------- personal finance (batch 2) ------------------------ */
+console.log('\npersonal finance: buy-vs-rent, college ROI, savings gap, city, subscriptions');
+{
+  const bvr = pf.buyVsRent({ homePrice: 400000, downPaymentPct: 0.2, mortgageRate: 0.065, termYears: 30, monthlyRent: 2200, homeAppreciation: 0.03, investmentReturn: 0.07, propertyTaxPct: 0.011, maintenancePct: 0.01, rentInflation: 0.03, years: 30 });
+  ok('buy-vs-rent finds a break-even year', bvr.breakEvenYear !== null && bvr.breakEvenYear >= 1 && bvr.breakEvenYear <= 30, `${bvr.breakEvenYear}`);
+  ok('buy-vs-rent monthly = amortized P&I on the loan', near(bvr.monthlyPayment, fin.loanPayment(320000, 0.065, 360), 1));
+
+  const roi = pf.collegeROI({ degreeCost: 100000, yearsToComplete: 4, startingSalary: 65000, salaryGrowth: 0.03, altPathCost: 5000, altStartingSalary: 40000, careerYears: 40 });
+  ok('college ROI positive when the degree earns more over a career', roi.netGain > 0 && roi.roi > 0);
+  ok('college ROI reports a break-even year after graduation', roi.breakEvenYear !== null && roi.breakEvenYear > 4);
+
+  const gap = pf.collegeSavingsGap({ annualCostToday: 30000, yearsUntilCollege: 10, yearsOfCollege: 4, educationInflation: 0.05, currentSavings: 20000, monthlyContribution: 300, annualReturn: 0.06 });
+  ok('college future cost exceeds today’s sticker (inflation)', gap.futureCost > 4 * 30000);
+  ok('college gap and the monthly to close it are consistent', gap.gap >= 0 && gap.monthlyToCloseGap >= 0);
+
+  const city = pf.salaryByCity(100000, 100, 187);
+  ok('a pricier city needs a proportionally higher salary', near(city.equivalentSalary, 187000) && !city.keepsPurchasingPower);
+  ok('a cheaper city keeps purchasing power at a lower salary', pf.salaryByCity(100000, 187, 100).keepsPurchasingPower);
+
+  const sub = pf.subscriptionAudit(100, 0.07, 20);
+  ok('subscription annual = 12× monthly, invested value beats spend', sub.annualTotal === 1200 && sub.investedOverYears > 100 * 12 * 20);
+}
+
 /* ---------------------- finance primitives -------------------------------- */
 {
   ok('annuity FV exceeds total contributions', fin.futureValueAnnuity(500, 0.07, 30) > 500 * 12 * 30);

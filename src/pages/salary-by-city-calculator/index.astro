@@ -1,0 +1,74 @@
+---
+/** Personal finance: salary comparison by city (cost-of-living adjusted). */
+import Base from '../../layouts/Base.astro';
+import SalaryByCityCalculator from '../../components/calculators/SalaryByCityCalculator.tsx';
+import { salaryByCity } from '../../lib/personal-finance';
+import { CITIES } from '../../data/cost-of-living';
+import { formatMoney } from '../../lib/tax-engine';
+
+const austin = CITIES.find((c) => c.name === 'Austin, TX')!;
+const nyc = CITIES.find((c) => c.name === 'New York, NY')!;
+const ex = salaryByCity(100000, austin.index, nyc.index);
+---
+
+<Base
+  title="Salary comparison by city 2026 — cost-of-living adjusted"
+  description="What salary in another city matches your pay after cost of living? Compare ~40 US metros and see the raise — or cut — that keeps your lifestyle."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance</p>
+    <h1>Salary comparison by city</h1>
+    <p class="tagline">A $100k salary is not the same everywhere. This converts your pay into the equivalent in another city, so you can compare offers on what they actually buy.</p>
+  </section>
+
+  <p>
+    A raise to move to a pricier city can be a pay cut in disguise, and a lower number in a cheaper city can leave
+    you better off. This adjusts your salary by the difference in cost of living between two metros — driven mostly
+    by housing — so you compare offers on purchasing power, not the headline figure.
+  </p>
+
+  <SalaryByCityCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A {formatMoney(100000)} salary in Austin, moving to New York:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Salary in Austin</td><td>{formatMoney(100000)}</td></tr>
+      <tr><td>Cost-of-living index (Austin → New York)</td><td>{austin.index} → {nyc.index}</td></tr>
+      <tr><td>Equivalent salary in New York</td><td>{formatMoney(ex.equivalentSalary)}</td></tr>
+      <tr><td>Raise needed to break even</td><td>{formatMoney(ex.difference)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    To live in New York the way {formatMoney(100000)} lives in Austin, you'd need about
+    {' '}{formatMoney(ex.equivalentSalary)} — a {formatMoney(ex.difference)} raise just to stand still. An offer
+    below that number is a cut in real terms, however much bigger it looks.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What drives the difference between cities?</h3>
+    <p>Housing, by a wide margin. Groceries, utilities, transport and healthcare vary far less between metros, so a
+      city's overall index tracks its rents and home prices more than anything else.</p>
+  </div>
+  <div class="faq">
+    <h3>Does this include state income tax?</h3>
+    <p>No. Cost of living and income tax are separate — a move from California to Texas cuts both your rent and your
+      state tax, and only the first shows up here. Use the paycheck and multi-state calculators for the tax side.</p>
+  </div>
+  <div class="faq">
+    <h3>How accurate are the indices?</h3>
+    <p>They're approximate reference figures (base 100 = US average), fine for comparing offers directionally but not
+      precise to the dollar. Your own rent and lifestyle can differ from a city's average by a lot.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — the take-home side, including state tax</li>
+    <li><a href="/multi-state-tax-calculator/">Multi-state tax</a> — moving mid-year</li>
+    <li><a href="/buy-vs-rent-calculator/">Buy vs rent</a> — housing is the biggest line</li>
+  </ul>
+
+  <p class="results-note">Cost-of-living indices are approximate reference data and exclude income tax. Not financial advice.</p>
+</Base>

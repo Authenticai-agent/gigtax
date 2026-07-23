@@ -20,6 +20,11 @@ export const personalFinance: CalcEntry[] = [
   { slug: 'cost-of-procrastinating-investing-calculator', title: 'Cost of waiting to invest', blurb: 'what a few years’ delay costs by retirement', group: 'Retirement & independence' },
   { slug: 'budget-calculator', title: '50/30/20 budget', blurb: 'needs, wants and savings from your take-home pay', group: 'Everyday money' },
   { slug: 'credit-card-payoff-calculator', title: 'Credit card minimum-payment trap', blurb: 'how many years the minimum really takes', group: 'Everyday money' },
+  { slug: 'subscription-audit-calculator', title: 'Subscription audit', blurb: 'the real yearly cost of “just a few dollars a month”', group: 'Everyday money' },
+  { slug: 'buy-vs-rent-calculator', title: 'Buy vs rent', blurb: 'the break-even year where buying beats renting', group: 'Big decisions' },
+  { slug: 'salary-by-city-calculator', title: 'Salary by city', blurb: 'what your pay is worth in another city', group: 'Big decisions' },
+  { slug: 'college-roi-calculator', title: 'College degree ROI', blurb: 'lifetime earnings with a degree vs without', group: 'Big decisions' },
+  { slug: 'college-savings-gap-calculator', title: 'College savings gap', blurb: 'projected 529 savings vs the future cost', group: 'Big decisions' },
 ];
 
 export const lifestyle: CalcEntry[] = [];

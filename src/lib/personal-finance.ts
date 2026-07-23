@@ -170,4 +170,163 @@ export function creditCardTrap(balance: number, apr: number, minPct: number, fix
   };
 }
 
+/* ------------------------------------------------------- buy vs rent ------ */
+
+export interface BuyVsRentInput {
+  homePrice: number; downPaymentPct: number; mortgageRate: number; termYears: number;
+  monthlyRent: number; homeAppreciation: number; investmentReturn: number;
+  propertyTaxPct: number; maintenancePct: number; rentInflation: number; years: number;
+}
+export interface BuyVsRentResult {
+  monthlyPayment: number;
+  breakEvenYear: number | null;
+  buyCostAtHorizon: number;
+  rentCostAtHorizon: number;
+  cheaperAtHorizon: 'buy' | 'rent';
+  yearly: { year: number; buyCost: number; rentCost: number }[];
+}
+
+/**
+ * Buy-vs-rent break-even. "Cost" is what each path consumes: for buying, all
+ * ownership outlays less the equity recovered on sale; for renting, rent paid
+ * less the growth on the down payment invested instead. The break-even is the
+ * first year buying costs no more than renting. Monthly cash-flow differences
+ * are not reinvested — a stated simplification the copy names.
+ */
+export function buyVsRent(i: BuyVsRentInput): BuyVsRentResult {
+  const downPayment = i.homePrice * i.downPaymentPct;
+  const closing = i.homePrice * 0.03;
+  const loan = i.homePrice - downPayment;
+  const monthlyPayment = loanPayment(loan, i.mortgageRate, i.termYears * 12);
+  const mRate = i.mortgageRate / 12;
+  const initialInvest = downPayment + closing;
+
+  let remaining = loan, homeValue = i.homePrice, rent = i.monthlyRent;
+  let ownershipPaid = downPayment + closing, rentPaid = 0, invest = initialInvest;
+  const yearly: BuyVsRentResult['yearly'] = [];
+  let breakEvenYear: number | null = null;
+
+  for (let y = 1; y <= i.years; y++) {
+    for (let m = 0; m < 12; m++) {
+      const interest = remaining * mRate;
+      const principal = Math.min(remaining, Math.max(0, monthlyPayment - interest));
+      const payingMortgage = remaining > 0;
+      remaining = Math.max(0, remaining - principal);
+      const monthlyOwn = (payingMortgage ? monthlyPayment : 0) + homeValue * (i.propertyTaxPct + i.maintenancePct) / 12;
+      ownershipPaid += monthlyOwn;
+      rentPaid += rent;
+      invest *= 1 + i.investmentReturn / 12;
+    }
+    homeValue *= 1 + i.homeAppreciation;
+    rent *= 1 + i.rentInflation;
+    const equity = homeValue - remaining - homeValue * 0.06; // net of 6% selling costs
+    const buyCost = ownershipPaid - equity;
+    const rentCost = rentPaid - (invest - initialInvest);
+    yearly.push({ year: y, buyCost: Math.round(buyCost), rentCost: Math.round(rentCost) });
+    if (breakEvenYear === null && buyCost <= rentCost) breakEvenYear = y;
+  }
+
+  const last = yearly[yearly.length - 1];
+  return {
+    monthlyPayment,
+    breakEvenYear,
+    buyCostAtHorizon: last.buyCost,
+    rentCostAtHorizon: last.rentCost,
+    cheaperAtHorizon: last.buyCost <= last.rentCost ? 'buy' : 'rent',
+    yearly,
+  };
+}
+
+/* --------------------------------------------------------- college ROI ---- */
+
+export interface CollegeROIInput {
+  degreeCost: number; yearsToComplete: number; startingSalary: number; salaryGrowth: number;
+  altPathCost: number; altStartingSalary: number; careerYears: number;
+}
+export interface CollegeROIResult {
+  degreeLifetime: number; altLifetime: number; netGain: number;
+  roi: number; breakEvenYear: number | null;
+}
+
+/** Lifetime earnings with a degree (starting later, minus its cost) vs an alternative path. */
+export function collegeROI(i: CollegeROIInput): CollegeROIResult {
+  let degCum = -i.degreeCost, altCum = -i.altPathCost;
+  let breakEvenYear: number | null = null;
+  for (let t = 0; t < i.careerYears; t++) {
+    if (t >= i.yearsToComplete) degCum += i.startingSalary * Math.pow(1 + i.salaryGrowth, t - i.yearsToComplete);
+    altCum += i.altStartingSalary * Math.pow(1 + i.salaryGrowth, t);
+    if (breakEvenYear === null && degCum >= altCum && t >= i.yearsToComplete) breakEvenYear = t + 1;
+  }
+  return {
+    degreeLifetime: Math.round(degCum), altLifetime: Math.round(altCum),
+    netGain: Math.round(degCum - altCum),
+    roi: i.degreeCost > 0 ? (degCum - altCum) / i.degreeCost : 0,
+    breakEvenYear,
+  };
+}
+
+/* ---------------------------------------------------- college savings gap - */
+
+export interface CollegeSavingsInput {
+  annualCostToday: number; yearsUntilCollege: number; yearsOfCollege: number;
+  educationInflation: number; currentSavings: number; monthlyContribution: number; annualReturn: number;
+}
+export interface CollegeSavingsResult {
+  futureCost: number; projectedSavings: number; gap: number;
+  monthlyToCloseGap: number; covered: number;
+}
+
+/** Projected 529-style savings vs the inflated future cost of N years of college. */
+export function collegeSavingsGap(i: CollegeSavingsInput): CollegeSavingsResult {
+  let futureCost = 0;
+  for (let c = 0; c < i.yearsOfCollege; c++) {
+    futureCost += i.annualCostToday * Math.pow(1 + i.educationInflation, i.yearsUntilCollege + c);
+  }
+  const projectedSavings = futureValueLump(i.currentSavings, i.annualReturn, i.yearsUntilCollege)
+    + futureValueAnnuity(i.monthlyContribution, i.annualReturn, i.yearsUntilCollege);
+  const gap = Math.max(0, futureCost - projectedSavings);
+  // Extra monthly contribution whose future value closes the gap.
+  const fvFactor = futureValueAnnuity(1, i.annualReturn, i.yearsUntilCollege);
+  return {
+    futureCost: Math.round(futureCost),
+    projectedSavings: Math.round(projectedSavings),
+    gap: Math.round(gap),
+    monthlyToCloseGap: fvFactor > 0 ? Math.round(gap / fvFactor) : 0,
+    covered: futureCost > 0 ? Math.min(1, projectedSavings / futureCost) : 1,
+  };
+}
+
+/* ------------------------------------------------------ salary by city ---- */
+
+export interface SalaryByCityResult {
+  equivalentSalary: number; difference: number; ratio: number; keepsPurchasingPower: boolean;
+}
+
+/** Salary needed in a target city to match purchasing power, from cost-of-living indices. */
+export function salaryByCity(currentSalary: number, fromIndex: number, toIndex: number): SalaryByCityResult {
+  const equivalent = fromIndex > 0 ? currentSalary * (toIndex / fromIndex) : currentSalary;
+  return {
+    equivalentSalary: Math.round(equivalent),
+    difference: Math.round(equivalent - currentSalary),
+    ratio: fromIndex > 0 ? toIndex / fromIndex : 1,
+    keepsPurchasingPower: toIndex <= fromIndex,
+  };
+}
+
+/* ------------------------------------------------------ subscription audit  */
+
+export interface SubscriptionResult {
+  monthlyTotal: number; annualTotal: number; investedOverYears: number; years: number;
+}
+
+/** Total subscription spend, and what the same money could grow to if invested. */
+export function subscriptionAudit(monthlyTotal: number, annualReturn: number, years: number): SubscriptionResult {
+  return {
+    monthlyTotal,
+    annualTotal: monthlyTotal * 12,
+    investedOverYears: Math.round(futureValueAnnuity(monthlyTotal, annualReturn, years)),
+    years,
+  };
+}
+
 export { loanPayment };
