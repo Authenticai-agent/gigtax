@@ -1,14 +1,14 @@
 {
   "_meta": {
     "purpose": "Per-state estate and inheritance tax for 2026 deaths. Estate tax is on the estate above a state exemption; inheritance tax is on the heir and varies by relationship. Feeds the state estate/inheritance calculator.",
-    "status": "RESEARCHED 2026-07, government-sourced. High confidence. Owner should spot-check the flagged items (WA split-year, NY cliff, indexed exemptions) before treating as final.",
+    "status": "RESEARCHED 2026-07, government-sourced. Owner spot-checked WA split-year, NY cliff, and indexed exemptions (WA 3.076M/3.0M, NY 7.35M, MN 3.0M, MA 2.0M) against current law on 2026-07-23 and confirmed the figures. Approximations (WA H1 rate stored, NY cliff not modeled) documented per-state.",
     "verified": "2026-07",
-    "signedOffBy": null,
+    "signedOffBy": "owner 2026-07-23",
     "rule": "Every figure carries a state government source. Estate tax is modeled as the top marginal rate on the amount over the exemption (the graduated lower brackets are an approximation, flagged in copy). Inheritance heir-class rates are the top rate for that class.",
     "reviewerFlags": [
-      "WA: split-year 2026 — 35% top rate for deaths Jan-Jun, 20% Jul onward; exemption ~$3,076,000. estateTopRate stored as 0.35 (H1); note explains.",
-      "NY: 'cliff' — estates over 105% of the exemption are taxed from dollar one. Not modeled; flagged in the note.",
-      "Indexed exemptions (CT, ME, NY, RI, DC, WA) change yearly; fixed ones (HI, IL, MD, MA, MN, OR, VT) do not.",
+      "RESOLVED (owner 2026-07-23) WA: split-year 2026 confirmed — deaths Jan 1-Jun 30 use the 35% top-rate schedule with a $3,076,000 exemption; deaths Jul 1 onward revert to 20% and the exemption resets to $3,000,000 (no further indexing). estateTopRate/estateExemption store the H1 figures (0.35 / 3,076,000); note explains the H2 reset.",
+      "RESOLVED (owner 2026-07-23) NY: 'cliff' confirmed — an estate over 105% of the exemption (~$7,717,500) is taxed from dollar one. Deliberately not modeled; NY liability is understated just above the cliff and the note + results copy say so.",
+      "RESOLVED (owner 2026-07-23) Indexed exemptions confirmed current for 2026: WA 3,076,000 (H1), NY 7,350,000, MN 3,000,000 (fixed), MA 2,000,000 (fixed). Indexed states (CT, ME, NY, RI, DC, WA) change yearly; re-check next tax year.",
       "Estate tax uses top-rate-over-exemption; true schedules are graduated, so figures are approximate for smaller taxable estates."
     ],
     "heirClasses": "spouse / lineal (children, parents, grandchildren) / sibling / other. Rates are the top marginal rate for that class; 0 means exempt."
@@ -117,7 +117,7 @@
     "hasEstateTax": true,
     "estateExemption": 3076000,
     "estateTopRate": 0.35,
-    "estateNote": "SPLIT-YEAR 2026: deaths Jan 1-Jun 30 use the 35% top-rate schedule (SB 5813); deaths Jul 1 onward revert to a 20% top rate (SB 6347). Exemption ~$3,076,000 (H1). The stored 0.35 is the H1 rate.",
+    "estateNote": "SPLIT-YEAR 2026: deaths Jan 1-Jun 30 use the 35% top-rate schedule (SB 5813) with a $3,076,000 exemption; deaths Jul 1 onward revert to a 20% top rate and the exemption resets to $3,000,000 (SB 6347), no further indexing. Stored figures are H1 (0.35 rate, $3,076,000 exemption).",
     "hasInheritanceTax": false,
     "inheritance": null,
     "source": "https://dor.wa.gov/taxes-rates/other-taxes/estate-tax-tables",
