@@ -22,6 +22,7 @@ const wage = await load('src/lib/wage.ts');
 const wh = await load('src/lib/withholding.ts');
 const ms = await load('src/lib/multi-state.ts');
 const mar = await load('src/lib/marriage.ts');
+const cg = await load('src/lib/capital-gains.ts');
 const te = await load('src/lib/tax-engine.ts');
 
 let pass = 0, fail = 0;
@@ -241,6 +242,78 @@ console.log('\nmarriageTax');
     mar.marriageTax({ incomeA: 90000, incomeB: 90000, stateCode: 'PA' }).difference,
     legacyMarriage(90000, 90000, 'PA', 0).diff,
   ));
+}
+
+/* ------------------------- capital gains engine ---------------------------- */
+console.log('\ninvestmentTax');
+{
+  // NIIT is 0 below the threshold, so at these incomes investmentTax's total
+  // federal tax equals the crypto view's federal composition — but with the
+  // engine's dataset-backed LTCG brackets, not the legacy view's stale hardcoded
+  // ones (the documented staleness fix). Cases stay under $200k so NIIT is off.
+  const cryptoLegacyFed = (stGain, ltGain, stLoss, ltLoss, staking, nft, otherW2, status) => {
+    const netST = Math.max(0, stGain - stLoss);
+    const netLT = Math.max(0, ltGain - ltLoss);
+    const ordinary = staking + nft + otherW2 + netST;
+    const std = te.getStandardDeduction(status, false);
+    const taxableOrdinary = Math.max(0, ordinary - std);
+    const fedOrdinary = te.calcFederalTax(taxableOrdinary, status);
+    const fedLT = te.calcLTCGTax(netLT, taxableOrdinary, status); // corrected LTCG
+    return fedOrdinary + fedLT;
+  };
+  const cases = [
+    { stGain: 5000, ltGain: 15000, stLoss: 0, ltLoss: 0, staking: 2000, nft: 0, otherW2: 40000, status: 'single' },
+    { stGain: 0, ltGain: 30000, stLoss: 0, ltLoss: 0, staking: 0, nft: 3000, otherW2: 60000, status: 'mfj' },
+    { stGain: 8000, ltGain: 0, stLoss: 1000, ltLoss: 0, staking: 500, nft: 0, otherW2: 30000, status: 'hoh' },
+  ];
+  for (const [i, c] of cases.entries()) {
+    const L = cryptoLegacyFed(c.stGain, c.ltGain, c.stLoss, c.ltLoss, c.staking, c.nft, c.otherW2, c.status);
+    const r = cg.investmentTax({
+      status: c.status, otherOrdinaryIncome: c.otherW2 + c.staking,
+      shortTermGains: c.stGain + c.nft, shortTermLosses: c.stLoss,
+      longTermGains: c.ltGain, longTermLosses: c.ltLoss, applyStandardDeduction: true,
+    });
+    ok(`crypto case ${i + 1} total federal matches corrected composition`, near(r.totalFederalTax, L, 1), `${Math.round(r.totalFederalTax)} vs ${Math.round(L)}`);
+    ok(`crypto case ${i + 1} NIIT is zero below the threshold`, r.niit.tax === 0);
+  }
+  // 0% LTCG bracket: a low-income single filer pays no tax on a long-term gain.
+  const zero = cg.investmentTax({ status: 'single', otherOrdinaryIncome: 20000, longTermGains: 5000, applyStandardDeduction: true });
+  ok('low-income long-term gain is taxed at 0%', zero.preferentialTax === 0);
+  // Qualified dividends beat ordinary dividends at the same amount and income.
+  const q = cg.investmentTax({ status: 'single', otherOrdinaryIncome: 90000, qualifiedDividends: 10000, applyStandardDeduction: true });
+  const o = cg.investmentTax({ status: 'single', otherOrdinaryIncome: 90000, ordinaryDividends: 10000, applyStandardDeduction: true });
+  ok('qualified dividends are taxed less than ordinary dividends', q.totalInvestmentTax < o.totalInvestmentTax, `${Math.round(q.totalInvestmentTax)} vs ${Math.round(o.totalInvestmentTax)}`);
+  // Capital-loss limit: a big net loss deducts $3,000 and carries the rest over.
+  const loss = cg.investmentTax({ status: 'single', shortTermLosses: 10000, longTermGains: 0 });
+  ok('net capital loss deducts $3,000 this year', near(loss.capitalLossDeduction, 3000));
+  ok('net capital loss carries $7,000 forward', near(loss.capitalLossCarryover, 7000));
+  const lossMFS = cg.investmentTax({ status: 'mfs', shortTermLosses: 10000 });
+  ok('MFS capital-loss deduction is $1,500', near(lossMFS.capitalLossDeduction, 1500));
+  // NIIT: a high earner with investment income pays 3.8% above the threshold.
+  const niit = cg.investmentTax({ status: 'single', otherOrdinaryIncome: 250000, longTermGains: 40000, applyStandardDeduction: true });
+  ok('NIIT applies above the MAGI threshold', niit.niit.tax > 0 && near(niit.niit.tax, 40000 * 0.038, 1), `${Math.round(niit.niit.tax)}`);
+}
+
+/* ------------------------------- cost basis -------------------------------- */
+console.log('\ncostBasis');
+{
+  // Two lots: 100 @ $10 (long-term), then 100 @ $20 (short-term). Sell 100 @ $30.
+  const lots = [
+    { shares: 100, cost: 1000, daysHeld: 400 },  // long-term, $10/sh
+    { shares: 100, cost: 2000, daysHeld: 100 },  // short-term, $20/sh
+  ];
+  const fifo = cg.costBasis(lots, 'fifo', 100, 30);
+  ok('FIFO sells the oldest lot (basis $1,000)', near(fifo.basis, 1000) && near(fifo.longTermGain, 2000) && fifo.shortTermGain === 0);
+  const lifo = cg.costBasis(lots, 'lifo', 100, 30);
+  ok('LIFO sells the newest lot (basis $2,000)', near(lifo.basis, 2000) && near(lifo.shortTermGain, 1000) && lifo.longTermGain === 0);
+  ok('FIFO and LIFO give different gains here', !near(fifo.gain, lifo.gain));
+  const spec = cg.costBasis([{ ...lots[0], selected: false }, { ...lots[1], selected: true }], 'specific', 100, 30);
+  ok('specific-ID uses only the selected lot', near(spec.basis, 2000));
+  const avg = cg.costBasis(lots, 'average', 100, 30);
+  ok('average cost basis is the blended $15/share', near(avg.basis, 1500));
+  // Selling across both lots splits the gain into short and long term.
+  const split = cg.costBasis(lots, 'fifo', 150, 30);
+  ok('a cross-lot sale splits short and long term', split.longTermGain > 0 && split.shortTermGain > 0);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

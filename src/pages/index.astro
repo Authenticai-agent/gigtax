@@ -20,26 +20,9 @@ import { states } from '../data/states';
 
 const localStates = localTaxStates();
 
-// The five gig categories, which replaced per-brand pages once it was clear the
-// tax answer varies by expense profile and not by which app pays you.
-const GIG = [
-  { href: '/gig-driver-tax-calculator/', name: 'Driving and delivery', note: 'mileage is the whole deduction' },
-  { href: '/gig-services-tax-calculator/', name: 'Services and tasks', note: 'tools, supplies, travel between jobs' },
-  { href: '/creator-tax-calculator/', name: 'Creators', note: 'equipment, software, home studio' },
-  { href: '/seller-tax-calculator/', name: 'Sellers', note: 'cost of goods, fees, shipping' },
-  { href: '/rental-host-tax-calculator/', name: 'Rental hosts', note: 'the 14-day rule and depreciation' },
-];
-
-const PLATFORMS = [
-  'uber', 'lyft', 'doordash', 'grubhub', 'instacart', 'shipt', 'amazon-flex',
-  'taskrabbit', 'rover', 'turo', 'airbnb', 'etsy', 'ebay', 'shopify',
-  'youtube', 'onlyfans',
-].map((k) => ({
-  href: `/${k}-tax-calculator/`,
-  name: { 'amazon-flex': 'Amazon Flex', doordash: 'DoorDash', ebay: 'eBay', onlyfans: 'OnlyFans',
-          taskrabbit: 'TaskRabbit', youtube: 'YouTube' }[k]
-        ?? k.charAt(0).toUpperCase() + k.slice(1),
-}));
+// The five gig categories and their platforms live in one shared module, so the
+// home page and the /gig-tax-calculator/ hub never drift.
+import { GIG_CATEGORIES as GIG, GIG_PLATFORMS as PLATFORMS } from '../lib/gig';
 ---
 
 <Base
@@ -130,11 +113,11 @@ const PLATFORMS = [
     ))}
   </ul>
 
-  <h2>Gig and platform income</h2>
+  <h2><a href="/gig-tax-calculator/">Gig and platform income</a></h2>
   <p>
     Grouped by what you can deduct rather than by which app pays you, because that is what changes the
     answer — a Lyft driver and an Uber driver have the same tax question, and a driver and an Etsy seller
-    do not:
+    do not. The <a href="/gig-tax-calculator/">gig hub</a> lays out every category:
   </p>
   <ul class="link-columns">
     {GIG.map((g) => <li><a href={g.href}>{g.name}</a> — {g.note}</li>)}
@@ -142,6 +125,19 @@ const PLATFORMS = [
   <p class="section-label">By platform</p>
   <ul class="link-columns">
     {PLATFORMS.map((p) => <li><a href={p.href}>{p.name}</a></li>)}
+  </ul>
+
+  <h2>Investments and capital gains</h2>
+  <p>
+    What you owe on gains, dividends, interest and crypto — the holding period, the 0/15/20% long-term rates,
+    the 3.8% surtax, and which lot you sell. Federal for now; a verified state layer is in progress.
+  </p>
+  <ul class="link-columns">
+    <li><a href="/capital-gains-tax-calculator/">Capital gains</a> — short vs long-term, losses, NIIT</li>
+    <li><a href="/cost-basis-calculator/">Cost basis</a> — FIFO, LIFO and specific-lot gain</li>
+    <li><a href="/dividend-tax-calculator/">Dividends</a> — qualified vs ordinary</li>
+    <li><a href="/investment-income-tax-calculator/">Interest income</a> — savings, CDs, Treasuries, munis</li>
+    <li><a href="/crypto-tax-calculator/">Crypto</a> — coins, staking and NFTs</li>
   </ul>
 
   <h2>Equity compensation</h2>

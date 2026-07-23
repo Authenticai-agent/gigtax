@@ -44,5 +44,41 @@
     "_authority": "Announcement 2026-11, IRB 2026-29",
     "_url": "https://www.irs.gov/irb/2026-29_irb",
     "_confidence": "high"
+  },
+  "federal.capitalGains.niit.thresholdHOH": {
+    "was": null,
+    "now": 200000,
+    "_why": "The dataset carried the Net Investment Income Tax MAGI thresholds only for single ($200,000) and MFJ ($250,000). Head of household uses the same $200,000 threshold as single. Added so the 3.8% NIIT computes for HOH filers on the investment calculators.",
+    "_effect": "An HOH filer's net investment income above $200,000 MAGI is now correctly subject to the 3.8% NIIT.",
+    "_authority": "IRC §1411(b); the statutory thresholds are fixed and not inflation-indexed (single/HOH $200,000, MFJ $250,000, MFS $125,000), unchanged since 2013.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/1411",
+    "_confidence": "high"
+  },
+  "federal.capitalGains.niit.thresholdMFS": {
+    "was": null,
+    "now": 125000,
+    "_why": "Married filing separately has the lowest NIIT threshold, $125,000. It was absent from the dataset, which held only single and MFJ. Added so NIIT computes for MFS filers.",
+    "_effect": "An MFS filer's net investment income above $125,000 MAGI is now correctly subject to the 3.8% NIIT.",
+    "_authority": "IRC §1411(b)(1); statutory, not inflation-indexed, unchanged since 2013.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/1411",
+    "_confidence": "high"
+  },
+  "federal.capitalGains.annualLossLimit": {
+    "was": null,
+    "now": 3000,
+    "_why": "A net capital loss offsets up to $3,000 of ordinary income per year, with the remainder carried forward indefinitely. This statutory limit was not in the dataset; the capital-gains calculators need it to model loss deduction and carryover.",
+    "_effect": "A taxpayer with a $10,000 net capital loss deducts $3,000 this year and carries $7,000 forward.",
+    "_authority": "IRC §1211(b); $3,000 limit fixed by statute, not inflation-indexed.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/1211",
+    "_confidence": "high"
+  },
+  "federal.capitalGains.annualLossLimitMFS": {
+    "was": null,
+    "now": 1500,
+    "_why": "The net-capital-loss ordinary-income offset is halved to $1,500 for married filing separately.",
+    "_effect": "An MFS filer with a $10,000 net capital loss deducts $1,500 this year and carries $8,500 forward.",
+    "_authority": "IRC §1211(b)(1); statutory.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/1211",
+    "_confidence": "high"
   }
 }

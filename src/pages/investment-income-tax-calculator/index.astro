@@ -1,0 +1,101 @@
+---
+/**
+ * Hub: interest / investment income. Worked example by investmentTax().
+ */
+import Base from '../../layouts/Base.astro';
+import InvestmentIncomeCalculator from '../../components/calculators/InvestmentIncomeCalculator.tsx';
+import { investmentTax } from '../../lib/capital-gains';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = investmentTax({ status: 'single', otherOrdinaryIncome: 80000, taxableInterest: 4000, applyStandardDeduction: true });
+---
+
+<Base
+  title="Interest income tax calculator 2026 — savings and bonds"
+  description="Calculate 2026 federal tax on interest from savings, CDs and bonds. Interest is taxed at your ordinary rate, plus the 3.8% net investment income tax."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Interest income tax calculator</h1>
+    <p class="tagline">Interest gets no special rate. A high-yield savings account is taxed exactly like your salary.</p>
+  </section>
+
+  <p>
+    Interest from savings accounts, CDs, and corporate or Treasury bonds is
+    ordinary income — no preferential rate, taxed at whatever bracket your other
+    income puts you in. This shows the federal tax on your taxable interest and
+    adds the 3.8% net investment income tax if your income is high enough. It also
+    flags the two big exceptions: municipal and Treasury interest.
+  </p>
+
+  <InvestmentIncomeCalculator client:load />
+
+  <h2>Worked example — {formatMoney(4000)} of interest on {formatMoney(80000)} of income</h2>
+  <p>
+    A single filer earning {formatMoney(80000)} has {formatMoney(4000)} of taxable
+    interest from a high-yield savings account:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Component</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Taxable interest</td><td>{formatMoney(4000)}</td></tr>
+      <tr><td>Federal tax on it (ordinary rate)</td><td>{formatMoney(ex.totalInvestmentTax)}</td></tr>
+      <tr><td>Effective rate on the interest</td><td>{formatPct(ex.effectiveRateOnInvestment)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(4000)} lands in this filer's 22% bracket, so it costs
+    {formatMoney(ex.totalInvestmentTax)} — the same rate their salary pays. There
+    is no way to convert interest to a lower rate; the only lever is where you earn
+    it (a muni bond, a retirement account) rather than how long you hold it.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How is interest income taxed?</h3>
+    <p>
+      As ordinary income, at your marginal rate — the same as wages, and unlike
+      long-term capital gains or qualified dividends, which get lower rates. Your
+      bank or broker reports it on Form 1099-INT, and the IRS receives a copy.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is municipal bond interest taxable?</h3>
+    <p>
+      Interest on state and local municipal bonds is generally exempt from federal
+      tax — don't enter it here — and often exempt from tax in your home state too.
+      That exemption is why a lower-yielding muni can beat a higher-yielding taxable
+      bond after tax, especially in a high bracket.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What about Treasury interest?</h3>
+    <p>
+      Interest on US Treasury bills, notes and bonds is taxable at the federal
+      level but exempt from state and local income tax. So a Treasury and a bank CD
+      of the same yield are not equal after tax if your state has an income tax —
+      enter Treasury interest here for the federal figure, but it saves you the
+      state tax a CD would owe.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do I owe the 3.8% net investment income tax on interest?</h3>
+    <p>
+      Yes, above {formatMoney(200000)} of modified AGI (single) or {formatMoney(250000)}
+      (joint). Taxable interest is net investment income, so it counts toward the
+      3.8% surtax. Municipal interest, being exempt, does not.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/dividend-tax-calculator/">Dividend tax calculator</a> — qualified dividends get a lower rate</li>
+    <li><a href="/capital-gains-tax-calculator/">Capital gains tax calculator</a> — long-term gains at 0/15/20%</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — interest with no withholding</li>
+  </ul>
+
+  <p class="results-note">
+    Federal estimate for the 2026 tax year. State treatment varies — Treasury
+    interest is state-exempt, muni interest often is too. Not tax advice.
+  </p>
+</Base>

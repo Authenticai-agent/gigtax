@@ -1,0 +1,63 @@
+---
+/**
+ * Gig-economy hub. The header "Gig" link lands here, not on the driver page —
+ * so a rideshare driver, an Etsy seller and a YouTuber all find their own
+ * category instead of one being mistaken for the whole. Categories and platforms
+ * come from src/lib/gig.ts, shared with the home page.
+ */
+import Base from '../../layouts/Base.astro';
+import { GIG_CATEGORIES, platformsInCategory } from '../../lib/gig';
+---
+
+<Base
+  title="Gig economy tax calculator 2026 — by what you do"
+  description="Gig work tax by category: rideshare and delivery drivers, service workers, creators, online sellers and rental hosts. Each has its own 2026 deductions."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Gig economy tax calculator</h1>
+    <p class="tagline">Grouped by what you can deduct — because that, not which app pays you, is what changes the tax.</p>
+  </section>
+
+  <p>
+    Gig income is self-employment income: no tax is withheld, you owe
+    self-employment tax on top of income tax, and your deductions are whatever
+    your work actually costs. But those costs differ sharply by what you do — a
+    driver's whole return turns on mileage, a seller's on cost of goods, a
+    creator's on equipment. Pick the category that fits your work.
+  </p>
+
+  {GIG_CATEGORIES.map((c) => {
+    const platforms = platformsInCategory(c.key);
+    return (
+      <section>
+        <h2><a href={c.href}>{c.name}</a></h2>
+        <p>{c.note[0].toUpperCase() + c.note.slice(1)}.</p>
+        {platforms.length > 0 && (
+          <ul class="link-columns">
+            {platforms.map((p) => <li><a href={p.href}>{p.name}</a></li>)}
+          </ul>
+        )}
+      </section>
+    );
+  })}
+
+  <h2>What every gig category shares</h2>
+  <ul>
+    <li>Income is reported on Schedule C, and net profit is subject to 15.3% self-employment tax.</li>
+    <li>No one withholds tax, so most gig workers owe <a href="/quarterly-tax-calculator/">quarterly estimated payments</a>.</li>
+    <li>The right deductions are the ones tied to your work — the category pages lead with those.</li>
+    <li>A 1099-K now arrives for far more sellers and hosts; it reports gross, before fees and refunds.</li>
+  </ul>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — the full self-employment picture</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — what to pay and when</li>
+    <li><a href="/self-employed-tax-calculator/">By profession</a> — deductions for specific trades</li>
+  </ul>
+
+  <p class="results-note">
+    Gig income is self-employment income for the 2026 tax year. Not tax advice.
+  </p>
+</Base>

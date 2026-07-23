@@ -291,10 +291,14 @@ export const federal = {
       "rate": 0.038,
       "thresholdSingle": 200000,
       "thresholdMFJ": 250000,
-      "note": "Not indexed for inflation. Unchanged since 2013."
+      "note": "Not indexed for inflation. Unchanged since 2013.",
+      "thresholdHOH": 200000,
+      "thresholdMFS": 125000
     },
     "collectibles": 0.28,
-    "unrecaptured1250": 0.25
+    "unrecaptured1250": 0.25,
+    "annualLossLimit": 3000,
+    "annualLossLimitMFS": 1500
   },
   "alternativeMinimumTax": {
     "exemptionSingle": 90100,

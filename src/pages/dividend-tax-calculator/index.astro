@@ -1,0 +1,104 @@
+---
+/**
+ * Hub: dividend tax, qualified vs ordinary. Worked example by investmentTax().
+ */
+import Base from '../../layouts/Base.astro';
+import DividendTaxCalculator from '../../components/calculators/DividendTaxCalculator.tsx';
+import { investmentTax } from '../../lib/capital-gains';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+// $8,000 of dividends, all qualified vs all ordinary, single with $80k income.
+const asQualified = investmentTax({ status: 'single', otherOrdinaryIncome: 80000, qualifiedDividends: 8000, applyStandardDeduction: true });
+const asOrdinary = investmentTax({ status: 'single', otherOrdinaryIncome: 80000, ordinaryDividends: 8000, applyStandardDeduction: true });
+const diff = asOrdinary.totalInvestmentTax - asQualified.totalInvestmentTax;
+---
+
+<Base
+  title="Dividend tax calculator 2026 — qualified vs ordinary"
+  description="Calculate 2026 federal tax on dividends: qualified at the 0/15/20% rate, ordinary at your income rate, plus the 3.8% net investment income tax."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Dividend tax calculator</h1>
+    <p class="tagline">Two dividends of the same size can be taxed very differently. One word on the 1099 decides it.</p>
+  </section>
+
+  <p>
+    Dividends come in two kinds. Qualified dividends — most from US stocks you
+    have held long enough — are taxed at the same low 0/15/20% rates as long-term
+    capital gains. Ordinary (non-qualified) dividends are taxed at your regular
+    income rate. This works out both, and adds the 3.8% net investment income tax
+    where it applies.
+  </p>
+
+  <DividendTaxCalculator client:load />
+
+  <h2>Worked example — {formatMoney(8000)} in dividends, qualified vs ordinary</h2>
+  <p>
+    A single filer with {formatMoney(80000)} of other income receives {formatMoney(8000)}
+    in dividends. The classification is the whole story:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>If the {formatMoney(8000)} is…</th><th>Federal tax</th><th>Effective rate</th></tr></thead>
+    <tbody>
+      <tr><td>All qualified (0/15/20%)</td><td>{formatMoney(asQualified.totalInvestmentTax)}</td><td>{formatPct(asQualified.effectiveRateOnInvestment)}</td></tr>
+      <tr><td>All ordinary (income rate)</td><td>{formatMoney(asOrdinary.totalInvestmentTax)}</td><td>{formatPct(asOrdinary.effectiveRateOnInvestment)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Same {formatMoney(8000)}, {formatMoney(diff)} apart in tax — qualified dividends
+    at 15% versus this filer's 22% ordinary bracket. That is why the holding-period
+    rule behind "qualified" status is worth knowing: sell a stock too soon around
+    its dividend and you forfeit the lower rate.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What makes a dividend qualified?</h3>
+    <p>
+      It must be paid by a US corporation (or a qualifying foreign one) and you
+      must have held the stock more than 60 days in the 121-day window around the
+      ex-dividend date. Your 1099-DIV reports qualified dividends in box 1b, a
+      subset of the total ordinary dividends in box 1a.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is taxed as an ordinary dividend?</h3>
+    <p>
+      Dividends that fail the qualified test: REIT dividends, most money-market and
+      bond-fund distributions, dividends on stock held too briefly, and dividends
+      in a margin account where the shares were lent out. They are taxed at your
+      ordinary income rate, the same as interest.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do I pay the 3.8% net investment income tax on dividends?</h3>
+    <p>
+      Yes, if your modified AGI is over {formatMoney(200000)} (single) or
+      {formatMoney(250000)} (joint). It applies to both qualified and ordinary
+      dividends, on top of the income tax. The calculator adds it when your income
+      crosses the threshold.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Are dividends in my 401(k) or IRA taxed?</h3>
+    <p>
+      No — not while they stay in the account. Dividends inside a traditional
+      retirement account are taxed only when you withdraw, as ordinary income; in
+      a Roth they are never taxed if the rules are met. This calculator is for
+      dividends in a taxable brokerage account.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/capital-gains-tax-calculator/">Capital gains tax calculator</a> — qualified dividends share its rates</li>
+    <li><a href="/investment-income-tax-calculator/">Interest income tax calculator</a> — interest is ordinary</li>
+    <li><a href="/cost-basis-calculator/">Cost basis calculator</a> — reinvested dividends add to basis</li>
+  </ul>
+
+  <p class="results-note">
+    Federal estimate for the 2026 tax year. State tax on dividends is extra and not
+    included. Not tax advice.
+  </p>
+</Base>

@@ -1,0 +1,123 @@
+---
+/**
+ * Hub: capital gains. The shared investment engine's home page. Worked example
+ * computed by investmentTax(), the same function the island uses.
+ */
+import Base from '../../layouts/Base.astro';
+import CapitalGainsCalculator from '../../components/calculators/CapitalGainsCalculator.tsx';
+import { investmentTax } from '../../lib/capital-gains';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = investmentTax({
+  status: 'single', otherOrdinaryIncome: 80000,
+  shortTermGains: 5000, longTermGains: 20000, applyStandardDeduction: true,
+});
+// The same long-term gain taxed as short-term, to show the holding-period gap.
+const asShort = investmentTax({
+  status: 'single', otherOrdinaryIncome: 80000, shortTermGains: 25000, applyStandardDeduction: true,
+});
+---
+
+<Base
+  title="Capital gains tax calculator 2026 — short vs long-term"
+  description="Calculate 2026 federal capital gains tax: short-term at ordinary rates, long-term at 0/15/20%, loss netting and carryover, plus the 3.8% NIIT surtax."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Capital gains tax calculator</h1>
+    <p class="tagline">One day past a year changes the rate. This shows by how much.</p>
+  </section>
+
+  <p>
+    Sell an asset for more than you paid and the profit is a capital gain. Held a
+    year or less, it is short-term and taxed like wages. Held more than a year, it
+    is long-term and taxed at 0%, 15% or 20% depending on your income. This nets
+    your gains and losses, applies the right rate to each, adds the 3.8% net
+    investment income tax where it bites, and carries any excess loss forward.
+  </p>
+
+  <CapitalGainsCalculator client:load />
+
+  <h2>Worked example — {formatMoney(5000)} short-term and {formatMoney(20000)} long-term gains</h2>
+  <p>
+    A single filer with {formatMoney(80000)} of other income realizes {formatMoney(5000)}
+    of short-term and {formatMoney(20000)} of long-term gains:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Component</th><th>Tax</th></tr></thead>
+    <tbody>
+      <tr><td>Short-term gain ({formatMoney(ex.netShortTerm)}) at ordinary rates</td><td>{formatMoney(ex.ordinaryTax)}</td></tr>
+      <tr><td>Long-term gain ({formatMoney(ex.netLongTerm)}) at 0/15/20%</td><td>{formatMoney(ex.preferentialTax)}</td></tr>
+      <tr><td>Total federal tax on the gains</td><td>{formatMoney(ex.totalInvestmentTax)}</td></tr>
+      <tr><td>Effective rate on the gains</td><td>{formatPct(ex.effectiveRateOnInvestment)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The long-term rate does the work: {formatMoney(ex.netLongTerm)} of long-term gain
+    costs {formatMoney(ex.preferentialTax)} at 15%. Had that same {formatMoney(20000)}
+    been short-term — sold before the one-year mark — the whole {formatMoney(25000)}
+    would be ordinary income and the tax on it would be {formatMoney(asShort.ordinaryTax)},
+    roughly {formatMoney(asShort.ordinaryTax - ex.totalInvestmentTax)} more. That gap is
+    the reward for holding past a year.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What is the difference between short and long-term gains?</h3>
+    <p>
+      The holding period. One year or less is short-term, taxed at your ordinary
+      income rate (up to 37%). More than one year is long-term, taxed at 0%, 15%
+      or 20%. The clock runs from the day after you bought to the day you sold.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Who pays 0% on long-term gains?</h3>
+    <p>
+      Filers whose taxable income (including the gain) stays under the 0% ceiling —
+      {formatMoney(49450)} for a single filer in 2026, {formatMoney(98900)} for a
+      couple. The gain stacks on top of your other income, so a large gain can
+      fill the 0% band and spill into 15%. The calculator handles the stacking.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I deduct capital losses?</h3>
+    <p>
+      Yes. Losses first offset gains of the same type, then the other type. A net
+      loss beyond that deducts up to {formatMoney(3000)} against ordinary income
+      per year ({formatMoney(1500)} if married filing separately), and anything
+      left carries forward to future years indefinitely.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is the 3.8% net investment income tax?</h3>
+    <p>
+      An extra 3.8% on investment income once your modified AGI passes
+      {formatMoney(200000)} (single) or {formatMoney(250000)} (joint). It applies
+      to the smaller of your net investment income and the amount over the
+      threshold, so it phases in rather than hitting all at once. The calculator
+      adds it automatically.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does my state tax capital gains too?</h3>
+    <p>
+      Usually yes, and this calculator is federal only for now. Most states tax
+      gains as ordinary income with no preferential rate; Washington levies a
+      standalone 7% tax on large gains, and a few states grant partial exclusions.
+      A verified state layer is planned; until then, treat state tax as extra.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/cost-basis-calculator/">Cost basis calculator</a> — FIFO, LIFO and specific-lot basis</li>
+    <li><a href="/dividend-tax-calculator/">Dividend tax calculator</a> — qualified vs ordinary</li>
+    <li><a href="/crypto-tax-calculator/">Crypto tax calculator</a> — coins, staking and NFTs</li>
+    <li><a href="/rsu-tax-calculator/">Equity compensation</a> — RSUs, ISOs, NSOs, ESPP, QSBS</li>
+  </ul>
+
+  <p class="results-note">
+    Federal estimate for the 2026 tax year using the standard deduction. State tax
+    not included. Not tax advice.
+  </p>
+</Base>
