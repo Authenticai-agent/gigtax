@@ -1,0 +1,133 @@
+---
+/**
+ * Hub: marriage penalty / bonus. Worked examples computed by marriageTax() — a
+ * clean lopsided bonus and a two-high-earner penalty, so both directions show.
+ */
+import Base from '../../layouts/Base.astro';
+import MarriageCalculator from '../../components/calculators/MarriageCalculator.tsx';
+import { marriageTax } from '../../lib/marriage';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+// Lopsided incomes -> a bonus (Texas, so it is a pure federal-bracket effect).
+const bonus = marriageTax({ incomeA: 180000, incomeB: 20000, stateCode: 'TX', dependents: 1 });
+// Two near-equal high earners -> a penalty.
+const penalty = marriageTax({ incomeA: 300000, incomeB: 280000, stateCode: 'NY', dependents: 2 });
+---
+
+<Base
+  title="Marriage tax calculator — penalty or bonus? (2026)"
+  description="See whether marrying saves or costs you at tax time in 2026: total federal and state income tax as two single filers vs married filing jointly."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Marriage tax calculator</h1>
+    <p class="tagline">Does saying "I do" save you money or cost you? It depends almost entirely on how alike your two incomes are.</p>
+  </section>
+
+  <p>
+    The tax code treats a married couple as one unit, and the married-filing-jointly
+    brackets are wider than the single brackets but not always twice as wide. Two
+    similar incomes can spill into a higher rate once combined — a marriage penalty.
+    One large and one small income spreads across the wider joint brackets — a
+    marriage bonus. This compares your total federal and state income tax both ways.
+  </p>
+
+  <MarriageCalculator client:load />
+
+  <h2>Worked example — a marriage bonus: {formatMoney(180000)} and {formatMoney(20000)}</h2>
+  <p>
+    In Texas (no state income tax, so this is a pure federal-bracket effect), a
+    filer earning {formatMoney(180000)} marries one earning {formatMoney(20000)},
+    with one child:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th>Total tax</th><th>Effective rate</th></tr></thead>
+    <tbody>
+      <tr><td>Two single filers</td><td>{formatMoney(bonus.single.totalTax)}</td><td>{formatPct(bonus.single.effectiveRate)}</td></tr>
+      <tr><td>Married filing jointly</td><td>{formatMoney(bonus.mfj.totalTax)}</td><td>{formatPct(bonus.mfj.effectiveRate)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Marriage saves this couple {formatMoney(bonus.amount)} a year. The lower earner's
+    income effectively fills the bottom joint brackets, so more of the higher
+    earner's income is taxed at lower rates than it was on a single return.
+  </p>
+
+  <h2>Worked example — a marriage penalty: {formatMoney(300000)} and {formatMoney(280000)}</h2>
+  <p>
+    Two high, near-equal incomes in New York, with two children, go the other way:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th>Total tax</th><th>Effective rate</th></tr></thead>
+    <tbody>
+      <tr><td>Two single filers</td><td>{formatMoney(penalty.single.totalTax)}</td><td>{formatPct(penalty.single.effectiveRate)}</td></tr>
+      <tr><td>Married filing jointly</td><td>{formatMoney(penalty.mfj.totalTax)}</td><td>{formatPct(penalty.mfj.effectiveRate)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Here marriage costs {formatMoney(penalty.amount)} a year. At these incomes the
+    top joint brackets are narrower than two single brackets stacked, so combining
+    pushes income into a higher rate — and New York's own progressive brackets add
+    to it.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why does marriage sometimes raise my taxes?</h3>
+    <p>
+      Because the joint brackets are not twice as wide as the single brackets at
+      the top. When two people with similar incomes marry, their combined income
+      fills the lower brackets faster and spills into higher marginal rates. It
+      mostly bites high, evenly-matched earners.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>When is there a marriage bonus?</h3>
+    <p>
+      When one spouse earns much more than the other. The smaller income fills the
+      bottom joint brackets, so the larger income is spread across the full width
+      of the joint brackets and taxed at lower rates than on a single return. A
+      single-earner couple gets the biggest bonus.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does the standard deduction cause a penalty?</h3>
+    <p>
+      No. In 2026 the joint standard deduction ({formatMoney(32200)}) is exactly
+      double the single one ({formatMoney(16100)}), so the deduction itself is
+      neutral. The whole penalty or bonus comes from the bracket widths.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do state taxes matter?</h3>
+    <p>
+      Yes. States with progressive brackets (California, New York) create their
+      own marriage penalties on top of the federal one. Flat-rate states
+      (Pennsylvania, Illinois, Colorado, North Carolina) are neutral, and
+      no-income-tax states leave only the federal effect. The calculator applies
+      your state's 2026 rules.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Should we file separately to dodge the penalty?</h3>
+    <p>
+      Almost never. Married filing separately disallows or limits the QBI
+      deduction, the earned income credit, education credits, ACA subsidies, Roth
+      IRA contributions and the student-loan-interest deduction. It rarely beats a
+      small marriage penalty. The lever that does help is maxing pre-tax 401(k)
+      and HSA contributions.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — take-home for one earner</li>
+    <li><a href="/w4-withholding-calculator/">W-4 withholding calculator</a> — why two-income couples often owe</li>
+    <li><a href="/multi-state-tax-calculator/">Multi-state tax calculator</a> — income across states</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year comparing federal and state income tax plus
+    FICA. FICA is identical either way. Not tax advice.
+  </p>
+</Base>

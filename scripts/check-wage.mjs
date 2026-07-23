@@ -20,6 +20,9 @@ async function load(entry) {
 }
 const wage = await load('src/lib/wage.ts');
 const wh = await load('src/lib/withholding.ts');
+const ms = await load('src/lib/multi-state.ts');
+const mar = await load('src/lib/marriage.ts');
+const te = await load('src/lib/tax-engine.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -130,6 +133,114 @@ console.log('\ncompareOffers');
     { salary: 85000 }, { income: r.breakEven1099, deductions: 8000, healthCost: 6000, solo401k: 10000 }, 'OH', 'single',
   );
   ok('break-even 1099 gross matches the W-2 take-home', near(atBreakEven.c1099TakeHome, r.w2TakeHome, 200), `${Math.round(atBreakEven.c1099TakeHome)} vs ${Math.round(r.w2TakeHome)}`);
+}
+
+/* ------------------------------ multi-state -------------------------------- */
+// Parity is against a transcription of multiStateCalculatorView's composition,
+// run through the ported engine (whose sub-functions check-engine-parity.mjs
+// already pins to legacy). With no resident state, re-sourcing is off and the
+// result must match the legacy engine line for line.
+console.log('\nmultiStateTax');
+{
+  const legacyMulti = (totalW2, gross1099, deductions, status, age65, dependents, entries) => {
+    const netSE = Math.max(0, gross1099 - deductions);
+    const se = te.calcSETax(netSE, undefined, totalW2, status);
+    const totalIncome = totalW2 + netSE;
+    const agi = totalIncome - se.deductibleHalf;
+    const stdDed = te.getStandardDeduction(status, age65);
+    const tb = Math.max(0, agi - stdDed);
+    const qbi = te.calcQBI(netSE, tb, status);
+    const taxable = Math.max(0, tb - qbi);
+    const fed = te.calcFederalTax(taxable, status);
+    const ctc = Math.min(te.calcChildTaxCredit(dependents, agi, status), fed);
+    const eic = te.calcEIC(totalIncome, 0, dependents, status);
+    const fedAfter = Math.max(0, fed - ctc - eic);
+    let totalState = 0;
+    for (const e of entries) {
+      const si = e.w2 + e.se1099;
+      const sd = totalIncome > 0 ? deductions * (si / totalIncome) : 0;
+      const sne = Math.max(0, e.se1099 - sd);
+      const sse = sne > 0 ? te.calcSETax(sne, undefined, e.w2, status) : { deductibleHalf: 0 };
+      const sagi = si - sse.deductibleHalf;
+      totalState += te.calcStateTax(sagi, e.code, undefined, status).tax;
+    }
+    return { fedAfter, seTax: se.totalSE, totalState, total: fedAfter + se.totalSE + totalState };
+  };
+  const cases = [
+    { totalW2: 85000, total1099: 25000, totalDeductions: 5000, status: 'single', dependents: 0,
+      states: [{ code: 'CA', w2: 50000, se1099: 15000 }, { code: 'NY', w2: 35000, se1099: 10000 }] },
+    { totalW2: 0, total1099: 120000, totalDeductions: 20000, status: 'mfj', dependents: 2,
+      states: [{ code: 'TX', w2: 0, se1099: 70000 }, { code: 'CO', w2: 0, se1099: 50000 }] },
+    { totalW2: 140000, total1099: 0, totalDeductions: 0, status: 'hoh', dependents: 1,
+      states: [{ code: 'OH', w2: 90000, se1099: 0 }, { code: 'PA', w2: 50000, se1099: 0 }] },
+  ];
+  for (const [i, c] of cases.entries()) {
+    const L = legacyMulti(c.totalW2, c.total1099, c.totalDeductions, c.status, false, c.dependents, c.states);
+    const r = ms.multiStateTax(c);
+    ok(`multi-state case ${i + 1} total tax matches legacy composition`, near(r.totalTax, L.total), `${Math.round(r.totalTax)} vs ${Math.round(L.total)}`);
+    ok(`multi-state case ${i + 1} federal-after-credits matches`, near(r.federalAfterCredits, L.fedAfter));
+    ok(`multi-state case ${i + 1} total state tax matches`, near(r.totalStateTax, L.totalState));
+  }
+  // Reciprocity: resident IL, wages earned in WI (a reciprocity partner) are
+  // re-sourced to IL, so WI keeps no wage tax and a note is emitted.
+  const recip = ms.multiStateTax({
+    totalW2: 60000, total1099: 0, totalDeductions: 0, status: 'single', dependents: 0,
+    residentState: 'IL',
+    states: [{ code: 'WI', w2: 60000, se1099: 0 }],
+  });
+  const wiCol = recip.states.find((s) => s.code === 'WI');
+  ok('reciprocity re-sources WI wages away and emits a note', recip.reciprocityNotes.length > 0 && (!wiCol || wiCol.income === 0), JSON.stringify(recip.states.map((s) => s.code)));
+  const ilCol = recip.states.find((s) => s.code === 'IL');
+  ok('reciprocity taxes the re-sourced wages in the resident state (IL)', !!ilCol && ilCol.tax > 0);
+}
+
+/* ------------------------------- marriage ---------------------------------- */
+// Parity against a transcription of marriagePenaltyView's composition. The one
+// intentional deviation from legacy — using the engine's child tax credit so its
+// income phase-out applies, instead of a flat per-child amount — is mirrored in
+// the transcription, so the test pins the wiring, and the behavioural checks pin
+// the penalty/bonus direction.
+console.log('\nmarriageTax');
+{
+  const legacyMarriage = (aIncome, bIncome, state, dependents, a401k = 0, b401k = 0) => {
+    const totalIncome = aIncome + bIncome;
+    const aFica = te.calcFICA(aIncome).employeeFICA, bFica = te.calcFICA(bIncome).employeeFICA;
+    const aStd = te.getStandardDeduction('single', false), bStd = te.getStandardDeduction('single', false);
+    const aTaxable = Math.max(0, aIncome - a401k - aStd), bTaxable = Math.max(0, bIncome - b401k - bStd);
+    const aFed = te.calcFederalTax(aTaxable, 'single'), bFed = te.calcFederalTax(bTaxable, 'single');
+    const aState = te.calcStateTax(aIncome - a401k, state, undefined, 'single').tax || 0;
+    const bState = te.calcStateTax(bIncome - b401k, state, undefined, 'single').tax || 0;
+    const higherAGI = Math.max(aIncome - a401k, bIncome - b401k);
+    const singleCTC = Math.min(te.calcChildTaxCredit(dependents, higherAGI, 'single'), aFed + bFed);
+    const singleTotal = aFed + bFed + aState + bState + aFica + bFica - singleCTC;
+    const mfjStd = te.getStandardDeduction('mfj', false);
+    const mfjTaxable = Math.max(0, totalIncome - a401k - b401k - mfjStd);
+    const mfjFed = te.calcFederalTax(mfjTaxable, 'mfj');
+    const mfjState = te.calcStateTax(totalIncome - a401k - b401k, state, undefined, 'mfj').tax || 0;
+    const mfjCTC = Math.min(te.calcChildTaxCredit(dependents, totalIncome - a401k - b401k, 'mfj'), mfjFed);
+    const mfjTotal = mfjFed + mfjState + aFica + bFica - mfjCTC;
+    return { singleTotal, mfjTotal, diff: mfjTotal - singleTotal };
+  };
+  const cases = [
+    [85000, 55000, 'CA', 0], [300000, 280000, 'NY', 2], [180000, 20000, 'TX', 1],
+  ];
+  for (const [i, c] of cases.entries()) {
+    const [a, b, st, deps] = c;
+    const L = legacyMarriage(a, b, st, deps);
+    const r = mar.marriageTax({ incomeA: a, incomeB: b, stateCode: st, dependents: deps });
+    ok(`marriage case ${i + 1} single total matches transcription`, near(r.single.totalTax, L.singleTotal), `${Math.round(r.single.totalTax)} vs ${Math.round(L.singleTotal)}`);
+    ok(`marriage case ${i + 1} MFJ total matches transcription`, near(r.mfj.totalTax, L.mfjTotal));
+    ok(`marriage case ${i + 1} penalty/bonus difference matches`, near(r.difference, L.diff));
+  }
+  // Two high, near-equal earners -> a penalty (upper brackets are not doubled).
+  ok('near-equal high earners get a marriage penalty', mar.marriageTax({ incomeA: 300000, incomeB: 280000, stateCode: 'NY' }).outcome === 'penalty');
+  // One large, one small income -> a bonus (income spreads across wide MFJ brackets).
+  ok('a lopsided couple gets a marriage bonus', mar.marriageTax({ incomeA: 180000, incomeB: 20000, stateCode: 'TX' }).outcome === 'bonus');
+  // FICA cancels: adding identical FICA to both sides cannot change the difference.
+  ok('FICA does not affect the penalty/bonus', near(
+    mar.marriageTax({ incomeA: 90000, incomeB: 90000, stateCode: 'PA' }).difference,
+    legacyMarriage(90000, 90000, 'PA', 0).diff,
+  ));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
