@@ -572,5 +572,189 @@
     ],
     "homeOfficeSqFt": 140,
     "equipmentCost": 2800
+  },
+  "upwork": {
+    "grossEarnings": 55000,
+    "phoneAnnualCost": 1000,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 18000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 55000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 95000,
+        "miles": 0
+      }
+    ],
+    "homeOfficeSqFt": 120,
+    "equipmentCost": 2500
+  },
+  "fiverr": {
+    "grossEarnings": 42000,
+    "phoneAnnualCost": 1000,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 14000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 42000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 74000,
+        "miles": 0
+      }
+    ],
+    "homeOfficeSqFt": 110,
+    "equipmentCost": 2000
+  },
+  "uber-eats": {
+    "grossEarnings": 40000,
+    "businessMiles": 17000,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 180,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 14000,
+        "miles": 6000
+      },
+      {
+        "label": "Steady side income",
+        "gross": 40000,
+        "miles": 17000
+      },
+      {
+        "label": "Full-time",
+        "gross": 66000,
+        "miles": 29000
+      }
+    ]
+  },
+  "roadie": {
+    "grossEarnings": 32000,
+    "businessMiles": 20000,
+    "phoneAnnualCost": 1200,
+    "suppliesCost": 150,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 10000,
+        "miles": 6500
+      },
+      {
+        "label": "Steady side income",
+        "gross": 32000,
+        "miles": 20000
+      },
+      {
+        "label": "Full-time",
+        "gross": 55000,
+        "miles": 34000
+      }
+    ]
+  },
+  "walmart-marketplace": {
+    "grossEarnings": 90000,
+    "phoneAnnualCost": 600,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 30000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 90000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 160000,
+        "miles": 0
+      }
+    ],
+    "cogsPct": 0.55,
+    "homeOfficeSqFt": 120
+  },
+  "depop": {
+    "grossEarnings": 24000,
+    "phoneAnnualCost": 600,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 8000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 24000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 42000,
+        "miles": 0
+      }
+    ],
+    "cogsPct": 0.35,
+    "homeOfficeSqFt": 80
+  },
+  "whatnot": {
+    "grossEarnings": 40000,
+    "phoneAnnualCost": 600,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 13000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 40000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 70000,
+        "miles": 0
+      }
+    ],
+    "cogsPct": 0.5,
+    "homeOfficeSqFt": 100
+  },
+  "kick": {
+    "grossEarnings": 44000,
+    "phoneAnnualCost": 900,
+    "ladder": [
+      {
+        "label": "Part-time",
+        "gross": 15000,
+        "miles": 0
+      },
+      {
+        "label": "Steady side income",
+        "gross": 44000,
+        "miles": 0
+      },
+      {
+        "label": "Full-time",
+        "gross": 76000,
+        "miles": 0
+      }
+    ],
+    "homeOfficeSqFt": 150,
+    "equipmentCost": 4000
   }
 }

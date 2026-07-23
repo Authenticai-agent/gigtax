@@ -106,6 +106,16 @@ const statesTs =
 writeFileSync(join(outDir, 'states.ts'), statesTs);
 
 // ---- platforms.ts ----
+// Merge researched Tier-2 brand entries into the platform set (fee text is a
+// sourced business fact, not a tax figure; rates still come from the dataset).
+const platformExtra = JSON.parse(readFileSync(join(root, 'src/data/overrides/platforms-extra.json'), 'utf8'));
+let extraCount = 0;
+for (const [category, brands] of Object.entries(platformExtra)) {
+  if (category.startsWith('_')) continue;
+  cfg.platforms[category] = { ...(cfg.platforms[category] || {}), ...brands };
+  extraCount += Object.keys(brands).length;
+}
+console.log(`  platform extras merged: ${extraCount} brands`);
 // slug/name are DERIVED (presentation only), not tax figures. A few acronym fixups.
 const NAME_FIXUPS = {
   onlyfans: 'OnlyFans', youtube: 'YouTube', tiktok: 'TikTok', ebay: 'eBay',

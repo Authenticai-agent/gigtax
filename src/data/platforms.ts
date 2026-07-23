@@ -89,6 +89,27 @@ export const platforms: PlatformCategories = {
         "insulated_bag",
         "phone"
       ]
+    },
+    "uber_eats": {
+      "incomeType": "1099-NEC",
+      "platformFee": "varies (service fee on each delivery)",
+      "keyDeductions": [
+        "mileage",
+        "phone",
+        "insulated_bag",
+        "tolls",
+        "parking"
+      ]
+    },
+    "roadie": {
+      "incomeType": "1099-NEC",
+      "platformFee": "varies per delivery",
+      "keyDeductions": [
+        "mileage",
+        "phone",
+        "tolls",
+        "parking"
+      ]
     }
   },
   "gig_services": {
@@ -172,6 +193,29 @@ export const platforms: PlatformCategories = {
         "nanny 1099 taxes",
         "babysitter self employed taxes",
         "nanny tax calculator"
+      ]
+    },
+    "upwork": {
+      "incomeType": "1099-K",
+      "platformFee": "flat 10% freelancer service fee",
+      "keyDeductions": [
+        "software",
+        "home_office",
+        "phone",
+        "internet",
+        "equipment",
+        "professional_services"
+      ]
+    },
+    "fiverr": {
+      "incomeType": "1099-K",
+      "platformFee": "20% seller service fee",
+      "keyDeductions": [
+        "software",
+        "home_office",
+        "equipment",
+        "internet",
+        "professional_services"
       ]
     }
   },
@@ -390,6 +434,17 @@ export const platforms: PlatformCategories = {
         "creator brand deal after tax",
         "influencer deal taxes"
       ]
+    },
+    "kick": {
+      "incomeType": "1099-NEC",
+      "platformFee": "95/5 subscription split (streamer keeps 95%)",
+      "keyDeductions": [
+        "camera_lighting_section179",
+        "internet",
+        "phone",
+        "home_office",
+        "software"
+      ]
     }
   },
   "sellers": {
@@ -530,6 +585,37 @@ export const platforms: PlatformCategories = {
         "Printify seller taxes",
         "print on demand 1099 taxes",
         "POD business taxes"
+      ]
+    },
+    "walmart_marketplace": {
+      "incomeType": "1099-K",
+      "platformFee": "referral fee 6%–15% by category",
+      "keyDeductions": [
+        "cogs",
+        "referral_fees",
+        "shipping_supplies",
+        "advertising"
+      ]
+    },
+    "depop": {
+      "incomeType": "1099-K",
+      "platformFee": "10% selling fee plus payment processing",
+      "keyDeductions": [
+        "cogs",
+        "platform_fees",
+        "shipping_supplies",
+        "mileage"
+      ]
+    },
+    "whatnot": {
+      "incomeType": "1099-K",
+      "platformFee": "8% commission plus payment processing",
+      "keyDeductions": [
+        "cogs",
+        "platform_fees",
+        "shipping_supplies",
+        "phone",
+        "equipment"
       ]
     }
   },
@@ -891,6 +977,33 @@ export const platformList: PlatformSummary[] = [
     ]
   },
   {
+    "slug": "uber-eats",
+    "name": "Uber Eats",
+    "category": "gig_delivery",
+    "key": "uber_eats",
+    "incomeType": "1099-NEC",
+    "keyDeductions": [
+      "mileage",
+      "phone",
+      "insulated_bag",
+      "tolls",
+      "parking"
+    ]
+  },
+  {
+    "slug": "roadie",
+    "name": "Roadie",
+    "category": "gig_delivery",
+    "key": "roadie",
+    "incomeType": "1099-NEC",
+    "keyDeductions": [
+      "mileage",
+      "phone",
+      "tolls",
+      "parking"
+    ]
+  },
+  {
     "slug": "taskrabbit",
     "name": "Taskrabbit",
     "category": "gig_services",
@@ -981,6 +1094,35 @@ export const platformList: PlatformSummary[] = [
     "key": "babysitter_nanny_1099",
     "incomeType": "1099-NEC",
     "keyDeductions": []
+  },
+  {
+    "slug": "upwork",
+    "name": "Upwork",
+    "category": "gig_services",
+    "key": "upwork",
+    "incomeType": "1099-K",
+    "keyDeductions": [
+      "software",
+      "home_office",
+      "phone",
+      "internet",
+      "equipment",
+      "professional_services"
+    ]
+  },
+  {
+    "slug": "fiverr",
+    "name": "Fiverr",
+    "category": "gig_services",
+    "key": "fiverr",
+    "incomeType": "1099-K",
+    "keyDeductions": [
+      "software",
+      "home_office",
+      "equipment",
+      "internet",
+      "professional_services"
+    ]
   },
   {
     "slug": "onlyfans",
@@ -1180,6 +1322,20 @@ export const platformList: PlatformSummary[] = [
     ]
   },
   {
+    "slug": "kick",
+    "name": "Kick",
+    "category": "creators",
+    "key": "kick",
+    "incomeType": "1099-NEC",
+    "keyDeductions": [
+      "camera_lighting_section179",
+      "internet",
+      "phone",
+      "home_office",
+      "software"
+    ]
+  },
+  {
     "slug": "etsy",
     "name": "Etsy",
     "category": "sellers",
@@ -1311,6 +1467,46 @@ export const platformList: PlatformSummary[] = [
       "shopify_etsy_fees",
       "advertising_spend",
       "photography_mockups"
+    ]
+  },
+  {
+    "slug": "walmart-marketplace",
+    "name": "Walmart Marketplace",
+    "category": "sellers",
+    "key": "walmart_marketplace",
+    "incomeType": "1099-K",
+    "keyDeductions": [
+      "cogs",
+      "referral_fees",
+      "shipping_supplies",
+      "advertising"
+    ]
+  },
+  {
+    "slug": "depop",
+    "name": "Depop",
+    "category": "sellers",
+    "key": "depop",
+    "incomeType": "1099-K",
+    "keyDeductions": [
+      "cogs",
+      "platform_fees",
+      "shipping_supplies",
+      "mileage"
+    ]
+  },
+  {
+    "slug": "whatnot",
+    "name": "Whatnot",
+    "category": "sellers",
+    "key": "whatnot",
+    "incomeType": "1099-K",
+    "keyDeductions": [
+      "cogs",
+      "platform_fees",
+      "shipping_supplies",
+      "phone",
+      "equipment"
     ]
   },
   {
