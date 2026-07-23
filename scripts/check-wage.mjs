@@ -26,6 +26,8 @@ const cg = await load('src/lib/capital-gains.ts');
 const cr = await load('src/lib/credits.ts');
 const ge = await load('src/lib/gig-economics.ts');
 const sb = await load('src/lib/se-business.ts');
+const gam = await load('src/lib/gambling.ts');
+const est = await load('src/lib/estate.ts');
 const te = await load('src/lib/tax-engine.ts');
 
 let pass = 0, fail = 0;
@@ -474,6 +476,57 @@ console.log('\nSE business');
   ok('freelance solved take-home hits the target', near(fr.takeHome, 90000, 100), `${Math.round(fr.takeHome)}`);
   ok('freelance hourly rate = gross / billable hours', near(fr.hourlyRate, fr.grossRevenue / fr.annualBillableHours));
   ok('freelance project rate = hourly x project hours', near(fr.projectRate, fr.hourlyRate * 40));
+}
+
+/* -------------------------------- gambling --------------------------------- */
+console.log('\ngambling (2026 90% loss rule)');
+{
+  // Break even: $50k won, $50k lost. Only 90% ($45k) is deductible, so $5k stays taxable.
+  const be = gam.gamblingTax(50000, 50000, 120000, 'single', 20000, 'OH', 0);
+  ok('break-even: deductible losses are 90% capped at winnings', near(be.deductibleLosses, 45000), `${be.deductibleLosses}`);
+  ok('break-even: $5k of losses are non-deductible', near(be.nonDeductibleLosses, 5000));
+  ok('break-even still owes tax under the 2026 rule', be.breakEvenTax > 0);
+  // Winnings, no losses: full winnings taxed, nothing to deduct.
+  const win = gam.gamblingTax(30000, 0, 80000, 'single', 0, 'OH', 0);
+  ok('winnings with no losses give no deduction', win.deductibleLosses === 0 && win.federalTaxOnWinnings > 0);
+  // Loss deduction only helps if itemizing beats the standard deduction.
+  const small = gam.gamblingTax(2000, 2000, 60000, 'single', 0, '', 0);
+  ok('small winnings: standard deduction beats itemizing the loss', !small.usingItemized);
+}
+
+/* ---------------------------- estate / gift / inheritance ------------------- */
+console.log('\nestate, gift & inheritance');
+{
+  // Estate: $20m estate -> $5m over the $15m exclusion -> 40% = $2m.
+  const e = est.estateTax(20000000, 0, 0);
+  ok('estate tax = 40% of the amount over $15m', near(e.estimatedTax, 2000000) && e.taxableEstate === 5000000);
+  ok('a $10m estate owes nothing', est.estateTax(10000000).estimatedTax === 0);
+  // Portability lifts the exclusion.
+  const port = est.estateTax(25000000, 0, 15000000);
+  ok('portability adds a spouse\'s exclusion (no tax on $25m with $15m ported)', port.estimatedTax === 0);
+
+  // Gift: $50k to one person -> $19k excluded -> $31k taxable, return required, no tax due.
+  const g = est.giftTax(50000, 1, 0, false);
+  ok('gift: annual exclusion is $19k, excess is taxable', g.taxablePerRecipient === 31000);
+  ok('gift over the exclusion requires a return', g.returnRequired && g.giftTaxDue === 0);
+  ok('a $15k gift needs no return', !est.giftTax(15000, 1).returnRequired);
+  // Noncitizen spouse: $194k exclusion.
+  ok('noncitizen-spouse gift under $194k is not taxable', est.giftTax(150000, 1, 0, true).taxablePerRecipient === 0);
+
+  // Inheritance by asset type.
+  ok('inherited cash is not taxable', est.inheritanceTreatment('cash', 100000).estimatedTax === 0);
+  ok('inherited life insurance is not taxable', est.inheritanceTreatment('life_insurance', 500000).estimatedTax === 0);
+  ok('inherited Roth is not taxable', est.inheritanceTreatment('roth', 200000).estimatedTax === 0);
+  // Stepped-up brokerage: only gain above date-of-death value is taxed, as LTCG.
+  const brk = est.inheritanceTreatment('brokerage', 100000, 80000, 'single', 120000, 0);
+  ok('stepped-up basis taxes only post-death gain', brk.taxableAmount === 20000 && brk.estimatedTax > 0);
+  ok('no gain if sold at the stepped-up value', est.inheritanceTreatment('property', 100000, 80000, 'single', 100000).estimatedTax === 0);
+  // Traditional IRA is fully ordinary income; a Roth of the same size is not.
+  const ira = est.inheritanceTreatment('traditional_ira', 100000, 80000, 'single', 100000);
+  ok('inherited traditional IRA is fully taxable as ordinary income', ira.taxableAmount === 100000 && ira.estimatedTax > 0);
+  // Annuity: only the gain above basis is taxable.
+  const ann = est.inheritanceTreatment('annuity', 100000, 80000, 'single', 0, 60000);
+  ok('inherited annuity taxes only the gain above basis', ann.taxableAmount === 40000);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

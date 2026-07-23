@@ -439,12 +439,14 @@ export const federal = {
   "giftAndEstate": {
     "annualGiftExclusion": 19000,
     "lifetimeEstateTaxExemption": 15000000,
-    "topEstateTaxRate": 0.4
+    "topEstateTaxRate": 0.4,
+    "noncitizenSpouseAnnualExclusion": 194000
   },
   "foreignEarnedIncomeExclusion": {
     "amount": 132900,
     "note": "For US citizens/residents working abroad who meet bona fide residence or physical presence test."
-  }
+  },
+  "gamblingLossDeductionRate": 0.9
 } satisfies FederalData;
 
 export const selfEmploymentDeductions = {

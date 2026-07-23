@@ -1,0 +1,113 @@
+---
+/** Hub: gambling / windfall tax, with the 2026 90% loss rule. */
+import Base from '../../layouts/Base.astro';
+import GamblingTaxCalculator from '../../components/calculators/GamblingTaxCalculator.tsx';
+import { gamblingTax } from '../../lib/gambling';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = gamblingTax(50000, 50000, 80000, 'single', 20000, 'OH', 0);
+---
+
+<Base
+  title="Gambling tax calculator 2026 — winnings, losses, W-2G"
+  description="What you owe on gambling winnings in 2026, including the new 90% loss-deduction limit. Covers lottery, sports betting, casino and poker winnings."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Gambling tax calculator</h1>
+    <p class="tagline">New for 2026: you can win and lose the same amount and still owe tax on the difference.</p>
+  </section>
+
+  <p>
+    Gambling winnings — lottery, sports betting, casino, poker — are fully taxable
+    ordinary income, reported whether or not you receive a W-2G. Losses deduct only
+    if you itemize, and for 2026 a new law caps that deduction at 90% of losses. So
+    a bettor who broke even now owes tax on 10% of their winnings. This shows the
+    real bill.
+  </p>
+
+  <GamblingTaxCalculator client:load presetState="OH" />
+
+  <h2>Worked example — {formatMoney(50000)} won, {formatMoney(50000)} lost</h2>
+  <p>
+    An Ohio filer with {formatMoney(80000)} of other income wins {formatMoney(50000)}
+    and loses {formatMoney(50000)} — a break-even year on paper:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Winnings (taxable income)</td><td>{formatMoney(ex.winnings)}</td></tr>
+      <tr><td>Deductible losses (90%, if itemizing)</td><td>− {formatMoney(ex.deductibleLosses)}</td></tr>
+      <tr><td>Losses you cannot deduct</td><td>{formatMoney(ex.nonDeductibleLosses)}</td></tr>
+      <tr><td>Federal tax caused</td><td>{formatMoney(ex.federalTaxOnWinnings)}</td></tr>
+      <tr><td>Ohio tax caused</td><td>{formatMoney(ex.stateTaxOnWinnings)}</td></tr>
+      <tr><td>Total tax on a break-even year</td><td>{formatMoney(ex.federalTaxOnWinnings + ex.stateTaxOnWinnings)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Despite winning and losing the same {formatMoney(50000)}, this filer owes
+    {formatMoney(ex.federalTaxOnWinnings + ex.stateTaxOnWinnings)}. Federally, the 90%
+    cap leaves {formatMoney(ex.nonDeductibleLosses)} of losses non-deductible, so that
+    slice of winnings is taxed. Ohio, like most states, allows no loss deduction at
+    all, taxing the full {formatMoney(50000)} of winnings.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Do I owe tax if I broke even?</h3>
+    <p data-review="legal">
+      For 2026, yes. The One Big Beautiful Bill limited the wagering-loss deduction to
+      90% of losses (still capped at winnings), effective for tax years beginning after
+      2025. So even a break-even gambler is taxed on 10% of their winnings federally,
+      and on the full amount in states that disallow loss deductions.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Are gambling losses deductible at all?</h3>
+    <p data-review="legal">
+      Only if you itemize, only up to your winnings, and now only at 90%. If you take
+      the standard deduction — as most people do — your losses do nothing, and you are
+      taxed on your gross winnings. You also need records: a gambling diary, W-2Gs, and
+      statements.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is a W-2G, and does it change what I owe?</h3>
+    <p>
+      A W-2G is the form a payer issues for larger wins (thresholds vary by game), often
+      with 24% federal tax withheld. It does not change what you owe — all winnings are
+      taxable whether or not a W-2G is issued. The withholding is a prepayment credited
+      on your return.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do I pay state tax on winnings won in another state?</h3>
+    <p>
+      Often both states have a claim: the state where you won and your home state, with
+      a credit to avoid double tax. A few states tax nonresidents' gambling winnings
+      heavily. Winnings can also raise income-based figures — ACA subsidies, IRMAA, the
+      taxable portion of Social Security — beyond the direct tax.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What about professional gamblers?</h3>
+    <p>
+      A professional gambler reports on Schedule C and can deduct losses and expenses
+      against winnings as a business — but pays self-employment tax on net profit, and
+      the 90% loss limit still applies. Whether you qualify as a professional is a
+      facts-and-circumstances test, not a choice.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — set aside for a big win</li>
+    <li><a href="/benefits-tax-calculator/">Benefits calculator</a> — winnings and Social Security</li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — for professional gamblers</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Winnings are always reportable; keep records for
+    losses. State treatment varies widely. Not tax advice.
+  </p>
+</Base>

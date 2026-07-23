@@ -229,5 +229,22 @@
     "_authority": "IRS Notice 2025-67, section 25B(b)(1)(B), 2026.",
     "_url": "https://www.irs.gov/pub/irs-drop/n-25-67.pdf",
     "_confidence": "high"
+  },
+  "federal.giftAndEstate.noncitizenSpouseAnnualExclusion": {
+    "was": null,
+    "now": 194000,
+    "_why": "The annual gift-tax exclusion for gifts to a spouse who is not a US citizen is separate from and larger than the ordinary $19,000 annual exclusion. For 2026 it is $194,000.",
+    "_authority": "Rev. Proc. 2025-32 §4.42(2); IRC §2523(i)(2).",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
+  },
+  "federal.gamblingLossDeductionRate": {
+    "was": null,
+    "now": 0.90,
+    "_why": "Beginning in 2026 the OBBBA amended IRC §165(d): the itemized deduction for wagering losses is limited to 90% of losses, still capped at the amount of gambling winnings. Previously losses were deductible at 100% up to winnings. This year-specific rate is needed so the gambling calculator applies the new limit rather than the old full deduction.",
+    "_effect": "A gambler with $50,000 of winnings and $50,000 of losses can now deduct only $45,000 (90%), so $5,000 of net winnings is taxed even though they broke even.",
+    "_authority": "IRC §165(d) as amended by the One Big Beautiful Bill Act (2025); IRS Internal Revenue Bulletin 2026-19. Effective for tax years beginning after December 31, 2025.",
+    "_url": "https://www.irs.gov/irb/2026-19_IRB",
+    "_confidence": "high"
   }
 }

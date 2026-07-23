@@ -1,0 +1,101 @@
+---
+/** Hub: federal estate tax against the 2026 $15m exclusion. */
+import Base from '../../layouts/Base.astro';
+import EstateTaxCalculator from '../../components/calculators/EstateTaxCalculator.tsx';
+import { estateTax, BASIC_EXCLUSION } from '../../lib/estate';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = estateTax(20000000, 0, 0);
+---
+
+<Base
+  title="Estate tax calculator 2026 — the $15 million exclusion"
+  description="Estimate federal estate tax for 2026. The basic exclusion is $15 million per person; above it, the excess is taxed near the 40% top rate."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Estate tax calculator</h1>
+    <p class="tagline">The federal estate tax reaches very few estates — the 2026 exclusion is $15 million per person.</p>
+  </section>
+
+  <p>
+    Federal estate tax applies only to what an estate is worth above the exclusion,
+    which is {formatMoney(BASIC_EXCLUSION)} per person for 2026. Below that — the vast
+    majority of estates — nothing is owed. Above it, the excess is taxed near the 40%
+    top rate. A surviving spouse can add the unused exclusion of the first spouse to
+    die, potentially doubling it.
+  </p>
+
+  <EstateTaxCalculator client:load />
+
+  <h2>Worked example — a {formatMoney(20000000)} estate</h2>
+  <p>
+    An individual dies in 2026 with a {formatMoney(20000000)} estate and no prior
+    taxable gifts:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Figure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Gross estate</td><td>{formatMoney(ex.grossEstate)}</td></tr>
+      <tr><td>Exclusion</td><td>− {formatMoney(ex.applicableExclusion)}</td></tr>
+      <tr><td>Taxable estate</td><td>{formatMoney(ex.taxableEstate)}</td></tr>
+      <tr><td>Estimated federal estate tax</td><td>{formatMoney(ex.estimatedTax)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Only the {formatMoney(ex.taxableEstate)} above the {formatMoney(BASIC_EXCLUSION)}
+    exclusion is taxed, at roughly 40%, for {formatMoney(ex.estimatedTax)}. Had this
+    person been a widow or widower who had ported their late spouse's exclusion, the
+    combined {formatMoney(BASIC_EXCLUSION * 2)} would have covered the whole estate and
+    the tax would be zero.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How much can you inherit before paying estate tax?</h3>
+    <p data-review="legal">
+      An estate owes federal estate tax only on value above {formatMoney(BASIC_EXCLUSION)}
+      for 2026. Heirs themselves pay no federal tax to receive an inheritance — estate
+      tax is paid by the estate, before assets are distributed. Fewer than one estate in
+      a thousand owes it.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is portability?</h3>
+    <p data-review="legal">
+      When one spouse dies, the survivor can elect to carry over the deceased spouse's
+      unused exclusion (the DSUE) by filing an estate-tax return. That can give the
+      survivor up to {formatMoney(BASIC_EXCLUSION * 2)} of combined exclusion — but only
+      if the return is filed, even when no tax is otherwise due.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What counts in the gross estate?</h3>
+    <p>
+      Nearly everything the person owned or controlled at death: real estate, bank and
+      investment accounts, business interests, retirement accounts, and life insurance
+      the deceased owned. Transfers to a spouse or charity are generally deductible, and
+      lifetime taxable gifts reduce the exclusion left for the estate.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do states have their own estate tax?</h3>
+    <p>
+      Several states levy an estate tax with a much lower exclusion than the federal one,
+      and a few levy an inheritance tax on heirs. So an estate can owe state tax while
+      owing no federal tax. Check your state; this calculator is federal only.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/gift-tax-calculator/">Gift tax calculator</a> — lifetime gifts share the exclusion</li>
+    <li><a href="/inheritance-tax-calculator/">Inheritance tax calculator</a> — the heir's side</li>
+    <li><a href="/capital-gains-tax-calculator/">Capital gains calculator</a> — stepped-up basis</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year, modeling the taxable estate at the 40% top rate.
+    Marital, charitable and other deductions can reduce it. Not tax or legal advice.
+  </p>
+</Base>
