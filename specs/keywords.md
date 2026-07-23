@@ -133,3 +133,5 @@ Recommendation: build a **gambling-tax phase** of ~10–15 of these on the exist
 The other ~172 (parlay, arbitrage, Kelly, hedge, poker equity, casino house-edge / RTP, prediction-market pricing) are gambling *tools*, not tax. Building them would pivot MoneyScope from a 2026 tax-calculator site into a gambling-tools site, at a scale (170+ pages) that collides with the propose-and-wait and no-duplicate-pages rules. Many would also be near-identical (every "sport-specific spread calculator" is the same math relabeled), which the quality gate would reject.
 
 Recommendation: **do not build these on this site.** If they are wanted, scope them as a separate product with its own domain, engines and content strategy — not folded into a tax site.
+
+**DECISION (owner, 2026-07-23): closed — betting-odds product will not be built.** The tax-relevant angle is fully covered by the shipped gambling-tax calculators (lottery, W-2G, professional gambler, gambling→Social Security, gambling→ACA). No betting-odds tools on MoneyScope; not revisiting unless the owner reopens it as a separate product.

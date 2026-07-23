@@ -273,5 +273,19 @@
     "_authority": "IRC §3402(q); 24% withholding on certain gambling winnings.",
     "_url": "https://www.law.cornell.edu/uscode/text/26/3402",
     "_confidence": "high"
+  },
+  "federal.estateAndTrustBrackets": {
+    "was": null,
+    "now": [
+      { "min": 0, "max": 3300, "rate": 0.10 },
+      { "min": 3300, "max": 11700, "rate": 0.24 },
+      { "min": 11700, "max": 16000, "rate": 0.35 },
+      { "min": 16000, "max": null, "rate": 0.37 }
+    ],
+    "_why": "The 2026 income-tax rate schedule for estates and trusts (Form 1041). These 'compressed' brackets reach the top 37% rate at just $16,000 of retained taxable income — versus ~$640,000 for individuals — which is why estates and trusts try to distribute income out to beneficiaries. Needed for the 1041 and trust-distribution calculators.",
+    "_effect": "$50,000 of income retained by a trust is taxed far more than the same income taxed to a beneficiary in a low bracket.",
+    "_authority": "Rev. Proc. 2025-32 §3.01, Table 5 (IRC §1(j)(2)(E)), 2026.",
+    "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+    "_confidence": "high"
   }
 }

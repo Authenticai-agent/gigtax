@@ -209,6 +209,8 @@ export function platformName(p: PlatformEntry): string {
     youtube: 'YouTube', 'amazon-fba': 'Amazon FBA', poshmark: 'Poshmark',
     mercari: 'Mercari', 'stockx-goat': 'StockX & GOAT', tiktok: 'TikTok',
     instagram: 'Instagram', twitch: 'Twitch', patreon: 'Patreon',
+    upwork: 'Upwork', fiverr: 'Fiverr', 'uber-eats': 'Uber Eats', roadie: 'Roadie',
+    'walmart-marketplace': 'Walmart Marketplace', depop: 'Depop', whatnot: 'Whatnot', kick: 'Kick',
   };
   return OVERRIDES[p.slug] ?? p.slug.replace(/-/g, ' ');
 }

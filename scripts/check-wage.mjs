@@ -24,6 +24,7 @@ const ms = await load('src/lib/multi-state.ts');
 const mar = await load('src/lib/marriage.ts');
 const cg = await load('src/lib/capital-gains.ts');
 const cr = await load('src/lib/credits.ts');
+const sdt = await load('src/lib/state-death-tax.ts');
 const ge = await load('src/lib/gig-economics.ts');
 const sb = await load('src/lib/se-business.ts');
 const gam = await load('src/lib/gambling.ts');
@@ -610,6 +611,45 @@ console.log('\ngambling tax phase');
   // ACA subsidy loss.
   const aca = gam.gamblingACAImpact(30000, 40000, 2, 1000);
   ok('a win cuts the ACA subsidy', aca.subsidyLost >= 0 && aca.subsidyWith <= aca.subsidyWithout);
+}
+
+/* ---------------------- estate/trust income, GST -------------------------- */
+console.log('\nestate/trust income & GST');
+{
+  // Trust brackets (Table 5): tax at $16,000 = $3,851 (10/24/35 stacked).
+  ok('trust tax at $16,000 = $3,851 (compressed brackets)', near(est.trustIncomeTax(16000), 3851), `${est.trustIncomeTax(16000)}`);
+  ok('trust hits the 37% top bracket fast', est.trustIncomeTax(50000) === 3851 + Math.round((50000 - 16000) * 0.37));
+  // 1041: distributing to a low-bracket beneficiary beats retaining in the trust.
+  const t = est.estateTrust1041(50000, 0, 50000, 20000, 'single');
+  ok('1041 distribution shifts income to the beneficiary', t.retainedIncome === 0 && t.trustTax === 0 && t.beneficiaryTax > 0);
+  ok('distributing saves tax vs retaining in the trust', t.savingsFromDistributing > 0);
+  const retainAll = est.estateTrust1041(50000, 0, 0, 20000, 'single');
+  ok('retaining everything taxes it at the compressed rate', retainAll.trustTax === est.trustIncomeTax(50000));
+  // GST: 40% above the $15m exemption.
+  const g = est.gstTax(20000000, 0);
+  ok('GST tax = 40% of the transfer over $15m', near(g.gstTax, 2000000) && g.taxableAmount === 5000000);
+  ok('a transfer under the GST exemption owes nothing', est.gstTax(10000000).gstTax === 0);
+}
+
+/* ------------------------ state estate/inheritance tax --------------------- */
+console.log('\nstate estate & inheritance tax');
+{
+  // Oregon: $1m exemption, 16% top — a $2m estate owes 16% of $1m.
+  const or = sdt.stateEstateTax('OR', 2000000);
+  ok('OR estate tax = top rate over the $1m exemption', or.hasTax && near(or.estimatedTax, 160000), `${or.estimatedTax}`);
+  // Washington H1 2026: 35% top rate over ~$3.076m.
+  const wa = sdt.stateEstateTax('WA', 5000000);
+  ok('WA estate uses the 35% H1-2026 rate', near(wa.estimatedTax, (5000000 - 3076000) * 0.35), `${wa.estimatedTax}`);
+  // Pennsylvania inheritance by heir class.
+  ok('PA sibling inheritance is taxed at 12%', near(sdt.stateInheritanceTax('PA', 100000, 'sibling').estimatedTax, 12000));
+  ok('PA lineal inheritance is taxed at 4.5%', near(sdt.stateInheritanceTax('PA', 100000, 'lineal').estimatedTax, 4500));
+  ok('PA spouse inheritance is exempt', sdt.stateInheritanceTax('PA', 100000, 'spouse').estimatedTax === 0);
+  // Maryland has BOTH taxes.
+  const md = sdt.stateDeathTaxes('MD', 8000000, 100000, 'other');
+  ok('MD levies both estate and inheritance tax', md.estate.hasTax && md.inheritance.hasTax && md.inheritance.rate === 0.10);
+  // Most states have neither.
+  ok('California has neither death tax', sdt.stateDeathTaxes('CA', 20000000, 500000, 'other').neither);
+  ok('a no-estate-tax state returns zero', sdt.stateEstateTax('TX', 50000000).estimatedTax === 0);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

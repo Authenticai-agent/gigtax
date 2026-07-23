@@ -35,17 +35,20 @@ const PLATFORM_NAMES: Record<string, string> = {
   'amazon-flex': 'Amazon Flex', doordash: 'DoorDash', ebay: 'eBay',
   onlyfans: 'OnlyFans', taskrabbit: 'TaskRabbit', youtube: 'YouTube',
   'amazon-fba': 'Amazon FBA', 'stockx-goat': 'StockX & GOAT', tiktok: 'TikTok',
+  'uber-eats': 'Uber Eats', 'walmart-marketplace': 'Walmart Marketplace',
 };
 
 const PLATFORM_CATEGORY: Array<[string, string]> = [
   ['uber', 'driver'], ['lyft', 'driver'], ['doordash', 'driver'], ['grubhub', 'driver'],
   ['instacart', 'driver'], ['shipt', 'driver'], ['amazon-flex', 'driver'],
-  ['taskrabbit', 'services'], ['rover', 'services'],
+  ['uber-eats', 'driver'], ['roadie', 'driver'],
+  ['taskrabbit', 'services'], ['rover', 'services'], ['upwork', 'services'], ['fiverr', 'services'],
   ['turo', 'rental'], ['airbnb', 'rental'],
   ['etsy', 'seller'], ['ebay', 'seller'], ['shopify', 'seller'],
   ['amazon-fba', 'seller'], ['poshmark', 'seller'], ['mercari', 'seller'], ['stockx-goat', 'seller'],
+  ['walmart-marketplace', 'seller'], ['depop', 'seller'], ['whatnot', 'seller'],
   ['youtube', 'creator'], ['onlyfans', 'creator'],
-  ['tiktok', 'creator'], ['instagram', 'creator'], ['twitch', 'creator'], ['patreon', 'creator'],
+  ['tiktok', 'creator'], ['instagram', 'creator'], ['twitch', 'creator'], ['patreon', 'creator'], ['kick', 'creator'],
 ];
 
 export const GIG_PLATFORMS: GigPlatform[] = PLATFORM_CATEGORY.map(([slug, category]) => ({

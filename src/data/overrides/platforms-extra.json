@@ -1,0 +1,63 @@
+{
+  "_meta": {
+    "purpose": "Tier-2 platform brands added to the platform set for their own brand pages. Merged into cfg.platforms at generation. The platformFee text is a plain-language description of the platform's published commission (a business fact, sourced below), NOT a tax figure; keyDeductions are category deduction slugs. Every tax rate applied to these pages comes from the verified dataset.",
+    "sources": {
+      "upwork": "Upwork help — flat 10% freelancer service fee since May 2023 (support.upwork.com).",
+      "fiverr": "Fiverr — 20% service fee to sellers (fiverr.com/support).",
+      "uber_eats": "Uber — couriers are independent contractors paid per delivery; service fees vary (uber.com).",
+      "roadie": "Roadie — drivers are independent contractors paid per gig (roadie.com).",
+      "walmart_marketplace": "Walmart Marketplace — referral fees 6%–15% by category (marketplace.walmart.com).",
+      "depop": "Depop — 10% selling fee plus payment processing (depop.com/whatsdepopfee).",
+      "whatnot": "Whatnot — 8% commission plus ~2.9% payment processing (whatnot.com).",
+      "kick": "Kick — 95/5 subscription revenue split in the streamer's favor (kick.com)."
+    }
+  },
+  "gig_services": {
+    "upwork": {
+      "incomeType": "1099-K",
+      "platformFee": "flat 10% freelancer service fee",
+      "keyDeductions": ["software", "home_office", "phone", "internet", "equipment", "professional_services"]
+    },
+    "fiverr": {
+      "incomeType": "1099-K",
+      "platformFee": "20% seller service fee",
+      "keyDeductions": ["software", "home_office", "equipment", "internet", "professional_services"]
+    }
+  },
+  "gig_delivery": {
+    "uber_eats": {
+      "incomeType": "1099-NEC",
+      "platformFee": "varies (service fee on each delivery)",
+      "keyDeductions": ["mileage", "phone", "insulated_bag", "tolls", "parking"]
+    },
+    "roadie": {
+      "incomeType": "1099-NEC",
+      "platformFee": "varies per delivery",
+      "keyDeductions": ["mileage", "phone", "tolls", "parking"]
+    }
+  },
+  "sellers": {
+    "walmart_marketplace": {
+      "incomeType": "1099-K",
+      "platformFee": "referral fee 6%–15% by category",
+      "keyDeductions": ["cogs", "referral_fees", "shipping_supplies", "advertising"]
+    },
+    "depop": {
+      "incomeType": "1099-K",
+      "platformFee": "10% selling fee plus payment processing",
+      "keyDeductions": ["cogs", "platform_fees", "shipping_supplies", "mileage"]
+    },
+    "whatnot": {
+      "incomeType": "1099-K",
+      "platformFee": "8% commission plus payment processing",
+      "keyDeductions": ["cogs", "platform_fees", "shipping_supplies", "phone", "equipment"]
+    }
+  },
+  "creators": {
+    "kick": {
+      "incomeType": "1099-NEC",
+      "platformFee": "95/5 subscription split (streamer keeps 95%)",
+      "keyDeductions": ["camera_lighting_section179", "internet", "phone", "home_office", "software"]
+    }
+  }
+}

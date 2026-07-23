@@ -1,0 +1,101 @@
+---
+/** Hub: trust / estate income tax (Form 1041) — retain vs distribute. */
+import Base from '../../layouts/Base.astro';
+import TrustTaxCalculator from '../../components/calculators/TrustTaxCalculator.tsx';
+import { estateTrust1041, trustIncomeTax } from '../../lib/estate';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = estateTrust1041(60000, 0, 60000, 25000, 'single');
+const retained = trustIncomeTax(60000);
+---
+
+<Base
+  title="Trust tax calculator 2026 — Form 1041 income tax"
+  description="How a trust or estate's income is taxed: the compressed 1041 brackets that hit 37% at $16,000, and how distributing to a beneficiary lowers it."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Trust income tax calculator</h1>
+    <p class="tagline">A trust reaches the 37% bracket at $16,000 of income — which is exactly why trusts distribute it out.</p>
+  </section>
+
+  <p>
+    A trust or estate that keeps its income pays tax on it at brutally compressed
+    brackets — the top 37% rate starts at just {formatMoney(16000)} of retained
+    income, versus around {formatMoney(640000)} for an individual. Income it
+    distributes to a beneficiary instead is taxed to that person at their own
+    (usually far lower) rate, via a K-1. This shows the difference on Form 1041.
+  </p>
+
+  <TrustTaxCalculator client:load />
+
+  <h2>Worked example — {formatMoney(60000)} of trust income</h2>
+  <p>
+    A trust earns {formatMoney(60000)}. Compare keeping it versus distributing it to
+    a beneficiary who has {formatMoney(25000)} of other income:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Choice</th><th>Tax</th></tr></thead>
+    <tbody>
+      <tr><td>Trust retains all {formatMoney(60000)}</td><td>{formatMoney(retained)}</td></tr>
+      <tr><td>Trust distributes all {formatMoney(60000)}</td><td>{formatMoney(ex.beneficiaryTax)} (paid by the beneficiary)</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Kept in the trust, the {formatMoney(60000)} costs {formatMoney(retained)} — roughly
+    a {Math.round(retained / 60000 * 100)}% effective rate, because it races through
+    the compressed brackets. Distributed to the beneficiary, it costs {formatMoney(ex.beneficiaryTax)}
+    at their individual rate — a saving of {formatMoney(ex.savingsFromDistributing)}.
+    That gap is the entire reason trusts push income out to beneficiaries each year.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why are trust tax brackets so high?</h3>
+    <p data-review="legal">
+      The 2026 trust and estate brackets are 10% to $3,300, 24% to $11,700, 35% to
+      $16,000, and 37% above — so a trust hits the top rate at {formatMoney(16000)} of
+      retained income. The compression is deliberate: it discourages parking income
+      in a trust to avoid the beneficiary's own rate.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How does distributing income lower the tax?</h3>
+    <p>
+      A trust gets a "distribution deduction" for income it pays out, up to its
+      distributable net income. That income is then taxed to the beneficiary on a
+      Schedule K-1 at their individual rate — usually much lower than the trust's. So
+      the same dollars are taxed once, but at a better rate.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is a grantor trust?</h3>
+    <p>
+      A trust whose income is taxed to the person who created it (the grantor), not
+      to the trust — common with revocable living trusts. There is no separate 1041
+      tax; it all appears on the grantor's return. This calculator models a
+      non-grantor trust, where the trust is its own taxpayer.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Do estates use the same brackets?</h3>
+    <p>
+      Yes. An estate with income during administration files Form 1041 under the same
+      compressed brackets and the same distribution rules. Estates get a bit more
+      flexibility on the tax year and some deductions, but the retain-versus-distribute
+      math is identical.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/estate-tax-calculator/">Estate tax calculator</a> — tax on the estate itself</li>
+    <li><a href="/inheritance-tax-calculator/">Inheritance tax calculator</a> — the beneficiary's side</li>
+    <li><a href="/gst-tax-calculator/">GST tax calculator</a> — skipping a generation</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Distributable net income and trust type affect the
+    result. Not tax or legal advice.
+  </p>
+</Base>

@@ -1,0 +1,102 @@
+---
+/** Hub: generation-skipping transfer tax. Worked example by gstTax(). */
+import Base from '../../layouts/Base.astro';
+import GSTCalculator from '../../components/calculators/GSTCalculator.tsx';
+import { gstTax, BASIC_EXCLUSION } from '../../lib/estate';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = gstTax(20000000, 0);
+---
+
+<Base
+  title="GST tax calculator 2026 — generation-skipping transfer"
+  description="The generation-skipping transfer tax: a flat 40% on transfers to grandchildren above the $15 million GST exemption, on top of gift or estate tax."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year</p>
+    <h1>Generation-skipping transfer tax calculator</h1>
+    <p class="tagline">Leave wealth to a grandchild above the exemption and it can be taxed twice — this is the second layer.</p>
+  </section>
+
+  <p>
+    The generation-skipping transfer (GST) tax is a flat 40% on transfers to a "skip
+    person" — a grandchild, or anyone more than 37½ years younger — above the GST
+    exemption, which is {formatMoney(BASIC_EXCLUSION)} for 2026. It is a separate
+    allowance from the estate and gift exemption, and crucially it applies on top of
+    any gift or estate tax on the same transfer. This estimates it.
+  </p>
+
+  <GSTCalculator client:load />
+
+  <h2>Worked example — {formatMoney(20000000)} to grandchildren</h2>
+  <p>
+    A grandparent leaves {formatMoney(20000000)} directly to grandchildren, having
+    used no GST exemption before:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Figure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Transfer</td><td>{formatMoney(ex.transfer)}</td></tr>
+      <tr><td>GST exemption available</td><td>{formatMoney(ex.exemptionAvailable)}</td></tr>
+      <tr><td>Taxable amount</td><td>{formatMoney(ex.taxableAmount)}</td></tr>
+      <tr><td>GST tax (40%)</td><td>{formatMoney(ex.gstTax)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(ex.taxableAmount)} above the exemption draws {formatMoney(ex.gstTax)}
+    of GST tax — and that is <em>on top of</em> the estate or gift tax the same
+    transfer owes. A transfer that clears both the estate exemption and the GST
+    exemption can therefore face 40% twice, an effective rate far above 40%, which is
+    exactly the outcome the tax is designed to create.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What is a "skip person"?</h3>
+    <p data-review="legal">
+      A person two or more generations below you — a grandchild or great-grandchild —
+      or an unrelated person more than 37½ years younger. A gift or bequest to a skip
+      person can trigger the GST tax. Transfers to a grandchild whose parent (your
+      child) has already died generally move up a generation and are not skips.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why does the GST tax exist?</h3>
+    <p>
+      To stop wealthy families avoiding a round of estate tax by leaving money
+      directly to grandchildren, skipping the child's generation (and the estate tax
+      that would apply when the child later died). The GST tax imposes that missing
+      layer — hence being on top of the regular estate or gift tax.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>How is the GST exemption used?</h3>
+    <p>
+      Everyone has a {formatMoney(BASIC_EXCLUSION)} GST exemption for 2026, separate
+      from the estate/gift exemption but the same size. It can be allocated to
+      transfers or to trusts (making a trust "GST-exempt" so future distributions to
+      skip persons are shielded). Careful allocation is a core estate-planning task.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does the annual gift exclusion help?</h3>
+    <p>
+      Yes — direct gifts to a grandchild within the {formatMoney(19000)} annual gift
+      exclusion are also generally free of GST tax, and tuition or medical payments
+      made directly to the institution are exempt entirely. The GST tax bites on large
+      transfers above these, not on ordinary gifts.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/estate-tax-calculator/">Estate tax calculator</a> — the first layer</li>
+    <li><a href="/gift-tax-calculator/">Gift tax calculator</a> — lifetime gifts</li>
+    <li><a href="/trust-tax-calculator/">Trust income tax calculator</a> — GST-exempt trusts</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. The GST tax is in addition to gift or estate tax.
+    Not tax or legal advice.
+  </p>
+</Base>
