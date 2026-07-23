@@ -105,7 +105,7 @@ export const stateDeathTax: Record<string, StateDeathTax> = {
     "hasEstateTax": true,
     "estateExemption": 3076000,
     "estateTopRate": 0.35,
-    "estateNote": "SPLIT-YEAR 2026: deaths Jan 1-Jun 30 use the 35% top-rate schedule (SB 5813); deaths Jul 1 onward revert to a 20% top rate (SB 6347). Exemption ~$3,076,000 (H1). The stored 0.35 is the H1 rate.",
+    "estateNote": "SPLIT-YEAR 2026: deaths Jan 1-Jun 30 use the 35% top-rate schedule (SB 5813) with a $3,076,000 exemption; deaths Jul 1 onward revert to a 20% top rate and the exemption resets to $3,000,000 (SB 6347), no further indexing. Stored figures are H1 (0.35 rate, $3,076,000 exemption).",
     "hasInheritanceTax": false,
     "inheritance": null,
     "inheritanceNote": null

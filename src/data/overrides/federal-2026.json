@@ -287,5 +287,29 @@
     "_authority": "Rev. Proc. 2025-32 §3.01, Table 5 (IRC §1(j)(2)(E)), 2026.",
     "_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
     "_confidence": "high"
+  },
+  "federal.futa": {
+    "was": null,
+    "now": {
+      "rate": 0.06,
+      "wageBase": 7000,
+      "maxStateCredit": 0.054,
+      "netRateWithFullCredit": 0.006,
+      "householdCashWageThreshold": 1000
+    },
+    "_why": "Federal Unemployment Tax Act constants, needed for the household-employer (Schedule H) calculator. The gross FUTA rate is 6.0% on the first $7,000 of each employee's wages (IRC §3301, §3306(b)(1)); an employer who pays state unemployment tax on time gets a credit of up to 5.4% (IRC §3302(a)-(b)), leaving a net 0.6%. FUTA applies to a household employee only once cash wages reach $1,000 in any calendar quarter (IRC §3306(c)(2)). These are long-stable statutory figures, not annually indexed.",
+    "_effect": "A nanny paid $40,000 generates $42 of net FUTA (0.6% of $7,000) when state unemployment tax is paid on time, versus $420 at the full 6% with no credit.",
+    "_authority": "IRC §3301 (rate), §3306(b)(1) ($7,000 base), §3302 (state credit up to 5.4%), §3306(c)(2) ($1,000 household quarterly threshold).",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/3301",
+    "_confidence": "high"
+  },
+  "federal.ubitSpecificDeduction": {
+    "was": null,
+    "now": 1000,
+    "_why": "The specific deduction allowed against unrelated business taxable income (UBTI) before the corporate tax applies, for the nonprofit / 501(c)(3) UBIT calculator. A tax-exempt organization subtracts a flat $1,000 from net unrelated business income before the 21% corporate rate is applied (IRC §512(b)(12)). Fixed by statute, not indexed.",
+    "_effect": "A charity with $15,000 of net UBI is taxed on $14,000, not $15,000 — a $210 difference at the 21% corporate rate.",
+    "_authority": "IRC §512(b)(12), specific deduction of $1,000 against UBTI.",
+    "_url": "https://www.law.cornell.edu/uscode/text/26/512",
+    "_confidence": "high"
   }
 }

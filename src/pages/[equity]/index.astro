@@ -6,10 +6,11 @@
  */
 import Base from '../../layouts/Base.astro';
 import EquityCalculator from '../../components/calculators/EquityCalculator.tsx';
+import PhantomStockCalculator from '../../components/calculators/PhantomStockCalculator.tsx';
 import { stateList } from '../../data/states';
 import { stateSlug } from '../../lib/slug';
 import { formatMoney } from '../../lib/tax-engine';
-import { INSTRUMENTS, instrumentFor, equityData, rsuOutcome } from '../../lib/equity';
+import { INSTRUMENTS, instrumentFor, equityData, rsuOutcome, phantomOutcome } from '../../lib/equity';
 
 export function getStaticPaths() {
   return INSTRUMENTS.map((i) => ({ params: { equity: i.slug }, props: { slug: i.slug } }));
@@ -18,14 +19,21 @@ export function getStaticPaths() {
 interface Props { slug: string }
 const { slug } = Astro.props as Props;
 const inst = instrumentFor(slug)!;
-const d = equityData(inst.key);
+const d = inst.key === 'phantom' ? equityData('phantomStock_SAR') : equityData(inst.key);
 
 const EXAMPLE_VEST = 60000;
 const EXAMPLE_SALARY = 180000;
 const rsu = inst.key === 'rsu' ? rsuOutcome(EXAMPLE_VEST, EXAMPLE_SALARY, 'CA') : null;
+const phantom = inst.key === 'phantom' ? phantomOutcome(25000, 150000, 'employee', 'single') : null;
 
-const title = `${inst.label} tax calculator (2026) — ${inst.trap}`;
-const description = `How ${inst.label}s are taxed in 2026, and the mistake that costs the most: ${inst.trap}.`;
+// Most instruments fit "LABEL tax calculator (2026) — trap"; phantom's label and
+// trap are both long, so it gets a shorter, standalone title.
+const title = inst.key === 'phantom'
+  ? 'Phantom stock & SARs tax calculator (2026)'
+  : `${inst.label} tax calculator (2026) — ${inst.trap}`;
+const description = inst.key === 'phantom'
+  ? 'How phantom stock and SARs are taxed in 2026: the whole payout is ordinary income plus payroll tax, never a capital-gains rate.'
+  : `How ${inst.label}s are taxed in 2026, and the mistake that costs the most: ${inst.trap}.`;
 ---
 
 <Base title={title} description={description}>
@@ -47,10 +55,48 @@ const description = `How ${inst.label}s are taxed in 2026, and the mistake that 
     </>
   )}
 
-  <div class="callout">
-    <strong>Two taxable events, not one</strong>
-    {equityData('_overview') as unknown as string || 'Equity compensation creates two taxable events: ordinary income when shares vest or options are exercised, and capital gain or loss when they are sold. Misunderstanding that two-layer structure is the most expensive equity tax mistake.'}
-  </div>
+  {inst.key === 'phantom' && (
+    <>
+      <p class="section-label">Calculator</p>
+      <p>
+        Put your own numbers in. Nothing is stored or sent anywhere — it runs in your browser.
+      </p>
+      <PhantomStockCalculator client:load />
+    </>
+  )}
+
+  {inst.key !== 'phantom' && (
+    <div class="callout">
+      <strong>Two taxable events, not one</strong>
+      {equityData('_overview') as unknown as string || 'Equity compensation creates two taxable events: ordinary income when shares vest or options are exercised, and capital gain or loss when they are sold. Misunderstanding that two-layer structure is the most expensive equity tax mistake.'}
+    </div>
+  )}
+
+  {inst.key === 'phantom' && (
+    <div class="callout">
+      <strong>One taxable event, and it is never capital gain</strong>
+      Phantom stock and stock appreciation rights are contract promises to pay cash tied to share value — you
+      never own a share, so there is no basis, no holding period, and no capital-gains rate. The entire payout is
+      ordinary income at settlement, exactly like a cash bonus, with payroll tax on top.
+    </div>
+  )}
+
+  {inst.key === 'phantom' && phantom && (
+    <>
+      <h2>Why the whole payout is ordinary income</h2>
+      <p data-source="data/federal.ts → equityCompensation.phantomStock_SAR">
+        {d.taxTreatment}. {d.note} Because it settles in cash, an employee pays FICA and a contractor pays
+        self-employment tax — reported on {d.form_employee} for an employee, {d.form_contractor} for a contractor.
+      </p>
+      <p>
+        On a {formatMoney(phantom.payout)} payout for an employee already earning {formatMoney(150000)}: the payout
+        adds {formatMoney(phantom.incrementalFederal)} in federal income tax and {formatMoney(phantom.fica)} in FICA,
+        leaving <strong>{formatMoney(phantom.net)}</strong> after its own tax. A real RSU of the same value would be
+        taxed the same way at vesting — the difference is only that a share, once held, can later earn capital-gains
+        treatment. Phantom stock never can.
+      </p>
+    </>
+  )}
 
   {inst.key === 'rsu' && rsu && (
     <>

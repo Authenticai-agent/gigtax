@@ -8,8 +8,11 @@
  * engine; nothing about rates or thresholds is authored in this file.
  */
 import { equityCompensation } from '../data/federal';
-import { calcFederalTax, calcStateTax, getStandardDeduction, formatMoney } from './tax-engine';
+import { calcFederalTax, calcStateTax, calcSETax, getStandardDeduction, formatMoney } from './tax-engine';
 import type { StateData } from '../data/types';
+
+/** Employee FICA rate (SS 6.2% + Medicare 1.45%) — one side of the payroll tax. */
+const EMPLOYEE_FICA_RATE = 0.0765;
 
 const eq = equityCompensation as Record<string, any>;
 
@@ -57,6 +60,13 @@ export const INSTRUMENTS: EquityInstrument[] = [
     label: 'QSBS',
     trap: 'assuming five years when the rules just changed',
     lead: 'Qualified small business stock can exclude millions of gain from federal tax entirely. The 2025 rules changed both the cap and the holding period, and which set applies depends on when the stock was issued.',
+  },
+  {
+    slug: 'phantom-stock-tax-calculator',
+    key: 'phantom',
+    label: 'Phantom stock & SARs',
+    trap: 'expecting capital-gains treatment on a cash bonus',
+    lead: 'Phantom stock and stock appreciation rights pay cash tied to share value, but you never own a share. That means no capital-gains rate ever — the whole payout is ordinary income at settlement, plus payroll tax, exactly like a bonus.',
   },
 ];
 
@@ -165,4 +175,49 @@ export function describeRsuState(code: string, state: StateData, ex: RsuOutcome)
   }
 
   return out;
+}
+
+/* ------------------------------------------------------ Phantom / SAR ---- */
+
+export interface PhantomOutcome {
+  payout: number;
+  recipient: 'employee' | 'contractor';
+  /** Extra federal income tax the payout adds on top of other income. */
+  incrementalFederal: number;
+  /** FICA (employee) — 0 for a contractor. */
+  fica: number;
+  /** Self-employment tax (contractor) — 0 for an employee. */
+  seTax: number;
+  totalExtraTax: number;
+  /** What is left of the payout after its own tax. */
+  net: number;
+}
+
+/**
+ * Phantom stock and SARs settle in cash and are taxed as ordinary income, never
+ * at a capital-gains rate. An employee also pays FICA on it; a contractor gets a
+ * 1099-NEC and pays self-employment tax. The federal income-tax cost is marginal
+ * — the payout stacks on top of other income, it does not start at the bottom.
+ */
+export function phantomOutcome(
+  payout: number, otherIncome: number, recipient: 'employee' | 'contractor' = 'employee', status = 'single',
+): PhantomOutcome {
+  const stdDed = getStandardDeduction(status, false);
+  const withoutPayout = Math.max(0, otherIncome - stdDed);
+  const withPayout = Math.max(0, otherIncome + payout - stdDed);
+  const incrementalFederal = calcFederalTax(withPayout, status) - calcFederalTax(withoutPayout, status);
+
+  const fica = recipient === 'employee' ? payout * EMPLOYEE_FICA_RATE : 0;
+  const seTax = recipient === 'contractor' ? calcSETax(payout).totalSE : 0;
+
+  const totalExtraTax = incrementalFederal + fica + seTax;
+  return {
+    payout,
+    recipient,
+    incrementalFederal,
+    fica,
+    seTax,
+    totalExtraTax,
+    net: payout - totalExtraTax,
+  };
 }

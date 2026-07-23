@@ -1,0 +1,100 @@
+---
+/** Hub: Schedule H household-employer tax. Worked example from the same lib as the island. */
+import Base from '../../layouts/Base.astro';
+import NannyTaxCalculator from '../../components/calculators/NannyTaxCalculator.tsx';
+import { nannyTax, HOUSEHOLD_THRESHOLD, SS_WAGE_BASE } from '../../lib/household-employer';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = nannyTax({ wages: 40000, tips: 0, fedWithheld: 0, stateWithheld: 0, sutaRate: 0.034, sutaWageBase: 7000, sutaPaidOnTime: true, futaCreditReduction: 0 });
+---
+
+<Base
+  title="Nanny tax calculator 2026 (Schedule H)"
+  description="What you owe as a household employer in 2026: employer Social Security, Medicare, FUTA and state unemployment tax on a nanny or caregiver's wages."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year · Schedule H</p>
+    <h1>Nanny / household employer tax calculator</h1>
+    <p class="tagline">Pay a nanny, housekeeper or caregiver over the threshold and you are their employer — with Social Security, Medicare and unemployment taxes to match. Here is the real cost.</p>
+  </section>
+
+  <p>
+    Hire someone to work in your home and control how they do it, and they are your employee, not a contractor.
+    Once cash wages reach {formatMoney(HOUSEHOLD_THRESHOLD)} in 2026 you owe the "nanny tax": employer Social
+    Security and Medicare, federal unemployment tax (FUTA), and state unemployment tax (SUTA). It all goes on
+    Schedule H with your own Form 1040.
+  </p>
+
+  <NannyTaxCalculator client:load />
+
+  <h2>What you actually owe</h2>
+  <p>
+    Employer FICA is 7.65% of wages — 6.2% Social Security up to the {formatMoney(SS_WAGE_BASE)} wage base, plus
+    1.45% Medicare with no cap. FUTA is 6% of the first $7,000, but paying your state unemployment tax on time
+    earns a 5.4% credit that drops it to just 0.6%. Miss that deadline and the full 6% applies.
+  </p>
+
+  <h2>Worked example</h2>
+  <p>A nanny paid {formatMoney(40000)} in a state with a 3.4% SUTA rate on a $7,000 base, state tax paid on time:</p>
+  <table class="data-table">
+    <thead><tr><th>Employer tax</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Employer Social Security (6.2%)</td><td>{formatMoney(ex.employerSS)}</td></tr>
+      <tr><td>Employer Medicare (1.45%)</td><td>{formatMoney(ex.employerMedicare)}</td></tr>
+      <tr><td>FUTA (0.6% of first $7,000)</td><td>{formatMoney(ex.futaTax)}</td></tr>
+      <tr><td>State unemployment (SUTA)</td><td>{formatMoney(ex.sutaTax)}</td></tr>
+      <tr><td>Total employer taxes</td><td>{formatMoney(ex.totalEmployerTaxes)}</td></tr>
+      <tr><td>Total cost to you (wages + taxes)</td><td>{formatMoney(ex.totalCostToEmployer)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(40000)} of wages actually costs you {formatMoney(ex.totalCostToEmployer)} — about
+    {' '}{formatMoney(ex.totalEmployerTaxes)} in employer taxes on top. Separately, you withhold the employee's
+    own {formatMoney(ex.employeeFICA)} FICA share from their pay; you do not pay that, they do.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>When do I have to file Schedule H?</h3>
+    <p data-review="legal">
+      If you paid any one household employee {formatMoney(HOUSEHOLD_THRESHOLD)} or more in cash wages in 2026, or
+      you withheld federal income tax for them. You file Schedule H with your Form 1040 by the April deadline.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Why does FUTA jump from 0.6% to 6%?</h3>
+    <p data-review="legal">
+      The 6% federal rate comes with a credit of up to 5.4% for state unemployment tax paid on time — leaving a
+      net 0.6%. The credit is the full 5.4% even if your state rate is lower, as long as you pay the state on
+      time. Miss the state deadline and you lose the credit, so the federal rate reverts to the full 6%.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is my nanny an employee or a contractor?</h3>
+    <p data-review="legal">
+      Almost always an employee. If you control what work is done and how — hours, tasks, methods — the IRS
+      treats them as your employee, and issuing a 1099 does not change that. Independent contractor status is
+      for workers who run their own business and set their own methods, which a household nanny rarely does.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What does the employee's share cover?</h3>
+    <p data-review="legal">
+      You withhold their 7.65% FICA from their pay and remit it with your employer share, so the government gets
+      the full 15.3%. Those contributions build the employee's Social Security and Medicare credits — the reason
+      paying "under the table" quietly costs the worker their future benefits.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/child-care-tax-credit-calculator/">Child care tax credit</a> — offset some of this cost</li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — the employee's side of withholding</li>
+    <li><a href="/self-employed-tax-calculator/">Self-employed tax calculator</a> — if you hire a true contractor instead</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Federal figures are from the verified dataset; state unemployment rates and
+    wage bases vary and are entered by you. Not tax or legal advice.
+  </p>
+</Base>

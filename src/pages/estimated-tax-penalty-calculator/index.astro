@@ -1,0 +1,103 @@
+---
+/** Hub: Form 2210 underpayment penalty. Worked example computed by the same lib as the island. */
+import Base from '../../layouts/Base.astro';
+import EstimatedPenaltyCalculator from '../../components/calculators/EstimatedPenaltyCalculator.tsx';
+import { estimatedTaxPenalty } from '../../lib/estimated-penalty';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = estimatedTaxPenalty({ currentYearTax: 20000, priorYearTax: 18000, priorYearAGI: 120000, withholding: 0, q1: 0, q2: 0, q3: 0, q4: 0, irsRate: 0.08 });
+---
+
+<Base
+  title="Estimated tax penalty calculator 2026 (Form 2210)"
+  description="Estimate your IRS underpayment penalty for 2026. Safe-harbor test (90% current / 100–110% prior year) and a quarter-by-quarter Form 2210 breakdown."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year · Form 2210</p>
+    <h1>Estimated tax penalty calculator</h1>
+    <p class="tagline">Miss a quarterly payment and the IRS charges interest on the shortfall — separately for each quarter. See what you owe, and whether the safe harbor saves you.</p>
+  </section>
+
+  <p>
+    The US tax system is pay-as-you-go: you owe tax as you earn, through withholding or four quarterly
+    estimated payments. Fall short and Form 2210 adds an underpayment penalty — really interest at the IRS
+    rate — on whatever each quarter was under. The escape hatch is the <strong>safe harbor</strong>: pay
+    enough and the penalty is zero no matter what you finally owe.
+  </p>
+
+  <EstimatedPenaltyCalculator client:load />
+
+  <h2>The safe harbor is the whole game</h2>
+  <p>
+    You owe no penalty if your withholding plus estimated payments reach the lesser of two numbers: 90% of
+    this year's tax, or 100% of last year's (110% if your prior-year AGI was over $150,000). Hit that line and
+    it does not matter that you owe a big balance in April — the penalty is off.
+  </p>
+
+  <h2>Worked example</h2>
+  <p>
+    Someone with {formatMoney(20000)} of 2026 tax and {formatMoney(18000)} last year (AGI under $150,000) who
+    made no estimated payments and had no withholding:
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Step</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>90% of this year's tax</td><td>{formatMoney(ex.requiredCurrent)}</td></tr>
+      <tr><td>100% of last year's tax</td><td>{formatMoney(ex.requiredPrior)}</td></tr>
+      <tr><td>Safe-harbor target (the lesser)</td><td>{formatMoney(ex.safeHarbor)}</td></tr>
+      <tr><td>Paid during the year</td><td>{formatMoney(ex.totalPaid)}</td></tr>
+      <tr><td>Estimated penalty at an 8% IRS rate</td><td>{formatMoney(ex.totalPenalty)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Paying nothing against an {formatMoney(ex.safeHarbor)} target runs a penalty of about
+    {' '}{formatMoney(ex.totalPenalty)} at an 8% IRS rate. Spreading four {formatMoney(ex.perQuarter)} payments
+    across the year instead would have cleared the safe harbor and dropped the penalty to zero.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What is the IRS underpayment rate for 2026?</h3>
+    <p data-review="legal">
+      The rate is the federal short-term rate plus three percentage points, and the IRS republishes it every
+      calendar quarter — so it is not a single fixed number for the year. Look up the current rate on the IRS
+      "quarterly interest rates" page and enter it above; the calculator applies whatever rate you give it.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Does withholding count differently from estimated payments?</h3>
+    <p data-review="legal">
+      Yes, and in your favor. Withholding is treated as paid evenly across all four quarters no matter when it
+      was actually withheld, so a big December withholding can still cover an early-year shortfall. Estimated
+      payments only count for the quarter you actually made them.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is this the exact Form 2210 figure?</h3>
+    <p data-review="legal">
+      It is a close estimate. This uses the short-cut method — each quarter needs a cumulative 25% of the
+      required amount and the shortfall accrues for about a quarter. The real form uses exact dates and daily
+      compounding, and the annualized-income method (Schedule AI) can lower the penalty if your income arrived
+      unevenly during the year.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can the penalty be waived?</h3>
+    <p data-review="legal">
+      Sometimes. The IRS can waive it for a casualty, disaster, or other unusual circumstance, or if you
+      retired (after 62) or became disabled during the year and the underpayment was for reasonable cause.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/quarterly-tax-calculator/">Quarterly tax calculator</a> — what to pay so you never owe this penalty</li>
+    <li><a href="/w4-withholding-calculator/">W-4 withholding calculator</a> — dial in withholding instead</li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — total self-employment tax</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year using the simplified Form 2210 method. The IRS underpayment rate is set
+    quarterly — confirm the current figure. Not tax advice.
+  </p>
+</Base>

@@ -470,7 +470,15 @@ export const federal = {
       "max": null,
       "rate": 0.37
     }
-  ]
+  ],
+  "futa": {
+    "rate": 0.06,
+    "wageBase": 7000,
+    "maxStateCredit": 0.054,
+    "netRateWithFullCredit": 0.006,
+    "householdCashWageThreshold": 1000
+  },
+  "ubitSpecificDeduction": 1000
 } satisfies FederalData;
 
 export const selfEmploymentDeductions = {

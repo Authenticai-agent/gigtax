@@ -34,6 +34,11 @@ const rp = await load('src/lib/retirement-planning.ts');
 const fe = await load('src/lib/feie.ts');
 const wd = await load('src/lib/work-decisions.ts');
 const te = await load('src/lib/tax-engine.ts');
+const etp = await load('src/lib/estimated-penalty.ts');
+const npf = await load('src/lib/nonprofit.ts');
+const nan = await load('src/lib/household-employer.ts');
+const car = await load('src/lib/comp-audit-risk.ts');
+const eqt = await load('src/lib/equity.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -650,6 +655,64 @@ console.log('\nstate estate & inheritance tax');
   // Most states have neither.
   ok('California has neither death tax', sdt.stateDeathTaxes('CA', 20000000, 500000, 'other').neither);
   ok('a no-estate-tax state returns zero', sdt.stateEstateTax('TX', 50000000).estimatedTax === 0);
+}
+
+/* ---------------------- estimated-tax penalty (Form 2210) ----------------- */
+console.log('\nestimated-tax penalty, nanny, nonprofit, audit risk, phantom');
+{
+  // $20k current tax, $18k prior, AGI under $150k, nothing paid, 8% IRS rate.
+  const p = etp.estimatedTaxPenalty({ currentYearTax: 20000, priorYearTax: 18000, priorYearAGI: 0, withholding: 0, q1: 0, q2: 0, q3: 0, q4: 0, irsRate: 0.08 });
+  // Safe harbor = lesser of 90% x 20000 (18000) and 100% x 18000 (18000).
+  ok('2210 safe harbor = lesser of 90% current / 100% prior', near(p.safeHarbor, 18000), `${p.safeHarbor}`);
+  // Underpayments 4500/9000/13500/18000, penalty each = underpayment x 8% x 0.25.
+  ok('2210 penalty sums the quarterly shortfalls', near(p.totalPenalty, 45000 * 0.08 * 0.25), `${p.totalPenalty}`);
+  // AGI over $150k switches the prior-year test to 110%.
+  const hi = etp.estimatedTaxPenalty({ currentYearTax: 50000, priorYearTax: 30000, priorYearAGI: 200000, withholding: 0, q1: 0, q2: 0, q3: 0, q4: 0, irsRate: 0.08 });
+  ok('2210 uses 110% of prior year when AGI over $150k', hi.priorPct === 110 && near(hi.safeHarbor, 33000), `${hi.safeHarbor}`);
+  // Enough withholding meets the safe harbor — no penalty.
+  const safe = etp.estimatedTaxPenalty({ currentYearTax: 20000, priorYearTax: 18000, priorYearAGI: 0, withholding: 20000, q1: 0, q2: 0, q3: 0, q4: 0, irsRate: 0.08 });
+  ok('2210 no penalty when withholding covers the safe harbor', safe.safe && safe.totalPenalty === 0);
+}
+
+/* ---------------------- nanny / household employer ------------------------ */
+{
+  const n = nan.nannyTax({ wages: 40000, tips: 0, fedWithheld: 0, stateWithheld: 0, sutaRate: 0.034, sutaWageBase: 7000, sutaPaidOnTime: true, futaCreditReduction: 0 });
+  ok('nanny employer FICA = 7.65% of wages', near(n.employerFICA, 40000 * 0.0765), `${n.employerFICA}`);
+  ok('nanny FUTA is 0.6% of the first $7,000 when SUTA paid on time', near(n.futaTax, 42), `${n.futaTax}`);
+  ok('nanny SUTA = rate x state wage base', near(n.sutaTax, 7000 * 0.034));
+  ok('nanny total cost = wages + employer taxes', near(n.totalCostToEmployer, 40000 + n.totalEmployerTaxes));
+  // Missing the state deadline forfeits the credit → full 6% FUTA.
+  const late = nan.nannyTax({ wages: 40000, tips: 0, fedWithheld: 0, stateWithheld: 0, sutaRate: 0.034, sutaWageBase: 7000, sutaPaidOnTime: false, futaCreditReduction: 0 });
+  ok('nanny FUTA jumps to 6% if SUTA paid late', near(late.futaTax, 420), `${late.futaTax}`);
+}
+
+/* ---------------------- nonprofit UBIT ------------------------------------ */
+{
+  const u = npf.nonprofitUBIT({ totalRevenue: 500000, exemptPct: 85, ubi: 15000, ubiDeductions: 5000, stateCode: 'TX' });
+  ok('nonprofit net UBI = UBI − deductions − $1,000 specific deduction', u.netUBI === 9000, `${u.netUBI}`);
+  ok('nonprofit federal UBIT = 21% of net UBI', near(u.federalUBITax, 1890), `${u.federalUBITax}`);
+  ok('nonprofit mission income is exempt', u.exemptIncome === 425000);
+  ok('no-income-tax state adds no state UBIT', u.stateUBITax === 0);
+}
+
+/* ---------------------- S-corp audit risk --------------------------------- */
+{
+  // Watson-style: $40k salary on $200k profit in consulting → high risk.
+  const a = car.sCorpAuditRisk({ profit: 200000, salary: 40000, industry: 'consulting', years: 3, employees: 0, owners: '0', hours: 40, credentials: 'expert' });
+  ok('audit risk flags a low salary on high profit', a.score === 70 && a.level === 'High', `${a.score}/${a.level}`);
+  ok('audit risk recommends the industry target salary', a.recommendedTarget === 100000);
+  // A salary in the target band scores low.
+  const b = car.sCorpAuditRisk({ profit: 200000, salary: 100000, industry: 'consulting', years: 3, employees: 0, owners: '0', hours: 40, credentials: 'expert' });
+  ok('a reasonable salary scores lower than a Watson salary', b.score < a.score && b.level !== 'Critical');
+}
+
+/* ---------------------- phantom stock / SARs ------------------------------ */
+{
+  const ph = eqt.phantomOutcome(25000, 150000, 'employee', 'single');
+  ok('phantom employee pays FICA (7.65%) on the payout', near(ph.fica, 25000 * 0.0765) && ph.seTax === 0);
+  ok('phantom net is the payout minus its own tax', near(ph.net, 25000 - ph.totalExtraTax) && ph.net < 25000);
+  const pc = eqt.phantomOutcome(25000, 150000, 'contractor', 'single');
+  ok('phantom contractor pays SE tax instead of FICA', pc.seTax > 0 && pc.fica === 0);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
