@@ -1,0 +1,105 @@
+---
+/** Hub: 501(c)(3) UBIT. Worked example from the same lib as the island. */
+import Base from '../../layouts/Base.astro';
+import NonprofitCalculator from '../../components/calculators/NonprofitCalculator.tsx';
+import { nonprofitUBIT, UBIT_CORP_RATE } from '../../lib/nonprofit';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = nonprofitUBIT({ totalRevenue: 500000, exemptPct: 85, ubi: 15000, ubiDeductions: 5000, stateCode: 'CA' });
+---
+
+<Base
+  title="Nonprofit tax calculator 2026 (501(c)(3) UBIT)"
+  description="Mission income is tax-exempt; unrelated business income is not. Estimate a 501(c)(3)'s Form 990-T tax on UBI at the 21% corporate rate for 2026."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year · Form 990-T</p>
+    <h1>Nonprofit (501(c)(3)) tax calculator</h1>
+    <p class="tagline">A charity pays no tax on its mission. It does pay tax on a side business unrelated to that mission — at the flat corporate rate. This shows which of your dollars are which.</p>
+  </section>
+
+  <p>
+    Tax exemption is not blanket. Donations, grants, program fees, and the investment income statute excludes
+    are all tax-free. But if a 501(c)(3) runs a regular trade or business that is not substantially related to
+    its exempt purpose — a museum operating a public parking garage, a charity selling advertising — that is
+    <strong>unrelated business income</strong> (UBI), taxed at the {formatPct(UBIT_CORP_RATE)} corporate rate on
+    Form 990-T.
+  </p>
+
+  <NonprofitCalculator client:load />
+
+  <h2>What counts, and what does not</h2>
+  <p>
+    Exempt (no tax): donations, grants, membership dues and program fees tied to the mission, sales of
+    mission-related materials, and investment income — dividends, interest, most rents and royalties are
+    excluded from UBI by statute. Unrelated (taxable): advertising revenue, commercial sponsorships with real
+    benefits, and merchandise or services sold as a regular business unrelated to the mission. Activities run
+    mostly by volunteers, or for the convenience of members, are exempt even when they look commercial.
+  </p>
+
+  <h2>Worked example</h2>
+  <p>A charity with {formatMoney(500000)} of total revenue, 85% mission-related, and {formatMoney(15000)} of UBI against {formatMoney(5000)} of related expenses:</p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Mission income (tax-exempt)</td><td>{formatMoney(ex.exemptIncome)}</td></tr>
+      <tr><td>Unrelated business income</td><td>{formatMoney(ex.ubi)}</td></tr>
+      <tr><td>Less UBI deductions</td><td>−{formatMoney(ex.ubiDeductions)}</td></tr>
+      <tr><td>Less $1,000 specific deduction</td><td>−{formatMoney(ex.specificDeduction)}</td></tr>
+      <tr><td>Net taxable UBI</td><td>{formatMoney(ex.netUBI)}</td></tr>
+      <tr><td>Federal UBIT (21%)</td><td>{formatMoney(ex.federalUBITax)}</td></tr>
+      <tr><td>Total tax on UBI</td><td>{formatMoney(ex.totalTax)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(ex.exemptIncome)} of mission revenue is tax-free. Only the {formatMoney(ex.netUBI)} of net
+    unrelated income is taxed — {formatMoney(ex.federalUBITax)} federally. On {formatMoney(500000)} of total
+    revenue that is an effective rate near {formatPct(ex.effectiveRateOnRevenue)}.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Does UBI threaten our tax-exempt status?</h3>
+    <p data-review="legal">
+      A modest amount does not — you simply pay tax on it via Form 990-T. The risk is scale: if the unrelated
+      business becomes a substantial part of what the organization does, the IRS can question whether the
+      organization is still primarily operated for its exempt purpose. Keep UBI clearly secondary.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Is investment income taxed?</h3>
+    <p data-review="legal">
+      Generally no. Dividends, interest, most rents, royalties, and capital gains are specifically excluded from
+      UBI by statute for a 501(c)(3). The main exception is income from debt-financed property — an investment
+      bought with borrowed money can pull a proportional share back into UBI.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What is the $1,000 specific deduction?</h3>
+    <p data-review="legal">
+      Every exempt organization gets to subtract a flat $1,000 from net unrelated business income before the
+      corporate rate applies. It means an organization with under $1,000 of net UBI owes no tax and, below the
+      gross filing threshold, may not even need to file Form 990-T.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>When is Form 990-T due?</h3>
+    <p data-review="legal">
+      A 501(c)(3) with $1,000 or more of gross unrelated business income must file Form 990-T, generally by the
+      15th day of the 5th month after the year ends (May 15 for a calendar-year organization), and pay any tax
+      then. This is separate from the annual Form 990 information return.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/entity-tax-calculator/">Entity tax calculator</a> — how other structures are taxed</li>
+    <li><a href="/incorporation-tax-calculator/">C-corp tax calculator</a> — the same 21% corporate rate</li>
+    <li><a href="/s-corp-tax-calculator/">S-corp tax calculator</a> — for a for-profit venture</li>
+  </ul>
+
+  <p class="results-note">
+    Estimate for the 2026 tax year. Whether a given activity is "unrelated" is a facts-and-circumstances
+    judgment — see IRS Publication 598 and consult a nonprofit tax advisor. Not tax or legal advice.
+  </p>
+</Base>

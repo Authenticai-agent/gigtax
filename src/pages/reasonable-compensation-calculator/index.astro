@@ -1,0 +1,101 @@
+---
+/** Hub: S-corp reasonable-compensation audit risk. Worked example from the same lib as the island. */
+import Base from '../../layouts/Base.astro';
+import CompAuditRiskCalculator from '../../components/calculators/CompAuditRiskCalculator.tsx';
+import { sCorpAuditRisk } from '../../lib/comp-audit-risk';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = sCorpAuditRisk({ profit: 200000, salary: 40000, industry: 'consulting', years: 3, employees: 0, owners: '0', hours: 40, credentials: 'expert' });
+const ok = sCorpAuditRisk({ profit: 200000, salary: 100000, industry: 'consulting', years: 3, employees: 0, owners: '0', hours: 40, credentials: 'expert' });
+---
+
+<Base
+  title="Reasonable compensation calculator 2026 (S-corp audit risk)"
+  description="Score your S-corp reasonable-salary audit risk for 2026. A salary too low against profit is a top IRS trigger — see your risk and a benchmark range."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year · S-corp reasonable comp</p>
+    <h1>Reasonable compensation calculator</h1>
+    <p class="tagline">An S-corp salary set too low against profit is one of the IRS's favorite audit triggers. Score your risk before you file — and see the salary range that would defuse it.</p>
+  </section>
+
+  <p>
+    An S-corp owner-employee must pay themselves a <strong>reasonable salary</strong> — roughly what you would
+    pay someone else to do your job — before taking the rest as distributions. Pay too little and take large
+    distributions, and the IRS can reclassify those distributions as wages, with back payroll tax, penalties
+    and interest. This tool scores how exposed your split looks.
+  </p>
+
+  <CompAuditRiskCalculator client:load />
+
+  <h2>Why the salary split is watched so closely</h2>
+  <p>
+    Distributions escape the 15.3% payroll tax that wages carry, so a $0 salary is tempting — and exactly what
+    the IRS looks for. In <em>Watson v. Commissioner</em> (8th Cir. 2012) an accountant paid himself $24,000 on
+    over $200,000 of profit; the court let the IRS reclassify $175,000 of distributions as wages. The lesson is
+    not "distributions are bad" — it is that the salary underneath them has to be defensible.
+  </p>
+
+  <h2>Worked example</h2>
+  <p>A consulting S-corp with {formatMoney(200000)} of profit, owner working full-time:</p>
+  <table class="data-table">
+    <thead><tr><th>Salary paid</th><th>Ratio</th><th>Risk score</th><th>Payroll tax the IRS could reclaim</th></tr></thead>
+    <tbody>
+      <tr><td>{formatMoney(40000)} (Watson-style)</td><td>{(ex.ratio * 100).toFixed(0)}%</td><td>{ex.score}/100 · {ex.level}</td><td>{formatMoney(ex.payrollTaxAtRisk)}</td></tr>
+      <tr><td>{formatMoney(100000)} (benchmark target)</td><td>{(ok.ratio * 100).toFixed(0)}%</td><td>{ok.score}/100 · {ok.level}</td><td>{formatMoney(ok.payrollTaxAtRisk)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    A {formatMoney(40000)} salary — {(ex.ratio * 100).toFixed(0)}% of profit — scores {ex.score}/100
+    ({ex.level.toLowerCase()} risk): well below the {(ex.benchmark.min * 100).toFixed(0)}–{(ex.benchmark.max * 100).toFixed(0)}%
+    consulting benchmark, and if reclassified up to the {formatMoney(ok.recommendedTarget)} target it exposes
+    about {formatMoney(ex.payrollTaxAtRisk)} of payroll tax. Paying the {formatMoney(100000)} target instead
+    scores {ok.score}/100 and takes the trigger off the table.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How does the IRS decide what is reasonable?</h3>
+    <p data-review="legal">
+      There is no fixed percentage. The IRS weighs your role and duties, hours worked, training and experience,
+      what comparable businesses pay for the same work, the company's size and what it can afford, and how much
+      of the profit comes from your labor versus from capital or other employees.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Can I pay myself nothing if the business lost money?</h3>
+    <p data-review="legal">
+      Yes. The reasonable-compensation rule bites only when there is profit that could have been distributed. No
+      profit, no required salary. If you have profit but reinvest all of it, the IRS may still argue for a
+      salary, though reinvestment can be part of a reasonable-cause defense.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>What happens if my salary is found too low?</h3>
+    <p data-review="legal">
+      The IRS reclassifies distributions as wages and assesses the 15.3% employer-plus-employee FICA on the
+      reclassified amount, plus penalties for late payroll deposits and interest. The tax is on the shortfall
+      between what you paid and a reasonable salary — which is why the benchmark range matters.
+    </p>
+  </div>
+  <div class="faq">
+    <h3>Should I get a formal reasonable-compensation study?</h3>
+    <p data-review="legal">
+      If your salary is well below benchmark — say under 30% of profit — yes. A formal study documents
+      comparable wage data for your role, geography and industry, and is your strongest defense in an audit. The
+      score here is a screen, not a substitute for one.
+    </p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/s-corp-tax-calculator/">S-corp tax calculator</a> — the salary-vs-distribution savings</li>
+    <li><a href="/s-corp-tax-calculator/salary/">S-corp salary calculator</a> — set the reasonable figure</li>
+    <li><a href="/entity-tax-calculator/">Entity tax calculator</a> — whether an S-corp is right at all</li>
+  </ul>
+
+  <p class="results-note">
+    The benchmark ranges are practitioner rules of thumb informed by BLS wage data and the reasonable-comp court
+    cases — not official IRS figures. This is a risk screen, not a compensation study or tax advice.
+  </p>
+</Base>
