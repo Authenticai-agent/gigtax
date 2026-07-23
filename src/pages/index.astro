@@ -17,6 +17,7 @@ import { INSTRUMENTS } from '../lib/equity';
 import { localTaxStates } from '../lib/local-tax';
 import { PAIRS } from '../lib/formation-pairs';
 import { states } from '../data/states';
+import { personalFinance, lifestyle } from '../data/calculators-index';
 
 const localStates = localTaxStates();
 
@@ -213,6 +214,26 @@ import { GIG_CATEGORIES as GIG, GIG_PLATFORMS as PLATFORMS } from '../lib/gig';
       <li><a href={`/${i.slug}/`}>{i.label}</a> — {i.trap}</li>
     ))}
   </ul>
+
+  <h2><a href="/personal-finance/">Personal finance</a></h2>
+  <p>The money questions beyond tax — net worth, retirement, budgeting and debt:</p>
+  <ul class="link-columns">
+    {personalFinance.map((c) => (
+      <li><a href={`/${c.slug}/`}>{c.title}</a> — {c.blurb}</li>
+    ))}
+  </ul>
+
+  <h2><a href="/lifestyle/">Lifestyle</a></h2>
+  <p>What life's big decisions and small habits actually cost:</p>
+  {lifestyle.length > 0 ? (
+    <ul class="link-columns">
+      {lifestyle.map((c) => (
+        <li><a href={`/${c.slug}/`}>{c.title}</a> — {c.blurb}</li>
+      ))}
+    </ul>
+  ) : (
+    <p>Being added now — <a href="/lifestyle/">see the lifestyle hub</a>.</p>
+  )}
 
   <h2>1099 tax calculator by state</h2>
   <p>Pick your state for a page built on that state's 2026 income tax rules:</p>

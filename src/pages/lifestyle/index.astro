@@ -1,0 +1,36 @@
+---
+/** Section hub: lifestyle calculators. Renders from the shared index. */
+import Base from '../../layouts/Base.astro';
+import { lifestyle } from '../../data/calculators-index';
+
+const groups = [...new Set(lifestyle.map((c) => c.group))];
+---
+
+<Base
+  title="Lifestyle money calculators 2026"
+  description="Life-event and everyday-money calculators for 2026: the real cost of big life decisions and small habits, from having a baby to a daily coffee."
+>
+  <section class="hero">
+    <p class="hero-label">The money behind life</p>
+    <h1>Lifestyle calculators</h1>
+    <p class="tagline">What life’s big decisions and small habits actually cost — in real numbers. All run in your browser; nothing is stored.</p>
+  </section>
+
+  {lifestyle.length === 0 ? (
+    <p>These calculators are being added. In the meantime, the <a href="/personal-finance/">personal finance calculators</a> cover net worth, retirement and budgeting.</p>
+  ) : groups.map((g) => (
+    <>
+      <h2>{g}</h2>
+      <ul class="link-columns">
+        {lifestyle.filter((c) => c.group === g).map((c) => (
+          <li><a href={`/${c.slug}/`}>{c.title}</a> — {c.blurb}</li>
+        ))}
+      </ul>
+    </>
+  ))}
+
+  <p class="results-note">
+    These are illustrations built on standard financial math and your own assumptions, not forecasts. Not
+    financial advice.
+  </p>
+</Base>

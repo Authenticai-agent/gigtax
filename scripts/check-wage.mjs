@@ -39,6 +39,8 @@ const npf = await load('src/lib/nonprofit.ts');
 const nan = await load('src/lib/household-employer.ts');
 const car = await load('src/lib/comp-audit-risk.ts');
 const eqt = await load('src/lib/equity.ts');
+const pf = await load('src/lib/personal-finance.ts');
+const fin = await load('src/lib/finance.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -713,6 +715,40 @@ console.log('\nestimated-tax penalty, nanny, nonprofit, audit risk, phantom');
   ok('phantom net is the payout minus its own tax', near(ph.net, 25000 - ph.totalExtraTax) && ph.net < 25000);
   const pc = eqt.phantomOutcome(25000, 150000, 'contractor', 'single');
   ok('phantom contractor pays SE tax instead of FICA', pc.seTax > 0 && pc.fica === 0);
+}
+
+/* ---------------------- personal finance (batch 1) ------------------------ */
+console.log('\npersonal finance: net worth, FIRE, procrastination, budget, card trap');
+{
+  const nw = pf.netWorth({ cash: 15000, investments: 60000, homeValue: 350000, vehicles: 20000, otherAssets: 5000, mortgage: 280000, studentLoans: 25000, carLoans: 12000, creditCards: 4000, otherDebt: 0, age: 35 });
+  ok('net worth = assets − liabilities', nw.totalAssets === 450000 && nw.totalLiabilities === 321000 && nw.netWorth === 129000, `${nw.netWorth}`);
+  ok('net worth compares to the age median', nw.benchmarkMedian > 0 && nw.vsMedian === nw.netWorth - nw.benchmarkMedian);
+
+  // FIRE target = expenses / withdrawal rate.
+  const proj = pf.projectToTarget({ currentAge: 30, currentSavings: 50000, monthlyContribution: 1500, annualReturn: 0.07, annualExpenses: 50000, withdrawalRate: 0.04 });
+  ok('FIRE number = 25× spending at the 4% rule', proj.target === 1250000, `${proj.target}`);
+  ok('FIRE is reached and age = currentAge + years', !proj.unreachable && proj.ageAtTarget === 30 + proj.yearsToTarget);
+  // More contribution → not more years.
+  const faster = pf.projectToTarget({ currentAge: 30, currentSavings: 50000, monthlyContribution: 3000, annualReturn: 0.07, annualExpenses: 50000, withdrawalRate: 0.04 });
+  ok('a bigger contribution reaches FIRE no later', faster.yearsToTarget <= proj.yearsToTarget);
+
+  const proc = pf.procrastinationCost(500, 0.07, 30, 5);
+  ok('waiting costs more than the skipped contributions', proc.costOfWaiting > 0 && proc.ifStartNow > proc.ifDelayed);
+  ok('lost growth exceeds lost contributions', proc.costOfWaiting > (proc.contributedNow - proc.contributedDelayed));
+
+  const b = pf.budget503020(5000);
+  ok('50/30/20 splits take-home pay', b.needs === 2500 && b.wants === 1500 && b.savings === 1000);
+
+  const trap = pf.creditCardTrap(6000, 0.22, 0.02, 250);
+  ok('the minimum takes longer than a fixed payment', trap.minMonths > trap.fixedMonths && trap.interestSaved > 0);
+}
+
+/* ---------------------- finance primitives -------------------------------- */
+{
+  ok('annuity FV exceeds total contributions', fin.futureValueAnnuity(500, 0.07, 30) > 500 * 12 * 30);
+  ok('zero-rate annuity FV = contributions', fin.futureValueAnnuity(500, 0, 30) === 500 * 12 * 30);
+  ok('lump FV doubles near the rule of 72', near(fin.futureValueLump(1000, 0.072, 10), 2004, 5), `${Math.round(fin.futureValueLump(1000, 0.072, 10))}`);
+  ok('a payment below the interest never pays off', fin.payoffMonths(10000, 0.24, 100) === Infinity);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

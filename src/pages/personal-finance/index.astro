@@ -1,0 +1,35 @@
+---
+/** Section hub: personal-finance calculators. Renders from the shared index. */
+import Base from '../../layouts/Base.astro';
+import { personalFinance } from '../../data/calculators-index';
+
+const groups = [...new Set(personalFinance.map((c) => c.group))];
+---
+
+<Base
+  title="Personal finance calculators 2026"
+  description="Free personal-finance calculators for 2026: net worth, FIRE and retirement timing, the cost of waiting to invest, budgeting and credit-card payoff."
+>
+  <section class="hero">
+    <p class="hero-label">Money, beyond tax</p>
+    <h1>Personal finance calculators</h1>
+    <p class="tagline">Net worth, retirement timing, budgeting and debt — the money questions that sit alongside the tax ones. All run in your browser; nothing is stored.</p>
+  </section>
+
+  {groups.map((g) => (
+    <>
+      <h2>{g}</h2>
+      <ul class="link-columns">
+        {personalFinance.filter((c) => c.group === g).map((c) => (
+          <li><a href={`/${c.slug}/`}>{c.title}</a> — {c.blurb}</li>
+        ))}
+      </ul>
+    </>
+  ))}
+
+  <p class="results-note">
+    These are planning tools built on standard time-value-of-money math. Rates of return, inflation and
+    withdrawal assumptions are yours to set — treat every projection as an illustration, not a promise. Not
+    financial advice.
+  </p>
+</Base>

@@ -1,0 +1,72 @@
+---
+/** Personal finance: when can I retire — same engine as FIRE, framed by age. */
+import Base from '../../layouts/Base.astro';
+import FireCalculator from '../../components/calculators/FireCalculator.tsx';
+import { projectToTarget } from '../../lib/personal-finance';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = projectToTarget({ currentAge: 40, currentSavings: 200000, monthlyContribution: 2000, annualReturn: 0.06, annualExpenses: 60000, withdrawalRate: 0.04 });
+---
+
+<Base
+  title="When can I retire? Calculator 2026"
+  description="The age your savings can replace your income. Set your balance, contributions and target retirement income to see when work becomes optional."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance · retirement</p>
+    <h1>When can I retire?</h1>
+    <p class="tagline">Retirement is not a fixed age — it is the moment your savings can pay your bills without you. This finds that year on your numbers.</p>
+  </section>
+
+  <p>
+    The question "when can I retire?" has a precise answer: when your portfolio is large enough that a safe
+    withdrawal covers the income you want. Enter your savings, what you add each month, and your target
+    retirement income, and this projects the age you cross that line.
+  </p>
+
+  <FireCalculator client:load mode="retire" />
+
+  <h2>Worked example</h2>
+  <p>Someone at 40 with {formatMoney(200000)} saved, adding {formatMoney(2000)}/month, wanting {formatMoney(60000)}/year at a 6% return:</p>
+  <table class="data-table">
+    <thead><tr><th>Step</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Nest egg needed (4% of {formatMoney(60000)})</td><td>{formatMoney(ex.target)}</td></tr>
+      <tr><td>Years from now</td><td>{ex.yearsToTarget}</td></tr>
+      <tr><td>Retirement age</td><td>{ex.ageAtTarget}</td></tr>
+      <tr><td>Portfolio at retirement</td><td>{formatMoney(ex.projectedAtTarget)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    A {formatMoney(60000)} income needs a {formatMoney(ex.target)} nest egg under the 4% rule — reached in
+    {' '}{ex.yearsToTarget} years, at age {ex.ageAtTarget} on these assumptions. Social Security, a pension, or
+    part-time income would lower the target and pull that age earlier.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Does this include Social Security?</h3>
+    <p>No — it projects savings only, which is the conservative view. Any Social Security or pension income
+      reduces how much your portfolio has to cover, so your real retirement age is likely earlier than the pure
+      savings number shown here.</p>
+  </div>
+  <div class="faq">
+    <h3>What return should I assume?</h3>
+    <p>A portfolio getting more conservative near retirement often assumes 5–6% rather than the 7% a
+      stock-heavy portfolio might. Lower is safer for planning; the calculator lets you test both.</p>
+  </div>
+  <div class="faq">
+    <h3>What if the number says "never"?</h3>
+    <p>It means the contributions and return you entered do not reach the target within 70 years — usually a sign
+      the target income is high relative to savings. Raising the monthly contribution is the fastest lever.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/fire-calculator/">FIRE calculator</a> — the same math, framed by years</li>
+    <li><a href="/retirement-withdrawal-calculator/">Retirement withdrawal tax</a> — what withdrawals cost in tax</li>
+    <li><a href="/self-employed-retirement-calculator/">Self-employed retirement</a> — SEP and solo 401(k) limits</li>
+  </ul>
+
+  <p class="results-note">Savings-only projection on a steady assumed return; excludes Social Security and pensions. An illustration, not a promise. Not financial advice.</p>
+</Base>
