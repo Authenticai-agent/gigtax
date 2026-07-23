@@ -206,7 +206,9 @@ export function platformName(p: PlatformEntry): string {
     grubhub: 'Grubhub', 'amazon-flex': 'Amazon Flex', shipt: 'Shipt',
     taskrabbit: 'TaskRabbit', rover: 'Rover', etsy: 'Etsy', ebay: 'eBay',
     shopify: 'Shopify', airbnb: 'Airbnb', turo: 'Turo', onlyfans: 'OnlyFans',
-    youtube: 'YouTube',
+    youtube: 'YouTube', 'amazon-fba': 'Amazon FBA', poshmark: 'Poshmark',
+    mercari: 'Mercari', 'stockx-goat': 'StockX & GOAT', tiktok: 'TikTok',
+    instagram: 'Instagram', twitch: 'Twitch', patreon: 'Patreon',
   };
   return OVERRIDES[p.slug] ?? p.slug.replace(/-/g, ' ');
 }

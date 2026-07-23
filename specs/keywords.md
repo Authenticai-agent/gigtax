@@ -63,3 +63,73 @@ Four pages. Build order by strength: California/Wyoming first, since it is the o
 ### If not approved
 
 Nothing is lost. The hub answers all four questions with the reader's own numbers, which is the better answer in every case except search visibility.
+
+---
+
+## Phase 15 — platform expansion
+
+**Status: PROPOSED, awaiting approval. Nothing built.**
+
+The `[platform]` route already builds a brand page for any brand that has a *scenario* in `overrides/platform-scenarios.json`. 16 brands have one today (uber, lyft, doordash, grubhub, instacart, shipt, amazon-flex, taskrabbit, rover, etsy, ebay, shopify, youtube, onlyfans, airbnb, turo). The dataset holds ~36 more brands with fee data but no scenario, so no page.
+
+Building a page = authoring a scenario (the brand-specific worked example and fee stack). The page must pass the find-and-replace test the duplicate gate enforces: swap the brand name and its fee figures and the page must stop being true, or it is filler and the 70%-similarity gate rejects it. That test is what decides which of the candidates below are worth pages.
+
+### Tier 1 — build now (data present, distinct fee structure, clear search intent)
+
+Grouped by the island each would use, as the phase spec directs.
+
+**Sellers → SellerProfitCalculator** (distinct fee stacks, real COGS story):
+- `/amazon-fba-tax-calculator/` — referral ~15% + FBA fulfilment + storage
+- `/poshmark-tax-calculator/` — flat fee structure, resale COGS
+- `/mercari-tax-calculator/` — 10% + processing
+- `/facebook-marketplace-tax-calculator/` — personal-vs-business line, local pickup
+- `/stockx-goat-tax-calculator/` — authentication + seller fees, resale-as-business
+- `/printful-printify-tax-calculator/` — print-on-demand base cost = COGS
+- `/gumroad-tax-calculator/` — 10% platform fee, digital goods
+- `/stan-store-tax-calculator/` — 5% fee, creator storefront
+
+**Creators → BrandDealCalculator / creator preset**:
+- `/tiktok-tax-calculator/`, `/instagram-tax-calculator/`, `/twitch-tax-calculator/`,
+  `/patreon-tax-calculator/`, `/substack-tax-calculator/`, `/ugc-creator-tax-calculator/`
+
+**Gig / rental → GigUnitEconomics presets / rental**:
+- `/spark-tax-calculator/` (Walmart Spark delivery — mileage-led, like the driver set)
+- `/vrbo-tax-calculator/`, `/getaround-tax-calculator/` (rental hosts)
+- `/thumbtack-tax-calculator/` (services/tasks)
+
+That is ~21 pages. Each maps to a scenario I would author from the dataset's fee figures — no invented numbers.
+
+### Tier 2 — data-needed (blocked)
+
+No fee data in the dataset; each needs verified figures before a page: **upwork, fiverr, uber-eats, roadie, walmart-marketplace, depop, whatnot, kick**. These stop at the never-invent rule until the owner supplies (or asks me to research, with sources) their fee structures.
+
+### Skip — not platforms
+
+Present in the data but they are professions or income *types*, not brand-name search intent, and folding them into a page would duplicate the profession/category pages: `handyman_1099`, `cleaning`, `lawn_care`, `babysitter_nanny_1099`, `affiliate`, `podcast`, `sponsorship_income`, `online_course_creator`, `newsletter_business`, and the rental sub-types already covered by the rental hub (`rv_rental`, `boat_rental`, `equipment_rental`, `parking_space_rental`, `storage_rental`, `landlord`, `real_estate_agent_rental`, `short_vs_long_term_rental`).
+
+### Recommendation
+
+Build **Tier 1** in one phase, verifying each page against the duplicate gate as it is authored — if a brand's scenario cannot be made to fail find-and-replace (its fee stack is identical to a sibling's), cut it rather than pad it. Defer **Tier 2** until the fee data is signed off. Skip the non-platforms.
+
+---
+
+## Open questions — gambling and betting calculators
+
+The owner's larger request listed ~200 betting/casino/poker/lottery/prediction calculators. These split cleanly into two very different buckets.
+
+### On-brand: gambling *tax* calculators (a future phase, recommended)
+
+These are tax calculators and fit the site. The engine already exists (`src/lib/gambling.ts`, with the 2026 90%-loss rule). A focused set would extend it:
+- lottery take-home: lump-sum vs annuity, Powerball / Mega Millions, state withholding
+- W-2G withholding, gambling without a W-2G, professional vs casual gambler
+- multi-state gambling winnings, state gambling tax
+- gambling income's knock-on effects: ACA subsidies, IRMAA, Social Security taxability, credit phase-outs — each of which the site already models elsewhere and could compose
+- quarterly set-aside on a big win
+
+Recommendation: build a **gambling-tax phase** of ~10–15 of these on the existing engine, one-engine-many-presets. On-brand, high differentiation (most betting sites ignore tax).
+
+### Off-brand: betting *odds* tools (do not build here)
+
+The other ~172 (parlay, arbitrage, Kelly, hedge, poker equity, casino house-edge / RTP, prediction-market pricing) are gambling *tools*, not tax. Building them would pivot MoneyScope from a 2026 tax-calculator site into a gambling-tools site, at a scale (170+ pages) that collides with the propose-and-wait and no-duplicate-pages rules. Many would also be near-identical (every "sport-specific spread calculator" is the same math relabeled), which the quality gate would reject.
+
+Recommendation: **do not build these on this site.** If they are wanted, scope them as a separate product with its own domain, engines and content strategy — not folded into a tax site.

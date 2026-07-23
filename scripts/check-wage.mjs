@@ -588,5 +588,29 @@ console.log('\nbrand deal (marginal)');
   ok('brand-deal set-aside is under half the deal', b.setAsidePct < 0.5);
 }
 
+/* --------------------------- gambling-tax phase ---------------------------- */
+console.log('\ngambling tax phase');
+{
+  // Lottery: $100m jackpot, $60m cash value. Annuity payment = jackpot / 30.
+  const lot = gam.lotteryTax(100000000, 60000000, 0, 'single', 'OH');
+  ok('lottery annuity payment = jackpot / 30', near(lot.annualPayment, 100000000 / 30, 1));
+  ok('lottery lump sum is taxed near the top rate', lot.lumpSumTax > 60000000 * 0.35 && lot.lumpSumTax < 60000000 * 0.45);
+  ok('lottery withholding is 24% of the cash value', near(lot.federalWithheld, 60000000 * 0.24, 1));
+  // W-2G: 24% withheld often differs from the actual marginal tax.
+  const w2g = gam.w2gReconcile(10000, 60000, 0, 'single', 0);
+  ok('W-2G withholding is 24% of winnings', near(w2g.federalWithheld, 2400));
+  ok('W-2G difference = withheld − actual tax', near(w2g.difference, w2g.federalWithheld - w2g.actualFederalTax));
+  // Professional vs casual gambler.
+  const pro = gam.professionalGambler(100000, 60000, 15000, 30000, 'single', 'OH');
+  ok('professional gambler deducts losses (90%) and expenses', near(pro.netProfit, 100000 - 54000 - 15000));
+  ok('professional pays SE tax; a winner/loser is picked', pro.professionalSeTax > 0 && typeof pro.betterAsProfessional === 'boolean');
+  // Social Security drag.
+  const ss = gam.gamblingSocialSecurityImpact(30000, 20000, 24000, 'single');
+  ok('a win pulls more Social Security into tax', ss.extraTaxableSS > 0 && ss.taxableSSWith > ss.taxableSSWithout);
+  // ACA subsidy loss.
+  const aca = gam.gamblingACAImpact(30000, 40000, 2, 1000);
+  ok('a win cuts the ACA subsidy', aca.subsidyLost >= 0 && aca.subsidyWith <= aca.subsidyWithout);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail === 0 ? 0 : 1);
