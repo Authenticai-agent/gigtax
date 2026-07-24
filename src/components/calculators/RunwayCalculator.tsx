@@ -1,5 +1,5 @@
 /** RunwayCalculator — the anchor. Months of runway + balance curve. Nothing stored. */
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { runway } from '../../lib/layoff/runway';
 import { formatMoney } from '../../lib/tax-engine';
 
@@ -13,6 +13,7 @@ export default function RunwayCalculator() {
   const [otherMonthlyIncome, setOther] = useState(0);
   const [result, setResult] = useState<ReturnType<typeof runway> | null>(null);
   const [stale, setStale] = useState(false);
+  const id = useId();
 
   const num = (v: string) => (v === '' ? 0 : Math.max(0, Number(v) || 0));
   const ed = <T,>(f: (v: T) => void) => (v: T) => { f(v); if (result) setStale(true); };
@@ -41,16 +42,16 @@ export default function RunwayCalculator() {
     <div className="calc-panel">
       <p className="section-label">From the other calculators</p>
       <div className="calc-grid">
-        <div className="form-group"><label>Net severance</label><input type="number" min={0} value={netSeverance} onChange={(e) => ed(setSeverance)(num(e.target.value))} /><p className="field-note">From the severance calculator.</p></div>
-        <div className="form-group"><label>Monthly unemployment (net of tax)</label><input type="number" min={0} value={monthlyUINet} onChange={(e) => ed(setUI)(num(e.target.value))} /><p className="field-note">From the unemployment calculator.</p></div>
-        <div className="form-group"><label>Weeks of unemployment</label><input type="number" min={0} value={uiWeeks} onChange={(e) => ed(setWeeks)(num(e.target.value))} /></div>
-        <div className="form-group"><label>Monthly health premium</label><input type="number" min={0} value={healthPremiumMonthly} onChange={(e) => ed(setPremium)(num(e.target.value))} /><p className="field-note">From the COBRA vs marketplace calculator.</p></div>
+        <div className="form-group"><label htmlFor={`${id}-sev`}>Net severance</label><input id={`${id}-sev`} type="number" min={0} value={netSeverance} onChange={(e) => ed(setSeverance)(num(e.target.value))} /><p className="field-note">From the severance calculator.</p></div>
+        <div className="form-group"><label htmlFor={`${id}-ui`}>Monthly unemployment (net of tax)</label><input id={`${id}-ui`} type="number" min={0} value={monthlyUINet} onChange={(e) => ed(setUI)(num(e.target.value))} /><p className="field-note">From the unemployment calculator.</p></div>
+        <div className="form-group"><label htmlFor={`${id}-weeks`}>Weeks of unemployment</label><input id={`${id}-weeks`} type="number" min={0} value={uiWeeks} onChange={(e) => ed(setWeeks)(num(e.target.value))} /></div>
+        <div className="form-group"><label htmlFor={`${id}-prem`}>Monthly health premium</label><input id={`${id}-prem`} type="number" min={0} value={healthPremiumMonthly} onChange={(e) => ed(setPremium)(num(e.target.value))} /><p className="field-note">From the COBRA vs marketplace calculator.</p></div>
       </div>
       <p className="section-label">Your situation</p>
       <div className="calc-grid">
-        <div className="form-group"><label>Savings you can draw on</label><input type="number" min={0} value={savings} onChange={(e) => ed(setSavings)(num(e.target.value))} /></div>
-        <div className="form-group"><label>Monthly essential spending</label><input type="number" min={0} value={monthlyEssentialSpend} onChange={(e) => ed(setSpend)(num(e.target.value))} /><p className="field-note">Rent, food, utilities, minimum debt — not the health premium.</p></div>
-        <div className="form-group"><label>Other monthly income</label><input type="number" min={0} value={otherMonthlyIncome} onChange={(e) => ed(setOther)(num(e.target.value))} /><p className="field-note">Partner's income, side work.</p></div>
+        <div className="form-group"><label htmlFor={`${id}-sav`}>Savings you can draw on</label><input id={`${id}-sav`} type="number" min={0} value={savings} onChange={(e) => ed(setSavings)(num(e.target.value))} /></div>
+        <div className="form-group"><label htmlFor={`${id}-spend`}>Monthly essential spending</label><input id={`${id}-spend`} type="number" min={0} value={monthlyEssentialSpend} onChange={(e) => ed(setSpend)(num(e.target.value))} /><p className="field-note">Rent, food, utilities, minimum debt — not the health premium.</p></div>
+        <div className="form-group"><label htmlFor={`${id}-oth`}>Other monthly income</label><input id={`${id}-oth`} type="number" min={0} value={otherMonthlyIncome} onChange={(e) => ed(setOther)(num(e.target.value))} /><p className="field-note">Partner's income, side work.</p></div>
       </div>
       <div className="calc-actions">
         <button type="button" className="btn-calculate" onClick={calc}>{result ? 'Recalculate' : 'How long will it last?'}</button>

@@ -7,11 +7,17 @@ import { formatMoney } from '../../lib/tax-engine';
 
 const ex = runway({ savings: 10000, netSeverance: 30000, monthlyUINet: 0, uiWeeks: 0, monthlyEssentialSpend: 4500, healthPremiumMonthly: 700, otherMonthlyIncome: 0 });
 const withUI = runway({ savings: 10000, netSeverance: 30000, monthlyUINet: 2000, uiWeeks: 26, monthlyEssentialSpend: 4500, healthPremiumMonthly: 700, otherMonthlyIncome: 0 });
+
+const faqItems = [
+  { q: `How do I make severance last longer?`, a: `Three levers: claim unemployment if you're eligible (it's often the biggest one), cut essential spending during the search, and choose the cheaper health-coverage option. The runway calculator lets you test each.` },
+  { q: `Should I count severance before or after tax?`, a: `After tax — use your net severance check, not the gross. The <a href="/severance-pay-tax-calculator/">severance tax calculator</a> gives you the net figure to carry in here.` },
+];
 ---
 
 <Base
   title="How long will my severance last? (2026 runway)"
   description="Severance alone runs out fast. See how many months your severance and savings cover your spending — and how much unemployment stretches it."
+  faqItems={faqItems}
 >
   <section class="hero">
     <p class="hero-label">2026 · scenario</p>
@@ -44,16 +50,12 @@ const withUI = runway({ savings: 10000, netSeverance: 30000, monthlyUINet: 2000,
   <RunwayCalculator client:load />
 
   <h2>Questions</h2>
-  <div class="faq">
-    <h3>How do I make severance last longer?</h3>
-    <p>Three levers: claim unemployment if you're eligible (it's often the biggest one), cut essential spending during
-      the search, and choose the cheaper health-coverage option. The runway calculator lets you test each.</p>
-  </div>
-  <div class="faq">
-    <h3>Should I count severance before or after tax?</h3>
-    <p>After tax — use your net severance check, not the gross. The <a href="/severance-pay-tax-calculator/">severance
-      tax calculator</a> gives you the net figure to carry in here.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>Your layoff toolkit</h2>
   <ul class="link-columns">

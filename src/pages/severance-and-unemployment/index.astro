@@ -1,11 +1,17 @@
 ---
 /** Scenario: severance and unemployment at the same time. */
 import Base from '../../layouts/Base.astro';
+
+const faqItems = [
+  { q: `Will taking severance disqualify me from unemployment?`, a: `Generally no — being laid off (not fired for cause) keeps you eligible. Severance may delay or reduce the benefit in some states, but it rarely disqualifies you outright.` },
+  { q: `Do I have to report severance when I file?`, a: `Yes. Report it honestly on your claim; the agency decides how it's treated. Failing to report it can create an overpayment you'll have to repay, sometimes with penalties.` },
+];
 ---
 
 <Base
   title="Severance and unemployment at the same time (2026)"
   description="Can you collect unemployment while getting severance? Often yes — but some states delay or reduce benefits while severance is paid. When you file matters."
+  faqItems={faqItems}
 >
   <section class="hero">
     <p class="hero-label">2026 · scenario</p>
@@ -45,16 +51,12 @@ import Base from '../../layouts/Base.astro';
   </ol>
 
   <h2>Questions</h2>
-  <div class="faq">
-    <h3>Will taking severance disqualify me from unemployment?</h3>
-    <p data-review="legal">Generally no — being laid off (not fired for cause) keeps you eligible. Severance may delay
-      or reduce the benefit in some states, but it rarely disqualifies you outright.</p>
-  </div>
-  <div class="faq">
-    <h3>Do I have to report severance when I file?</h3>
-    <p data-review="legal">Yes. Report it honestly on your claim; the agency decides how it's treated. Failing to
-      report it can create an overpayment you'll have to repay, sometimes with penalties.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>Your layoff toolkit</h2>
   <ul class="link-columns">

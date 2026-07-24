@@ -7,11 +7,18 @@ import { runway } from '../../lib/layoff/runway';
 import { formatMoney } from '../../lib/tax-engine';
 
 const ex = runway({ savings: 15000, netSeverance: 27000, monthlyUINet: 2200, uiWeeks: 26, monthlyEssentialSpend: 3800, healthPremiumMonthly: 600, otherMonthlyIncome: 0 });
+
+const faqItems = [
+  { q: `Why does my balance fall faster later?`, a: `Because unemployment ends. While it's paying, it covers a chunk of your spending; once it runs out (here at month ${ex.monthUIExhausts}), your full burn comes out of savings, so the curve steepens. That inflection is the point to plan around.` },
+  { q: `Should I enter unemployment before or after tax?`, a: `After tax. Unemployment is federally taxable and most states tax it too, so use the net figure for an honest runway. The unemployment calculator shows your state's treatment.` },
+  { q: `What counts as essential spending?`, a: `The things you can't stop: rent or mortgage, food, utilities, transport, insurance, minimum debt payments. Keep the health premium separate — the calculator adds it — and leave out discretionary spending you'd cut in a pinch.` },
+];
 ---
 
 <Base
   title="Layoff runway calculator 2026 — how long will it last?"
   description="Add up net severance, unemployment and savings against your spending and health premium to see how many months of runway you have."
+  faqItems={faqItems}
 >
   <section class="hero">
     <p class="hero-label">2026 tax year · laid off</p>
@@ -49,23 +56,12 @@ const ex = runway({ savings: 15000, netSeverance: 27000, monthlyUINet: 2200, uiW
   </p>
 
   <h2>Questions</h2>
-  <div class="faq">
-    <h3>Why does my balance fall faster later?</h3>
-    <p>Because unemployment ends. While it's paying, it covers a chunk of your spending; once it runs out (here at
-      month {ex.monthUIExhausts}), your full burn comes out of savings, so the curve steepens. That inflection is the
-      point to plan around.</p>
-  </div>
-  <div class="faq">
-    <h3>Should I enter unemployment before or after tax?</h3>
-    <p>After tax. Unemployment is federally taxable and most states tax it too, so use the net figure for an honest
-      runway. The unemployment calculator shows your state's treatment.</p>
-  </div>
-  <div class="faq">
-    <h3>What counts as essential spending?</h3>
-    <p>The things you can't stop: rent or mortgage, food, utilities, transport, insurance, minimum debt payments.
-      Keep the health premium separate — the calculator adds it — and leave out discretionary spending you'd cut in a
-      pinch.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>The full toolkit</h2>
   <ul class="link-columns">

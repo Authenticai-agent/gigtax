@@ -1,5 +1,5 @@
 /** CobraMarketplaceCalculator — COBRA vs 2026 marketplace, with the FPL cliff. Nothing stored. */
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { cobraVsMarketplace, type CobraSource } from '../../lib/layoff/cobraVsMarketplace';
 import { formatMoney } from '../../lib/tax-engine';
 
@@ -19,6 +19,7 @@ export default function CobraMarketplaceCalculator() {
   const [coverageHorizonMonths, setHorizon] = useState(12);
   const [result, setResult] = useState<ReturnType<typeof cobraVsMarketplace> | null>(null);
   const [stale, setStale] = useState(false);
+  const id = useId();
 
   const num = (v: string) => (v === '' ? 0 : Math.max(0, Number(v) || 0));
   const ed = <T,>(f: (v: T) => void) => (v: T) => { f(v); if (result) setStale(true); };
@@ -27,15 +28,15 @@ export default function CobraMarketplaceCalculator() {
   return (
     <div className="calc-panel">
       <div className="calc-grid">
-        <div className="form-group"><label>COBRA premium source</label><select value={cobraSource} onChange={(e) => ed(setSource)(e.target.value as CobraSource)}>{SOURCES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></div>
+        <div className="form-group"><label htmlFor={`${id}-src`}>COBRA premium source</label><select id={`${id}-src`} value={cobraSource} onChange={(e) => ed(setSource)(e.target.value as CobraSource)}>{SOURCES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></div>
         {cobraSource !== 'national_average' && (
-          <div className="form-group"><label>{cobraSource === 'box12dd' ? 'W-2 Box 12 DD (annual)' : 'COBRA premium ($/month)'}</label><input type="number" min={0} value={cobraValue} onChange={(e) => ed(setValue)(num(e.target.value))} /><p className="field-note">{cobraSource === 'box12dd' ? 'Total annual plan cost — we add the 2% admin fee.' : 'What the plan quoted you.'}</p></div>
+          <div className="form-group"><label htmlFor={`${id}-val`}>{cobraSource === 'box12dd' ? 'W-2 Box 12 DD (annual)' : 'COBRA premium ($/month)'}</label><input id={`${id}-val`} type="number" min={0} value={cobraValue} onChange={(e) => ed(setValue)(num(e.target.value))} /><p className="field-note">{cobraSource === 'box12dd' ? 'Total annual plan cost — we add the 2% admin fee.' : 'What the plan quoted you.'}</p></div>
         )}
-        <div className="form-group"><label>Coverage</label><select value={household} onChange={(e) => ed(setHousehold)(e.target.value as 'single' | 'family')}><option value="single">Just me</option><option value="family">Family</option></select></div>
-        <div className="form-group"><label>Household size</label><input type="number" min={1} value={householdSize} onChange={(e) => ed(setSize)(num(e.target.value))} /></div>
-        <div className="form-group"><label>Estimated 2026 income (MAGI)</label><input type="number" min={0} value={estimatedMAGI} onChange={(e) => ed(setMagi)(num(e.target.value))} /><p className="field-note">Severance + UI + other. A low-income year can beat the cliff.</p></div>
-        <div className="form-group"><label>Marketplace benchmark premium ($/mo)</label><input type="number" min={0} value={marketplaceBenchmarkMonthly} onChange={(e) => ed(setBench)(num(e.target.value))} /><p className="field-note">Second-lowest silver plan on healthcare.gov.</p></div>
-        <div className="form-group"><label>Coverage horizon (months)</label><input type="number" min={1} value={coverageHorizonMonths} onChange={(e) => ed(setHorizon)(num(e.target.value))} /></div>
+        <div className="form-group"><label htmlFor={`${id}-cov`}>Coverage</label><select id={`${id}-cov`} value={household} onChange={(e) => ed(setHousehold)(e.target.value as 'single' | 'family')}><option value="single">Just me</option><option value="family">Family</option></select></div>
+        <div className="form-group"><label htmlFor={`${id}-size`}>Household size</label><input id={`${id}-size`} type="number" min={1} value={householdSize} onChange={(e) => ed(setSize)(num(e.target.value))} /></div>
+        <div className="form-group"><label htmlFor={`${id}-magi`}>Estimated 2026 income (MAGI)</label><input id={`${id}-magi`} type="number" min={0} value={estimatedMAGI} onChange={(e) => ed(setMagi)(num(e.target.value))} /><p className="field-note">Severance + UI + other. A low-income year can beat the cliff.</p></div>
+        <div className="form-group"><label htmlFor={`${id}-bench`}>Marketplace benchmark premium ($/mo)</label><input id={`${id}-bench`} type="number" min={0} value={marketplaceBenchmarkMonthly} onChange={(e) => ed(setBench)(num(e.target.value))} /><p className="field-note">Second-lowest silver plan on healthcare.gov.</p></div>
+        <div className="form-group"><label htmlFor={`${id}-horizon`}>Coverage horizon (months)</label><input id={`${id}-horizon`} type="number" min={1} value={coverageHorizonMonths} onChange={(e) => ed(setHorizon)(num(e.target.value))} /></div>
       </div>
       <div className="calc-actions">
         <button type="button" className="btn-calculate" onClick={calc}>{result ? 'Recalculate' : 'Compare COBRA vs marketplace'}</button>

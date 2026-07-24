@@ -7,11 +7,17 @@ import { formatMoney } from '../../lib/tax-engine';
 
 const lump = severanceTax({ severance: 60000, paymentMode: 'separate', stateCode: 'CA', ytdWages: 90000, filingStatus: 'single', otherIncome: 90000 });
 const combined = severanceTax({ severance: 60000, paymentMode: 'combined', stateCode: 'CA', ytdWages: 90000, filingStatus: 'single', otherIncome: 90000 });
+
+const faqItems = [
+  { q: `Is a lump sum taxed more than installments?`, a: `No — the total tax is the same. A lump sum is <em>withheld</em> more (flat 22%), but you reconcile at filing. Installments through payroll withhold closer to your real rate. <a href="/is-severance-taxed-higher/">More on the withholding myth</a>.` },
+  { q: `Which is better for unemployment?`, a: `It depends on your state. Salary continuation can offset unemployment for the weeks it covers; a lump sum may be allocated to a shorter period. Check your state's rule before deciding.` },
+];
 ---
 
 <Base
   title="Lump sum vs installment severance (2026)"
   description="Take severance as a lump sum or in installments? It changes withholding and cash-flow timing, and can affect unemployment. Here's the trade-off with numbers."
+  faqItems={faqItems}
 >
   <section class="hero">
     <p class="hero-label">2026 · scenario</p>
@@ -56,16 +62,12 @@ const combined = severanceTax({ severance: 60000, paymentMode: 'combined', state
   </ul>
 
   <h2>Questions</h2>
-  <div class="faq">
-    <h3>Is a lump sum taxed more than installments?</h3>
-    <p data-review="legal">No — the total tax is the same. A lump sum is <em>withheld</em> more (flat 22%), but you
-      reconcile at filing. Installments through payroll withhold closer to your real rate. <a href="/is-severance-taxed-higher/">More on the withholding myth</a>.</p>
-  </div>
-  <div class="faq">
-    <h3>Which is better for unemployment?</h3>
-    <p data-review="legal">It depends on your state. Salary continuation can offset unemployment for the weeks it
-      covers; a lump sum may be allocated to a shorter period. Check your state's rule before deciding.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>Your layoff toolkit</h2>
   <ul class="link-columns">

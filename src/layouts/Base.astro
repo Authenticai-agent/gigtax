@@ -6,13 +6,16 @@
  */
 import '../styles/global.css';
 import { SITE_INDEXABLE } from '../site';
+import { faqJsonLd, type FaqItem } from '../lib/faq';
 
 interface Props {
   title: string;
   description: string;
+  faqItems?: FaqItem[];
 }
-const { title, description } = Astro.props;
+const { title, description, faqItems } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const faqLd = faqItems && faqItems.length ? faqJsonLd(faqItems) : null;
 ---
 
 <!doctype html>
@@ -28,10 +31,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    {faqLd && <script type="application/ld+json" set:html={faqLd} />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Literata:ital,wght@0,400;0,500;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Literata:ital,wght@0,400;0,500;1,400&display=optional"
       rel="stylesheet"
     />
   </head>

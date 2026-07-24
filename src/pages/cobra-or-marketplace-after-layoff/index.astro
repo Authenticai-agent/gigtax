@@ -6,11 +6,17 @@ import { formatMoney } from '../../lib/tax-engine';
 
 const under = cobraVsMarketplace({ cobraSource: 'known', cobraValue: 750, household: 'single', householdSize: 1, estimatedMAGI: 42000, marketplaceBenchmarkMonthly: 480, coverageHorizonMonths: 12 });
 const over = cobraVsMarketplace({ cobraSource: 'known', cobraValue: 750, household: 'single', householdSize: 1, estimatedMAGI: 70000, marketplaceBenchmarkMonthly: 480, coverageHorizonMonths: 12 });
+
+const faqItems = [
+  { q: `What changed for 2026?`, a: `The enhanced premium tax credits (which had removed the 400% FPL cliff since 2021) expired at the end of 2025. For 2026, pre-2021 rules apply: subsidies phase out entirely above 400% of poverty. Verified 2026-07-24 — Congress had not enacted an extension.` },
+  { q: `Does a severance lump sum affect this?`, a: `Yes — a lump sum can spike your income over the cliff for that year. Spreading severance across two tax years, or timing marketplace enrollment, can keep you under 400% FPL. See <a href="/lump-sum-vs-installment-severance/">lump sum vs installments</a>.` },
+];
 ---
 
 <Base
   title="COBRA or marketplace after a layoff (2026 rules)"
   description="With the enhanced ACA subsidies expired for 2026, the 400% FPL cliff decides whether COBRA or the marketplace wins after a layoff. Here's the 2026 math."
+  faqItems={faqItems}
 >
   <section class="hero">
     <p class="hero-label">2026 · scenario</p>
@@ -49,17 +55,12 @@ const over = cobraVsMarketplace({ cobraSource: 'known', cobraValue: 750, househo
   </p>
 
   <h2>Questions</h2>
-  <div class="faq">
-    <h3>What changed for 2026?</h3>
-    <p data-review="legal">The enhanced premium tax credits (which had removed the 400% FPL cliff since 2021) expired
-      at the end of 2025. For 2026, pre-2021 rules apply: subsidies phase out entirely above 400% of poverty. Verified
-      2026-07-24 — Congress had not enacted an extension.</p>
-  </div>
-  <div class="faq">
-    <h3>Does a severance lump sum affect this?</h3>
-    <p data-review="legal">Yes — a lump sum can spike your income over the cliff for that year. Spreading severance
-      across two tax years, or timing marketplace enrollment, can keep you under 400% FPL. See <a href="/lump-sum-vs-installment-severance/">lump sum vs installments</a>.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>Work it out</h2>
   <ul class="link-columns">

@@ -1,5 +1,5 @@
 /** SeveranceCalculator — severance withholding vs actual tax. Nothing is stored or sent. */
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { severanceTax, type PaymentMode, type FilingStatus } from '../../lib/layoff/severanceTax';
 import { formatMoney, formatPct } from '../../lib/tax-engine';
 import { states } from '../../data/states';
@@ -17,6 +17,7 @@ export default function SeveranceCalculator({ presetState = 'CA' }: { presetStat
   const [otherIncome, setOther] = useState(60000);
   const [result, setResult] = useState<ReturnType<typeof severanceTax> | null>(null);
   const [stale, setStale] = useState(false);
+  const id = useId();
 
   const num = (v: string) => (v === '' ? 0 : Math.max(0, Number(v) || 0));
   const ed = <T,>(f: (v: T) => void) => (v: T) => { f(v); if (result) setStale(true); };
@@ -25,12 +26,12 @@ export default function SeveranceCalculator({ presetState = 'CA' }: { presetStat
   return (
     <div className="calc-panel">
       <div className="calc-grid">
-        <div className="form-group"><label>Severance amount</label><input type="number" min={0} value={severance} onChange={(e) => ed(setSeverance)(num(e.target.value))} /></div>
-        <div className="form-group"><label>How is it paid?</label><select value={paymentMode} onChange={(e) => ed(setMode)(e.target.value as PaymentMode)}>{MODES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></div>
-        <div className="form-group"><label>Your state</label><select value={stateCode} onChange={(e) => ed(setState)(e.target.value)}>{stateOptions.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></div>
-        <div className="form-group"><label>Wages already earned this year (same employer)</label><input type="number" min={0} value={ytdWages} onChange={(e) => ed(setYtd)(num(e.target.value))} /><p className="field-note">Counts toward the $184,500 Social Security cap.</p></div>
-        <div className="form-group"><label>Filing status</label><select value={filingStatus} onChange={(e) => ed(setStatus)(e.target.value as FilingStatus)}>{STATUSES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></div>
-        <div className="form-group"><label>Your other 2026 income</label><input type="number" min={0} value={otherIncome} onChange={(e) => ed(setOther)(num(e.target.value))} /><p className="field-note">Wages, new job, spouse — sets your real tax rate.</p></div>
+        <div className="form-group"><label htmlFor={`${id}-sev`}>Severance amount</label><input id={`${id}-sev`} type="number" min={0} value={severance} onChange={(e) => ed(setSeverance)(num(e.target.value))} /></div>
+        <div className="form-group"><label htmlFor={`${id}-mode`}>How is it paid?</label><select id={`${id}-mode`} value={paymentMode} onChange={(e) => ed(setMode)(e.target.value as PaymentMode)}>{MODES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></div>
+        <div className="form-group"><label htmlFor={`${id}-state`}>Your state</label><select id={`${id}-state`} value={stateCode} onChange={(e) => ed(setState)(e.target.value)}>{stateOptions.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></div>
+        <div className="form-group"><label htmlFor={`${id}-ytd`}>Wages already earned this year (same employer)</label><input id={`${id}-ytd`} type="number" min={0} value={ytdWages} onChange={(e) => ed(setYtd)(num(e.target.value))} /><p className="field-note">Counts toward the $184,500 Social Security cap.</p></div>
+        <div className="form-group"><label htmlFor={`${id}-status`}>Filing status</label><select id={`${id}-status`} value={filingStatus} onChange={(e) => ed(setStatus)(e.target.value as FilingStatus)}>{STATUSES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></div>
+        <div className="form-group"><label htmlFor={`${id}-other`}>Your other 2026 income</label><input id={`${id}-other`} type="number" min={0} value={otherIncome} onChange={(e) => ed(setOther)(num(e.target.value))} /><p className="field-note">Wages, new job, spouse — sets your real tax rate.</p></div>
       </div>
       <div className="calc-actions">
         <button type="button" className="btn-calculate" onClick={calc}>{result ? 'Recalculate' : 'Calculate severance tax'}</button>

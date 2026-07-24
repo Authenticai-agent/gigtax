@@ -1,5 +1,5 @@
 /** UnemploymentCalculator — estimated weekly UI benefit, duration, tax. Nothing stored. */
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { uiBenefit } from '../../lib/layoff/uiBenefit';
 import { formatMoney } from '../../lib/tax-engine';
 import { states } from '../../data/states';
@@ -12,6 +12,7 @@ export default function UnemploymentCalculator({ presetState = 'CA' }: { presetS
   const [dependents, setDeps] = useState(0);
   const [result, setResult] = useState<ReturnType<typeof uiBenefit> | null>(null);
   const [stale, setStale] = useState(false);
+  const id = useId();
 
   const num = (v: string) => (v === '' ? 0 : Math.max(0, Number(v) || 0));
   const ed = <T,>(f: (v: T) => void) => (v: T) => { f(v); if (result) setStale(true); };
@@ -21,9 +22,9 @@ export default function UnemploymentCalculator({ presetState = 'CA' }: { presetS
   return (
     <div className="calc-panel">
       <div className="calc-grid">
-        <div className="form-group"><label>Your state</label><select value={stateCode} onChange={(e) => ed(setState)(e.target.value)}>{stateOptions.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></div>
-        <div className="form-group"><label>Your prior annual wage</label><input type="number" min={0} value={priorAnnualWage} onChange={(e) => ed(setWage)(num(e.target.value))} /></div>
-        <div className="form-group"><label>Dependents</label><input type="number" min={0} value={dependents} onChange={(e) => ed(setDeps)(num(e.target.value))} /><p className="field-note">Only some states pay a dependent allowance.</p></div>
+        <div className="form-group"><label htmlFor={`${id}-state`}>Your state</label><select id={`${id}-state`} value={stateCode} onChange={(e) => ed(setState)(e.target.value)}>{stateOptions.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></div>
+        <div className="form-group"><label htmlFor={`${id}-wage`}>Your prior annual wage</label><input id={`${id}-wage`} type="number" min={0} value={priorAnnualWage} onChange={(e) => ed(setWage)(num(e.target.value))} /></div>
+        <div className="form-group"><label htmlFor={`${id}-deps`}>Dependents</label><input id={`${id}-deps`} type="number" min={0} value={dependents} onChange={(e) => ed(setDeps)(num(e.target.value))} /><p className="field-note">Only some states pay a dependent allowance.</p></div>
       </div>
       <div className="calc-actions">
         <button type="button" className="btn-calculate" onClick={calc}>{result ? 'Recalculate' : 'Estimate my benefit'}</button>

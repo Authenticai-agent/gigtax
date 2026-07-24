@@ -56,13 +56,35 @@ const stateLine = noTax
     ? `${name} withholds a flat ${formatPct(s.supplemental_rate)} on supplemental wages like severance.`
     : `${name} has no single flat supplemental rate — severance is withheld using the regular tables, so the amount tracks your bracket.`;
 
+const higherSuffix = noTax
+  ? ` and ${name} takes no state tax at all`
+  : flatRate
+    ? ` and ${formatPct(s.supplemental_rate)} by ${name}`
+    : ` and by ${name}'s regular tables`;
+const faqItems = [
+  {
+    q: `Is severance taxed higher in ${name}?`,
+    a: `No. It's <em>withheld</em> at a flat 22% federally${higherSuffix}, but it's taxed as ordinary income at your normal rates. You settle up at filing.`,
+  },
+  {
+    q: `Does ${name} tax my severance?`,
+    a: noTax
+      ? `No — ${name} has no state income tax, so your severance keeps its full value at the state level (federal tax and FICA still apply).`
+      : `Yes — ${name} taxes severance as wages. ${stateLine}`,
+  },
+  {
+    q: `Will I get a refund or owe more?`,
+    a: `It depends on your bracket. The flat 22% over-withholds for lower earners (refund) and under-withholds for those in the 32–37% brackets (set aside the difference). Enter your numbers above to see which way it goes for you.`,
+  },
+];
+
 const title = `${name} severance pay tax calculator 2026`;
 const desc = noTax
   ? `${name} severance tax in 2026: the flat 22% federal withholding and FICA, with no state income tax — plus your real liability and a worked example on $40,000.`
   : `${name} severance tax in 2026: the 22% federal withholding, FICA, ${flatRate ? `${formatPct(s.supplemental_rate)} state` : 'state'} withholding, and your real liability — worked on $40,000.`;
 ---
 
-<Base title={title} description={desc}>
+<Base title={title} description={desc} faqItems={faqItems}>
   <div class="breadcrumbs"><a href="/">Home</a> / <a href="/severance-pay-tax-calculator/">Severance tax</a> / {name}</div>
 
   <section class="hero">
@@ -122,18 +144,12 @@ const desc = noTax
   </p>
 
   <h2>Questions about {name} severance tax</h2>
-  <div class="faq">
-    <h3>Is severance taxed higher in {name}?</h3>
-    <p data-review="legal">No. It's <em>withheld</em> at a flat 22% federally{noTax ? ` and ${name} takes no state tax at all` : flatRate ? ` and ${formatPct(s.supplemental_rate)} by ${name}` : ` and by ${name}'s regular tables`}, but it's taxed as ordinary income at your normal rates. You settle up at filing.</p>
-  </div>
-  <div class="faq">
-    <h3>Does {name} tax my severance?</h3>
-    <p data-review="legal">{noTax ? `No — ${name} has no state income tax, so your severance keeps its full value at the state level (federal tax and FICA still apply).` : `Yes — ${name} taxes severance as wages. ${stateLine}`}</p>
-  </div>
-  <div class="faq">
-    <h3>Will I get a refund or owe more?</h3>
-    <p data-review="legal">It depends on your bracket. The flat 22% over-withholds for lower earners (refund) and under-withholds for those in the 32–37% brackets (set aside the difference). Enter your numbers above to see which way it goes for you.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>Your {name} layoff toolkit</h2>
   <ul class="link-columns">

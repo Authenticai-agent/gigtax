@@ -7,11 +7,18 @@ import { cobraVsMarketplace } from '../../lib/layoff/cobraVsMarketplace';
 import { formatMoney } from '../../lib/tax-engine';
 
 const ex = cobraVsMarketplace({ cobraSource: 'box12dd', cobraValue: 9000, household: 'single', householdSize: 1, estimatedMAGI: 45000, marketplaceBenchmarkMonthly: 520, coverageHorizonMonths: 12 });
+
+const faqItems = [
+  { q: `Can I wait before electing COBRA?`, a: `Yes — you have 60 days to elect, and coverage is retroactive to your loss date if you do. A healthy person can wait and see: only pay COBRA if a medical need comes up in that window. One late payment afterward terminates coverage, so don't miss a due date once enrolled.` },
+  { q: `What's the 400% FPL cliff?`, a: `Above 400% of the federal poverty level, you get $0 in premium tax credit for 2026 — the enhanced credits that had removed this cliff expired at the end of 2025. Earning one dollar over the threshold can cost thousands, so a layoff year's lower income can actually help you qualify.` },
+  { q: `How do I estimate my COBRA premium?`, a: `Fastest way: find Box 12 Code DD on your W-2 (the total annual plan cost), divide by 12, and add 2%. That's your monthly COBRA premium. The calculator does this for you.` },
+];
 ---
 
 <Base
   title="COBRA vs marketplace calculator 2026 — after a layoff"
   description="COBRA or the ACA marketplace after a layoff? With the enhanced subsidies expired for 2026, the 400% FPL cliff is back. Compare both and see the cliff."
+  faqItems={faqItems}
 >
   <section class="hero">
     <p class="hero-label">2026 tax year · laid off</p>
@@ -47,23 +54,12 @@ const ex = cobraVsMarketplace({ cobraSource: 'box12dd', cobraValue: 9000, househ
   </p>
 
   <h2>Questions</h2>
-  <div class="faq">
-    <h3>Can I wait before electing COBRA?</h3>
-    <p data-review="legal">Yes — you have 60 days to elect, and coverage is retroactive to your loss date if you do.
-      A healthy person can wait and see: only pay COBRA if a medical need comes up in that window. One late payment
-      afterward terminates coverage, so don't miss a due date once enrolled.</p>
-  </div>
-  <div class="faq">
-    <h3>What's the 400% FPL cliff?</h3>
-    <p data-review="legal">Above 400% of the federal poverty level, you get $0 in premium tax credit for 2026 — the
-      enhanced credits that had removed this cliff expired at the end of 2025. Earning one dollar over the threshold
-      can cost thousands, so a layoff year's lower income can actually help you qualify.</p>
-  </div>
-  <div class="faq">
-    <h3>How do I estimate my COBRA premium?</h3>
-    <p data-review="legal">Fastest way: find Box 12 Code DD on your W-2 (the total annual plan cost), divide by 12, and
-      add 2%. That's your monthly COBRA premium. The calculator does this for you.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>Next steps</h2>
   <ul class="link-columns">

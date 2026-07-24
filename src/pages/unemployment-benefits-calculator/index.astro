@@ -8,11 +8,18 @@ import { formatMoney } from '../../lib/tax-engine';
 
 const wa = uiBenefit({ stateCode: 'WA', priorAnnualWage: 90000, dependents: 0 });
 const fl = uiBenefit({ stateCode: 'FL', priorAnnualWage: 90000, dependents: 0 });
+
+const faqItems = [
+  { q: `Is unemployment taxable?`, a: `Federally, yes — it's ordinary income, and you can elect 10% withholding on Form W-4V. Most states tax it too, but a handful (including California, New Jersey, and Pennsylvania) do not. The calculator shows your state's treatment, which matters for your runway.`, review: true },
+  { q: `Does severance delay my unemployment?`, a: `In some states, yes — severance can delay or reduce benefits while it's being paid; in others it's ignored. The rule varies enough that we flag it rather than compute it. Confirm the timing with your state agency before you file, because when you file is a real-money decision.`, review: true },
+  { q: `Is this my exact benefit?`, a: `No — it's a planning estimate (roughly half your average weekly wage, capped at your state's maximum). Your state agency applies the precise formula on your actual wage history. Use their calculator for the official figure and file through their site.`, review: false },
+];
 ---
 
 <Base
   title="Unemployment benefits calculator 2026 — amount and duration"
   description="Estimate your weekly unemployment benefit and how many weeks you'll get, by state, for 2026 — plus the tax treatment and the severance-timing trap."
+  faqItems={faqItems}
 >
   <section class="hero">
     <p class="hero-label">2026 tax year · laid off</p>
@@ -47,24 +54,12 @@ const fl = uiBenefit({ stateCode: 'FL', priorAnnualWage: 90000, dependents: 0 })
   </p>
 
   <h2>Questions</h2>
-  <div class="faq">
-    <h3>Is unemployment taxable?</h3>
-    <p data-review="legal">Federally, yes — it's ordinary income, and you can elect 10% withholding on Form W-4V. Most
-      states tax it too, but a handful (including California, New Jersey, and Pennsylvania) do not. The calculator shows
-      your state's treatment, which matters for your runway.</p>
-  </div>
-  <div class="faq">
-    <h3>Does severance delay my unemployment?</h3>
-    <p data-review="legal">In some states, yes — severance can delay or reduce benefits while it's being paid; in
-      others it's ignored. The rule varies enough that we flag it rather than compute it. Confirm the timing with your
-      state agency before you file, because when you file is a real-money decision.</p>
-  </div>
-  <div class="faq">
-    <h3>Is this my exact benefit?</h3>
-    <p>No — it's a planning estimate (roughly half your average weekly wage, capped at your state's maximum). Your
-      state agency applies the precise formula on your actual wage history. Use their calculator for the official
-      figure and file through their site.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review={f.review ? 'legal' : undefined} set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>Unemployment by state</h2>
   <p>Every state has its own weekly maximum, duration, and rules. Your state page has the exact figures and filing link.</p>

@@ -33,9 +33,29 @@ const ex = uiBenefit({ stateCode: code, priorAnnualWage: 60000, dependents: 0 })
 const slug = stateSlug(name);
 const title = `${name} unemployment benefits calculator 2026`;
 const desc = `${name} unemployment in 2026: up to ${formatMoney(u.max_weekly)}/week${u.duration_weeks ? ` for ${u.duration_weeks} weeks` : ''}, whether it's taxed, and how to file — with a worked example.`;
+
+const method = u.benefit_method ? u.benefit_method.replace(/_/g, ' ') : 'a state formula';
+const faqItems = [
+  {
+    q: `How much does ${name} pay in unemployment?`,
+    a: `Between ${formatMoney(u.min_weekly)} and ${formatMoney(u.max_weekly)} a week in 2026, based on your prior wages (${method}). The ${formatMoney(u.max_weekly)} maximum is ${rankNote}.`,
+  },
+  {
+    q: `How long does ${name} unemployment last?`,
+    a: `${u.duration_weeks ? `Up to ${u.duration_weeks} weeks` : 'Duration varies'}${u.duration_note ? ` — ${u.duration_note}.` : '.'} That's separate from the weekly amount; low earners may qualify for fewer weeks.`,
+  },
+  {
+    q: `Is ${name} unemployment taxed?`,
+    a: `Federally, yes — it's ordinary income (elect 10% withholding on Form W-4V). ${u.ui_taxed_by_state === true ? `${name} also taxes it on the state return.` : u.ui_taxed_by_state === false ? `${name} does not tax it — it's state-tax-free.` : `${name}'s state treatment should be confirmed with the agency.`}`,
+  },
+  {
+    q: `Does severance affect my ${name} unemployment?`,
+    a: `Filing timing can matter. ${ex.severanceOffsetNote}`,
+  },
+];
 ---
 
-<Base title={title} description={desc}>
+<Base title={title} description={desc} faqItems={faqItems}>
   <div class="breadcrumbs"><a href="/">Home</a> / <a href="/unemployment-benefits-calculator/">Unemployment</a> / {name}</div>
 
   <section class="hero">
@@ -65,22 +85,12 @@ const desc = `${name} unemployment in 2026: up to ${formatMoney(u.max_weekly)}/w
   </p>
 
   <h2>Questions about {name} unemployment</h2>
-  <div class="faq">
-    <h3>How much does {name} pay in unemployment?</h3>
-    <p data-review="legal">Between {formatMoney(u.min_weekly)} and {formatMoney(u.max_weekly)} a week in 2026, based on your prior wages ({u.benefit_method ? u.benefit_method.replace(/_/g, ' ') : 'a state formula'}). The {formatMoney(u.max_weekly)} maximum is {rankNote}.</p>
-  </div>
-  <div class="faq">
-    <h3>How long does {name} unemployment last?</h3>
-    <p data-review="legal">{u.duration_weeks ? `Up to ${u.duration_weeks} weeks` : 'Duration varies'}{u.duration_note ? ` — ${u.duration_note}.` : '.'} That's separate from the weekly amount; low earners may qualify for fewer weeks.</p>
-  </div>
-  <div class="faq">
-    <h3>Is {name} unemployment taxed?</h3>
-    <p data-review="legal">Federally, yes — it's ordinary income (elect 10% withholding on Form W-4V). {u.ui_taxed_by_state === true ? `${name} also taxes it on the state return.` : u.ui_taxed_by_state === false ? `${name} does not tax it — it's state-tax-free.` : `${name}'s state treatment should be confirmed with the agency.`}</p>
-  </div>
-  <div class="faq">
-    <h3>Does severance affect my {name} unemployment?</h3>
-    <p data-review="legal">Filing timing can matter. {ex.severanceOffsetNote}</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
 
   {u.filing_url && <p><strong>File with <a href={u.filing_url} rel="noopener">{u.agency_name}</a>.</strong> This is an estimate — {u.agency_name} determines your actual benefit.</p>}
 

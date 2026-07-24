@@ -7,11 +7,17 @@ import { formatMoney } from '../../lib/tax-engine';
 
 const lo = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'TX', ytdWages: 0, filingStatus: 'single', otherIncome: 20000 });
 const hi = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'TX', ytdWages: 0, filingStatus: 'single', otherIncome: 400000 });
+
+const faqItems = [
+  { q: `So why does it feel like more is taken out?`, a: `Because the 22% flat rate is often higher than the effective rate withheld from your regular paycheck (which accounts for your allowances and lower brackets). More is withheld up front, but it's credited against your real tax at filing — you get the excess back.` },
+  { q: `Can I avoid the 22% over-withholding?`, a: `If severance is paid with your final paycheck, the aggregate method applies instead, which lands closer to your real rate. You can't change the flat rate on a separate payment, but you'll reconcile it at filing regardless.` },
+];
 ---
 
 <Base
   title="Is severance taxed at a higher rate? (2026)"
   description="No — severance isn't taxed at a higher rate. It's withheld at a flat 22%, which isn't the same as your tax. Here's the difference, with the numbers."
+  faqItems={faqItems}
 >
   <section class="hero">
     <p class="hero-label">2026 · the myth</p>
@@ -44,18 +50,12 @@ const hi = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 
   <SeveranceCalculator client:load />
 
   <h2>Questions</h2>
-  <div class="faq">
-    <h3>So why does it feel like more is taken out?</h3>
-    <p data-review="legal">Because the 22% flat rate is often higher than the effective rate withheld from your regular
-      paycheck (which accounts for your allowances and lower brackets). More is withheld up front, but it's credited
-      against your real tax at filing — you get the excess back.</p>
-  </div>
-  <div class="faq">
-    <h3>Can I avoid the 22% over-withholding?</h3>
-    <p data-review="legal">If severance is paid with your final paycheck, the aggregate method applies instead, which
-      lands closer to your real rate. You can't change the flat rate on a separate payment, but you'll reconcile it at
-      filing regardless.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>Work it out</h2>
   <ul class="link-columns">

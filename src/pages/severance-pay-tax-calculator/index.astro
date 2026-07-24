@@ -8,11 +8,18 @@ import { formatMoney } from '../../lib/tax-engine';
 
 const lo = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'CA', ytdWages: 0, filingStatus: 'single', otherIncome: 20000 });
 const hi = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'CA', ytdWages: 0, filingStatus: 'single', otherIncome: 400000 });
+
+const faqItems = [
+  { q: `Is severance taxed at a higher rate?`, a: `No. It's <em>withheld</em> differently (a flat 22%), but it's taxed as ordinary income at your normal rates. The flat withholding just isn't your final tax — you settle up at filing. See the myth in the table above.` },
+  { q: `Does FICA come out of severance?`, a: `Yes — 6.2% Social Security up to the $184,500 wage base (wages already earned from the same employer this year count toward it) and 1.45% Medicare with no cap, plus 0.9% additional Medicare on wages over $200,000 ($250,000 married).` },
+  { q: `What if it's paid with my final paycheck?`, a: `Then the aggregate method applies instead of the flat 22% — the employer withholds as if the combined amount were regular wages, which usually lands much closer to your real rate. Pick that mode above to see it.` },
+];
 ---
 
 <Base
   title="Severance pay tax calculator 2026 — withholding vs tax"
   description="Severance is withheld at a flat 22% federally — but that's not your tax. See your net check, real liability, and whether you get a refund or owe."
+  faqItems={faqItems}
 >
   <section class="hero">
     <p class="hero-label">2026 tax year · laid off</p>
@@ -46,23 +53,12 @@ const hi = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 
   </p>
 
   <h2>Questions</h2>
-  <div class="faq">
-    <h3>Is severance taxed at a higher rate?</h3>
-    <p data-review="legal">No. It's <em>withheld</em> differently (a flat 22%), but it's taxed as ordinary income at
-      your normal rates. The flat withholding just isn't your final tax — you settle up at filing. See the myth in the
-      table above.</p>
-  </div>
-  <div class="faq">
-    <h3>Does FICA come out of severance?</h3>
-    <p data-review="legal">Yes — 6.2% Social Security up to the $184,500 wage base (wages already earned from the same
-      employer this year count toward it) and 1.45% Medicare with no cap, plus 0.9% additional Medicare on wages over
-      $200,000 ($250,000 married).</p>
-  </div>
-  <div class="faq">
-    <h3>What if it's paid with my final paycheck?</h3>
-    <p data-review="legal">Then the aggregate method applies instead of the flat 22% — the employer withholds as if the
-      combined amount were regular wages, which usually lands much closer to your real rate. Pick that mode above to see it.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>Next steps</h2>
   <ul class="link-columns">

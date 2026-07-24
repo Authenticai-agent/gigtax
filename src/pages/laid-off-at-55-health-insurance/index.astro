@@ -1,11 +1,17 @@
 ---
 /** Scenario: laid off at 55, health insurance options. */
 import Base from '../../layouts/Base.astro';
+
+const faqItems = [
+  { q: `Is COBRA or the marketplace better at 55?`, a: `It depends on your income. Under the 400% FPL cliff, the subsidized marketplace usually beats COBRA even at 55; over the cliff, the unsubsidized marketplace and COBRA are closer, and COBRA's keep-your-plan continuity can win. Run both.`, review: true },
+  { q: `Can I retire early instead of finding another job?`, a: `Possibly, but bridging to Medicare at 65 is the hard part — you'd fund a decade of premiums yourself. Model the cost against your savings in the <a href="/when-can-i-retire-calculator/">when-can-I-retire calculator</a> before deciding.`, review: false },
+];
 ---
 
 <Base
   title="Laid off at 55: health insurance options (2026)"
   description="Laid off in your 50s and years from Medicare? COBRA, the ACA marketplace, a spouse's plan — the options at 55, and why the 2026 subsidy cliff changes the math."
+  faqItems={faqItems}
 >
   <section class="hero">
     <p class="hero-label">2026 · scenario</p>
@@ -47,18 +53,12 @@ import Base from '../../layouts/Base.astro';
   </p>
 
   <h2>Questions</h2>
-  <div class="faq">
-    <h3>Is COBRA or the marketplace better at 55?</h3>
-    <p data-review="legal">It depends on your income. Under the 400% FPL cliff, the subsidized marketplace usually
-      beats COBRA even at 55; over the cliff, the unsubsidized marketplace and COBRA are closer, and COBRA's
-      keep-your-plan continuity can win. Run both.</p>
-  </div>
-  <div class="faq">
-    <h3>Can I retire early instead of finding another job?</h3>
-    <p>Possibly, but bridging to Medicare at 65 is the hard part — you'd fund a decade of premiums yourself. Model the
-      cost against your savings in the <a href="/when-can-i-retire-calculator/">when-can-I-retire calculator</a> before
-      deciding.</p>
-  </div>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review={f.review ? 'legal' : undefined} set:html={f.a}></p>
+    </div>
+  ))}
 
   <h2>Your layoff toolkit</h2>
   <ul class="link-columns">
