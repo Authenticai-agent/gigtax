@@ -42,6 +42,7 @@ const eqt = await load('src/lib/equity.ts');
 const pf = await load('src/lib/personal-finance.ts');
 const fin = await load('src/lib/finance.ts');
 const ls = await load('src/lib/lifestyle.ts');
+const hh = await load('src/lib/household.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -837,6 +838,17 @@ console.log('\nlifestyle: coffee, lifestyle creep, climate risk, how rich if, tr
   const wage = ls.trueHourlyWage(100000, 40, 8, 5, 48, 6000);
   ok('true hourly is below the nominal hourly', wage.realHourly < wage.nominalHourly && wage.gapPerHour > 0);
   ok('nominal hourly = salary / contracted hours', near(wage.nominalHourly, 100000 / (40 * 48), 0.01));
+}
+
+/* ---------------------- workers' comp (tax-free benefit) ------------------ */
+console.log('\nbenefits: workers compensation');
+{
+  const wc = hh.calcHousehold({ people: [{ id: 'a', label: 'You', income: [{ id: '1', kind: 'workersComp', amount: 30000 }], preTaxRetirement: 0, hsa: 0, age65Plus: false }], filingStatus: 'single', stateCode: 'CA' });
+  ok('workers comp is fully tax-free', wc.excludedWorkersComp === 30000 && wc.federalTax === 0 && wc.stateTax === 0 && wc.totalTax === 0);
+  ok('workers comp is not counted as taxable income', wc.taxableIncome === 0 && wc.agi === 0);
+  // Wages alongside it are still taxed; the workers comp stays out.
+  const mixed = hh.calcHousehold({ people: [{ id: 'a', label: 'You', income: [{ id: '1', kind: 'workersComp', amount: 20000 }, { id: '2', kind: 'w2', amount: 50000 }], preTaxRetirement: 0, hsa: 0, age65Plus: false }], filingStatus: 'single', stateCode: 'TX' });
+  ok('workers comp does not raise tax on other income', mixed.federalTax === hh.calcHousehold({ people: [{ id: 'a', label: 'You', income: [{ id: '2', kind: 'w2', amount: 50000 }], preTaxRetirement: 0, hsa: 0, age65Plus: false }], filingStatus: 'single', stateCode: 'TX' }).federalTax);
 }
 
 /* ---------------------- finance primitives -------------------------------- */

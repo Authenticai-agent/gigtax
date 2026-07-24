@@ -31,6 +31,7 @@ export type IncomeKind =
   | 'socialSecurity'
   | 'disabilityShortTerm'
   | 'disabilityLongTerm'
+  | 'workersComp'
   | 'retirementWithdrawal'
   | 'pension'
   | 'interestDividends';
@@ -79,6 +80,8 @@ export interface HouseholdResult {
   taxableDisability: number;
   /** Disability benefits excluded because the recipient paid the premium. */
   excludedDisability: number;
+  /** Workers' compensation, which is excluded from income by statute. */
+  excludedWorkersComp: number;
   /** The portion of SSDI and Social Security that is taxable. */
   taxableSocialSecurity: number;
   /** Benefits received but not taxed. */
@@ -117,6 +120,7 @@ export const INCOME_KINDS: Array<{
   { kind: 'socialSecurity', label: 'Social Security retirement', hint: 'Same formula as SSDI. Twelve states tax it; the rest do not.' },
   { kind: 'disabilityShortTerm', label: 'Short-term disability', hint: 'Taxable or not depending on who paid the premium.', needsPremium: true },
   { kind: 'disabilityLongTerm', label: 'Long-term disability', hint: 'Taxable or not depending on who paid the premium.', needsPremium: true },
+  { kind: 'workersComp', label: 'Workers’ compensation', hint: 'Fully tax-free by statute — federal and state.' },
   { kind: 'retirementWithdrawal', label: '401(k) or IRA withdrawal', hint: 'Ordinary income. No payroll tax.' },
   { kind: 'pension', label: 'Pension or annuity', hint: 'Ordinary income. No payroll tax.' },
   { kind: 'interestDividends', label: 'Interest and dividends', hint: 'Ordinary income, and it counts toward the Social Security formula.' },
@@ -141,7 +145,7 @@ export function calcHousehold(input: HouseholdInput): HouseholdResult {
   const notes: string[] = [];
 
   let w2Wages = 0, seGross = 0, seExpenses = 0;
-  let taxableDisability = 0, excludedDisability = 0;
+  let taxableDisability = 0, excludedDisability = 0, excludedWorkersComp = 0;
   let socialSecurityGross = 0, otherOrdinary = 0, preTaxDeductions = 0;
   let anyAge65 = false;
 
@@ -164,6 +168,7 @@ export function calcHousehold(input: HouseholdInput): HouseholdResult {
           excludedDisability += amt * (1 - share);
           break;
         }
+        case 'workersComp': excludedWorkersComp += amt; break;
         default: otherOrdinary += amt;
       }
     }
@@ -201,7 +206,7 @@ export function calcHousehold(input: HouseholdInput): HouseholdResult {
   const stateSocialSecurityExcluded = taxesSS ? 0 : taxableSocialSecurity;
 
   const totalTax = federalTax + stateTax + se.totalSE + employeeFica;
-  const grossAll = w2Wages + seGross + socialSecurityGross + taxableDisability + excludedDisability + otherOrdinary;
+  const grossAll = w2Wages + seGross + socialSecurityGross + taxableDisability + excludedDisability + excludedWorkersComp + otherOrdinary;
 
   /* ---- the interactions worth saying out loud ---- */
   if (socialSecurityGross > 0 && taxableSocialSecurity > 0) {
@@ -217,6 +222,12 @@ export function calcHousehold(input: HouseholdInput): HouseholdResult {
     notes.push(
       `${formatShare(excludedDisability, excludedDisability + taxableDisability)} of the disability benefit is tax-free because the premium was paid with money already taxed. ` +
       'If an employer pays the premium instead, the same benefit becomes fully taxable.',
+    );
+  }
+  if (excludedWorkersComp > 0) {
+    notes.push(
+      `${formatMoneyPlain(excludedWorkersComp)} of workers’ compensation is fully tax-free — federal and state — and is not counted in income here. ` +
+      'The one exception is any amount that reduces an SSDI benefit (the workers’ comp offset), which is taxed as if it were SSDI.',
     );
   }
   if (socialSecurityGross > 0 && stateCode && !taxesSS) {
@@ -243,7 +254,7 @@ export function calcHousehold(input: HouseholdInput): HouseholdResult {
   }
 
   return {
-    grossAll, w2Wages, seProfit, taxableDisability, excludedDisability,
+    grossAll, w2Wages, seProfit, taxableDisability, excludedDisability, excludedWorkersComp,
     taxableSocialSecurity, untaxedSocialSecurity, otherOrdinary, preTaxDeductions,
     seTax: se.totalSE, seTaxDeductibleHalf: se.deductibleHalf, fica: employeeFica,
     agi, standardDeduction, seniorDeduction, qbiDeduction, taxableIncome,
