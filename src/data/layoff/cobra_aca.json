@@ -1,0 +1,473 @@
+{
+  "_meta": {
+    "purpose": "COBRA and ACA-marketplace constants for the layoff cluster's cobra-vs-marketplace calculator. Federal COBRA structural constants are stable statutory/DOL figures. The 2026 FPL table, 400% cliff thresholds, and ACA applicable-percentage table are NOT duplicated here \u2014 they already live in src/data/federal.ts (acaSubsidy) and are imported by the engine (spec item 4). This file adds only what the shared engine does not already hold: COBRA mechanics, per-state mini-COBRA flags, and KFF market averages.",
+    "subsidy_rules_last_verified": "2026-07-24",
+    "sourcing_status": "SOURCED. Federal COBRA constants (DOL); KFF averages refreshed to the 2025 survey; ACA subsidy status confirmed still-expired as of 2026-07-24; per-state mini_cobra sourced for all 51 (42 have it, 6 do not [AL/HI/ID/MI/MT/WA], 3 UNCONFIRMED where the state code is login-gated/absent [AK/AR/TN]). See data_notes.md."
+  },
+  "cobra_federal": {
+    "premium_max_pct_of_full_cost": 1.02,
+    "admin_fee_pct": 0.02,
+    "disability_extension_pct": 1.5,
+    "standard_duration_months": 18,
+    "disability_extension_months": 29,
+    "second_qualifying_event_months": 36,
+    "election_window_days": 60,
+    "employer_size_threshold": 20,
+    "box12_code": "DD",
+    "estimation_method": "W-2 Box 12 Code DD (total annual premium) / 12 x 1.02 = monthly COBRA premium",
+    "retroactive_note": "Coverage is retroactive to the loss date if elected within the 60-day window, which enables a wait-and-see strategy. One late payment terminates coverage.",
+    "source_url": "https://www.dol.gov/general/topic/health-plans/cobra",
+    "last_verified": "2026-07",
+    "confidence": "high"
+  },
+  "aca_2026": {
+    "enhanced_credits_expired": "2025-12-31",
+    "cliff_at_fpl_pct": 4.0,
+    "special_enrollment_days": 60,
+    "note": "Enhanced premium tax credits expired 2025-12-31 (OBBBA did not extend). The 400% FPL subsidy cliff and reverted contribution percentages are back for 2026. FPL table, cliffThresholds400pct, and applicablePercentages2026 are read from src/data/federal.ts acaSubsidy \u2014 not duplicated here.",
+    "fpl_and_percentage_tables": "src/data/federal.ts -> acaSubsidy (fpl2026, cliffThresholds400pct, applicablePercentages2026)",
+    "state_backfill_programs_note": "NM, CT, and WA run state subsidy backfill programs as of Q1 2026; a few others were under discussion. Not modeled in v1 \u2014 surfaced as a per-state note.",
+    "subsidy_rules_last_verified": "2026-07-24",
+    "volatility_notice": "Congress was negotiating a subsidy extension as of Q1 2026. If passed, this file and the ACA scenario page need same-week updates.",
+    "source_url": "https://www.kff.org/affordable-care-act/what-we-know-so-far-about-2026-aca-marketplace-enrollment-premiums-and-deductibles/",
+    "last_verified": "2026-07",
+    "confidence": "high",
+    "current_status_2026": "Enhanced premium tax credits remain EXPIRED (lapsed 2025-12-31); pre-2021 rules and the 400% FPL cliff are in effect for plan year 2026. A House-passed extension has NOT advanced in the Senate and nothing has been signed into law as of 2026-07-24. Share of marketplace enrollees receiving credits fell 92% (2025) -> 87% (2026)."
+  },
+  "kff_premium_averages": {
+    "_status": "SOURCED \u2014 KFF 2025 Employer Health Benefits Survey (latest published; the 2026 employer survey releases in fall). Replaces the spec's stale $6,296/$16,399 baseline. Employer-share figures are total premium minus worker contribution (KFF publishes the same split); marketplace figures confirmed verbatim.",
+    "survey_year": 2025,
+    "employer_contribution_single_annual": 7885,
+    "employer_contribution_family_annual": 20143,
+    "total_premium_single_annual": 9325,
+    "total_premium_family_annual": 26993,
+    "worker_contribution_single_annual": 1440,
+    "worker_contribution_family_annual": 6850,
+    "typical_cobra_individual_monthly_range": [
+      700,
+      900
+    ],
+    "typical_cobra_family_monthly_min": 2000,
+    "aca_avg_net_monthly_premium_2025": 113,
+    "aca_avg_net_monthly_premium_2026": 178,
+    "aca_net_premium_increase_pct_2026": 0.58,
+    "aca_avg_deductible_2025": 2759,
+    "aca_avg_deductible_2026": 3786,
+    "aca_avg_deductible_increase_2026": 1027,
+    "source_url_employer": "https://files.kff.org/attachment/Employer-Health-Benefits-Survey-2025-Annual-Survey-Summary-of-Findings.pdf",
+    "source_url_marketplace": "https://www.kff.org/affordable-care-act/the-average-marketplace-deductible-grew-by-about-1000-per-person-in-2026-with-more-enrollees-shifting-to-higher-deductible-plans-as-enhanced-tax-credits-expired/",
+    "last_verified": "2026-07-24",
+    "confidence": "high"
+  },
+  "mini_cobra_by_state": {
+    "_status": "Per-state mini-COBRA (state continuation for employers below the 20-employee federal COBRA threshold), sourced to state statute / insurance-department pages. continuation_months = statutory MAX. No mini-COBRA in AL, MI, MT, WA (conversion/offer-only). UNCONFIRMED (login-gated or no official page): AK, AR, TN.",
+    "NJ": {
+      "mini_cobra": true,
+      "continuation_months": 36,
+      "note": "18 std / 29 if disabled / 36 for dependent events (N.J.S.A. 17B:27A-27)",
+      "source_url": "https://www.nj.gov/dobi/division_insurance/ihcseh/sehbuyersguide/2019.pdf",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "NM": {
+      "mini_cobra": true,
+      "continuation_months": 6,
+      "note": "Up to 6 mo for employees (NMSA 59A-18-16); month figure UNCONFIRMED on official page",
+      "source_url": "https://www.osi.state.nm.us/en/consumer-assistance/insurance-types/health/",
+      "last_verified": "2026-07-24",
+      "confidence": "medium"
+    },
+    "NY": {
+      "mini_cobra": true,
+      "continuation_months": 36,
+      "note": "State continuation extended 18->36 mo (Ins Law 3221(m)); all employer sizes",
+      "source_url": "https://www.dfs.ny.gov/consumers/health_insurance/cobra_coverage_extension_36_Months",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "NC": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "Small groups <20; up to 18 mo (G.S. 58-53)",
+      "source_url": "https://www.ncdoi.gov/consumers/health-insurance/health-insurance-continuation-rights",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "ND": {
+      "mini_cobra": true,
+      "continuation_months": 9,
+      "note": "39 weeks (~9 mo) (N.D.C.C. 26.1-36-23)",
+      "source_url": "https://ndlegis.gov/cencode/t26-1c36.pdf",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "OH": {
+      "mini_cobra": true,
+      "continuation_months": 12,
+      "note": "12 mo for non-COBRA groups incl <20 (R.C. 3923.38)",
+      "source_url": "https://codes.ohio.gov/ohio-revised-code/section-3923.38",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "OK": {
+      "mini_cobra": true,
+      "continuation_months": 4,
+      "note": "Up to 4 mo for <20 employers (36 O.S. 4509(D))",
+      "source_url": "https://www.oid.ok.gov/wp-content/uploads/2019/10/Bulletin-LH-2009-02-SB-553-062609.pdf",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "OR": {
+      "mini_cobra": true,
+      "continuation_months": 9,
+      "note": "<20 employees, up to 9 mo (ORS 743B.347)",
+      "source_url": "https://dfr.oregon.gov/insure/health/understand/coverage/pages/state-continuation.aspx",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "PA": {
+      "mini_cobra": true,
+      "continuation_months": 9,
+      "note": "Mini-COBRA 2-19 employees, up to 9 mo, premium <=105% (Act 2 of 2009)",
+      "source_url": "https://www.pa.gov/agencies/insurance/consumer-help-center/learn-about-insurance/health-insurance/cobra",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "RI": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "Up to 18 mo on involuntary layoff/workforce reduction (R.I.G.L. 27-19.1-1)",
+      "source_url": "https://webserver.rilegislature.gov/Statutes/TITLE27/27-19.1/27-19.1-1.htm",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "MD": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "Small employer 2-50; capped 18 mo (Ins. Art. 15-409.1)",
+      "source_url": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gin&section=15-409.1",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "MA": {
+      "mini_cobra": true,
+      "continuation_months": 36,
+      "note": "Mini-COBRA employers 2-19; 18 mo job loss, up to 36 mo other events (G.L. c.176J s.9)",
+      "source_url": "https://www.mass.gov/info-details/minicobra-continuation-of-coverage-benefits-guide",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "MI": {
+      "mini_cobra": false,
+      "continuation_months": null,
+      "note": "NO mini-COBRA \u2014 DIFS describes only federal COBRA (20+) plus individual conversion",
+      "source_url": "https://www.michigan.gov/difs/consumers/insurance/health-insurance/individual/employer-group",
+      "last_verified": "2026-07-24",
+      "confidence": "medium"
+    },
+    "MN": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "All group sizes; up to 18 mo (Minn. Stat. 62A.17)",
+      "source_url": "https://www.revisor.mn.gov/statutes/cite/62A.17",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "MS": {
+      "mini_cobra": true,
+      "continuation_months": 12,
+      "note": "Up to 12 mo, 3 mo prior coverage (Miss. Code 83-9-51); statute via mirror, MEDIUM",
+      "source_url": "https://www.mid.ms.gov/",
+      "last_verified": "2026-07-24",
+      "confidence": "medium"
+    },
+    "MO": {
+      "mini_cobra": true,
+      "continuation_months": 36,
+      "note": "Mirrors federal COBRA (18 mo job loss, up to 36 mo); no min size (RSMo 376.428)",
+      "source_url": "https://revisor.mo.gov/main/OneSection.aspx?section=376.428",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "MT": {
+      "mini_cobra": false,
+      "continuation_months": null,
+      "note": "NO mini-COBRA \u2014 conversion + disability/reduced-hours only (Title 33 ch.22 pt.5)",
+      "source_url": "https://mca.legmt.gov/bills/mca/title_0330/chapter_0220/part_0050/sections_index.html",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "NE": {
+      "mini_cobra": true,
+      "continuation_months": 6,
+      "note": "<20 employers; up to 6 mo after involuntary termination (Neb. Rev. Stat. 44-1640)",
+      "source_url": "https://nebraskalegislature.gov/laws/statutes.php?statute=44-1640",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "NV": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "<20 employees; up to 18 mo, 12 mo prior coverage (NRS 689B.245)",
+      "source_url": "https://www.leg.state.nv.us/NRS/NRS-689B.html",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "NH": {
+      "mini_cobra": true,
+      "continuation_months": 36,
+      "note": "Fully insured groups; 18 mo job loss, 36 mo dependent events, 29 mo disability (RSA 415:18)",
+      "source_url": "https://gc.nh.gov/rsa/html/xxxvii/415/415-18.htm",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "GA": {
+      "mini_cobra": true,
+      "continuation_months": 3,
+      "note": "Fractional month + 3 mo (O.C.G.A. 33-24-21.1)",
+      "source_url": "https://www.legis.ga.gov/",
+      "last_verified": "2026-07-24",
+      "confidence": "medium"
+    },
+    "HI": {
+      "mini_cobra": false,
+      "continuation_months": null,
+      "note": "NO job-loss mini-COBRA; PHCA only continues coverage up to 3 mo while disabled (HRS ch.393)",
+      "source_url": "https://labor.hawaii.gov/dcd/frequently-asked-questions/phc/",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "ID": {
+      "mini_cobra": false,
+      "continuation_months": null,
+      "note": "NO mini-COBRA; Idaho Code 41-2213 is a disability benefit extension only",
+      "source_url": "https://legislature.idaho.gov/statutesrules/idstat/title41/t41ch22/sect41-2213/",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "IL": {
+      "mini_cobra": true,
+      "continuation_months": 12,
+      "note": "215 ILCS 5/367(e); up to 12 mo employee (IL DOI fact sheet); 3 mo prior coverage",
+      "source_url": "https://www.ilga.gov/legislation/ilcs/",
+      "last_verified": "2026-07-24",
+      "confidence": "medium"
+    },
+    "IN": {
+      "mini_cobra": true,
+      "continuation_months": 12,
+      "note": "Small employer group; up to 12 mo (IC 27-8-15-31.1); 1 yr employment + 90 days prior",
+      "source_url": "https://iga.in.gov/laws/2024/ic/titles/27/articles/8/chapters/15/sections/27-8-15-31.1",
+      "last_verified": "2026-07-24",
+      "confidence": "medium"
+    },
+    "IA": {
+      "mini_cobra": true,
+      "continuation_months": 9,
+      "note": "9 mo after employment terminates (Iowa Code 509B.3)",
+      "source_url": "https://www.legis.iowa.gov/docs/code/2026/509B.html",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "KS": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "18 mo; 3 mo prior continuous coverage (K.S.A. 40-2209)",
+      "source_url": "https://ksrevisor.gov/statutes/chapters/ch40/040_022_0009.html",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "KY": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "18 mo, all employer sizes; 3 mo prior coverage (KRS 304.18-110)",
+      "source_url": "https://insurance.ky.gov/ppc/Documents/howcanikeepmycoverage071317.pdf",
+      "last_verified": "2026-07-24",
+      "confidence": "medium"
+    },
+    "LA": {
+      "mini_cobra": true,
+      "continuation_months": 12,
+      "note": "12 mo after termination; any size (excl COBRA-eligible) (La. R.S. 22:1046)",
+      "source_url": "https://www.legis.la.gov/Legis/Law.aspx?d=507886",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "ME": {
+      "mini_cobra": true,
+      "continuation_months": 12,
+      "note": "<20 employees; 12 mo but ONLY for temporary layoff / work-injury loss (24-A M.R.S. 2809-A)",
+      "source_url": "https://www.maine.gov/pfr/insurance/frequently-asked-questions/cobra-mini-cobra",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "AL": {
+      "mini_cobra": false,
+      "continuation_months": null,
+      "note": "NO small-employer mini-COBRA (ALDOI alert lists only federal COBRA) \u2014 MEDIUM/inferred",
+      "source_url": "https://aldoi.gov/currentnewsitem.aspx?ID=1099",
+      "last_verified": "2026-07-24",
+      "confidence": "medium"
+    },
+    "AK": {
+      "mini_cobra": null,
+      "continuation_months": null,
+      "note": "UNCONFIRMED \u2014 no official AK source; AS Title 21 Ch.54 shows no terminated-employee continuation",
+      "source_url": "https://www.akleg.gov/basis/statutes.asp",
+      "last_verified": "2026-07-24",
+      "confidence": "low"
+    },
+    "AZ": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "Small employers 1-19; 18 mo (29 if disabled, 36 second event) (ARS 20-2330)",
+      "source_url": "https://www.azleg.gov/ars/20/02330.htm",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "AR": {
+      "mini_cobra": null,
+      "continuation_months": null,
+      "note": "UNCONFIRMED on .gov \u2014 aggregators cite A.C.A. 23-86-114 (~120 days); AR code LexisNexis-gated",
+      "source_url": "https://www.arkleg.state.ar.us/",
+      "last_verified": "2026-07-24",
+      "confidence": "low"
+    },
+    "CA": {
+      "mini_cobra": true,
+      "continuation_months": 36,
+      "note": "Cal-COBRA employers 2-19; up to 36 mo (HSC 1366.20-1366.29)",
+      "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1366.27&lawCode=HSC",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "CO": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "18 mo; any size incl <20; 6 mo prior coverage (C.R.S. 10-16-108)",
+      "source_url": "https://content.leg.colorado.gov/sites/default/files/images/olls/crs2024-title-10.pdf",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "CT": {
+      "mini_cobra": true,
+      "continuation_months": 30,
+      "note": "Extended to 30 mo (CGS 38a-538/546, PA 10-13); any size",
+      "source_url": "https://portal.ct.gov/-/media/cid/30monthcontinuationfactsheetpdf.pdf",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "DC": {
+      "mini_cobra": true,
+      "continuation_months": 3,
+      "note": "3 mo (DC Code 32-732); fills gap below federal COBRA",
+      "source_url": "https://code.dccouncil.gov/us/dc/council/code/sections/32-732",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "DE": {
+      "mini_cobra": true,
+      "continuation_months": 9,
+      "note": "Small employers 1-19; up to 9 mo; 3 mo prior coverage (18 Del. C. 3571F)",
+      "source_url": "https://news.delaware.gov/2012/05/29/commissioner-karen-weldin-stewart-reports-the-passage-of-the-mini-cobra-law/",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "FL": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "Small employers <20; 18 mo (29 if disabled) (F.S. 627.6692)",
+      "source_url": "https://www.flsenate.gov/Laws/Statutes/2024/627.6692",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "SC": {
+      "mini_cobra": true,
+      "continuation_months": 6,
+      "note": "Fractional month + 6 mo; >=6 mo prior coverage (S.C. Code 38-71-770)",
+      "source_url": "https://www.scstatehouse.gov/code/t38c071.php",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "SD": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "18 mo on leaving employment; employee pays full premium (SDCL 58-18-7.5)",
+      "source_url": "https://sdlegislature.gov/Statutes/58-18-7.5",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "TN": {
+      "mini_cobra": null,
+      "continuation_months": null,
+      "note": "UNCONFIRMED \u2014 Tenn. Code 56-7-2312 (~3 mo, any size) not fetchable (TN code login-gated on LexisNexis)",
+      "source_url": "https://www.tn.gov/commerce/insurance.html",
+      "last_verified": "2026-07-24",
+      "confidence": "low"
+    },
+    "TX": {
+      "mini_cobra": true,
+      "continuation_months": 9,
+      "note": "Up to 9 mo for non-COBRA (+6 mo after COBRA); fully-insured only (Ins. Code ch.1251)",
+      "source_url": "https://www.tdi.texas.gov/hmo/documents/enrolleecobra.pdf",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "UT": {
+      "mini_cobra": true,
+      "continuation_months": 12,
+      "note": "12 mo; excludes federal-COBRA-eligible; <=102% of group rate (Utah Code 31A-22-722)",
+      "source_url": "https://le.utah.gov/xcode/Title31A/Chapter22/31A-22-S722.html",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "VT": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "18 mo; private employers <20 per VT DFR (8 V.S.A. 4090a)",
+      "source_url": "https://dfr.vermont.gov/sites/finreg/files/doc_library/dfr-health-insurance-continuation-of-coverage.pdf",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "VA": {
+      "mini_cobra": true,
+      "continuation_months": 12,
+      "note": "12 mo; applies where employer not under federal COBRA (Va. Code 38.2-3541)",
+      "source_url": "https://law.lis.virginia.gov/vacode/title38.2/chapter35/section38.2-3541/",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "WA": {
+      "mini_cobra": false,
+      "continuation_months": null,
+      "note": "NO mandated small-group continuation \u2014 RCW 48.21.250 is offer-only, no employee entitlement",
+      "source_url": "https://www.insurance.wa.gov/insurance-resources/health-insurance/health-insurance-coverage/continuation-plans",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "WV": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "Up to 18 mo BUT only for involuntary layoff (W.Va. Code 33-16-3)",
+      "source_url": "https://code.wvlegislature.gov/33-16-3/",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "WI": {
+      "mini_cobra": true,
+      "continuation_months": 18,
+      "note": "Up to 18 mo, any employer size; 3 mo prior coverage (Wis. Stat. 632.897)",
+      "source_url": "https://docs.legis.wisconsin.gov/document/statutes/632.897(10)",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    },
+    "WY": {
+      "mini_cobra": true,
+      "continuation_months": 12,
+      "note": "Non-COBRA groups continue up to 12 mo; 3 mo prior coverage (Wyo. Stat. 26-19-113)",
+      "source_url": "https://wyoleg.gov/statutes/compress/title26.pdf",
+      "last_verified": "2026-07-24",
+      "confidence": "high"
+    }
+  }
+}

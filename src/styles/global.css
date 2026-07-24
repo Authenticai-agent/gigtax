@@ -6,7 +6,7 @@
 :root {
   --ink: #0f0e0c;
   --paper: #f4f1eb;
-  --accent: #c94a1e;
+  --accent: #b84018;
   --g: #2b5b3c;
   --b: #1d3a6b;
   --p: #7a3b8f;
@@ -413,3 +413,14 @@ main ol li { margin-bottom: .4rem; line-height: 1.68; }
   .calc-panel { padding: 1.25rem; }
   .link-columns { columns: 1; }
 }
+
+/* Layoff cluster: shareable result card + methodology accordion */
+.share-card { background: var(--accent); color: #fff; border-radius: var(--radius); padding: 1.25rem 1.5rem; margin: 1rem 0; text-align: center; }
+.share-label { font-family: var(--mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; opacity: .85; margin: 0 0 .25rem; }
+.share-figure { font-family: var(--disp); font-size: 2.4rem; font-weight: 800; line-height: 1; margin: 0; }
+.share-sub { font-size: 14px; opacity: .95; margin: .4rem 0 0; }
+.share-card a { color: #fff; }
+.methodology { border: 1px solid var(--border); border-radius: var(--radius); margin: 1rem 0; padding: 0 1rem; }
+.methodology summary { cursor: pointer; padding: .85rem 0; font-weight: 600; font-size: 14px; }
+.methodology p { font-size: 14px; line-height: 1.6; margin: 0 0 .75rem; }
+.methodology .src { color: var(--muted); font-size: 12px; }

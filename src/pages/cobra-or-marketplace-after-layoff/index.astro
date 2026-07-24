@@ -1,0 +1,73 @@
+---
+/** Scenario: COBRA vs marketplace after a layoff, 2026 rules. */
+import Base from '../../layouts/Base.astro';
+import { cobraVsMarketplace } from '../../lib/layoff/cobraVsMarketplace';
+import { formatMoney } from '../../lib/tax-engine';
+
+const under = cobraVsMarketplace({ cobraSource: 'known', cobraValue: 750, household: 'single', householdSize: 1, estimatedMAGI: 42000, marketplaceBenchmarkMonthly: 480, coverageHorizonMonths: 12 });
+const over = cobraVsMarketplace({ cobraSource: 'known', cobraValue: 750, household: 'single', householdSize: 1, estimatedMAGI: 70000, marketplaceBenchmarkMonthly: 480, coverageHorizonMonths: 12 });
+
+const faqItems = [
+  { q: `What changed for 2026?`, a: `The enhanced premium tax credits (which had removed the 400% FPL cliff since 2021) expired at the end of 2025. For 2026, pre-2021 rules apply: subsidies phase out entirely above 400% of poverty. Verified 2026-07-24 — Congress had not enacted an extension.` },
+  { q: `Does a severance lump sum affect this?`, a: `Yes — a lump sum can spike your income over the cliff for that year. Spreading severance across two tax years, or timing marketplace enrollment, can keep you under 400% FPL. See <a href="/lump-sum-vs-installment-severance/">lump sum vs installments</a>.` },
+];
+---
+
+<Base
+  title="COBRA or marketplace after a layoff (2026 rules)"
+  description="With the enhanced ACA subsidies expired for 2026, the 400% FPL cliff decides whether COBRA or the marketplace wins after a layoff. Here's the 2026 math."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 · scenario</p>
+    <h1>COBRA or the marketplace after a layoff?</h1>
+    <p class="tagline">The 2026 answer hinges on one number the old advice ignores: whether your income lands under the 400% poverty-level subsidy cliff, which is back this year.</p>
+  </section>
+
+  <p>
+    Most COBRA-vs-marketplace advice on the web is stale, because the rules changed for 2026. The enhanced premium tax
+    credits that had removed the subsidy cliff expired on 31 December 2025. So for 2026 the hard <strong>400% federal
+    poverty level cliff is back</strong>: under it, marketplace subsidies can make coverage far cheaper than COBRA;
+    over it by a single dollar, the subsidy is $0 and the comparison flips. A layoff year — often a lower-income year —
+    is exactly when this cuts in your favor.
+  </p>
+
+  <h2>Same person, two income levels</h2>
+  <p>A single filer, COBRA at {formatMoney(750)}/month, a {formatMoney(480)} benchmark marketplace plan, over 12 months:</p>
+  <table class="data-table">
+    <thead><tr><th>2026 income</th><th>COBRA (12 mo)</th><th>Marketplace net (12 mo)</th><th>Cheaper</th></tr></thead>
+    <tbody>
+      <tr><td>{formatMoney(42000)} (under the cliff)</td><td>{formatMoney(under.cobraTotal)}</td><td>{formatMoney(under.marketplaceTotal)}</td><td>{under.cheaper} by {formatMoney(under.savingsOverHorizon)}</td></tr>
+      <tr><td>{formatMoney(70000)} (over the cliff)</td><td>{formatMoney(over.cobraTotal)}</td><td>{formatMoney(over.marketplaceTotal)}</td><td>{over.cheaper} by {formatMoney(over.savingsOverHorizon)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    At {formatMoney(42000)} a subsidy makes the marketplace much cheaper; at {formatMoney(70000)} — over the cliff —
+    the subsidy vanishes and the gap narrows. The exact same plans, a different answer, decided entirely by whether
+    income clears 400% of poverty.
+  </p>
+
+  <h2>The wait-and-see move</h2>
+  <p>
+    You have 60 days to elect COBRA, and it's retroactive to your loss date. So a healthy person can decline COBRA at
+    first, shop the marketplace, and still fall back on COBRA (paying the back premiums) if a medical need arises inside
+    the window. One caveat: once enrolled in COBRA, a single late payment terminates it.
+  </p>
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Work it out</h2>
+  <ul class="link-columns">
+    <li><a href="/cobra-vs-marketplace-calculator/">COBRA vs marketplace calculator</a> — your numbers</li>
+    <li><a href="/aca-subsidy-calculator/">ACA subsidy calculator</a> — the credit in detail</li>
+    <li><a href="/layoff-runway-calculator/">Layoff runway</a></li>
+  </ul>
+
+  <p class="results-note">Estimate for the 2026 plan year. ACA rules can change — last verified 2026-07-24. Not tax, legal, or insurance advice.</p>
+</Base>

@@ -1,0 +1,28 @@
+---
+/**
+ * Four-step progress strip for the layoff toolkit: severance → health coverage
+ * → unemployment → runway. Links the tools in order; highlights the active step.
+ */
+interface Props { active: 'severance' | 'health' | 'unemployment' | 'runway' }
+const { active } = Astro.props as Props;
+const steps = [
+  { key: 'severance', n: 1, label: 'Severance', href: '/severance-pay-tax-calculator/' },
+  { key: 'health', n: 2, label: 'Health coverage', href: '/cobra-vs-marketplace-calculator/' },
+  { key: 'unemployment', n: 3, label: 'Unemployment', href: '/unemployment-benefits-calculator/' },
+  { key: 'runway', n: 4, label: 'Runway', href: '/layoff-runway-calculator/' },
+];
+---
+<nav class="layoff-steps" aria-label="Layoff toolkit steps">
+  {steps.map((s) => (
+    <a href={s.href} class={`layoff-step${s.key === active ? ' is-active' : ''}`} aria-current={s.key === active ? 'step' : undefined}>
+      <span class="layoff-step-n">{s.n}</span>{s.label}
+    </a>
+  ))}
+</nav>
+<style>
+  .layoff-steps { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1.5rem; }
+  .layoff-step { display: inline-flex; align-items: center; gap: .5rem; padding: .5rem .85rem; border: 1px solid var(--border); border-radius: 999px; font-size: .9rem; text-decoration: none; color: var(--muted); background: var(--card); }
+  .layoff-step.is-active { border-color: var(--accent); color: var(--fg); font-weight: 600; }
+  .layoff-step-n { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--border); color: var(--fg); font-size: .8rem; }
+  .layoff-step.is-active .layoff-step-n { background: var(--accent); color: #fff; }
+</style>

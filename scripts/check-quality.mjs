@@ -327,6 +327,45 @@ if (!home) {
   console.log(`  ${unreachable.length === 0 ? 'ok  ' : 'FAIL'}  ${hubs.length} section hubs, all linked from the home page`);
 }
 
+/* ---- 3b2. FAQ JSON-LD structured data validity --------------------------- */
+
+/**
+ * Any page emitting FAQPage structured data must emit VALID structured data.
+ *
+ * The layoff cluster ships FAQPage JSON-LD so its Q&A can win rich results. The
+ * schema and the visible FAQ are rendered from one array per page, so drift is
+ * structurally impossible — but a malformed template, an unescaped quote, or a
+ * stray HTML tag in an answer would still ship invalid markup that Google
+ * silently drops. This parses every emitted block and asserts the shape Google
+ * documents: FAQPage → mainEntity[] → Question → acceptedAnswer.text, with no
+ * HTML tags left in the answer text (Google wants plain text or escaped HTML).
+ */
+let faqSchemaPages = 0;
+for (const p of pages) {
+  const m = p.html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  if (!m) continue;
+  faqSchemaPages++;
+  let data;
+  try {
+    data = JSON.parse(m[1]);
+  } catch (e) {
+    failures.push(`invalid JSON-LD on ${p.url}: ${e.message}`);
+    continue;
+  }
+  if (data['@type'] !== 'FAQPage') continue;
+  const items = Array.isArray(data.mainEntity) ? data.mainEntity : [];
+  if (items.length === 0) { failures.push(`FAQPage with no questions on ${p.url}`); continue; }
+  for (const q of items) {
+    const answer = q?.acceptedAnswer?.text ?? '';
+    if (!q?.name || answer.length < 10) {
+      failures.push(`malformed FAQ entry on ${p.url}: "${(q?.name ?? '').slice(0, 40)}"`);
+    } else if (/<[a-z][^>]*>/i.test(answer)) {
+      failures.push(`unstripped HTML in FAQ answer on ${p.url}: "${answer.slice(0, 40)}…"`);
+    }
+  }
+}
+console.log(`  ok    ${faqSchemaPages} pages carry valid FAQPage JSON-LD`);
+
 /* ---- 3c. uncited statutory claims ----------------------------------------- */
 
 /**

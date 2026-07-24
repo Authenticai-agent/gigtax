@@ -1,0 +1,68 @@
+---
+/** Scenario: how long will my severance last. */
+import Base from '../../layouts/Base.astro';
+import RunwayCalculator from '../../components/calculators/RunwayCalculator.tsx';
+import { runway } from '../../lib/layoff/runway';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = runway({ savings: 10000, netSeverance: 30000, monthlyUINet: 0, uiWeeks: 0, monthlyEssentialSpend: 4500, healthPremiumMonthly: 700, otherMonthlyIncome: 0 });
+const withUI = runway({ savings: 10000, netSeverance: 30000, monthlyUINet: 2000, uiWeeks: 26, monthlyEssentialSpend: 4500, healthPremiumMonthly: 700, otherMonthlyIncome: 0 });
+
+const faqItems = [
+  { q: `How do I make severance last longer?`, a: `Three levers: claim unemployment if you're eligible (it's often the biggest one), cut essential spending during the search, and choose the cheaper health-coverage option. The runway calculator lets you test each.` },
+  { q: `Should I count severance before or after tax?`, a: `After tax — use your net severance check, not the gross. The <a href="/severance-pay-tax-calculator/">severance tax calculator</a> gives you the net figure to carry in here.` },
+];
+---
+
+<Base
+  title="How long will my severance last? (2026 runway)"
+  description="Severance alone runs out fast. See how many months your severance and savings cover your spending — and how much unemployment stretches it."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 · scenario</p>
+    <h1>How long will my severance last?</h1>
+    <p class="tagline">Severance feels like a cushion until you divide it by your monthly spending. Here's the honest month count — and how much unemployment extends it.</p>
+  </section>
+
+  <p>
+    A severance number sounds reassuring right up until you divide it by what you spend each month. The real question
+    isn't "how big is my severance" — it's "how many months does severance plus savings buy me, once rent, food, and a
+    health premium keep going out the door." And it's not just severance: unemployment, if your state pays it, can
+    stretch the runway substantially.
+  </p>
+
+  <h2>Severance alone vs severance plus unemployment</h2>
+  <p>{formatMoney(30000)} net severance, {formatMoney(10000)} savings, {formatMoney(4500)} spending + {formatMoney(700)} health premium a month:</p>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th>Runway</th></tr></thead>
+    <tbody>
+      <tr><td>Severance + savings only</td><td>{ex.monthsOfRunway} months (need income by month {ex.breakEvenJobStartMonth})</td></tr>
+      <tr><td>+ {formatMoney(2000)}/mo unemployment for 26 weeks</td><td>{withUI.monthsOfRunway} months (need income by month {withUI.breakEvenJobStartMonth})</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Unemployment turns {ex.monthsOfRunway} months into {withUI.monthsOfRunway} here — six months of benefit
+    materially changes your job-search deadline. That's why the runway calculator chains all four numbers together
+    rather than looking at severance in isolation.
+  </p>
+
+  <RunwayCalculator client:load />
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Your layoff toolkit</h2>
+  <ul class="link-columns">
+    <li><a href="/severance-pay-tax-calculator/">Severance pay tax</a> — your net check</li>
+    <li><a href="/unemployment-benefits-calculator/">Unemployment benefits</a></li>
+    <li><a href="/cobra-vs-marketplace-calculator/">Health coverage</a></li>
+  </ul>
+
+  <p class="results-note">An estimate on your own numbers — no inflation or growth modeled. Nothing you enter is stored. Not financial advice.</p>
+</Base>

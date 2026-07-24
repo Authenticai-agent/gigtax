@@ -1,0 +1,163 @@
+---
+/**
+ * One static page per state: 2026 severance tax. State supplemental withholding
+ * rate from state_supplemental_tax.json; the worked example runs the severanceTax
+ * engine on a $40,000 severance so the state line is real. No-income-tax states
+ * get their own angle. State-specific FAQ and interlinks.
+ */
+import Base from '../../../layouts/Base.astro';
+import SeveranceCalculator from '../../../components/calculators/SeveranceCalculator.tsx';
+import supData from '../../../data/layoff/state_supplemental_tax.json';
+import uiData from '../../../data/layoff/ui_by_state.json';
+import { states, stateList } from '../../../data/states';
+import { stateSlug } from '../../../lib/slug';
+import { severanceTax } from '../../../lib/layoff/severanceTax';
+import { formatMoney, formatPct } from '../../../lib/tax-engine';
+
+const SUP = supData as Record<string, any>;
+const UI = uiData as Record<string, any>;
+
+export function getStaticPaths() {
+  return stateList.map(([code, s]) => ({ params: { state: stateSlug(s.name) }, props: { code } }));
+}
+const { code } = Astro.props as { code: string };
+const s = SUP[code];
+const name = states[code].name;
+const slug = stateSlug(name);
+
+const noTax = s.no_income_tax === true;
+const flatRate = typeof s.supplemental_rate === 'number' && s.supplemental_rate > 0;
+const ex = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: code, ytdWages: 60000, filingStatus: 'single', otherIncome: 60000 });
+
+// Per-state context that genuinely varies: the state's own UI figures + income-tax profile.
+const u = UI[code];
+const st = states[code];
+const stateProfile = noTax
+  ? `${st.name} has no state income tax at all, so neither your severance nor your unemployment faces a state levy — a group of just nine states.`
+  : st.type === 'graduated'
+    ? `${st.name} taxes income on a graduated scale topping out at ${formatPct(st.topRate)}, so a large severance can be pushed into that top rate.`
+    : `${st.name} taxes income at a flat ${formatPct(st.topRate)}, which is the rate that applies to severance whichever way it's withheld.`;
+const uiLine = `If you also claim unemployment, ${st.name} pays up to ${formatMoney(u.max_weekly)} a week${u.duration_weeks ? ` for up to ${u.duration_weeks} weeks` : ''}, and ${u.ui_taxed_by_state === true ? 'taxes it on the state return' : u.ui_taxed_by_state === false ? 'does not tax it' : 'may tax it'}.`;
+
+const methodLabel: Record<string, string> = {
+  high_quarter: 'your highest-earning quarter',
+  annual_wages: 'your total annual wages',
+  two_highest_quarters: 'your two highest-earning quarters',
+  base_period: 'your full base-period wages',
+  avg_weekly_wage: 'your average weekly wage',
+};
+const uiMethod = methodLabel[u.benefit_method] ?? 'your recent wages';
+const uiTotal = u.max_weekly * (u.duration_weeks ?? 0);
+const coverMonths = Math.round((ex.netCheck + uiTotal) / 4000);
+
+const stateLine = noTax
+  ? `${name} has no state income tax, so none of your severance is withheld for the state — a real edge over high-tax states.`
+  : flatRate
+    ? `${name} withholds a flat ${formatPct(s.supplemental_rate)} on supplemental wages like severance.`
+    : `${name} has no single flat supplemental rate — severance is withheld using the regular tables, so the amount tracks your bracket.`;
+
+const higherSuffix = noTax
+  ? ` and ${name} takes no state tax at all`
+  : flatRate
+    ? ` and ${formatPct(s.supplemental_rate)} by ${name}`
+    : ` and by ${name}'s regular tables`;
+const faqItems = [
+  {
+    q: `Is severance taxed higher in ${name}?`,
+    a: `No. It's <em>withheld</em> at a flat 22% federally${higherSuffix}, but it's taxed as ordinary income at your normal rates. You settle up at filing.`,
+  },
+  {
+    q: `Does ${name} tax my severance?`,
+    a: noTax
+      ? `No — ${name} has no state income tax, so your severance keeps its full value at the state level (federal tax and FICA still apply).`
+      : `Yes — ${name} taxes severance as wages. ${stateLine}`,
+  },
+  {
+    q: `Will I get a refund or owe more?`,
+    a: `It depends on your bracket. The flat 22% over-withholds for lower earners (refund) and under-withholds for those in the 32–37% brackets (set aside the difference). Enter your numbers above to see which way it goes for you.`,
+  },
+];
+
+const title = `${name} severance pay tax calculator 2026`;
+const desc = noTax
+  ? `${name} severance tax in 2026: the flat 22% federal withholding and FICA, with no state income tax — plus your real liability and a worked example on $40,000.`
+  : `${name} severance tax in 2026: the 22% federal withholding, FICA, ${flatRate ? `${formatPct(s.supplemental_rate)} state` : 'state'} withholding, and your real liability — worked on $40,000.`;
+---
+
+<Base title={title} description={desc} faqItems={faqItems}>
+  <div class="breadcrumbs"><a href="/">Home</a> / <a href="/severance-pay-tax-calculator/">Severance tax</a> / {name}</div>
+
+  <section class="hero">
+    <p class="hero-label">2026 · {name}</p>
+    <h1>{name} severance pay tax</h1>
+    <p class="tagline">{noTax ? `Federal tax takes its 22% cut, but ${name} takes nothing — and pays up to ${formatMoney(u.max_weekly)} a week in unemployment.` : flatRate ? `Federal 22% plus ${name}'s ${formatPct(s.supplemental_rate)} supplemental rate — but neither is your real tax rate.`: `Federal 22% plus ${name}'s regular withholding — but that's withholding, not your tax.`} Here's the real number.</p>
+  </section>
+
+  <SeveranceCalculator client:load presetState={code} />
+
+  <h2>{name} layoff at a glance</h2>
+  <table class="data-table">
+    <tbody>
+      <tr><td>State tax on severance</td><td>{noTax ? 'None — no state income tax' : flatRate ? `Flat ${formatPct(s.supplemental_rate)} supplemental withholding` : 'Regular withholding tables'}</td></tr>
+      <tr><td>State income tax</td><td>{st.type === 'none' ? 'None' : st.type === 'flat' ? `Flat ${formatPct(st.topRate)}` : `Graduated, up to ${formatPct(st.topRate)}`}</td></tr>
+      <tr><td>Unemployment weekly max</td><td>{formatMoney(u.max_weekly)}{u.duration_weeks ? ` for up to ${u.duration_weeks} weeks` : ''}</td></tr>
+      <tr><td>Unemployment taxed by {name}?</td><td>{u.ui_taxed_by_state === true ? 'Yes' : u.ui_taxed_by_state === false ? 'No' : 'Check agency'}</td></tr>
+    </tbody>
+  </table>
+
+  <h2>How {name} withholds on severance</h2>
+  <p>{stateLine} On top of that, the federal government withholds a flat 22% (37% over $1 million) and FICA — 6.2% Social Security up to the $184,500 wage base plus 1.45% Medicare.</p>
+  <p>{stateProfile} {uiLine} That's the {name} layoff picture in one place — the severance tax here, the unemployment on its own <a href={`/unemployment-benefits-calculator/${slug}/`}>{name} page</a>.</p>
+
+  <h2>Worked example: $40,000 severance in {name}</h2>
+  <p>A single filer, {formatMoney(40000)} severance paid separately, with {formatMoney(60000)} of other 2026 income:</p>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Federal withholding (22%)</td><td>−{formatMoney(ex.federalWithholding)}</td></tr>
+      <tr><td>FICA (Social Security + Medicare)</td><td>−{formatMoney(ex.ficaTotal)}</td></tr>
+      <tr><td>{name} withholding</td><td>{ex.stateWithholding > 0 ? `−${formatMoney(ex.stateWithholding)}` : formatMoney(0)}</td></tr>
+      <tr><td>Net check</td><td>{formatMoney(ex.netCheck)}</td></tr>
+      <tr><td>What it actually costs in tax</td><td>{formatMoney(ex.estimatedActualLiability)}</td></tr>
+    </tbody>
+  </table>
+  <p>{ex.verdict} The withholding is a fixed rate; your actual tax is your marginal rate on the severance stacked on your other income.</p>
+
+  <h2>Stacking {name} unemployment on top</h2>
+  <p>
+    {name} sizes your weekly check off {uiMethod}, up to {formatMoney(u.max_weekly)} a week.{u.dependent_allowance ? ` It adds ${formatMoney(u.dependent_allowance)} per dependent on top.` : ' There is no separate dependent add-on.'} {u.duration_note ? `Duration ${u.duration_note}.` : `Benefits run up to ${u.duration_weeks} weeks.`}
+  </p>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Weekly benefit range</td><td>{formatMoney(u.min_weekly)} – {formatMoney(u.max_weekly)}</td></tr>
+      <tr><td>How the amount is set</td><td>Off {uiMethod}</td></tr>
+      <tr><td>Maximum duration</td><td>{u.duration_weeks} weeks{u.duration_note ? ` (${u.duration_note})` : ''}</td></tr>
+      <tr><td>Waiting week</td><td>{u.waiting_week ? 'Yes — one unpaid week' : 'No waiting week'}</td></tr>
+      <tr><td>Dependent allowance</td><td>{u.dependent_allowance ? `${formatMoney(u.dependent_allowance)} per dependent` : 'None'}</td></tr>
+      <tr><td>Taxed by {name}</td><td>{u.ui_taxed_by_state === false ? 'No' : u.ui_taxed_by_state === true ? 'Yes' : 'Check agency'}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Stacked together, that {formatMoney(40000)} severance nets about {formatMoney(ex.netCheck)} and {name}'s
+    unemployment can add up to {formatMoney(uiTotal)} over {u.duration_weeks ?? '—'} weeks — about {coverMonths} months
+    of a {formatMoney(4000)} budget before you need a paycheck. File through {u.agency_name}; nail down the exact figure
+    in the <a href="/layoff-runway-calculator/">runway calculator</a>.
+  </p>
+
+  <h2>Questions about {name} severance tax</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Your {name} layoff toolkit</h2>
+  <ul class="link-columns">
+    <li><a href={`/unemployment-benefits-calculator/${slug}/`}>{name} unemployment benefits</a> — weekly amount and duration</li>
+    <li><a href="/layoff-runway-calculator/">Runway calculator</a> — how long your money lasts</li>
+    <li><a href={`/paycheck-calculator/${slug}/`}>{name} paycheck calculator</a> — take-home at your next job</li>
+    <li><a href={`/1099-tax-calculator/${slug}/`}>{name} 1099 tax</a> — if you go freelance</li>
+  </ul>
+
+  <p class="results-note">An estimate for the 2026 tax year. State supplemental figures from the verified dataset, last verified 2026-07-24. Nothing you enter is stored. Not tax advice.</p>
+</Base>

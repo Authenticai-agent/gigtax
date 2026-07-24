@@ -1,0 +1,71 @@
+---
+/** Scenario: laid off at 55, health insurance options. */
+import Base from '../../layouts/Base.astro';
+
+const faqItems = [
+  { q: `Is COBRA or the marketplace better at 55?`, a: `It depends on your income. Under the 400% FPL cliff, the subsidized marketplace usually beats COBRA even at 55; over the cliff, the unsubsidized marketplace and COBRA are closer, and COBRA's keep-your-plan continuity can win. Run both.`, review: true },
+  { q: `Can I retire early instead of finding another job?`, a: `Possibly, but bridging to Medicare at 65 is the hard part — you'd fund a decade of premiums yourself. Model the cost against your savings in the <a href="/when-can-i-retire-calculator/">when-can-I-retire calculator</a> before deciding.`, review: false },
+];
+---
+
+<Base
+  title="Laid off at 55: health insurance options (2026)"
+  description="Laid off in your 50s and years from Medicare? COBRA, the ACA marketplace, a spouse's plan — the options at 55, and why the 2026 subsidy cliff changes the math."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 · scenario</p>
+    <h1>Laid off at 55: your health insurance options</h1>
+    <p class="tagline">Ten years from Medicare, with premiums that rise with age — health coverage is the hardest part of a layoff in your 50s. Here are the real options.</p>
+  </section>
+
+  <p>
+    A layoff at 55 lands in the hardest stretch for health coverage: you're a decade from Medicare at 65, and
+    marketplace premiums rise with age, so a plan can cost far more than it did at 35. But a layoff year is often a
+    lower-income year, and for 2026 that matters more than usual — the enhanced subsidies expired, so income now decides
+    everything through the 400% poverty-level cliff. Getting under it can turn an unaffordable premium into a
+    manageable one.
+  </p>
+
+  <h2>Your five options at 55</h2>
+  <ul>
+    <li><strong>COBRA.</strong> Keep your exact plan for up to 18 months, but you now pay the full premium plus 2%.
+      For a 55-year-old that's often $700–$1,000+ a month for one person. Best if you're mid-treatment or want zero
+      disruption. You have 60 days to elect, and it's retroactive — so healthy people can wait and see.</li>
+    <li><strong>ACA marketplace.</strong> A layoff triggers a 60-day special enrollment. Premiums rise with age, but
+      the premium tax credit can cut them sharply <em>if</em> your income lands under 400% of poverty. This is where a
+      low-income layoff year pays off.</li>
+    <li><strong>A spouse's or partner's plan.</strong> Losing coverage is a qualifying event to join their employer
+      plan — often the cheapest option if it's available.</li>
+    <li><strong>A short-term plan.</strong> Cheaper but skimpy (they can exclude pre-existing conditions and skip
+      benefits). A gap-filler at best, not a real safety net at 55.</li>
+    <li><strong>Retiree coverage.</strong> Some employers offer it — worth asking, especially if you were near
+      retirement anyway.</li>
+  </ul>
+
+  <h2>Why the 2026 subsidy cliff is the crux at 55</h2>
+  <p>
+    Because marketplace premiums are age-rated, a 55-year-old's benchmark plan is expensive — so the subsidy is worth
+    more, and losing it at the 400% FPL cliff hurts more. A single filer over roughly $63,840 of 2026 income gets $0 in
+    credit; a dollar under it can be worth many thousands. A severance lump sum can push you over the cliff, so
+    spreading income across two tax years is a lever worth considering. Model your income against the cliff in the
+    <a href="/cobra-vs-marketplace-calculator/">COBRA vs marketplace calculator</a>.
+  </p>
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review={f.review ? 'legal' : undefined} set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Your layoff toolkit</h2>
+  <ul class="link-columns">
+    <li><a href="/cobra-vs-marketplace-calculator/">COBRA vs marketplace</a> — the cliff math</li>
+    <li><a href="/layoff-runway-calculator/">Layoff runway</a> — how long your money lasts</li>
+    <li><a href="/when-can-i-retire-calculator/">When can I retire?</a></li>
+  </ul>
+
+  <p class="results-note">General information for 2026, not insurance or financial advice. ACA rules can change — last verified 2026-07-24.</p>
+</Base>

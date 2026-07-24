@@ -1,0 +1,73 @@
+---
+/** Layoff cluster: COBRA vs marketplace calculator. */
+import Base from '../../layouts/Base.astro';
+import LayoffProgress from '../../components/LayoffProgress.astro';
+import CobraMarketplaceCalculator from '../../components/calculators/CobraMarketplaceCalculator.tsx';
+import { cobraVsMarketplace } from '../../lib/layoff/cobraVsMarketplace';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = cobraVsMarketplace({ cobraSource: 'box12dd', cobraValue: 9000, household: 'single', householdSize: 1, estimatedMAGI: 45000, marketplaceBenchmarkMonthly: 520, coverageHorizonMonths: 12 });
+
+const faqItems = [
+  { q: `Can I wait before electing COBRA?`, a: `Yes — you have 60 days to elect, and coverage is retroactive to your loss date if you do. A healthy person can wait and see: only pay COBRA if a medical need comes up in that window. One late payment afterward terminates coverage, so don't miss a due date once enrolled.` },
+  { q: `What's the 400% FPL cliff?`, a: `Above 400% of the federal poverty level, you get $0 in premium tax credit for 2026 — the enhanced credits that had removed this cliff expired at the end of 2025. Earning one dollar over the threshold can cost thousands, so a layoff year's lower income can actually help you qualify.` },
+  { q: `How do I estimate my COBRA premium?`, a: `Fastest way: find Box 12 Code DD on your W-2 (the total annual plan cost), divide by 12, and add 2%. That's your monthly COBRA premium. The calculator does this for you.` },
+];
+---
+
+<Base
+  title="COBRA vs marketplace calculator 2026 — after a layoff"
+  description="COBRA or the ACA marketplace after a layoff? With the enhanced subsidies expired for 2026, the 400% FPL cliff is back. Compare both and see the cliff."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year · laid off</p>
+    <h1>COBRA vs marketplace calculator</h1>
+    <p class="tagline">A layoff triggers a 60-day COBRA deadline and a 60-day marketplace special enrollment. For 2026 the subsidy cliff is back — which is cheaper depends on your income.</p>
+  </section>
+
+  <LayoffProgress active="health" />
+
+  <p>
+    Losing job-based coverage gives you two options: keep it through COBRA (you now pay the full premium, up to 102%),
+    or buy on the ACA marketplace. The 2026 twist most articles get wrong: the enhanced premium tax credits expired on
+    31 December 2025, so the hard <strong>400% federal-poverty-level cliff is back</strong>. A layoff year is often a
+    low-income year that drops you under the cliff and makes the marketplace far cheaper — but a dollar over it costs
+    the entire subsidy.
+  </p>
+
+  <CobraMarketplaceCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A single person, COBRA at {formatMoney(9000)}/year (Box 12 DD), {formatMoney(45000)} income, {formatMoney(520)} benchmark plan, over 12 months:</p>
+  <table class="data-table">
+    <thead><tr><th>Option</th><th>Monthly</th><th>12-month total</th></tr></thead>
+    <tbody>
+      <tr><td>COBRA</td><td>{formatMoney(ex.cobraMonthly)}</td><td>{formatMoney(ex.cobraTotal)}</td></tr>
+      <tr><td>Marketplace (net of subsidy)</td><td>{formatMoney(ex.marketplaceNetMonthly)}</td><td>{formatMoney(ex.marketplaceTotal)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    At {formatMoney(45000)} (about {(ex.fplPct * 100).toFixed(0)}% of poverty), a subsidy of {formatMoney(ex.estimatedSubsidyMonthly)}/month
+    makes the marketplace cheaper — saving about {formatMoney(ex.savingsOverHorizon)} over the year versus COBRA. Push
+    income over 400% of poverty and that subsidy drops to zero, flipping the answer.
+  </p>
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Next steps</h2>
+  <ul class="link-columns">
+    <li><a href="/unemployment-benefits-calculator/">Unemployment</a> — your weekly benefit</li>
+    <li><a href="/layoff-runway-calculator/">Runway</a> — fold the premium into how long your money lasts</li>
+    <li><a href="/aca-subsidy-calculator/">ACA subsidy calculator</a> — the credit in detail</li>
+    <li><a href="/severance-pay-tax-calculator/">Severance tax</a></li>
+  </ul>
+
+  <p class="results-note">Estimate for the 2026 plan year. ACA subsidy rules can change — last verified 2026-07-24 (enhanced credits still expired). Nothing you enter is stored. Not tax, legal, or insurance advice.</p>
+</Base>
