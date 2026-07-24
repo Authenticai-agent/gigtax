@@ -1,0 +1,71 @@
+---
+/** Lifestyle: true hourly wage. */
+import Base from '../../layouts/Base.astro';
+import WorkHoursCalculator from '../../components/calculators/WorkHoursCalculator.tsx';
+import { trueHourlyWage } from '../../lib/lifestyle';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = trueHourlyWage(90000, 40, 6, 5, 48, 6000);
+---
+
+<Base
+  title="Work hours calculator 2026 — your true hourly wage"
+  description="Your real hourly wage once unpaid overtime, the commute and work costs are counted — usually well below the salary-divided-by-2,080 number people assume."
+>
+  <section class="hero">
+    <p class="hero-label">Lifestyle</p>
+    <h1>Your true hourly wage</h1>
+    <p class="tagline">The "salary ÷ 2,080 hours" number is a fantasy. Count the unpaid overtime, the commute and what work costs you, and your real hourly wage looks different.</p>
+  </section>
+
+  <p>
+    People translate a salary to an hourly rate by dividing by 2,080 hours — 40 a week, 52 weeks. Real work isn't
+    like that: there's unpaid overtime, the commute you don't get paid for, and the money it takes just to show up.
+    Count all of it and your true hourly wage is lower — often a lot lower — than the headline figure.
+  </p>
+
+  <WorkHoursCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A {formatMoney(90000)} salary, 40 contracted hours plus 6 unpaid overtime and 5 commuting, {formatMoney(6000)} of work costs:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Nominal hourly (salary ÷ contracted hours)</td><td>{formatMoney(ex.nominalHourly)}</td></tr>
+      <tr><td>Real hours a year</td><td>{ex.realHours.toLocaleString()}</td></tr>
+      <tr><td>Real hourly wage</td><td>{formatMoney(ex.realHourly)}</td></tr>
+      <tr><td>The gap</td><td>{formatMoney(ex.gapPerHour)}/hr ({formatPct(ex.gapPct)} less)</td></tr>
+    </tbody>
+  </table>
+  <p>
+    On paper that's {formatMoney(ex.nominalHourly)} an hour. Count the overtime, the commute and {formatMoney(6000)}
+    of work costs, and it's really {formatMoney(ex.realHourly)} — {formatPct(ex.gapPct)} less. That gap is the honest
+    price of the job, and the number to use when weighing a shorter commute or a role with real boundaries.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why count the commute?</h3>
+    <p>Because it's time you spend for the job that you can't spend on anything else, and it costs money too. A shorter
+      commute is effectively a raise in your true hourly wage — sometimes a bigger one than a modest salary bump.</p>
+  </div>
+  <div class="faq">
+    <h3>What are "work costs"?</h3>
+    <p>Everything you spend to hold the job: commuting (gas, transit, parking), lunches out, work-appropriate clothes,
+      and the like. They come out of your pay before it does anything for you, so they belong in a true hourly figure.</p>
+  </div>
+  <div class="faq">
+    <h3>How do I use this?</h3>
+    <p>To compare jobs honestly. A higher salary with a brutal commute and constant unpaid overtime can pay less per
+      real hour than a lower salary with boundaries. The real hourly wage puts the two on the same footing.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/hourly-to-salary-calculator/">Hourly to salary</a> — convert a wage the standard way</li>
+    <li><a href="/overtime-pay-calculator/">Overtime pay</a> — when the overtime is paid</li>
+    <li><a href="/w2-vs-1099-calculator/">W-2 vs 1099</a> — compare two offers on take-home</li>
+  </ul>
+
+  <p class="results-note">A framing tool from your own inputs, not tax or financial advice.</p>
+</Base>

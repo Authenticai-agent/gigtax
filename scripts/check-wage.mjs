@@ -815,6 +815,30 @@ console.log('\nlifestyle: baby, divorce, eldercare, prenup, death & money');
   ok('a $20m estate owes 40% over the $15m exclusion', near(big.federalEstateTax, 2000000), `${big.federalEstateTax}`);
 }
 
+/* ---------------------- lifestyle (batch 5) ------------------------------- */
+console.log('\nlifestyle: coffee, lifestyle creep, climate risk, how rich if, true hourly');
+{
+  const cof = ls.recurringHabit(6, 250, 30, 0.10, 0.03);
+  ok('a habit invested beats a habit spent', cof.totalIfInvested > cof.totalSpent && cof.opportunityCost > 0);
+  ok('habit annual spend = per-occasion × times/year', cof.annualSpend === 6 * 250);
+
+  const creep = ls.lifestyleCreep(60000, 0.20, 100000, 0.08, 0.07, 20);
+  ok('lifestyle creep foregone = old-rate savings − actual savings', creep.foregoneAnnual === Math.round(100000 * 0.20) - Math.round(100000 * 0.08));
+  ok('foregone savings compound over the years', creep.foregoneOverYears > creep.foregoneAnnual * 20);
+
+  const cl = ls.climateRisk(500000, 2000, 'high', 10);
+  ok('climate value loss = home value × tier loss', cl.valueLoss === Math.round(500000 * 0.30));
+  ok('climate total exposure sums the three costs', cl.totalExposure === cl.insuranceOverPeriod + cl.valueLoss + cl.adaptationCost);
+  ok('higher severity means higher exposure', ls.climateRisk(500000, 2000, 'high', 10).totalExposure > ls.climateRisk(500000, 2000, 'low', 10).totalExposure);
+
+  const hri = ls.howRichIf(500, 30, 0.07);
+  ok('how-rich-if future value exceeds contributions', hri.futureValue > hri.contributed && hri.growth === hri.futureValue - hri.contributed);
+
+  const wage = ls.trueHourlyWage(100000, 40, 8, 5, 48, 6000);
+  ok('true hourly is below the nominal hourly', wage.realHourly < wage.nominalHourly && wage.gapPerHour > 0);
+  ok('nominal hourly = salary / contracted hours', near(wage.nominalHourly, 100000 / (40 * 48), 0.01));
+}
+
 /* ---------------------- finance primitives -------------------------------- */
 {
   ok('annuity FV exceeds total contributions', fin.futureValueAnnuity(500, 0.07, 30) > 500 * 12 * 30);

@@ -177,3 +177,136 @@ export function deathAndMoney(i: DeathMoneyInput): DeathMoneyResult {
     owesFederal: fed.owesTax,
   };
 }
+
+/* ------------------------------------------------------- coffee habit ----- */
+
+export interface HabitResult {
+  annualSpend: number; totalSpent: number; totalIfInvested: number; opportunityCost: number;
+}
+
+/**
+ * A recurring small purchase, spent vs invested. Spending inflates each year;
+ * the invested alternative both contributes and compounds — the gap is what the
+ * habit really costs over time.
+ */
+export function recurringHabit(perOccasion: number, timesPerYear: number, years: number, returnRate: number, inflation: number): HabitResult {
+  let totalSpent = 0, invested = 0, cost = perOccasion;
+  for (let y = 0; y < years; y++) {
+    const yearSpend = cost * timesPerYear;
+    totalSpent += yearSpend;
+    invested = invested * (1 + returnRate) + yearSpend; // this year's spend invested instead
+    cost *= 1 + inflation;
+  }
+  return {
+    annualSpend: Math.round(perOccasion * timesPerYear),
+    totalSpent: Math.round(totalSpent),
+    totalIfInvested: Math.round(invested),
+    opportunityCost: Math.round(invested - totalSpent),
+  };
+}
+
+/* ---------------------------------------------------- lifestyle creep ----- */
+
+export interface CreepResult {
+  incomeIncrease: number; savingsThen: number; savingsNow: number;
+  foregoneAnnual: number; foregoneOverYears: number;
+}
+
+/**
+ * Lifestyle creep: when income rose but the savings RATE fell. Compares what you
+ * would save at your old rate on your new income against what you actually save,
+ * and compounds the annual shortfall over the years.
+ */
+export function lifestyleCreep(thenIncome: number, thenRate: number, nowIncome: number, nowRate: number, returnRate: number, years: number): CreepResult {
+  const savingsThen = thenIncome * thenRate;
+  const savingsNow = nowIncome * nowRate;
+  const wouldSave = nowIncome * thenRate; // old rate applied to today's income
+  const foregoneAnnual = Math.max(0, wouldSave - savingsNow);
+  return {
+    incomeIncrease: nowIncome - thenIncome,
+    savingsThen: Math.round(savingsThen),
+    savingsNow: Math.round(savingsNow),
+    foregoneAnnual: Math.round(foregoneAnnual),
+    foregoneOverYears: Math.round(futureValueAnnuity(foregoneAnnual / 12, returnRate, years)),
+  };
+}
+
+/* --------------------------------------------------- climate risk --------- */
+
+/** Reference severity tiers: insurance-rate rise, value loss, and adaptation cost. */
+export const CLIMATE_SEVERITY: Record<string, { name: string; insuranceRate: number; valueLoss: number; adaptation: number }> = {
+  low: { name: 'Low', insuranceRate: 0.03, valueLoss: 0.05, adaptation: 10000 },
+  moderate: { name: 'Moderate', insuranceRate: 0.08, valueLoss: 0.15, adaptation: 30000 },
+  high: { name: 'High', insuranceRate: 0.15, valueLoss: 0.30, adaptation: 60000 },
+};
+
+export interface ClimateResult {
+  annualInsuranceIncrease: number; insuranceOverPeriod: number;
+  valueLoss: number; adaptationCost: number; totalExposure: number;
+}
+
+/**
+ * Climate financial exposure on a home over a holding period: the rising
+ * insurance premium, the potential hit to market value, and a one-off adaptation
+ * cost. Figures come from broad reference severity tiers, not a property-level model.
+ */
+export function climateRisk(homeValue: number, currentPremium: number, severity: string, yearsHeld: number): ClimateResult {
+  const tier = CLIMATE_SEVERITY[severity] ?? CLIMATE_SEVERITY.moderate;
+  // Premium compounds at the tier's annual rate; sum the increases over the period.
+  let premium = currentPremium, insuranceOverPeriod = 0;
+  for (let y = 0; y < yearsHeld; y++) {
+    const next = premium * (1 + tier.insuranceRate);
+    insuranceOverPeriod += next - currentPremium;
+    premium = next;
+  }
+  const valueLoss = Math.round(homeValue * tier.valueLoss);
+  return {
+    annualInsuranceIncrease: Math.round(currentPremium * tier.insuranceRate),
+    insuranceOverPeriod: Math.round(insuranceOverPeriod),
+    valueLoss,
+    adaptationCost: tier.adaptation,
+    totalExposure: Math.round(insuranceOverPeriod) + valueLoss + tier.adaptation,
+  };
+}
+
+/* ------------------------------------------------------- how rich if ------ */
+
+export interface HowRichResult {
+  contributed: number; futureValue: number; growth: number; months: number;
+}
+
+/** Counterfactual wealth: a recurring amount invested instead of spent. */
+export function howRichIf(monthlyAmount: number, years: number, returnRate: number): HowRichResult {
+  const fv = Math.round(futureValueAnnuity(monthlyAmount, returnRate, years));
+  const contributed = monthlyAmount * 12 * years;
+  return { contributed, futureValue: fv, growth: fv - contributed, months: years * 12 };
+}
+
+/* ----------------------------------------------------- true hourly wage --- */
+
+export interface HourlyWageResult {
+  nominalHourly: number; realHourly: number; realHours: number;
+  gapPerHour: number; gapPct: number;
+}
+
+/**
+ * What you actually earn per hour once commuting, unpaid overtime and
+ * work-related costs are counted — usually well below the "salary ÷ 2,080"
+ * figure people assume.
+ */
+export function trueHourlyWage(
+  salary: number, contractedHoursPerWeek: number, unpaidOtPerWeek: number,
+  commuteHoursPerWeek: number, weeksPerYear: number, workCostsPerYear: number,
+): HourlyWageResult {
+  const nominalHours = contractedHoursPerWeek * weeksPerYear;
+  const realHours = (contractedHoursPerWeek + unpaidOtPerWeek + commuteHoursPerWeek) * weeksPerYear;
+  const nominalHourly = nominalHours > 0 ? salary / nominalHours : 0;
+  const realHourly = realHours > 0 ? (salary - workCostsPerYear) / realHours : 0;
+  return {
+    nominalHourly: Math.round(nominalHourly * 100) / 100,
+    realHourly: Math.round(realHourly * 100) / 100,
+    realHours: Math.round(realHours),
+    gapPerHour: Math.round((nominalHourly - realHourly) * 100) / 100,
+    gapPct: nominalHourly > 0 ? (nominalHourly - realHourly) / nominalHourly : 0,
+  };
+}

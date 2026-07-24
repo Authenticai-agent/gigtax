@@ -1,0 +1,65 @@
+---
+/** Lifestyle: how rich would I be if I'd invested it. */
+import Base from '../../layouts/Base.astro';
+import HowRichIfCalculator from '../../components/calculators/HowRichIfCalculator.tsx';
+import { howRichIf } from '../../lib/lifestyle';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = howRichIf(500, 30, 0.07);
+---
+
+<Base
+  title="How rich would I be if I invested it? Calculator 2026"
+  description="What a recurring expense — a car payment, rent difference or daily habit — would be worth if you'd invested it instead, compounded over years."
+>
+  <section class="hero">
+    <p class="hero-label">Lifestyle</p>
+    <h1>How rich would I be if…</h1>
+    <p class="tagline">Take any fixed monthly expense and imagine investing it instead. Compounded over the years, the counterfactual number is often startling.</p>
+  </section>
+
+  <p>
+    A car payment, the extra rent for a bigger place, a daily lunch out — each is a fixed sum leaving your account
+    every month. Redirect it into investments and it compounds. This shows the counterfactual: what you'd have if you
+    had invested a recurring expense instead of spending it. Not a regret — a lens on what fixed costs really cost.
+  </p>
+
+  <HowRichIfCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A {formatMoney(500)} monthly car payment, invested at 7% for 30 years instead:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Total contributed</td><td>{formatMoney(ex.contributed)}</td></tr>
+      <tr><td>Growth on top</td><td>{formatMoney(ex.growth)}</td></tr>
+      <tr><td>What you'd have after 30 years</td><td>{formatMoney(ex.futureValue)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    {formatMoney(500)} a month is {formatMoney(ex.contributed)} contributed over 30 years — but invested it becomes
+    {' '}{formatMoney(ex.futureValue)}, because {formatMoney(ex.growth)} of it is compound growth. That's the case for
+    keeping fixed monthly costs low: each one is a claim on a much larger future number.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Is this telling me not to buy a car?</h3>
+    <p>No — you need to get around, and some expenses are worth it. It's a way to compare the true long-run cost of a
+      recurring expense against its benefit, so a $500 car payment is a choice you make with eyes open, not by default.</p>
+  </div>
+  <div class="faq">
+    <h3>Why is the growth bigger than what I put in?</h3>
+    <p>Because compounding runs for decades. Over 30 years at 7%, money roughly doubles more than three times, so the
+      growth on early contributions dwarfs the contributions themselves. The longer the horizon, the more lopsided it gets.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/coffee-cost-calculator/">Coffee habit</a> — the small-daily version</li>
+    <li><a href="/cost-of-procrastinating-investing-calculator/">Cost of waiting to invest</a> — why the head start matters</li>
+    <li><a href="/fire-calculator/">FIRE calculator</a> — where redirected money leads</li>
+  </ul>
+
+  <p class="results-note">A counterfactual thought experiment on a steady assumed return, not a forecast or advice. Not financial advice.</p>
+</Base>

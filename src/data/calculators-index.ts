@@ -36,4 +36,9 @@ export const lifestyle: CalcEntry[] = [
   { slug: 'eldercare-cost-calculator', title: 'Eldercare cost', blurb: 'assisted living, memory and nursing care by state', group: 'Life events' },
   { slug: 'prenup-mismatch-calculator', title: 'Prenup financial mismatch', blurb: 'how far apart two partners’ finances are', group: 'Life events' },
   { slug: 'death-and-money-calculator', title: 'Death & money', blurb: 'will your projected estate owe tax?', group: 'Life events' },
+  { slug: 'coffee-cost-calculator', title: 'Coffee habit cost', blurb: 'what "small but daily" adds up to', group: 'Habits & choices' },
+  { slug: 'lifestyle-creep-calculator', title: 'Lifestyle creep', blurb: 'the cost of spending every raise', group: 'Habits & choices' },
+  { slug: 'how-rich-if-calculator', title: 'How rich would I be if…', blurb: 'a recurring expense invested instead', group: 'Habits & choices' },
+  { slug: 'work-hours-calculator', title: 'True hourly wage', blurb: 'your real pay once commute and unpaid overtime count', group: 'Habits & choices' },
+  { slug: 'climate-risk-calculator', title: 'Climate financial risk', blurb: 'insurance, home value and adaptation exposure', group: 'Home & place' },
 ];

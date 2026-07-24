@@ -1,0 +1,68 @@
+---
+/** Lifestyle: the true cost of a coffee habit. */
+import Base from '../../layouts/Base.astro';
+import CoffeeCostCalculator from '../../components/calculators/CoffeeCostCalculator.tsx';
+import { recurringHabit } from '../../lib/lifestyle';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = recurringHabit(6, 250, 30, 0.10, 0.03);
+---
+
+<Base
+  title="Coffee cost calculator 2026 — the true lifetime cost"
+  description="What a daily coffee really costs over the years — spent, versus invested. The famous example of how a small daily habit compounds into a large number."
+>
+  <section class="hero">
+    <p class="hero-label">Lifestyle</p>
+    <h1>What your coffee habit actually costs</h1>
+    <p class="tagline">Not a lecture about lattes — just the arithmetic of "small but daily." A few dollars a day, over decades, is a number worth seeing.</p>
+  </section>
+
+  <p>
+    The daily coffee is the classic example of a habit priced to feel trivial. Six dollars is nothing; six dollars
+    every workday for thirty years is not. This shows what the habit costs spent, and what the same money would be
+    worth invested — the gap is the real lesson, and it applies to any recurring purchase.
+  </p>
+
+  <CoffeeCostCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A {formatMoney(6)} coffee every workday for 30 years:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Spent per year</td><td>{formatMoney(ex.annualSpend)}</td></tr>
+      <tr><td>Total spent over 30 years</td><td>{formatMoney(ex.totalSpent)}</td></tr>
+      <tr><td>If invested instead (10%/yr)</td><td>{formatMoney(ex.totalIfInvested)}</td></tr>
+      <tr><td>Growth you gave up</td><td>{formatMoney(ex.opportunityCost)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    {formatMoney(ex.annualSpend)} a year doesn't feel like much, but spent over 30 years it's {formatMoney(ex.totalSpent)},
+    and invested it would have grown to {formatMoney(ex.totalIfInvested)}. Coffee is just the famous stand-in — the
+    same math turns any "just a few dollars a day" habit into a five- or six-figure number.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Is this saying I shouldn't buy coffee?</h3>
+    <p>No. It's showing the arithmetic of a small daily expense so you can decide what's worth it. If your coffee
+      brings you real joy, keep it — the exercise is about noticing which small habits you'd rather redirect, not
+      guilt about the ones you love.</p>
+  </div>
+  <div class="faq">
+    <h3>Isn't a 10% return optimistic?</h3>
+    <p>It's the long-run historical average of the US stock market before inflation; after inflation, closer to 7%.
+      Lower the rate in the calculator and the number shrinks, but the direction — small daily spending compounds —
+      doesn't change.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/subscription-audit-calculator/">Subscription audit</a> — the recurring costs you forgot</li>
+    <li><a href="/how-rich-if-calculator/">How rich would I be if…</a> — the same idea, any expense</li>
+    <li><a href="/cost-of-procrastinating-investing-calculator/">Cost of waiting to invest</a> — why starting early matters</li>
+  </ul>
+
+  <p class="results-note">An illustration of opportunity cost, not a bill or advice. Assumes a steady 10% return and 3% price inflation. Not financial advice.</p>
+</Base>
