@@ -2,9 +2,23 @@
 
 Dated 2026-07. This is the running log of every judgment call, discrepancy, and stale-risk item for the layoff survival cluster data layer (`task_layoff.md` Phase 1).
 
-## Status at the Phase 1 gate: AMBER (schema valid, sourcing in progress, awaiting owner review)
+## Status at the Phase 1 gate: SOURCED — awaiting owner sign-off
 
-`node scripts/verify-layoff-data.mjs` → 0 hard failures; records not yet accepted are PENDING. The schema is complete and sane; **no benefit figure has been shipped without a source**. As of this pass, **36 of 51 UI jurisdictions are sourced** (`verify_status: "sourced_pending_owner_review"`); the remaining 15 (CT, DC, DE, IN, MA, MD, ME, MI, NH, NJ, NY, OH, PA, RI, VT) are still completing. Nothing is marked `verified` — per the spec's guardrail, the owner reviews the source ledger and approves before acceptance and before Phase 2.
+`node scripts/verify-layoff-data.mjs` → **0 hard failures, 0 unsourced (PENDING)**; **all 51 UI records sourced, awaiting owner sign-off** (`verify_status: "sourced_pending_owner_review"`). Every figure is tied to an official source and passes the sanity bands. Flip `verify_status` to `verified` on approval and the gate is GREEN. Documented residual: mini-COBRA for **AK, AR, TN** stays UNCONFIRMED where the state code is login-gated (AR, TN) or no official page affirms absence (AK).
+
+### Second pass complete (2026-07-24) — the targeted follow-up
+
+- **`ui_taxed_by_state`: 51/51** now set (was 13 null). Key finding: **DC does NOT tax UI** (permanent statutory exclusion from District gross income, D-40 Line 13); **Alabama and Virginia also do not** (AL exempts it; VA has a subtraction). All others confirmed to tax UI, each to a state DOR page.
+- **`waiting_week`: 51/51** now set (was 15 null), from DOL ETA Comparison Table 3-7 (the authoritative federal cross-check).
+- **Supplemental withholding rate: all 42 taxing states resolved** — 25 have a flat/supplemental rate (from each state DOR withholding guide), 17 genuinely have **no single flat rate** (`verify_status: verified_variable` — combined-wage/aggregate/annualized/multiplier methods), plus the 9 no-income-tax states at 0. Corrections vs aggregators: **ND 1.5%** (not the stale 1.84%), **NC 4.09%** (higher than its 3.99% income rate), CT has no flat 6.99% and DE no flat 6.6% (those are top marginal rates). CA severance = **6.6%** ("other supplemental," not the 10.23% bonus rate).
+- **Mini-COBRA: 51/51** — 42 jurisdictions have a small-employer continuation law (sourced to statute/insurance-dept), **6 do not** (AL, HI, ID, MI, MT, WA — conversion or must-offer only), **3 UNCONFIRMED** (AK, AR, TN).
+- **KFF averages refreshed** to the 2025 Employer Health Benefits Survey ($7,885 single / $20,143 family employer contribution — the spec's $6,296/$16,399 were stale); marketplace figures confirmed verbatim. **ACA subsidy status re-verified 2026-07-24**: enhanced credits still expired, 400% cliff in effect, House-passed extension stalled in the Senate, nothing signed.
+
+### Residual items flagged (small, documented)
+
+- **Currency:** Kansas' likely July-1-2026 max (~$663) UNCONFIRMED (KDOL 403s; $637 is the last officially-verified). **Colorado corrected to $884** (superseded $844, via CDLE estimator). North Dakota $815 is the posted chart; no 7/5/2026 successor published yet.
+- **Supplemental (MEDIUM):** DC and VT — the 2026 official docs were fetch-blocked, so the "no flat rate" finding rests on the latest reachable official version (DC FR-230; VT GB-1210 2025) plus official-domain search; not aggregator-sourced.
+- A handful of first-pass MEDIUM figures (agency sites that 403'd) remain worth a Phase 5 spot-check: WV $662 (DOL-ETA-only), AZ/NM/MT minima (DOL ETA).
 
 ## Repo adaptations (this is the same repo, not the spec's assumed stack)
 
@@ -18,13 +32,9 @@ Dated 2026-07. This is the running log of every judgment call, discrepancy, and 
 - **ACA 2026 structure** — enhanced credits expired 2025-12-31, 400% FPL cliff back, 60-day SEP. Sourced; FPL/percentage tables read from `federal.ts`.
 - **No-income-tax states** — AK, FL, NV, NH, SD, TN, TX, WA, WY. Derived from the repo's own `states.ts` (`type: "none"`), not from memory. `state_supplemental_tax.json` marks these `verified_no_tax`, supplemental rate 0.
 
-## What is PENDING (must be sourced before Phase 2)
+## What is PENDING
 
-1. **51-state UI benefit table** — `ui_by_state.json`, all figures `null`, every record `verify_status: "PENDING"`. Needs max/min weekly, duration, waiting week, dependent allowance, benefit method, severance-offset note, `ui_taxed_by_state`, agency name + filing URL — each from **that state's own agency page**, cross-checked against DOL ETA "Significant Provisions of State UI Laws". 
-2. **State supplemental withholding rates** — `state_supplemental_tax.json`, 42 taxing states `null`/PENDING. Source: each state DOR withholding guide.
-3. **Per-state mini-COBRA flags** — `cobra_aca.json` `mini_cobra_by_state` empty. Source: each state insurance department.
-4. **2026 KFF premium averages** — `kff_premium_averages` carries the spec's **2025 baseline** ($6,296 individual / $16,399 family employer contribution). Refresh to exact 2026 KFF figures.
-5. **`subsidy_rules_last_verified`** — must be dated; ACA subsidy extension was under negotiation in Q1 2026.
+Nothing is unsourced. The five items that were open after the first pass — the 51-state UI table, the 42 supplemental rates, the 51 mini-COBRA flags, the KFF averages, and the ACA subsidy date — are **all sourced** (see "Second pass complete" above). The only remaining step is the owner's sign-off to flip `verify_status` from `sourced_pending_owner_review` to `verified`, plus the small documented residuals (AK/AR/TN mini-COBRA UNCONFIRMED; KS currency; DC/VT supplemental MEDIUM).
 
 ## Sourcing method (and what it caught)
 

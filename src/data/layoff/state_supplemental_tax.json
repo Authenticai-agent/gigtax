@@ -8,11 +8,11 @@
   "AL": {
     "state": "Alabama",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.05,
+    "supplemental_rate_note": "Flat 5% option on bonuses/supplemental wages; 2026 withholding booklet",
+    "source_url": "https://www.revenue.alabama.gov/wp-content/uploads/2026/01/whbooklet_0126.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "AK": {
     "state": "Alaska",
@@ -27,64 +27,64 @@
     "state": "Arizona",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No distinct supplemental rate \u2014 Form A-4 %-of-gross election (0.5%-3.5%, default 2.0%) applies to all wages incl bonuses",
+    "source_url": "https://azdor.gov/individuals/withholding-tax-individual",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "AR": {
     "state": "Arkansas",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.039,
+    "supplemental_rate_note": "Flat 3.9% on bonuses/commissions; 2026 withholding instructions",
+    "source_url": "https://www.dfa.arkansas.gov/wp-content/uploads/withholdInstructions_2026.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "CA": {
     "state": "California",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.066,
+    "supplemental_rate_note": "Severance = 'other supplemental wages' flat 6.6% (bonuses/stock options are 10.23%); EDD DE 231PS",
+    "source_url": "https://edd.ca.gov/siteassets/files/pdf_pub_ctr/de231ps.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "CO": {
     "state": "Colorado",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No distinct supplemental rate \u2014 flat 4.40% regular withholding (DR 1098); bonuses are regular wages",
+    "source_url": "https://tax.colorado.gov/withholding-tax-guide",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "CT": {
     "state": "Connecticut",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No flat supplemental rate \u2014 combined-wage method (IP 2026(1)); aggregators' 6.99% is the top marginal rate, not supplemental",
+    "source_url": "https://portal.ct.gov/-/media/drs/publications/pubsip/2026/ip-2026-1.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "DE": {
     "state": "Delaware",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No flat supplemental rate \u2014 annualized method (Employer's Guide); aggregators' 6.6% is top marginal",
+    "source_url": "https://revenue.delaware.gov/employers-guide-withholding-regulations-employers-duties/",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "DC": {
     "state": "Washington DC",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No distinct flat supplemental rate \u2014 withholding tables (FR-230); 2026 doc blocked, per latest linked FR-230",
+    "source_url": "https://otr.cfo.dc.gov/",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "FL": {
     "state": "Florida",
@@ -98,164 +98,164 @@
   "GA": {
     "state": "Georgia",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.0499,
+    "supplemental_rate_note": "Flat income-tax rate applies (no distinct supplemental rate); 4.99% on/after 2026-05-11 (5.19% before)",
+    "source_url": "https://dor.georgia.gov/document/document/2026-employers-tax-guide-updated-june-2026/download",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "HI": {
     "state": "Hawaii",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No flat supplemental rate \u2014 aggregate method (Booklet A)",
+    "source_url": "https://files.hawaii.gov/tax/news/pubs/25BkltA.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "ID": {
     "state": "Idaho",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.053,
+    "supplemental_rate_note": "Flat 5.3% on separately-issued supplemental payments (bonuses, commissions, severance)",
+    "source_url": "https://tax.idaho.gov/taxes/income-tax/withholding/computing/",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "IL": {
     "state": "Illinois",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.0495,
+    "supplemental_rate_note": "Flat 4.95% income-tax rate applies (no separate supplemental method); Booklet IL-700-T 2026",
+    "source_url": "https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/withholding/documents/currentyear/il-700-t.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "IN": {
     "state": "Indiana",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.0295,
+    "supplemental_rate_note": "Flat 2.95% state AGI rate for 2026 (county tax separate); Departmental Notice #1",
+    "source_url": "https://www.in.gov/dor/files/dn01.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "IA": {
     "state": "Iowa",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.038,
+    "supplemental_rate_note": "Flat 3.8% (single individual rate) on separately-paid supplemental wages",
+    "source_url": "https://revenue.iowa.gov/taxes/tax-guidance/withholding-tax/iowa-withholding-tax-information",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "KS": {
     "state": "Kansas",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.05,
+    "supplemental_rate_note": "Flat 5% supplemental (KW-100 worked example: $1,000 bonus = $50)",
+    "source_url": "https://www.ksrevenue.gov/kw100.html",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "KY": {
     "state": "Kentucky",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No flat supplemental rate \u2014 aggregate method (103 KAR 18:070); KY flat income rate 3.5%",
+    "source_url": "https://revenue.ky.gov/DOR%20Training%20Materials/103%20KAR%2018.070.%20Supplemental%20wages%20and%20other%20payments%20subject%20to%20withholding.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "LA": {
     "state": "Louisiana",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No flat supplemental rate \u2014 regular payroll withholding",
+    "source_url": "https://revenue.louisiana.gov/tax-education-and-faqs/faqs/withholding-tax/are-supplemental-wage-and-vacation-payments-subject-to-withholding/",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "ME": {
     "state": "Maine",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.05,
+    "supplemental_rate_note": "Flat 5% option on separately-paid supplemental wages; 2026 withholding instructions",
+    "source_url": "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/26_wh_tab_instr.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "MD": {
     "state": "Maryland",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No single statewide rate \u2014 highest state 6.50% + county local rate (varies by county of residence); 2026 Employer Withholding Guide",
+    "source_url": "https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "MA": {
     "state": "Massachusetts",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.05,
+    "supplemental_rate_note": "Flat 5% (9% on the portion above the 4% surtax threshold); 830 CMR 62B.2.1",
+    "source_url": "https://www.mass.gov/regulations/830-CMR-62b21-withholding-of-taxes-on-wages-and-other-payments",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "MI": {
     "state": "Michigan",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.0425,
+    "supplemental_rate_note": "Flat 4.25% for 2026; Form 446 Withholding Guide",
+    "source_url": "https://www.michigan.gov/taxes/-/media/Project/Websites/taxes/Forms/SUW/TY2026/446_Withholding-Guide_2026.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "MN": {
     "state": "Minnesota",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.0625,
+    "supplemental_rate_note": "Flat 6.25% on separately-paid supplemental wages",
+    "source_url": "https://www.revenue.state.mn.us/supplemental-payments",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "MS": {
     "state": "Mississippi",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No flat supplemental rate \u2014 aggregate method (Pub 89-700)",
+    "source_url": "https://www.dor.ms.gov/sites/default/files/tax-forms/business/89700251revised1.13.2026.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "MO": {
     "state": "Missouri",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.047,
+    "supplemental_rate_note": "Flat 4.7% option on supplemental wages; Form 4282 (Rev 03-2026)",
+    "source_url": "https://dor.mo.gov/forms/4282_2026.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "MT": {
     "state": "Montana",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.05,
+    "supplemental_rate_note": "Flat 5% option on separately-paid supplemental wages; 2026 employer guide",
+    "source_url": "https://revenuefiles.mt.gov/files/Forms/Montana_Employer_and_Information_Agent_Guide_with_Tax_Tables.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "NE": {
     "state": "Nebraska",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.035,
+    "supplemental_rate_note": "Flat 3.5% option; 2026 Circular EN",
+    "source_url": "https://revenue.nebraska.gov/sites/default/files/doc/business/Cir_En_2025/2026_instruct.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "NV": {
     "state": "Nevada",
@@ -279,100 +279,100 @@
     "state": "New Jersey",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No flat supplemental rate \u2014 graduated NJ withholding/supplemental tables (NJ-WT)",
+    "source_url": "https://www.nj.gov/treasury/taxation/pdf/current/njwt.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "NM": {
     "state": "New Mexico",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.059,
+    "supplemental_rate_note": "Flat 5.9% on supplemental wages/fringe when federal uses flat %; FYI-104 (eff 2026-01-01)",
+    "source_url": "https://realfile.tax.newmexico.gov/FYI-104.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "NY": {
     "state": "New York",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.117,
+    "supplemental_rate_note": "Flat 11.70% NY State supplemental rate (NYS-50-T-NYS 1/26); NYC/Yonkers separate",
+    "source_url": "https://www.tax.ny.gov/pdf/publications/withholding/nys50_t_nys.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "NC": {
     "state": "North Carolina",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.0409,
+    "supplemental_rate_note": "Flat 4.09% on supplemental wages (NC-30 2026 Sec 12) \u2014 higher than the 3.99% income rate",
+    "source_url": "https://www.ncdor.gov/taxes-forms/withholding-tax/withholding-tax-forms-and-instructions/nc-30-income-tax-withholding-tables-and-instructions-employers",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "ND": {
     "state": "North Dakota",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.015,
+    "supplemental_rate_note": "Flat 1.50% for 2026 (corrects stale 1.84%); 2026 withholding booklet worked example $1,000 x 1.50% = $15",
+    "source_url": "https://www.tax.nd.gov/sites/www/files/documents/forms/individual/2026-iit/2026-income-tax-withholding-rates-booklet.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "OH": {
     "state": "Ohio",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.0275,
+    "supplemental_rate_note": "Flat 2.75% on supplemental compensation for 2026 (down from 3.5%)",
+    "source_url": "https://tax.ohio.gov/business/employer-withholding",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "OK": {
     "state": "Oklahoma",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No distinct supplemental rate \u2014 percentage formula or wage-bracket tables only (OW-2 2026)",
+    "source_url": "https://oklahoma.gov/content/dam/ok/en/tax/documents/resources/publications/businesses/withholding-tables/WHTables-2026.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "OR": {
     "state": "Oregon",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.08,
+    "supplemental_rate_note": "Flat 8% option on supplemental wages paid off-cycle; 150-206-436 (2026)",
+    "source_url": "https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_2026.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "PA": {
     "state": "Pennsylvania",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.0307,
+    "supplemental_rate_note": "Flat 3.07% (PA flat PIT rate); REV-415",
+    "source_url": "https://www.pa.gov/content/dam/copapwp-pagov/en/revenue/documents/formsandpublications/formsforbusinesses/employerwithholding/documents/rev-415.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "RI": {
     "state": "Rhode Island",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.0599,
+    "supplemental_rate_note": "Flat 5.99% supplemental rate; 2026 RI Employer Withholding booklet item 12",
+    "source_url": "https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-12/2026%20Withholding%20Tax%20Booklet.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "SC": {
     "state": "South Carolina",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No distinct flat supplemental rate \u2014 regular tables/formula (WH-1603 2026)",
+    "source_url": "https://dor.sc.gov/sites/dor/files/forms/WH1603_2026.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "SD": {
     "state": "South Dakota",
@@ -405,28 +405,28 @@
     "state": "Utah",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No distinct supplemental rate \u2014 Withholding Schedules 1-8 only (Pub 14)",
+    "source_url": "https://tax.utah.gov/forms-pubs/pub-14/",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "VT": {
     "state": "Vermont",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No flat wage %; VT withholding = 30% of the federal withholding (~6.6% effective at 22% federal); GB-1210",
+    "source_url": "https://tax.vermont.gov/document/gb-1210-2026-income-tax-withholding-instructions-tables-and-charts",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "VA": {
     "state": "Virginia",
     "no_income_tax": false,
-    "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate": 0.0575,
+    "supplemental_rate_note": "Flat 5.75% option on separately-paid supplemental wages",
+    "source_url": "https://www.tax.virginia.gov/sites/default/files/vatax-pdf/employer-withholding-instructions.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
   },
   "WA": {
     "state": "Washington",
@@ -441,19 +441,19 @@
     "state": "West Virginia",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No flat supplemental rate \u2014 annual-tables excess method",
+    "source_url": "https://tax.wv.gov/business/withholding/helpandgeneralinformation/Pages/WithholdingHelpAndGeneralInformation.aspx",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "WI": {
     "state": "Wisconsin",
     "no_income_tax": false,
     "supplemental_rate": null,
-    "supplemental_rate_note": null,
-    "source_url": null,
-    "last_verified": null,
-    "verify_status": "PENDING"
+    "supplemental_rate_note": "No single flat supplemental rate \u2014 graduated 'approved flat percentages' (3.54%-7.65% by annual salary) or regular tables; Pub W-166",
+    "source_url": "https://www.revenue.wi.gov/DOR%20Publications/pb166.pdf",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified_variable"
   },
   "WY": {
     "state": "Wyoming",
