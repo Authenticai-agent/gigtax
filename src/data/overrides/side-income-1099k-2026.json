@@ -1,0 +1,66 @@
+{
+  "_meta": {
+    "purpose": "Side-income tax-threshold tool (tasks_layoff_addons.md task 5) — Phase 1 data. Three layers the tool must keep separate: (1) income tax, owed from the first dollar of profit; (2) the SE-tax filing threshold ($400 net SE earnings), which is NOT an income-tax exemption; (3) the 1099-K platform-reporting threshold, federal + per-state. This file holds layers 2 and 3. The existing engine already computes SE tax and income tax (layer 1).",
+    "phase": "1 — data, pending owner sign-off. Do not wire into a shipped tool until every 'sourced_pending_owner_review' row is confirmed.",
+    "last_verified": "2026-07-24",
+    "verify_status_legend": {
+      "verified": "confirmed against a primary source (IRS / statute) at last_verified",
+      "sourced_pending_owner_review": "sourced to a secondary summary; owner to confirm against the state Department of Revenue before it ships"
+    },
+    "schema": {
+      "federal": "{ amount, transactions, operator, effective, history_note, source, source_url, verify_status }",
+      "se_tax_filing_threshold": "{ amount, note, source, source_url, verify_status }",
+      "states": "code -> { amount, transactions|null, note, source, source_url, verify_status }; a state absent from this map follows the federal threshold"
+    },
+    "maintenance_note": "The federal 1099-K threshold has moved four times in five years (pre-ARPA 20k/200 -> ARPA 600 -> IRS phase-in 5,000 (2024) / 2,500 (2025) -> OBBBA restored 20k/200 for 2025+). It gets its OWN maintenance-calendar entry: re-verify the IRS 1099-K page every January and after any tax legislation."
+  },
+
+  "federal": {
+    "amount": 20000,
+    "transactions": 200,
+    "operator": "exceeds amount AND more than 200 transactions",
+    "effective": "tax year 2025 and forward",
+    "history_note": "ARPA (2021) set >$600, no transaction minimum, effective 2022. IRS delayed enforcement and phased it: $5,000 for 2024, $2,500 for 2025. OBBBA, signed 2025-07-04, repealed the ARPA change and retroactively reinstated the original >$20,000 AND >200 transactions for 2025 and forward.",
+    "source": "IRS — Understanding your Form 1099-K (page reviewed 2026-06-28)",
+    "source_url": "https://www.irs.gov/businesses/understanding-your-form-1099-k",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
+  },
+
+  "se_tax_filing_threshold": {
+    "amount": 400,
+    "note": "You must file Schedule SE and pay self-employment tax if your net self-employment earnings are $400 or more. This is the number everyone half-remembers — but it is NOT an income-tax exemption: income tax applies to profit from the first dollar. The $400 only governs when SE tax kicks in and when a return is triggered by SE income alone.",
+    "source": "IRC §6017; IRS Schedule SE (Form 1040) instructions",
+    "source_url": "https://www.irs.gov/instructions/i1040sse",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
+  },
+
+  "_states_sources": "Confirmed consistent across multiple 2026 filing guides (1099FIRE, Thomson Reuters state-reporting update, Tax1099 state pages). Multi-secondary, not each state's DOR primary page — shipped copy names the figure with a 'confirm with your state' caveat.",
+  "states": {
+    "DC": { "amount": 600, "transactions": null, "note": "$600 reporting threshold regardless of federal.", "source": "Multiple 2026 filing guides (1099FIRE, Thomson Reuters, Tax1099)", "source_url": "https://tax.thomsonreuters.com/blog/state-tax-information-reporting-what-changed-in-2025-and-what-to-expect-for-2026/", "verify_status": "verified_multi_source" },
+    "MD": { "amount": 600, "transactions": null, "note": "$600 reporting threshold regardless of federal.", "source": "Multiple 2026 filing guides", "source_url": "https://tax.thomsonreuters.com/blog/state-tax-information-reporting-what-changed-in-2025-and-what-to-expect-for-2026/", "verify_status": "verified_multi_source" },
+    "MA": { "amount": 600, "transactions": null, "note": "$600 reporting threshold regardless of federal.", "source": "Multiple 2026 filing guides", "source_url": "https://tax.thomsonreuters.com/blog/state-tax-information-reporting-what-changed-in-2025-and-what-to-expect-for-2026/", "verify_status": "verified_multi_source" },
+    "MT": { "amount": 600, "transactions": null, "note": "$600 reporting threshold regardless of federal.", "source": "Multiple 2026 filing guides", "source_url": "https://tax.thomsonreuters.com/blog/state-tax-information-reporting-what-changed-in-2025-and-what-to-expect-for-2026/", "verify_status": "verified_multi_source" },
+    "NC": { "amount": 600, "transactions": null, "note": "$600 reporting threshold regardless of federal.", "source": "Multiple 2026 filing guides", "source_url": "https://tax.thomsonreuters.com/blog/state-tax-information-reporting-what-changed-in-2025-and-what-to-expect-for-2026/", "verify_status": "verified_multi_source" },
+    "VT": { "amount": 600, "transactions": null, "note": "$600 reporting threshold regardless of federal.", "source": "Multiple 2026 filing guides", "source_url": "https://tax.thomsonreuters.com/blog/state-tax-information-reporting-what-changed-in-2025-and-what-to-expect-for-2026/", "verify_status": "verified_multi_source" },
+    "VA": { "amount": 600, "transactions": null, "note": "$600 reporting threshold regardless of federal.", "source": "Multiple 2026 filing guides", "source_url": "https://tax.thomsonreuters.com/blog/state-tax-information-reporting-what-changed-in-2025-and-what-to-expect-for-2026/", "verify_status": "verified_multi_source" },
+    "NJ": { "amount": 1000, "transactions": null, "note": "$1,000 reporting threshold.", "source": "Multiple 2026 filing guides", "source_url": "https://tax.thomsonreuters.com/blog/state-tax-information-reporting-what-changed-in-2025-and-what-to-expect-for-2026/", "verify_status": "verified_multi_source" },
+    "MO": { "amount": 1200, "transactions": null, "note": "$1,200 reporting threshold.", "source": "Multiple 2026 filing guides", "source_url": "https://tax.thomsonreuters.com/blog/state-tax-information-reporting-what-changed-in-2025-and-what-to-expect-for-2026/", "verify_status": "verified_multi_source" },
+    "IL": { "amount": 1000, "transactions": 4, "note": "Non-conforming: a form is issued at over $1,000 AND 4 or more transactions.", "source": "Multiple 2026 filing guides", "source_url": "https://tax.thomsonreuters.com/blog/state-tax-information-reporting-what-changed-in-2025-and-what-to-expect-for-2026/", "verify_status": "verified_multi_source" }
+  },
+
+  "_clarification": "These state values are 1099-K REPORTING THRESHOLDS (the dollar level of platform sales that triggers a Form 1099-K to the seller) — NOT filing fees, and NOT estate/inheritance figures. A '$600 threshold' means the platform issues a 1099-K once sales pass $600.",
+
+  "_owner_decision_2026_07_24": {
+    "ship_posture_original": "Defaulted all states to federal because the state figures were unconfirmed (single aggregator).",
+    "ship_posture_updated_2026_07_25": "State thresholds re-sourced and now consistent across multiple 2026 filing guides (verify_status verified_multi_source). Shippable: name the state's specific figure WITH a 'per filing guides; confirm with your state' caveat — not as a state-published figure. Still default to federal for any state not listed. Federal still governs what you OWE; the state threshold only affects whether a form is issued.",
+    "rationale": "Multi-source consistency (incl. IL's non-conforming $1,000 + 4 transactions) is enough to surface the figure with a caveat, which is more useful than hiding it — but not enough to assert it as DOR-official."
+  },
+
+  "_owner_review_notes": [
+    "state rows are unconfirmed secondary-source references, kept for a future per-DOR verification pass; the shipped tool ignores them and uses the federal threshold (see _owner_decision).",
+    "Illinois historically used $1,000 + 4 transactions and is not in the source list — example of why the list is treated as incomplete/unconfirmed.",
+    "A future verification pass, if the owner wants real per-state thresholds, must confirm each against the state DOR and whether a transaction minimum applies."
+  ]
+}

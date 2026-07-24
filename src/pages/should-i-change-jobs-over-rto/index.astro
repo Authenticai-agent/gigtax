@@ -1,0 +1,66 @@
+---
+/** Scenario: should I change jobs over RTO. */
+import Base from '../../layouts/Base.astro';
+
+const faqItems = [
+  { q: `Is it worth quitting over a return-to-office mandate?`, a: `Only after you've priced it and tried to offset it. Put a dollar-and-hours figure on the mandate, ask for the neutralising raise or fewer days first, and — if you'd leave without a job lined up — check your runway. Quitting is the last lever, not the first.` },
+  { q: `What should I do before deciding?`, a: `Three steps: price the mandate in the RTO calculator; take the offsetting-raise number into a negotiation before you resign; and if you'd leave without another offer, model how many months your savings cover in the runway calculator. Decide with the numbers in front of you.` },
+];
+---
+
+<Base
+  title="Should I change jobs over a return-to-office mandate? (2026)"
+  description="Before quitting over RTO: price the mandate, negotiate the offsetting raise or fewer days, and check your runway. A decision framework with the tools to run each step."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 · scenario</p>
+    <h1>Should I change jobs over RTO?</h1>
+    <p class="tagline">Maybe — but not before you've priced the mandate, asked for the raise that offsets it, and checked what leaving would cost. Three steps, in order.</p>
+  </section>
+
+  <p>
+    A return-to-office mandate can be the thing that tips you out of a job, but it's an expensive decision to make on
+    feeling. Work it in order: price it, negotiate it, then — only if you'd leave anyway — check you can afford to.
+  </p>
+
+  <h2>Step 1 — price the mandate</h2>
+  <p>
+    Put a real number on it: cash out of pocket, hours a year, and the pre-tax raise that would cancel the cash cost.
+    A mandate that "feels" annoying and one that quietly costs you a five-figure raise are different decisions. Run
+    yours in the <a href="/rto-cost-calculator/">RTO cost calculator</a>.
+  </p>
+
+  <h2>Step 2 — negotiate before you resign</h2>
+  <p>
+    The offsetting-raise figure is a negotiation input, not just a grievance. Ask for that raise, or for fewer office
+    days, or a remote exception — with the number in hand. The
+    <a href="/salary-negotiation-script-generator/">negotiation script generator</a> turns it into an email you can
+    send. Most people skip this step and it's the cheapest one.
+  </p>
+
+  <h2>Step 3 — check your runway before you leave</h2>
+  <p>
+    If you'd walk without another offer lined up, the question stops being about commute cost and becomes about how
+    long your money lasts. Model savings against spending in the
+    <a href="/layoff-runway-calculator/">layoff runway calculator</a> before you hand in notice — the same math a
+    laid-off worker runs, applied on your own terms.
+  </p>
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>The three tools</h2>
+  <ul class="link-columns">
+    <li><a href="/rto-cost-calculator/">RTO cost calculator</a> — price the mandate</li>
+    <li><a href="/salary-negotiation-script-generator/">Negotiation script</a> — ask for the offset</li>
+    <li><a href="/layoff-runway-calculator/">Layoff runway</a> — know what leaving costs</li>
+  </ul>
+
+  <p class="results-note">General information for 2026, not financial or career advice. Run your own numbers in the linked tools.</p>
+</Base>

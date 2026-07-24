@@ -1,0 +1,113 @@
+---
+/**
+ * Curated state-pair pages (convenience / reciprocity / credit) for the remote
+ * residency checker. Not a full matrix — a hand-picked set spanning different
+ * rule outcomes, each carrying both states' real tax profiles + the server-
+ * rendered rules-map, so the pages are genuinely differentiated (not templated
+ * filler). The interactive tool is preset to the pair.
+ */
+import Base from '../../../../layouts/Base.astro';
+import RemoteResidencyChecker from '../../../../components/calculators/RemoteResidencyChecker.tsx';
+import { domesticResidency } from '../../../../lib/remoteResidency';
+import { states } from '../../../../data/states';
+import { calcStateTax, formatMoney, formatPct } from '../../../../lib/tax-engine';
+
+export function getStaticPaths() {
+  // A small curated set — one per DISTINCT rule outcome — each with a unique,
+  // hand-written paragraph so the pages are genuinely differentiated (templated
+  // rule text alone reads as near-duplicate). Defined inside getStaticPaths
+  // because Astro hoists this function above module consts.
+  const pairs: { home: string; work: string; unique: string }[] = [
+    { home: 'NJ', work: 'NY', unique: `New Jersey residents working for a New York City employer are the classic convenience-rule case, and the biggest by headcount. New York taxes the wages as New York-source; New Jersey then taxes you as a resident but gives a credit for the New York tax, so you rarely pay twice — but you file both a New York nonresident return and a New Jersey resident return, and New York's rate usually sets the effective cost. If your employer genuinely requires the remote work, the necessity exception can remove the New York tax.` },
+    { home: 'VA', work: 'DC', unique: `Virginia residents working for a Washington DC employer get a rare clean answer: by the federal Home Rule Act, DC cannot tax the wages of any nonresident. You owe only Virginia tax, file only a Virginia resident return, and skip a DC nonresident filing entirely — one of the simplest cross-border setups there is, and the opposite of a convenience-rule trap.` },
+    { home: 'NJ', work: 'PA', unique: `New Jersey and Pennsylvania have a reciprocity agreement, so a New Jersey resident working for a Pennsylvania employer pays tax only to New Jersey. File Form NJ-165 with your employer to stop Pennsylvania withholding, and you file a single resident return. Reciprocity is the friendliest cross-border arrangement — no credit dance, no double filing.` },
+    { home: 'TX', work: 'CA', unique: `Texas has no state income tax, so there's no home-state return and no credit to claim — but California taxes wages sourced to work performed for its employers, and California is not a convenience-rule state. So the pivotal question is where the work physically happens: work performed entirely from Texas limits California-source wages, while days spent working in California are taxable there. Track where you actually sit.` },
+    { home: 'IA', work: 'NE', unique: `Nebraska applies a convenience rule, but a 2024 change limits it: it only bites if you're physically present in Nebraska for more than seven days in the year. An Iowa resident working fully remotely for a Nebraska employer who never travels there generally escapes the rule — but cross the seven-day line and your remote days can be taxed as Nebraska-source. Count your Nebraska days.` },
+  ];
+  return pairs.map((pr) => ({
+    params: { pair: `${pr.home.toLowerCase()}-${pr.work.toLowerCase()}` },
+    props: pr,
+  }));
+}
+const { home, work, unique } = Astro.props as { home: string; work: string; unique: string };
+const h = states[home];
+const w = states[work];
+const res = domesticResidency({ homeState: home, workState: work, employerNecessity: false });
+
+const profile = (code: string) => {
+  const s = states[code];
+  return s.type === 'none' ? `no state income tax`
+    : s.type === 'flat' ? `a flat ${formatPct(s.topRate)} income tax`
+    : `a graduated income tax up to ${formatPct(s.topRate)}`;
+};
+// Rough illustration on a $100k salary.
+const workTax = w.type === 'none' ? 0 : calcStateTax(100000, work, undefined, 'single').tax;
+const homeTax = h.type === 'none' ? 0 : calcStateTax(100000, home, undefined, 'single').tax;
+
+const headline = res.items[0];
+const title = `Live in ${h.name}, work for a ${w.name} employer: tax (2026)`;
+const desc = `Remote work tax when you live in ${h.name} and your employer is in ${w.name}: ${headline.title.toLowerCase()}. The rule, both states' tax, and what to file.`;
+
+const faqItems = [
+  { q: `Do I pay ${h.name} or ${w.name} tax if I work remotely?`, a: `${res.items.map((it) => it.detail).join(' ')}`, review: true },
+  { q: `Will I be taxed twice living in ${h.name} and working for a ${w.name} employer?`, a: res.doubleTaxRisk ? `There's a real risk: ${w.name}'s convenience rule can tax your wages as ${w.name}-source, and ${h.name} taxes you as a resident. A credit for taxes paid usually prevents true double taxation, but you file in both states. Keep evidence if your employer requires the remote work — that exception can remove the ${w.name} tax.` : `Usually not. ${res.items.map((it) => it.title).join('; ')} — the mechanism here prevents paying full tax to both states, though you may still file two returns.`, review: true },
+];
+---
+
+<Base title={title} description={desc} faqItems={faqItems}>
+  <div class="breadcrumbs"><a href="/">Home</a> / <a href="/remote-work-tax-checker/">Remote work tax</a> / {h.name} → {w.name}</div>
+
+  <section class="hero">
+    <p class="hero-label">2026 · {h.name} → {w.name}</p>
+    <h1>Living in {h.name}, working for a {w.name} employer</h1>
+    <p class="tagline">{headline.detail}</p>
+  </section>
+
+  <p>{unique}</p>
+
+  <p>
+    You live in {h.name} — which has {profile(home)} — and your employer is in {w.name}, which has {profile(work)}.
+    That combination decides who taxes your wages, and whether a credit keeps you from paying twice. Here's the rule for
+    this specific pair.
+  </p>
+
+  <h2>The rule for {h.name} → {w.name}</h2>
+  <ul class="rule-list">
+    {res.items.map((it) => (
+      <li class={`rule-item ${it.kind}`}>
+        <p class="rule-title">{it.title}</p>
+        <p class="rule-detail">{it.detail}</p>
+      </li>
+    ))}
+  </ul>
+
+  <h2>What each state would take on $100,000</h2>
+  <table class="data-table">
+    <tbody>
+      <tr><td>{w.name} tax (work state)</td><td>{w.type === 'none' ? 'None — no income tax' : formatMoney(workTax)}</td></tr>
+      <tr><td>{h.name} tax (home state)</td><td>{h.type === 'none' ? 'None — no income tax' : formatMoney(homeTax)}</td></tr>
+      <tr><td>Double-taxation risk</td><td>{res.doubleTaxRisk ? 'Yes — confirm the credit' : 'Low — one state, or a credit applies'}</td></tr>
+    </tbody>
+  </table>
+  <p>{h.type === 'none' ? `${h.name} has no income tax, so there's no home-state credit to claim — but also no home tax to stack.` : w.type === 'none' ? `${w.name} has no income tax, so the pressure is all on the ${h.name} side.` : `A credit in ${h.name} for tax paid to ${w.name} is what prevents the same wages being fully taxed twice — confirm the mechanics on both returns.`}</p>
+
+  <h2>Check your own situation</h2>
+  <RemoteResidencyChecker client:load presetMode="domestic" presetWorkState={work} />
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/remote-work-tax-checker/">Remote work tax checker</a></li>
+    <li><a href="/cross-border-tax/">Two-state tax calculator</a></li>
+    <li><a href={`/paycheck-calculator/`}>Paycheck calculator</a></li>
+  </ul>
+
+  <p class="results-note">This maps the rules; it does not file them. Cross-border filing needs a professional. Convenience-rule specifics vary — confirm with the state Department of Revenue. Nothing stored. Not tax or legal advice.</p>
+</Base>

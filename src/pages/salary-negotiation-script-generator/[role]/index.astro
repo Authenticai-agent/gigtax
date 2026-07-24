@@ -1,0 +1,68 @@
+---
+/**
+ * One page per role: presets the negotiation tool and explains where the
+ * leverage is in that field. Role-specific leverage + comp-structure copy is
+ * the differentiator; salary figures come from the user via BLS, never invented.
+ */
+import Base from '../../../layouts/Base.astro';
+import NegotiationGenerator from '../../../components/calculators/NegotiationGenerator.tsx';
+import { NEGOTIATION_ROLES, roleBySlug } from '../../../data/negotiation-roles';
+
+export function getStaticPaths() {
+  return NEGOTIATION_ROLES.map((r) => ({ params: { role: r.slug }, props: { slug: r.slug } }));
+}
+const { slug } = Astro.props as { slug: string };
+const r = roleBySlug(slug)!;
+const art = /^[aeiou]/i.test(r.name) ? 'an' : 'a';
+
+const faqItems = [
+  { q: `How do I negotiate ${art} ${r.name} salary?`, a: `${r.leverage}` , review: false },
+  { q: `How is ${r.name} compensation usually structured?`, a: `${r.compStructure}`, review: false },
+  { q: `What's the market rate for ${art} ${r.name}?`, a: `Look it up on the BLS Occupational Employment and Wage Statistics under ${r.blsGroup} — national and per-state medians, free to cite. Bring that number into the tool below; this page never invents a range.`, review: false },
+];
+
+const title = `${r.name} salary negotiation script (2026)`;
+const desc = `Counter ${art} ${r.name} offer: a ready-to-send negotiation email built from your numbers, plus where the leverage is in ${r.name.toLowerCase()} comp. Free, nothing stored.`;
+---
+
+<Base title={title} description={desc} faqItems={faqItems}>
+  <div class="breadcrumbs"><a href="/">Home</a> / <a href="/salary-negotiation-script-generator/">Salary negotiation</a> / {r.name}</div>
+
+  <section class="hero">
+    <p class="hero-label">2026 · {r.name}</p>
+    <h1>{r.name} salary negotiation script</h1>
+    <p class="tagline">The counter-offer email, written for you — with the leverage that's specific to {r.name.toLowerCase()} roles built into the ask.</p>
+  </section>
+
+  <h2>Where the leverage is for {art} {r.name}</h2>
+  <p>{r.leverage}</p>
+  <h2>How {r.name} comp is structured</h2>
+  <p>{r.compStructure} Knowing which lever moves means aiming the ask at the right one — this tool lets you counter on base, a sign-on, start date, or remote work, alone or together.</p>
+
+  <NegotiationGenerator client:load presetRole={r.name} />
+
+  <h2>Get your market number</h2>
+  <p>
+    Anchor the ask to a real figure: the BLS Occupational Employment and Wage Statistics lists
+    <strong>{r.blsGroup}</strong> with national and state medians. Look it up on the
+    <a href="https://www.bls.gov/oes/current/oes_nat.htm" rel="noopener">BLS OES</a>, cite it, and bring it into the
+    tool. No salary figure on this page is invented — the number is yours, from the BLS.
+  </p>
+
+  <h2>Questions about negotiating as {art} {r.name}</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/salary-negotiation-script-generator/">All negotiation situations</a></li>
+    <li><a href="/rto-cost-calculator/">RTO cost calculator</a> — negotiate the raise that offsets a commute</li>
+    <li><a href="/layoff-runway-calculator/">Layoff runway</a> — know your walk-away number first</li>
+  </ul>
+
+  <p class="results-note">A writing tool, not career advice. Market figures come from you, cited to the BLS. Nothing you enter is stored.</p>
+</Base>

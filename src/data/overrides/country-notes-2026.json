@@ -1,0 +1,49 @@
+{
+  "_meta": {
+    "purpose": "Remote-work tax residency checker (task 2), international mode — Phase 1 data. For a US citizen working remotely from abroad for a US company. The tool is a rules-map + explainer, not a calculator: which rules apply, what's owed where, what needs a professional. The FEIE math reuses the existing feie.ts engine and the 2026 FEIE amount in federal.ts.",
+    "phase": "1 — data, pending owner sign-off. Confirm treaty status against IRS Pub 901 and totalization against the SSA list before Phase 2.",
+    "last_verified": "2026-07-24",
+    "universal_facts": {
+      "us_citizens_taxed_worldwide": "A US citizen owes US tax on worldwide income regardless of where they live or work.",
+      "feie_2026": "Foreign Earned Income Exclusion for 2026 is $132,900 per qualifying taxpayer — VERIFIED against IRS 'Figuring the foreign earned income exclusion' (up from $130,000 in 2025), IRC §911(b)(2)(D)(i). Requires either the Physical Presence test (330 full days in any 12 months abroad) or the Bona Fide Residence test.",
+      "feie_2026_source_url": "https://www.irs.gov/individuals/international-taxpayers/figuring-the-foreign-earned-income-exclusion",
+      "ftc_vs_feie": "Foreign Tax Credit and FEIE are alternative reliefs; FTC is usually better in high-tax countries, FEIE in low/no-tax countries. Not both on the same income.",
+      "employer_side": "The part most content omits: an employee working from a country can create permanent-establishment and payroll-registration risk for the EMPLOYER — which is why 'can I just do it quietly' is the real question underneath."
+    },
+    "schema": "code -> { name, totalization_agreement (SSA), tax_treaty (IRS Pub 901 — pending), nomad_visa_note (pending), note, source_url, verify_status }"
+  },
+
+  "countries": {
+    "PT": { "name": "Portugal", "totalization_agreement": true, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Portugal offers a digital-nomad / D8 visa; local tax treatment of remote income depends on residency days and the NHR successor regime — confirm current rules.", "note": "Popular nomad destination; totalization agreement in force per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "ES": { "name": "Spain", "totalization_agreement": true, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Spain's digital-nomad visa (Beckham-law-adjacent regime) can offer a favorable flat rate — confirm eligibility and current rates.", "note": "Totalization agreement in force per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "IT": { "name": "Italy", "totalization_agreement": true, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Italy launched a digital-nomad visa; impatriate regimes exist — confirm current terms.", "note": "Totalization agreement in force per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "DE": { "name": "Germany", "totalization_agreement": true, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Freelance/self-employment visa routes exist; employee remote work raises employer PE questions.", "note": "Totalization agreement in force per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "FR": { "name": "France", "totalization_agreement": true, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Long-stay visa routes; high local tax makes FTC usually better than FEIE.", "note": "Totalization agreement in force per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "GB": { "name": "United Kingdom", "totalization_agreement": true, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "No dedicated nomad visa; residency and the statutory residence test drive UK tax.", "note": "Totalization agreement in force per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "CA": { "name": "Canada", "totalization_agreement": true, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "No dedicated nomad visa; proximity makes day-count and residency ties central.", "note": "Totalization agreement in force per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "AU": { "name": "Australia", "totalization_agreement": true, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "No dedicated nomad visa; residency tests apply.", "note": "Totalization agreement in force per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "BR": { "name": "Brazil", "totalization_agreement": true, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Brazil offers a digital-nomad visa. NOTE: the US has NO income tax treaty with Brazil (confirm) — FTC mechanics matter more here.", "note": "Totalization agreement in force per SSA (one of 4 in the Americas); income tax treaty status must be confirmed and is believed absent.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "CL": { "name": "Chile", "totalization_agreement": true, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Confirm current nomad routes; US-Chile income tax treaty entered into force relatively recently — confirm.", "note": "Totalization agreement in force per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "MX": { "name": "Mexico", "totalization_agreement": false, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Temporary resident visa is commonly used by nomads. NO totalization agreement — self-employment could face dual social-security exposure; confirm.", "note": "NO totalization agreement per SSA. This is a key distinction for SE workers.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "TH": { "name": "Thailand", "totalization_agreement": false, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Thailand's long-term-resident and DTV nomad visas exist; local tax on remitted income changed recently — confirm.", "note": "NO totalization agreement per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "AE": { "name": "United Arab Emirates", "totalization_agreement": false, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "UAE offers a remote-work visa; no personal income tax locally, so FEIE (not FTC) is usually the relevant relief.", "note": "NO totalization agreement and (believed) no US income tax treaty — confirm both.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "SG": { "name": "Singapore", "totalization_agreement": false, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "No dedicated nomad visa; work passes are employer-sponsored.", "note": "NO totalization agreement and (believed) no US income tax treaty — confirm both.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" },
+    "ID": { "name": "Indonesia", "totalization_agreement": false, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Indonesia (Bali) has introduced nomad-visa routes; confirm current local tax treatment.", "note": "NO totalization agreement per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" }
+  },
+
+  "_owner_decision_2026_07_24": {
+    "signed_off": true,
+    "feie_2026": "VERIFIED $132,900 (IRS). Safe to ship.",
+    "treaties_ship_posture": "Do NOT list treaty-exempt countries or interpret articles. Ship the approved caution only.",
+    "treaties_approved_copy": "Tax treaties can alter US tax obligations. For current treaty coverage and relief, consult IRS Publication 901, U.S. Tax Treaties (Rev. 09/2024), and the text of the relevant treaty. This tool does not interpret treaty articles.",
+    "nomad_visa_ship_posture": "Do NOT ship the per-country nomad_visa_note fields (kept below as internal research only). Ship the generic caution.",
+    "nomad_visa_approved_copy": "Some countries offer 'digital nomad' or remote-worker visas, which may have specific tax and residency implications. Because these rules change frequently, treat any summary as informational only and confirm current law with a local professional before relying on it.",
+    "totalization_ship_posture": "Totalization yes/no is SSA-sourced and shippable, framed as 'per the SSA list; confirm current status'.",
+    "disclaimer_posture": "The strongest on the site: 'this maps the rules; cross-border filing needs a professional.'"
+  },
+  "_owner_review_notes": [
+    "Per-country nomad_visa_note fields are INTERNAL research only — the shipped tool renders the generic caution above, not these.",
+    "tax_treaty stays 'pending_confirm_irs_pub901' for every country and is NEVER asserted in shipped copy — the tool points to Pub 901 instead.",
+    "Totalization flags are SSA-sourced; re-verify per-country annually against the SSA list."
+  ]
+}

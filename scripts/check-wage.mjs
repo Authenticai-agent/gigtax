@@ -47,6 +47,11 @@ const sev = await load('src/lib/layoff/severanceTax.ts');
 const uib = await load('src/lib/layoff/uiBenefit.ts');
 const cvm = await load('src/lib/layoff/cobraVsMarketplace.ts');
 const rwy = await load('src/lib/layoff/runway.ts');
+const rto = await load('src/lib/rtoCost.ts');
+const neg = await load('src/lib/negotiation.ts');
+const sid = await load('src/lib/sideIncome.ts');
+const frt = await load('src/lib/freelanceRateTool.ts');
+const rr = await load('src/lib/remoteResidency.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -913,6 +918,182 @@ console.log('\nlayoff: severance tax, UI benefit, COBRA vs marketplace, runway')
   ok('UI exhausts at month 6 (26 weeks)', run.monthUIExhausts === 6);
   ok('runway runs out and reports a break-even job-start month', run.runsOut && run.breakEvenJobStartMonth > run.monthUIExhausts && run.monthsOfRunway >= 8 && run.monthsOfRunway <= 14, `${run.monthsOfRunway}`);
   ok('balance curve is monotonic-ish and ends negative', run.balanceCurve.length === run.breakEvenJobStartMonth && run.balanceCurve.at(-1).balance < 0);
+}
+
+/* ---------------------- RTO commute cost (add-on task 4) ------------------- */
+console.log('\nRTO commute cost');
+{
+  const base = {
+    daysInOfficePerWeek: 3, oneWayDistanceMiles: 20, mode: 'car', mileageRatePerMile: 0.70,
+    parkingPerOfficeDay: 10, transitFareRoundTrip: 5.5, commuteMinutesEachWay: 45,
+    hourlyValueOfTime: 40, lunchDeltaPerOfficeDay: 8, coffeeDeltaPerOfficeDay: 0,
+    wardrobePerYear: 300, childcareDeltaPerOfficeDay: 0, weeksWorkedPerYear: 48, marginalTaxRate: 0.3,
+  };
+  const r = rto.rtoCost(base);
+  // per office day: 2*20*0.70 (=28) + parking 10 + lunch 8 = 46
+  ok('per-office-day money = mileage + parking + lunch', r.moneyPerOfficeDay === 46, `${r.moneyPerOfficeDay}`);
+  ok('per-office-day hours = 2 x each-way', r.hoursPerOfficeDay === 1.5, `${r.hoursPerOfficeDay}`);
+  // mandate 3 days: 46*3*48 + 300 wardrobe = 6624 + 300 = 6924
+  ok('mandate annual money = daily x days x weeks + wardrobe', r.mandate.annualMoney === 46 * 3 * 48 + 300, `${r.mandate.annualMoney}`);
+  ok('mandate annual hours = 1.5 x 3 x 48', r.mandate.annualHours === Math.round(1.5 * 3 * 48), `${r.mandate.annualHours}`);
+  ok('time value = hours x hourly value', r.mandate.annualTimeValue === Math.round(1.5 * 3 * 48 * 40), `${r.mandate.annualTimeValue}`);
+  ok('total with time = money + time value', r.mandate.totalWithTime === r.mandate.annualMoney + r.mandate.annualTimeValue);
+  // equivalent raise grosses up out-of-pocket money by marginal rate: 6924 / 0.7
+  ok('equivalent raise grosses up money by marginal rate', near(r.mandate.equivalentRaise, Math.round((46 * 3 * 48 + 300) / 0.7)), `${r.mandate.equivalentRaise}`);
+  // full RTO (5 days) costs more than the 3-day mandate; remote is zero.
+  ok('full RTO costs more than the mandate', r.fullRto.annualMoney > r.mandate.annualMoney && r.fullRto.annualHours > r.mandate.annualHours);
+  ok('remote scenario is zero on every axis', r.remote.annualMoney === 0 && r.remote.annualHours === 0 && r.remote.equivalentRaise === 0);
+  // transit mode uses the fare, not mileage.
+  const t = rto.rtoCost({ ...base, mode: 'transit' });
+  ok('transit mode uses round-trip fare + parking, not mileage', t.moneyPerOfficeDay === Math.round(5.5 + 10 + 8), `${t.moneyPerOfficeDay}`);
+  // walk/bike zeroes the travel money.
+  const w = rto.rtoCost({ ...base, mode: 'walk_bike', parkingPerOfficeDay: 0 });
+  ok('walk/bike has no travel money (lunch only)', w.moneyPerOfficeDay === 8, `${w.moneyPerOfficeDay}`);
+  ok('default mileage rate is the 2026 second-half IRS figure', rto.DEFAULT_MILEAGE_RATE === 0.76, `${rto.DEFAULT_MILEAGE_RATE}`);
+}
+
+/* ---------------------- salary negotiation (add-on task 1) ---------------- */
+console.log('\nsalary negotiation script');
+{
+  const base = neg.generateNegotiation({
+    situation: 'fair', asks: ['base'], tone: 'warm', role: 'Software Engineer',
+    hiringManager: 'Alex', yourName: 'Sam', currentBase: 150000, targetBase: 165000, marketNumber: 170000,
+  });
+  ok('email interpolates current and target base', base.email.includes('$150,000') && base.email.includes('$165,000'), '');
+  ok('email cites the market number when given', base.email.includes('$170,000'));
+  ok('email addresses the manager and signs the name', base.email.includes('Alex') && base.email.includes('Sam'));
+  ok('phone variant exists and is distinct from the email', base.phone.length > 0 && base.phone !== base.email);
+  ok('subject line is present', base.subject.length > 0 && /offer/i.test(base.subject));
+
+  // No market number → a note nudges toward BLS.
+  const noMkt = neg.generateNegotiation({ situation: 'fair', asks: ['base'], tone: 'direct', role: 'Designer', currentBase: 100000, targetBase: 110000 });
+  ok('missing market number adds a BLS nudge note', noMkt.notes.some((n) => /BLS/.test(n)));
+
+  // Competing offer surfaces the competing number.
+  const comp = neg.generateNegotiation({ situation: 'competing', asks: ['base'], tone: 'direct', role: 'PM', currentBase: 140000, targetBase: 155000, competingBase: 160000 });
+  ok('competing situation names the competing offer', comp.email.includes('$160,000') && comp.phone.includes('$160,000'));
+
+  // Post-layoff sign-on ask carries the offset framing.
+  const pl = neg.generateNegotiation({ situation: 'post_layoff', asks: ['signon'], tone: 'warm', role: 'Analyst', currentBase: 95000, targetBase: 95000, signOnAmount: 15000 });
+  ok('post-layoff sign-on offsets lost income', pl.email.includes('$15,000') && /lost income|between roles/i.test(pl.email));
+
+  // Multiple asks render as a bulleted list.
+  const multi = neg.generateNegotiation({ situation: 'lowball', asks: ['base', 'signon', 'remote'], tone: 'warm', role: 'SRE', currentBase: 130000, targetBase: 150000, remoteDetail: 'two remote days a week' });
+  ok('multiple asks render as bullets', (multi.email.match(/•/g) || []).length === 3 && multi.email.includes('two remote days a week'));
+
+  // Guard: target not above current triggers a warning note.
+  const oddball = neg.generateNegotiation({ situation: 'fair', asks: ['base'], tone: 'warm', role: 'X', currentBase: 100000, targetBase: 90000 });
+  ok('a target base not above the offer is flagged', oddball.notes.some((n) => /double-check|not above/i.test(n)));
+}
+
+/* ---------------------- side-income threshold (add-on task 5) ------------- */
+console.log('\nside-income tax threshold');
+{
+  // Etsy, under both federal 1099-K prongs, but profitable: taxable + SE tax, no form.
+  const small = sid.sideIncomeThreshold({ platform: 'etsy', stateCode: 'CA', netProfit: 3000, grossSales: 5000, transactions: 40 });
+  ok('income taxable from the first dollar', small.incomeTaxable === true);
+  ok('SE tax applies over $400 profit', small.seTaxApplies === true && small.seThreshold === 400);
+  ok('no 1099-K under the federal threshold', small.willReceive1099K === false);
+  ok('headline makes the featured-snippet correction', /taxable from the first dollar/.test(small.headline) && /\$400/.test(small.headline));
+
+  // Under $400 profit: no SE tax, but still income-taxable.
+  const tiny = sid.sideIncomeThreshold({ platform: 'etsy', stateCode: 'CA', netProfit: 300, grossSales: 900, transactions: 10 });
+  ok('under $400 profit: no SE tax but still income-taxable', tiny.seTaxApplies === false && tiny.incomeTaxable === true);
+
+  // Over BOTH federal prongs → 1099-K issued.
+  const big = sid.sideIncomeThreshold({ platform: 'ebay', stateCode: 'TX', netProfit: 30000, grossSales: 60000, transactions: 500 });
+  ok('1099-K issued over $20k AND 200 transactions', big.willReceive1099K === true);
+  ok('federal threshold is 20k / 200', big.federalThreshold.amount === 20000 && big.federalThreshold.transactions === 200);
+
+  // Over dollar amount but NOT over 200 transactions → no federal 1099-K (AND logic).
+  const oneProng = sid.sideIncomeThreshold({ platform: 'stockx', stateCode: 'TX', netProfit: 25000, grossSales: 50000, transactions: 30 });
+  ok('both prongs required: high dollars but few transactions → no 1099-K', oneProng.willReceive1099K === false);
+
+  // Twitch/YouTube are not 1099-K platforms → routed to the SE explainer.
+  const tw = sid.sideIncomeThreshold({ platform: 'twitch', stateCode: 'NY', netProfit: 40000, grossSales: 80000, transactions: 900 });
+  ok('Twitch does not use 1099-K (1099-NEC/MISC)', tw.platformUses1099K === false && tw.willReceive1099K === false);
+  ok('Twitch headline routes to SE/income, not the 1099-K threshold', /1099-NEC|1099-MISC/.test(tw.headline));
+
+  // Gig platform points to the existing calculator.
+  const gig = sid.sideIncomeThreshold({ platform: 'uber_doordash', stateCode: 'CA', netProfit: 20000, grossSales: 25000, transactions: 800 });
+  ok('gig platform points to the existing gig calculator', gig.gigPointer === '/gig-tax-calculator/');
+
+  // A no-threshold state (TX) gets the generic note with no figure.
+  ok('no-threshold state note names no figure', /confirm with your/i.test(big.stateReportingNote) && !/\$600|\$1,000|\$1,200/.test(big.stateReportingNote));
+
+  // A lower-threshold state (MA $600): a form can arrive under the federal bar, and the note names the figure with a caveat.
+  const ma = sid.sideIncomeThreshold({ platform: 'etsy', stateCode: 'MA', netProfit: 3000, grossSales: 5000, transactions: 40 });
+  ok('MA lower threshold → state form possible under the federal bar', ma.willReceive1099K === false && ma.willReceiveStateForm === true && ma.stateThreshold.amount === 600);
+  ok('MA note names the $600 figure with a confirm caveat', /\$600/.test(ma.stateReportingNote) && /confirm with the/i.test(ma.stateReportingNote));
+  // Illinois needs BOTH >$1,000 and 4+ transactions.
+  const ilLow = sid.sideIncomeThreshold({ platform: 'etsy', stateCode: 'IL', netProfit: 2000, grossSales: 1500, transactions: 2 });
+  ok('IL needs 4+ transactions too — 2 transactions → no state form', ilLow.willReceiveStateForm === false && ilLow.stateThreshold.transactions === 4);
+  const ilHigh = sid.sideIncomeThreshold({ platform: 'etsy', stateCode: 'IL', netProfit: 2000, grossSales: 1500, transactions: 6 });
+  ok('IL over $1,000 AND 6 transactions → state form possible', ilHigh.willReceiveStateForm === true);
+
+  // Tax math comes from the existing engine and is positive on real profit.
+  ok('tax estimate uses the existing engine (positive on profit)', big.tax.totalTax > 0 && big.tax.seTax > 0);
+}
+
+/* ---------------------- freelance rate (add-on task 3) -------------------- */
+console.log('\nfreelance rate calculator');
+{
+  const r = frt.freelanceRateTool({ targetTakeHome: 90000, healthInsuranceAnnual: 6000, overheadAnnual: 4000, stateCode: 'CA', weeksOff: 4, billableHoursPerWeek: 25 });
+  ok('floor rate = gross / annual billable hours', near(r.floorHourlyRate, r.grossRevenue / r.annualBillableHours, 0.5), `${r.floorHourlyRate}`);
+  ok('annual billable hours = (52 - weeksOff) x hours', r.annualBillableHours === (52 - 4) * 25, `${r.annualBillableHours}`);
+  ok('day rate = 8 x hourly', r.dayRate === Math.round(r.floorHourlyRate * 8));
+  // The floor is well above the naive take-home / hours number.
+  ok('floor rate exceeds the naive take-home/hours number', r.floorHourlyRate > r.naiveHourly && r.upliftMultiple > 1, `${r.upliftMultiple}x`);
+  // Breakdown reconciles to gross revenue (take-home + SE + income tax + health + overhead).
+  const sumAnnual = r.breakdown.reduce((a, b) => a + b.annual, 0);
+  ok('breakdown sums to about the gross revenue', near(sumAnnual, r.grossRevenue, 3), `${sumAnnual} vs ${r.grossRevenue}`);
+  ok('breakdown has the four uplift components + take-home', r.breakdown.length === 5 && r.breakdown.some((b) => /self-employment/i.test(b.label)));
+  // More weeks off (fewer billable hours) → a higher required rate.
+  const moreOff = frt.freelanceRateTool({ targetTakeHome: 90000, healthInsuranceAnnual: 6000, overheadAnnual: 4000, stateCode: 'CA', weeksOff: 10, billableHoursPerWeek: 25 });
+  ok('fewer working weeks raises the floor rate', moreOff.floorHourlyRate > r.floorHourlyRate);
+  // No-income-tax state needs a lower gross for the same take-home.
+  const tx = frt.freelanceRateTool({ targetTakeHome: 90000, healthInsuranceAnnual: 6000, overheadAnnual: 4000, stateCode: 'TX', weeksOff: 4, billableHoursPerWeek: 25 });
+  ok('a no-income-tax state needs a lower gross than California', tx.grossRevenue < r.grossRevenue && tx.stateTax === 0);
+}
+
+/* ---------------------- remote-work residency (add-on task 2) ------------- */
+console.log('\nremote-work residency checker');
+{
+  // Same state — no cross-border issue.
+  const same = rr.domesticResidency({ homeState: 'CA', workState: 'CA', employerNecessity: false });
+  ok('same state → no cross-border issue', same.sameState === true && !same.doubleTaxRisk);
+
+  // Reciprocity pair (NJ resident, PA employer) → one state, exemption form.
+  const recip = rr.domesticResidency({ homeState: 'NJ', workState: 'PA', employerNecessity: false });
+  ok('reciprocity pair pays one state and names the form', recip.items.some((it) => /reciprocity/i.test(it.title)) && recip.items.some((it) => /NJ-165/.test(it.detail)) && !recip.doubleTaxRisk);
+
+  // DC work state never taxes nonresidents.
+  const dc = rr.domesticResidency({ homeState: 'VA', workState: 'DC', employerNecessity: false });
+  ok('DC does not tax nonresident wages', dc.items.some((it) => /DC exempts/i.test(it.title)) && !dc.doubleTaxRisk);
+
+  // Convenience state (NY employer, CA remote, convenience) → double-tax risk + credit action.
+  const ny = rr.domesticResidency({ homeState: 'CA', workState: 'NY', employerNecessity: false });
+  ok('NY convenience rule flags double-tax risk for employee convenience', ny.doubleTaxRisk === true && ny.items.some((it) => /convenience rule may tax/i.test(it.title)));
+  ok('and points to the credit for taxes paid', ny.items.some((it) => /credit for taxes paid/i.test(it.title)));
+
+  // Same NY case but employer necessity → the exception applies, no double-tax flag.
+  const nyNec = rr.domesticResidency({ homeState: 'CA', workState: 'NY', employerNecessity: true });
+  ok('employer necessity invokes the exception, drops the risk flag', nyNec.doubleTaxRisk === false && nyNec.items.some((it) => /necessity exception/i.test(it.title)));
+
+  // International: Portugal (has totalization) → FEIE math + totalization OK + treaty→Pub 901, no treaty asserted.
+  const pt = rr.internationalResidency({ country: 'PT', foreignEarnedIncome: 120000, otherUSIncome: 0 });
+  ok('FEIE limit is the 2026 figure', pt.feieLimit === 132900);
+  ok('FEIE lowers US tax vs no exclusion', pt.feie.taxWithFeie < pt.feie.taxWithoutFeie);
+  ok('Portugal totalization agreement recognized', pt.totalizationAgreement === true && pt.items.some((it) => /totalization agreement/i.test(it.title)));
+  ok('treaty item points to Pub 901 and asserts nothing', pt.items.some((it) => /Publication 901/.test(it.detail)) && !pt.items.some((it) => /treaty-exempt|no treaty with/i.test(it.detail)));
+  ok('employer permanent-establishment warning present', pt.items.some((it) => /employer-side problem/i.test(it.title)));
+
+  // International: Mexico (no totalization) → warning.
+  const mx = rr.internationalResidency({ country: 'MX', foreignEarnedIncome: 120000, otherUSIncome: 0 });
+  ok('Mexico flags no totalization agreement', mx.totalizationAgreement === false && mx.items.some((it) => /no totalization/i.test(it.title)));
+
+  // Nomad-visa copy is the generic caution, never a per-country note.
+  ok('nomad-visa item is the generic caution', pt.items.some((it) => /Digital-nomad visas/i.test(it.title) && /change frequently/i.test(it.detail)));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

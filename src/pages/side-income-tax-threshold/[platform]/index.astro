@@ -1,0 +1,78 @@
+---
+/**
+ * One page per platform: presets the tool and carries the platform-specific
+ * reporting behavior (what form it sends, and the quirk that changes how the
+ * number maps to taxable income). Platform-specific copy is the differentiator.
+ */
+import Base from '../../../layouts/Base.astro';
+import SideIncomeCalculator from '../../../components/calculators/SideIncomeCalculator.tsx';
+import { sideIncomeThreshold, SIDE_INCOME_PLATFORMS, FEDERAL_1099K, SE_THRESHOLD } from '../../../lib/sideIncome';
+import platformsData from '../../../data/overrides/side-income-platforms.json';
+import { formatMoney } from '../../../lib/tax-engine';
+
+const PLATFORMS = (platformsData as any).platforms as Record<string, any>;
+
+export function getStaticPaths() {
+  return SIDE_INCOME_PLATFORMS
+    .filter((p) => p.code !== 'uber_doordash')
+    .map((p) => ({ params: { platform: p.code }, props: { code: p.code } }));
+}
+const { code } = Astro.props as { code: string };
+const p = PLATFORMS[code];
+// Worked example: $12,000 gross / $6,000 profit / 150 transactions in California.
+const ex = sideIncomeThreshold({ platform: code, stateCode: 'CA', netProfit: 6000, grossSales: 12000, transactions: 150 });
+
+const usesK = ex.platformUses1099K;
+const faqItems = [
+  { q: `Do I have to pay taxes on ${p.name} income?`, a: `Yes — your ${p.name} <em>profit</em> is taxable from the first dollar, whether or not you get a form. ${usesK ? `A 1099-K only arrives once you pass the federal threshold (over $${FEDERAL_1099K.amount.toLocaleString()} and more than ${FEDERAL_1099K.transactions} transactions), but the tax applies below it too.` : `${p.name} income is usually reported on a 1099-NEC or 1099-MISC rather than a 1099-K, so that threshold doesn't apply — but the income tax does.`}`, review: true },
+  { q: `Will ${p.name} send me a 1099-K?`, a: usesK ? `${p.reports} You'll get a 1099-K once you're over the federal threshold — $${FEDERAL_1099K.amount.toLocaleString()} and ${FEDERAL_1099K.transactions}+ transactions in 2026. ${p.quirk}` : `Usually not — ${p.reports} That means the 1099-K threshold isn't the right lens here; ${p.quirk}`, review: true },
+  { q: `How much should I set aside from ${p.name} earnings?`, a: `On a ${formatMoney(6000)} profit example, the estimate is about ${formatMoney(ex.tax.totalTax)} in total tax (${formatMoney(ex.tax.seTax)} of it self-employment tax) — roughly ${Math.round(ex.tax.setAsidePct * 100)}% of profit. Run your own numbers below.`, review: false },
+];
+
+const title = `${p.name} taxes: 1099-K threshold and what you owe (2026)`;
+const desc = `Do you owe tax on ${p.name} income, and will you get a 1099-K? ${usesK ? 'Federal threshold, the $400 rule, and' : 'Why it uses 1099-NEC not 1099-K, plus'} an estimate on your profit. Nothing stored.`;
+---
+
+<Base title={title} description={desc} faqItems={faqItems}>
+  <div class="breadcrumbs"><a href="/">Home</a> / <a href="/side-income-tax-threshold/">Side income</a> / {p.name}</div>
+
+  <section class="hero">
+    <p class="hero-label">2026 · {p.name}</p>
+    <h1>{p.name} taxes: what you owe and when a form comes</h1>
+    <p class="tagline">{usesK ? `${p.name} sends a 1099-K once you cross the federal threshold — but your profit is taxable well before that.` : `${p.name} income usually comes on a 1099-NEC, not a 1099-K — so the reporting threshold everyone asks about doesn't apply. Your profit is still taxable.`}</p>
+  </section>
+
+  <h2>How {p.name} reports your income</h2>
+  <p>{p.reports}</p>
+  <p>{p.quirk}</p>
+
+  <SideIncomeCalculator client:load presetPlatform={code} />
+
+  <h2>The three layers for {p.name} income</h2>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Income tax</td><td>On profit from $1 — no tax-free floor</td></tr>
+      <tr><td>Self-employment tax</td><td>Once net profit hits ${SE_THRESHOLD}</td></tr>
+      <tr><td>1099-K form</td><td>{usesK ? `Over ${FEDERAL_1099K.amount.toLocaleString()} AND ${FEDERAL_1099K.transactions}+ transactions (federal)` : `Not used — ${p.name} reports on 1099-NEC/MISC`}</td></tr>
+    </tbody>
+  </table>
+  <p>Underneath sits the <a href="/side-income-tax-threshold/hobby-vs-business/">hobby-vs-business</a> question, which decides whether you can deduct your {p.name} costs.</p>
+
+  <h2>Questions about {p.name} income</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review={f.review ? 'legal' : undefined} set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/side-income-tax-threshold/">All platforms</a></li>
+    <li><a href="/side-income-tax-threshold/hobby-vs-business/">Hobby vs business</a></li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a></li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly taxes</a></li>
+  </ul>
+
+  <p class="results-note">An estimate for 2026. Federal figures from the IRS; {p.name} reporting behavior can change — confirm with the platform. Nothing stored. Not tax advice.</p>
+</Base>
