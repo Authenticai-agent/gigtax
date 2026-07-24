@@ -85,3 +85,35 @@ The spec flags **three different "Massachusetts max" figures in circulation** ($
 ## Out of scope for v1 (v2 stubs)
 
 WARN Act pay analysis; 401(k) rollover math; state disability interactions; per-state UI formula reimplementation (v1 ships each state's formula as config, not 53 reimplemented formulas); non-US severance. Each is a candidate for v2.
+
+---
+
+## Phase 5 QA — data audit second pass (2026-07-23)
+
+Re-verified a 10-state random sample of UI figures against their cited sources, per `task_layoff.md` Phase 5 item 1. No figure was changed — every source that could be machine-read confirmed the stored value.
+
+**Re-confirmed against the state agency's own source (7):**
+
+| State | Stored max / weeks | Agency source says | Result |
+|---|---|---|---|
+| NJ | $905 / 26w | "maximum weekly benefit rate … will increase to $905" (NJ DOL, 2025-12-29) | ✓ match |
+| MD | $430 (min $50) | "weekly payments range from $50 to $430" (MD Labor schedule) | ✓ match |
+| GA | $365 / 26w | "$365" max; duration 14–26w by state UI rate (GA DOL FAQ) | ✓ match (26w = top of range) |
+| SC | $350 (min $42) / 20w | "$42 … to a maximum of $350"; "up to 20 weeks" (SC DEW) | ✓ match |
+| MO | $320 / 20w | "not to exceed $320"; MBA = 20× WBA (MO DOL) | ✓ match |
+| IA | $644 / 16w | base max $644; up to $790 with 4+ dependents, eff 2026-07-05 (IA Workforce) | ✓ match — see note |
+| NJ/SC/MO/GA/IA/MD mins | as stored | ranges confirmed | ✓ |
+
+- **IA nuance (not a discrepancy):** the agency headline figure "$790" is the 4-or-more-dependents maximum. The dataset stores `max_weekly: 644` (the base, 0-dependent max) per the site convention that `max_weekly` excludes dependent scaling, with `dependent_allowance: null` because Iowa scales via a divisor rather than a flat per-dependent add-on. The $644/$790 split is already recorded in the record's note. Left as-is.
+
+**Could not machine-verify this pass — flagged, figures unchanged (3):**
+
+- **AL ($275):** cited source `labor.alabama.gov/docs/guides/uc_brr.pdf` is a 592 KB binary PDF that WebFetch cannot parse. Needs a manual visual check against the PDF.
+- **CO ($884):** cited source (cdle.colorado.gov estimator) returns HTTP 403 to automated fetch. Needs a manual browser check.
+- **Federal SS wage base ($184,500):** `ssa.gov/oact/cola/cbb.html` returns HTTP 403 to automated fetch. Value stands as the published 2026 figure in `federal.ts` (`LAST_VERIFIED` 2026-06-10); confirm visually next pass.
+
+**Sourcing-quality note (2):** OH ($624) and VT ($757) cite the **US DOL ETA** "significant provisions" table (`oui.doleta.gov/.../January2026.pdf`) rather than the state's own agency page. DOL ETA is an official federal source, not a commercial aggregator, so the figures are trustworthy — but the Phase 1 guardrail prefers the state agency page. Re-source to Ohio JFS and Vermont DOL when convenient.
+
+**Federal constants / FPL:** the SS wage base, additional-Medicare thresholds, supplemental 22%/37%, and the FPL/applicable-percentage tables live in `federal.ts` (verified 2026-06-10, `VERIFIED` 2026-v3.3) and feed the engine directly; the worked examples recompute from them. Re-verify against Pub 15 and the IRS Rev. Proc. each fall for the next tax year (see the maintenance calendar).
+
+**Net:** 7/10 UI figures re-confirmed against source with zero changes; 3 unverifiable by automated fetch (PDF / 403) and flagged for manual re-check; 2 carry a source-quality follow-up. No invented or altered values.
