@@ -1,0 +1,78 @@
+---
+/** Scenario: lump sum vs installment severance. */
+import Base from '../../layouts/Base.astro';
+import SeveranceCalculator from '../../components/calculators/SeveranceCalculator.tsx';
+import { severanceTax } from '../../lib/layoff/severanceTax';
+import { formatMoney } from '../../lib/tax-engine';
+
+const lump = severanceTax({ severance: 60000, paymentMode: 'separate', stateCode: 'CA', ytdWages: 90000, filingStatus: 'single', otherIncome: 90000 });
+const combined = severanceTax({ severance: 60000, paymentMode: 'combined', stateCode: 'CA', ytdWages: 90000, filingStatus: 'single', otherIncome: 90000 });
+---
+
+<Base
+  title="Lump sum vs installment severance (2026)"
+  description="Take severance as a lump sum or in installments? It changes withholding and cash-flow timing, and can affect unemployment. Here's the trade-off with numbers."
+>
+  <section class="hero">
+    <p class="hero-label">2026 · scenario</p>
+    <h1>Lump sum vs installment severance</h1>
+    <p class="tagline">A lump sum, salary continuation, or a mix — the choice changes your withholding, your cash-flow timing, and sometimes your unemployment. Here's how to weigh it.</p>
+  </section>
+
+  <p>
+    Employers sometimes let you choose how severance is paid: one lump sum, continued salary over several months, or a
+    split. The total is usually the same, but the shape matters. A lump sum gets you the cash now (useful for a runway
+    cushion) but is withheld at the flat 22% supplemental rate. Salary continuation spreads the cash over time, is
+    usually withheld through normal payroll (closer to your real rate), and can keep benefits like health coverage
+    running — but it may offset unemployment for longer in some states.
+  </p>
+
+  <h2>Withholding: lump sum vs paid through payroll</h2>
+  <p>{formatMoney(60000)} severance, single filer, {formatMoney(90000)} of other income, California:</p>
+  <table class="data-table">
+    <thead><tr><th>How it's paid</th><th>Federal withholding</th><th>Net check</th></tr></thead>
+    <tbody>
+      <tr><td>Lump sum (flat 22%)</td><td>{formatMoney(lump.federalWithholding)}</td><td>{formatMoney(lump.netCheck)}</td></tr>
+      <tr><td>Through final payroll (aggregate)</td><td>{formatMoney(combined.federalWithholding)}</td><td>{formatMoney(combined.netCheck)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The lump sum withholds {formatMoney(lump.federalWithholding)} at the flat 22%; run through payroll it withholds
+    {' '}{formatMoney(combined.federalWithholding)} at your marginal rate. Either way your <em>actual</em> tax is the
+    same — the difference is just how much is prepaid and when you get the cash. The total tax reconciles at filing.
+  </p>
+
+  <SeveranceCalculator client:load />
+
+  <h2>How to weigh it</h2>
+  <ul>
+    <li><strong>Choose the lump sum</strong> if you want the cash now for your runway cushion and are comfortable
+      reconciling the withholding at filing.</li>
+    <li><strong>Choose salary continuation</strong> if keeping employer health coverage or steady cash flow matters
+      more, and check whether it delays your unemployment in your state.</li>
+    <li><strong>A lump sum can spike one year's income</strong>, which matters for the ACA subsidy cliff — spreading it
+      across two tax years can keep you under 400% FPL. See the <a href="/cobra-vs-marketplace-calculator/">COBRA vs
+      marketplace calculator</a>.</li>
+  </ul>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Is a lump sum taxed more than installments?</h3>
+    <p data-review="legal">No — the total tax is the same. A lump sum is <em>withheld</em> more (flat 22%), but you
+      reconcile at filing. Installments through payroll withhold closer to your real rate. <a href="/is-severance-taxed-higher/">More on the withholding myth</a>.</p>
+  </div>
+  <div class="faq">
+    <h3>Which is better for unemployment?</h3>
+    <p data-review="legal">It depends on your state. Salary continuation can offset unemployment for the weeks it
+      covers; a lump sum may be allocated to a shorter period. Check your state's rule before deciding.</p>
+  </div>
+
+  <h2>Your layoff toolkit</h2>
+  <ul class="link-columns">
+    <li><a href="/severance-pay-tax-calculator/">Severance pay tax</a></li>
+    <li><a href="/how-long-will-severance-last/">How long will it last?</a></li>
+    <li><a href="/unemployment-benefits-calculator/">Unemployment benefits</a></li>
+  </ul>
+
+  <p class="results-note">Estimate for the 2026 tax year. Nothing you enter is stored. Not tax or legal advice.</p>
+</Base>

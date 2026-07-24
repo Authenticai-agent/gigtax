@@ -8,10 +8,10 @@ const stateOptions = Object.entries(states).map(([c, s]) => [c, s.name] as const
 const STATUSES: [FilingStatus, string][] = [['single', 'Single'], ['mfj', 'Married filing jointly'], ['hoh', 'Head of household'], ['mfs', 'Married filing separately']];
 const MODES: [PaymentMode, string][] = [['separate', 'A separate lump sum'], ['combined', 'Combined with my final paycheck'], ['installments', 'In installments']];
 
-export default function SeveranceCalculator() {
+export default function SeveranceCalculator({ presetState = 'CA' }: { presetState?: string }) {
   const [severance, setSeverance] = useState(40000);
   const [paymentMode, setMode] = useState<PaymentMode>('separate');
-  const [stateCode, setState] = useState('CA');
+  const [stateCode, setState] = useState(presetState);
   const [ytdWages, setYtd] = useState(60000);
   const [filingStatus, setStatus] = useState<FilingStatus>('single');
   const [otherIncome, setOther] = useState(60000);

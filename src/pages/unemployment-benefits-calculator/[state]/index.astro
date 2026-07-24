@@ -1,0 +1,96 @@
+---
+/**
+ * One static page per state: 2026 unemployment benefits. Every figure is the
+ * state's own verified value from ui_by_state.json; the worked example runs the
+ * uiBenefit engine at a fixed $60,000 wage so the numbers are state-specific
+ * (cap, duration, total, tax). State-specific FAQ and interlinks.
+ */
+import Base from '../../../layouts/Base.astro';
+import UnemploymentCalculator from '../../../components/calculators/UnemploymentCalculator.tsx';
+import uiData from '../../../data/layoff/ui_by_state.json';
+import { states, stateList } from '../../../data/states';
+import { stateSlug } from '../../../lib/slug';
+import { uiBenefit } from '../../../lib/layoff/uiBenefit';
+import { formatMoney } from '../../../lib/tax-engine';
+
+const UI = uiData as Record<string, any>;
+
+export function getStaticPaths() {
+  return stateList.map(([code, s]) => ({ params: { state: stateSlug(s.name) }, props: { code } }));
+}
+const { code } = Astro.props as { code: string };
+const u = UI[code];
+const name = u.state;
+
+// National ranking of the weekly max, for a per-state distinguishing sentence.
+const maxes = Object.entries(UI).filter(([k]) => k !== '_meta').map(([, v]) => v.max_weekly).sort((a, b) => b - a);
+const rank = maxes.indexOf(u.max_weekly) + 1;
+const rankNote = rank <= 5 ? `one of the highest maximums in the country (#${rank} of 51)`
+  : rank >= 47 ? `one of the lowest maximums in the country (#${rank} of 51)`
+  : `a middle-of-the-pack maximum (#${rank} of 51)`;
+
+const ex = uiBenefit({ stateCode: code, priorAnnualWage: 60000, dependents: 0 });
+const slug = stateSlug(name);
+const title = `${name} unemployment benefits calculator 2026`;
+const desc = `${name} unemployment in 2026: up to ${formatMoney(u.max_weekly)}/week${u.duration_weeks ? ` for ${u.duration_weeks} weeks` : ''}, whether it's taxed, and how to file — with a worked example.`;
+---
+
+<Base title={title} description={desc}>
+  <div class="breadcrumbs"><a href="/">Home</a> / <a href="/unemployment-benefits-calculator/">Unemployment</a> / {name}</div>
+
+  <section class="hero">
+    <p class="hero-label">2026 · {name}</p>
+    <h1>{name} unemployment benefits</h1>
+    <p class="tagline">{name} pays up to {formatMoney(u.max_weekly)} a week{u.duration_weeks ? ` for up to ${u.duration_weeks} weeks` : ''} — {rankNote}. Estimate yours below.</p>
+  </section>
+
+  <UnemploymentCalculator client:load presetState={code} />
+
+  <h2>{name}'s 2026 figures</h2>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Weekly benefit range</td><td data-source="ui_by_state.json">{formatMoney(u.min_weekly)} – {formatMoney(u.max_weekly)}</td></tr>
+      <tr><td>Maximum duration</td><td>{u.duration_weeks ? `${u.duration_weeks} weeks` : '—'}{u.duration_note ? ` (${u.duration_note})` : ''}</td></tr>
+      <tr><td>Waiting week</td><td>{u.waiting_week === true ? 'Yes — one unpaid week' : u.waiting_week === false ? 'No waiting week' : 'Check the agency'}</td></tr>
+      <tr><td>How it's figured</td><td>{u.benefit_method ? u.benefit_method.replace(/_/g, ' ') : '—'}</td></tr>
+      <tr><td>Taxed by {name}?</td><td>{u.ui_taxed_by_state === true ? 'Yes' : u.ui_taxed_by_state === false ? 'No — state-tax-free' : 'Check the agency'}</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Worked example: a {formatMoney(60000)} earner in {name}</h2>
+  <p>
+    On a {formatMoney(60000)} prior wage, the estimate is about <strong>{formatMoney(ex.estimatedWeeklyBenefit)} a week</strong>
+    {ex.atStateMax ? ` — that hits ${name}'s maximum` : ` (within ${name}'s ${formatMoney(u.min_weekly)}–${formatMoney(u.max_weekly)} range)`}.
+    Over {u.duration_weeks ?? '—'} weeks that's up to {formatMoney(ex.totalPotential)} in total. {ex.firstCheckNote}
+  </p>
+
+  <h2>Questions about {name} unemployment</h2>
+  <div class="faq">
+    <h3>How much does {name} pay in unemployment?</h3>
+    <p data-review="legal">Between {formatMoney(u.min_weekly)} and {formatMoney(u.max_weekly)} a week in 2026, based on your prior wages ({u.benefit_method ? u.benefit_method.replace(/_/g, ' ') : 'a state formula'}). The {formatMoney(u.max_weekly)} maximum is {rankNote}.</p>
+  </div>
+  <div class="faq">
+    <h3>How long does {name} unemployment last?</h3>
+    <p data-review="legal">{u.duration_weeks ? `Up to ${u.duration_weeks} weeks` : 'Duration varies'}{u.duration_note ? ` — ${u.duration_note}.` : '.'} That's separate from the weekly amount; low earners may qualify for fewer weeks.</p>
+  </div>
+  <div class="faq">
+    <h3>Is {name} unemployment taxed?</h3>
+    <p data-review="legal">Federally, yes — it's ordinary income (elect 10% withholding on Form W-4V). {u.ui_taxed_by_state === true ? `${name} also taxes it on the state return.` : u.ui_taxed_by_state === false ? `${name} does not tax it — it's state-tax-free.` : `${name}'s state treatment should be confirmed with the agency.`}</p>
+  </div>
+  <div class="faq">
+    <h3>Does severance affect my {name} unemployment?</h3>
+    <p data-review="legal">Filing timing can matter. {ex.severanceOffsetNote}</p>
+  </div>
+
+  {u.filing_url && <p><strong>File with <a href={u.filing_url} rel="noopener">{u.agency_name}</a>.</strong> This is an estimate — {u.agency_name} determines your actual benefit.</p>}
+
+  <h2>Your {name} layoff toolkit</h2>
+  <ul class="link-columns">
+    <li><a href={`/severance-pay-tax-calculator/${slug}/`}>{name} severance tax</a> — the tax on your severance</li>
+    <li><a href="/layoff-runway-calculator/">Runway calculator</a> — how long your money lasts</li>
+    <li><a href={`/paycheck-calculator/${slug}/`}>{name} paycheck calculator</a> — your take-home when you're back at work</li>
+    <li><a href={`/1099-tax-calculator/${slug}/`}>{name} 1099 tax</a> — if you go freelance or contract</li>
+  </ul>
+
+  <p class="results-note">An estimate — {name}'s agency determines your actual benefit. Figures from the verified 2026 dataset, last verified 2026-07-24. Nothing you enter is stored. Not tax or legal advice.</p>
+</Base>

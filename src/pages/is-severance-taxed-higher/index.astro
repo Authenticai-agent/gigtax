@@ -1,0 +1,68 @@
+---
+/** Scenario: the "is severance taxed higher" myth. */
+import Base from '../../layouts/Base.astro';
+import SeveranceCalculator from '../../components/calculators/SeveranceCalculator.tsx';
+import { severanceTax } from '../../lib/layoff/severanceTax';
+import { formatMoney } from '../../lib/tax-engine';
+
+const lo = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'TX', ytdWages: 0, filingStatus: 'single', otherIncome: 20000 });
+const hi = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'TX', ytdWages: 0, filingStatus: 'single', otherIncome: 400000 });
+---
+
+<Base
+  title="Is severance taxed at a higher rate? (2026)"
+  description="No — severance isn't taxed at a higher rate. It's withheld at a flat 22%, which isn't the same as your tax. Here's the difference, with the numbers."
+>
+  <section class="hero">
+    <p class="hero-label">2026 · the myth</p>
+    <h1>Is severance taxed at a higher rate?</h1>
+    <p class="tagline">Short answer: no. It's <em>withheld</em> differently — a flat 22% — but taxed as ordinary income at your normal rates. Those are two different things.</p>
+  </section>
+
+  <p>
+    The belief that severance is "taxed higher" comes from the withholding. Because severance is supplemental wages,
+    an employer withholds a flat 22% federally (37% on any amount over $1 million) when it's paid on its own. That flat
+    22% often looks bigger than the tax withheld from a normal paycheck — but withholding is a prepayment, not the tax.
+    At filing, your severance is taxed as ordinary income at the same brackets as everything else, and you settle up.
+  </p>
+
+  <h2>The proof: same severance, opposite outcomes</h2>
+  <p>A single filer, {formatMoney(40000)} severance, no state income tax — the only thing that changes is other income:</p>
+  <table class="data-table">
+    <thead><tr><th>Other income</th><th>Withheld (22%)</th><th>Actual tax</th><th>Result at filing</th></tr></thead>
+    <tbody>
+      <tr><td>{formatMoney(20000)}</td><td>{formatMoney(lo.federalWithholding)}</td><td>{formatMoney(lo.estimatedActualLiability - lo.ficaTotal)}</td><td>refund ≈ {formatMoney(Math.abs(lo.overUnderWithholding))}</td></tr>
+      <tr><td>{formatMoney(400000)}</td><td>{formatMoney(hi.federalWithholding)}</td><td>{formatMoney(hi.estimatedActualLiability - hi.ficaTotal)}</td><td>owe ≈ {formatMoney(Math.abs(hi.overUnderWithholding))} more</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Same {formatMoney(40000)}, same {formatMoney(lo.federalWithholding)} withheld — but the lower earner gets money
+    back and the higher earner owes more. If severance were genuinely "taxed higher," the low earner wouldn't get a
+    refund. The 22% is just a flat withholding rate that happens to over- or under-shoot your real rate.
+  </p>
+
+  <SeveranceCalculator client:load />
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>So why does it feel like more is taken out?</h3>
+    <p data-review="legal">Because the 22% flat rate is often higher than the effective rate withheld from your regular
+      paycheck (which accounts for your allowances and lower brackets). More is withheld up front, but it's credited
+      against your real tax at filing — you get the excess back.</p>
+  </div>
+  <div class="faq">
+    <h3>Can I avoid the 22% over-withholding?</h3>
+    <p data-review="legal">If severance is paid with your final paycheck, the aggregate method applies instead, which
+      lands closer to your real rate. You can't change the flat rate on a separate payment, but you'll reconcile it at
+      filing regardless.</p>
+  </div>
+
+  <h2>Work it out</h2>
+  <ul class="link-columns">
+    <li><a href="/severance-pay-tax-calculator/">Severance pay tax calculator</a> — your net check and real liability</li>
+    <li><a href="/lump-sum-vs-installment-severance/">Lump sum vs installments</a></li>
+    <li><a href="/layoff-runway-calculator/">Layoff runway</a></li>
+  </ul>
+
+  <p class="results-note">Estimate for the 2026 tax year. Nothing you enter is stored. Not tax advice.</p>
+</Base>
