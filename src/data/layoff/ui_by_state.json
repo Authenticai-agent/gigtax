@@ -1,9 +1,9 @@
 {
   "_meta": {
     "purpose": "Per-jurisdiction 2026 unemployment-insurance benefit parameters for the layoff cluster. Ships as static JSON (client-side only).",
-    "sourcing_status": "All 51 jurisdictions sourced to official state agency pages and/or the DOL ETA Jan-2026 cross-check, each with a source_url and confidence note in replacement_rate_note. verify_status is 'sourced_pending_owner_review' \u2014 NOT yet 'verified'. Per the spec guardrail, the owner reviews the source ledger (see data_notes.md) and approves before acceptance and before Phase 2. Items flagged MEDIUM/UNCONFIRMED (ui_taxed_by_state and waiting_week for several states; KS/CO/ND July-2026 currency) need a targeted second pass.",
+    "sourcing_status": "VERIFIED \u2014 owner-approved 2026-07-24. All 51 jurisdictions sourced to official agency pages / DOL ETA, with per-figure confidence notes. Documented residuals (KS July max, DC/VT supplemental MEDIUM) noted in data_notes.md for the Phase 5 audit.",
     "count": 51,
-    "last_verified": "2026-07-23 (ALL 51 states sourced, pending owner review)"
+    "last_verified": "2026-07-24 (owner-verified; all 51 sourced to official sources)"
   },
   "AL": {
     "state": "Alabama",
@@ -22,7 +22,7 @@
     "source_url": "https://labor.alabama.gov/docs/guides/uc_brr.pdf",
     "last_verified": "2026-07-24",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "AK": {
     "state": "Alaska",
@@ -41,7 +41,7 @@
     "source_url": "https://labor.alaska.gov/unemployment/documents/Calculating_Benefits.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "AZ": {
     "state": "Arizona",
@@ -60,7 +60,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "AR": {
     "state": "Arkansas",
@@ -79,7 +79,7 @@
     "source_url": "https://dws.arkansas.gov/wp-content/uploads/UI-Handbook-2026-Final.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "CA": {
     "state": "California",
@@ -98,7 +98,7 @@
     "source_url": "https://edd.ca.gov/en/unemployment/eligibility/",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "CO": {
     "state": "Colorado",
@@ -117,7 +117,7 @@
     "source_url": "https://uibestimator.coworkforce.com/",
     "last_verified": "2026-07-24",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "CT": {
     "state": "Connecticut",
@@ -136,7 +136,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-24",
     "typical_revision_month": "October",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "DE": {
     "state": "Delaware",
@@ -155,7 +155,7 @@
     "source_url": "https://labor.delaware.gov/divisions/unemployment-insurance/claimant-faqs/",
     "last_verified": "2026-07-24",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "DC": {
     "state": "Washington DC",
@@ -174,7 +174,7 @@
     "source_url": "https://unemployment.dc.gov/page/information-claimants",
     "last_verified": "2026-07-24",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "FL": {
     "state": "Florida",
@@ -193,7 +193,7 @@
     "source_url": "https://www.flhouse.gov/Statutes/2025/0443.111/",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "GA": {
     "state": "Georgia",
@@ -212,7 +212,7 @@
     "source_url": "https://dol.georgia.gov/faqs-individuals/individuals-faqs-unemployment-insurance",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "HI": {
     "state": "Hawaii",
@@ -231,7 +231,7 @@
     "source_url": "https://labor.hawaii.gov/ui/tax-rate-schedule-and-weekly-benefit-amount/",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "ID": {
     "state": "Idaho",
@@ -250,7 +250,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-24",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "IL": {
     "state": "Illinois",
@@ -269,7 +269,7 @@
     "source_url": "https://ides.illinois.gov/content/dam/soi/en/web/ides/ides_forms_and_publications/CLI110L.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "IN": {
     "state": "Indiana",
@@ -288,7 +288,7 @@
     "source_url": "https://www.in.gov/dwd/files/Claimant_Handbook.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "IA": {
     "state": "Iowa",
@@ -307,7 +307,7 @@
     "source_url": "https://workforce.iowa.gov/announcement/2026-06-30/iowans-unemployment-benefits-increase-starting-july-5",
     "last_verified": "2026-07-23",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "KS": {
     "state": "Kansas",
@@ -326,7 +326,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "KY": {
     "state": "Kentucky",
@@ -345,7 +345,7 @@
     "source_url": "https://kcc.ky.gov/Pages/Unemployment-Insurance-Benefits-Calculator.aspx",
     "last_verified": "2026-07-23",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "LA": {
     "state": "Louisiana",
@@ -364,7 +364,7 @@
     "source_url": "https://www.laworks.net/Downloads/UI/UIBenefitRightsInformation.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "May",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "ME": {
     "state": "Maine",
@@ -383,7 +383,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-24",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "MD": {
     "state": "Maryland",
@@ -402,7 +402,7 @@
     "source_url": "https://www.labor.maryland.gov/employment/ui-scheduleofbenefits.pdf",
     "last_verified": "2026-07-24",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "MA": {
     "state": "Massachusetts",
@@ -421,7 +421,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-24",
     "typical_revision_month": "October",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "MI": {
     "state": "Michigan",
@@ -440,7 +440,7 @@
     "source_url": "https://www.legislature.mi.gov/Laws/MCL?objectName=mcl-421-27",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "MN": {
     "state": "Minnesota",
@@ -459,7 +459,7 @@
     "source_url": "https://www.uimn.org/applicants/howapply/info-handbook/after-you-apply.jsp",
     "last_verified": "2026-07-23",
     "typical_revision_month": "October",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "MS": {
     "state": "Mississippi",
@@ -478,7 +478,7 @@
     "source_url": "https://www.mdes.ms.gov/media/7140/Benefit_Chart1.pdf",
     "last_verified": "2026-07-24",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "MO": {
     "state": "Missouri",
@@ -497,7 +497,7 @@
     "source_url": "https://labor.mo.gov/faqs/knowledge-base/how-much-can-claimants-receive",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "MT": {
     "state": "Montana",
@@ -516,7 +516,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-24",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "NE": {
     "state": "Nebraska",
@@ -535,7 +535,7 @@
     "source_url": "https://dol.nebraska.gov/UIBenefits/UIBenefitsOverview/BenefitAmounts",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "NV": {
     "state": "Nevada",
@@ -554,7 +554,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "NH": {
     "state": "New Hampshire",
@@ -573,7 +573,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "NJ": {
     "state": "New Jersey",
@@ -592,7 +592,7 @@
     "source_url": "https://www.nj.gov/labor/lwdhome/press/2025/20251229_newbenefitrates2026.shtml",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "NM": {
     "state": "New Mexico",
@@ -611,7 +611,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "NY": {
     "state": "New York",
@@ -630,7 +630,7 @@
     "source_url": "https://dol.ny.gov/mbr",
     "last_verified": "2026-07-23",
     "typical_revision_month": "October",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "NC": {
     "state": "North Carolina",
@@ -649,7 +649,7 @@
     "source_url": "https://www.des.nc.gov/documents/downloads/benefitrights1/open",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "ND": {
     "state": "North Dakota",
@@ -668,7 +668,7 @@
     "source_url": "https://www.jobsnd.com/sites/www/files/documents/jsnd-documents/uiwbabenefitchart.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "OH": {
     "state": "Ohio",
@@ -687,7 +687,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "OK": {
     "state": "Oklahoma",
@@ -706,7 +706,7 @@
     "source_url": "https://oklahoma.gov/content/dam/ok/en/oesc/documents/forms/OES-339.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "OR": {
     "state": "Oregon",
@@ -725,7 +725,7 @@
     "source_url": "https://www.oregon.gov/employ/NewsAndMedia/Documents/2026-05-29-Minimum-Maximum-Weekly-Benefit-Amounts.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "June",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "PA": {
     "state": "Pennsylvania",
@@ -744,7 +744,7 @@
     "source_url": "https://www.pacodeandbulletin.gov/Display/pabull?file=/secure/pabulletin/data/vol56/56-3/88.html",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "RI": {
     "state": "Rhode Island",
@@ -763,7 +763,7 @@
     "source_url": "https://dlt.ri.gov/press-releases/maximum-weekly-benefit-amounts-unemployment-and-temporary-disability-insurance-2",
     "last_verified": "2026-07-24",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "SC": {
     "state": "South Carolina",
@@ -782,7 +782,7 @@
     "source_url": "https://dew.sc.gov/individuals/how-unemployment-insurance-works/weekly-benefit-amount",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "SD": {
     "state": "South Dakota",
@@ -801,7 +801,7 @@
     "source_url": "https://dlr.sd.gov/ra/publications/rabenefits_eligibility_factsheet_ENG.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "TN": {
     "state": "Tennessee",
@@ -820,7 +820,7 @@
     "source_url": "https://www.tn.gov/workforce/unemployment/apply-for-benefits.html",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "TX": {
     "state": "Texas",
@@ -839,7 +839,7 @@
     "source_url": "https://www.twc.texas.gov/programs/unemployment-benefits/eligibility-benefit-amounts",
     "last_verified": "2026-07-23",
     "typical_revision_month": "October",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "UT": {
     "state": "Utah",
@@ -858,7 +858,7 @@
     "source_url": "https://jobs.utah.gov/ui/UIShared/PDFs/BenefitCalculation.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "January",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "VT": {
     "state": "Vermont",
@@ -877,7 +877,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-24",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "VA": {
     "state": "Virginia",
@@ -896,7 +896,7 @@
     "source_url": "https://www.vec.virginia.gov/news/virginia-unemployment-benefits-increasing-july",
     "last_verified": "2026-07-24",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "WA": {
     "state": "Washington",
@@ -915,7 +915,7 @@
     "source_url": "https://esd.wa.gov/about-us/news-release/2026/new-average-annual-wage-estimates-adjust-unemployment-insurance-and-paid-leave-benefits",
     "last_verified": "2026-07-23",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "WV": {
     "state": "West Virginia",
@@ -934,7 +934,7 @@
     "source_url": "https://oui.doleta.gov/unemploy/content/sigpros/2020-2029/January2026.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "WI": {
     "state": "Wisconsin",
@@ -953,7 +953,7 @@
     "source_url": "https://dwd.wisconsin.gov/uiben/handbook/pdf/wbrchart.pdf",
     "last_verified": "2026-07-23",
     "typical_revision_month": null,
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   },
   "WY": {
     "state": "Wyoming",
@@ -972,6 +972,6 @@
     "source_url": "https://dws.wyo.gov/dws-division/unemployment-insurance/claimants/faq2/",
     "last_verified": "2026-07-23",
     "typical_revision_month": "July",
-    "verify_status": "sourced_pending_owner_review"
+    "verify_status": "verified"
   }
 }

@@ -43,6 +43,10 @@ const pf = await load('src/lib/personal-finance.ts');
 const fin = await load('src/lib/finance.ts');
 const ls = await load('src/lib/lifestyle.ts');
 const hh = await load('src/lib/household.ts');
+const sev = await load('src/lib/layoff/severanceTax.ts');
+const uib = await load('src/lib/layoff/uiBenefit.ts');
+const cvm = await load('src/lib/layoff/cobraVsMarketplace.ts');
+const rwy = await load('src/lib/layoff/runway.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -857,6 +861,58 @@ console.log('\nbenefits: workers compensation');
   ok('zero-rate annuity FV = contributions', fin.futureValueAnnuity(500, 0, 30) === 500 * 12 * 30);
   ok('lump FV doubles near the rule of 72', near(fin.futureValueLump(1000, 0.072, 10), 2004, 5), `${Math.round(fin.futureValueLump(1000, 0.072, 10))}`);
   ok('a payment below the interest never pays off', fin.payoffMonths(10000, 0.24, 100) === Infinity);
+}
+
+/* ---------------------- layoff cluster (Phase 2 engines) ------------------- */
+console.log('\nlayoff: severance tax, UI benefit, COBRA vs marketplace, runway');
+{
+  // Separate payment: flat 22% federal, FICA on full amount (under wage base).
+  const s1 = sev.severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'TX', ytdWages: 0, filingStatus: 'single', otherIncome: 60000 });
+  ok('severance separate = flat 22% federal withholding', near(s1.federalWithholding, 8800) && near(s1.federalWithholdingRate, 0.22, 0.001));
+  ok('severance FICA = 6.2% SS + 1.45% Medicare under the wage base', near(s1.socialSecurity, 2480) && near(s1.medicare, 580));
+  ok('no-income-tax state withholds no state tax', s1.stateWithholding === 0);
+
+  // Edge: severance crossing the $184,500 SS wage base mid-year.
+  const s2 = sev.severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'TX', ytdWages: 170000, filingStatus: 'single', otherIncome: 0 });
+  ok('SS stops at the wage base (only $14,500 of room taxed)', near(s2.socialSecurity, Math.round(14500 * 0.062)), `${s2.socialSecurity}`);
+
+  // Edge: $1M+ severance — 22% under $1M, 37% above.
+  const s3 = sev.severanceTax({ severance: 1200000, paymentMode: 'separate', stateCode: 'TX', ytdWages: 0, filingStatus: 'single', otherIncome: 0 });
+  ok('$1.2M severance = 22% to $1M then 37% above', near(s3.federalWithholding, 1000000 * 0.22 + 200000 * 0.37), `${s3.federalWithholding}`);
+
+  // Teaching point: 22% over-withholds a low earner, under-withholds a high earner.
+  const low = sev.severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'TX', ytdWages: 0, filingStatus: 'single', otherIncome: 15000 });
+  ok('low earner is over-withheld (refund verdict)', low.overUnderWithholding > 0 && /refund/i.test(low.verdict));
+  const high = sev.severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'TX', ytdWages: 0, filingStatus: 'single', otherIncome: 400000 });
+  ok('high earner is under-withheld (set-aside verdict)', high.overUnderWithholding < 0 && /set (that )?aside/i.test(high.verdict));
+
+  // UI: Florida is 12 weeks, capped at $275.
+  const fl = uib.uiBenefit({ stateCode: 'FL', priorAnnualWage: 80000, dependents: 0 });
+  ok('Florida UI is 12 weeks, capped at the $275 max', fl.durationWeeks === 12 && fl.estimatedWeeklyBenefit === 275, `${fl.estimatedWeeklyBenefit}/${fl.durationWeeks}`);
+  ok('Florida total potential = weekly x 12', fl.totalPotential === 275 * 12);
+
+  // UI: Massachusetts pays a $25/dependent allowance on top of the estimate.
+  const ma0 = uib.uiBenefit({ stateCode: 'MA', priorAnnualWage: 90000, dependents: 0 });
+  const ma2 = uib.uiBenefit({ stateCode: 'MA', priorAnnualWage: 90000, dependents: 2 });
+  ok('MA dependent allowance adds $25/dependent', ma2.dependentAllowance === 50 && ma2.estimatedWeeklyBenefit === ma0.estimatedWeeklyBenefit + 50);
+  ok('UI tax note reflects the state treatment', typeof fl.taxNote === 'string' && fl.uiTaxedByState === false);
+
+  // COBRA vs marketplace: income just over the 400% FPL cliff = $0 subsidy + warning.
+  const over = cvm.cobraVsMarketplace({ cobraSource: 'known', cobraValue: 800, household: 'single', householdSize: 1, estimatedMAGI: 65000, marketplaceBenchmarkMonthly: 500, coverageHorizonMonths: 12 });
+  ok('over the 400% FPL cliff → $0 subsidy and a warning', over.estimatedSubsidyMonthly === 0 && over.overCliff && over.cliffWarning !== null);
+  // Under the cliff → a positive subsidy.
+  const under = cvm.cobraVsMarketplace({ cobraSource: 'known', cobraValue: 800, household: 'single', householdSize: 1, estimatedMAGI: 40000, marketplaceBenchmarkMonthly: 500, coverageHorizonMonths: 12 });
+  ok('under the cliff → a positive subsidy lowers the net premium', under.estimatedSubsidyMonthly > 0 && under.marketplaceNetMonthly < 500);
+  // Box 12 DD path: annual / 12 x 1.02.
+  const box = cvm.cobraVsMarketplace({ cobraSource: 'box12dd', cobraValue: 12000, household: 'single', householdSize: 1, estimatedMAGI: 40000, marketplaceBenchmarkMonthly: 500, coverageHorizonMonths: 6 });
+  ok('COBRA Box 12 DD = annual / 12 x 1.02', near(box.cobraMonthly, Math.round(12000 / 12 * 1.02)), `${box.cobraMonthly}`);
+
+  // Runway: the anchor. UI for 6 months, then it runs out.
+  const run = rwy.runway({ savings: 10000, netSeverance: 30000, monthlyUINet: 2000, uiWeeks: 26, monthlyEssentialSpend: 4000, healthPremiumMonthly: 600, otherMonthlyIncome: 0 });
+  ok('runway starts from savings + net severance', run.startingBalance === 40000 && run.monthlyBurn === 4600);
+  ok('UI exhausts at month 6 (26 weeks)', run.monthUIExhausts === 6);
+  ok('runway runs out and reports a break-even job-start month', run.runsOut && run.breakEvenJobStartMonth > run.monthUIExhausts && run.monthsOfRunway >= 8 && run.monthsOfRunway <= 14, `${run.monthsOfRunway}`);
+  ok('balance curve is monotonic-ish and ends negative', run.balanceCurve.length === run.breakEvenJobStartMonth && run.balanceCurve.at(-1).balance < 0);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
