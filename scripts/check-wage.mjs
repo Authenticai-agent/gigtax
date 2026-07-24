@@ -51,6 +51,7 @@ const rto = await load('src/lib/rtoCost.ts');
 const neg = await load('src/lib/negotiation.ts');
 const sid = await load('src/lib/sideIncome.ts');
 const frt = await load('src/lib/freelanceRateTool.ts');
+const rr = await load('src/lib/remoteResidency.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -1043,6 +1044,46 @@ console.log('\nfreelance rate calculator');
   // No-income-tax state needs a lower gross for the same take-home.
   const tx = frt.freelanceRateTool({ targetTakeHome: 90000, healthInsuranceAnnual: 6000, overheadAnnual: 4000, stateCode: 'TX', weeksOff: 4, billableHoursPerWeek: 25 });
   ok('a no-income-tax state needs a lower gross than California', tx.grossRevenue < r.grossRevenue && tx.stateTax === 0);
+}
+
+/* ---------------------- remote-work residency (add-on task 2) ------------- */
+console.log('\nremote-work residency checker');
+{
+  // Same state — no cross-border issue.
+  const same = rr.domesticResidency({ homeState: 'CA', workState: 'CA', employerNecessity: false });
+  ok('same state → no cross-border issue', same.sameState === true && !same.doubleTaxRisk);
+
+  // Reciprocity pair (NJ resident, PA employer) → one state, exemption form.
+  const recip = rr.domesticResidency({ homeState: 'NJ', workState: 'PA', employerNecessity: false });
+  ok('reciprocity pair pays one state and names the form', recip.items.some((it) => /reciprocity/i.test(it.title)) && recip.items.some((it) => /NJ-165/.test(it.detail)) && !recip.doubleTaxRisk);
+
+  // DC work state never taxes nonresidents.
+  const dc = rr.domesticResidency({ homeState: 'VA', workState: 'DC', employerNecessity: false });
+  ok('DC does not tax nonresident wages', dc.items.some((it) => /DC exempts/i.test(it.title)) && !dc.doubleTaxRisk);
+
+  // Convenience state (NY employer, CA remote, convenience) → double-tax risk + credit action.
+  const ny = rr.domesticResidency({ homeState: 'CA', workState: 'NY', employerNecessity: false });
+  ok('NY convenience rule flags double-tax risk for employee convenience', ny.doubleTaxRisk === true && ny.items.some((it) => /convenience rule may tax/i.test(it.title)));
+  ok('and points to the credit for taxes paid', ny.items.some((it) => /credit for taxes paid/i.test(it.title)));
+
+  // Same NY case but employer necessity → the exception applies, no double-tax flag.
+  const nyNec = rr.domesticResidency({ homeState: 'CA', workState: 'NY', employerNecessity: true });
+  ok('employer necessity invokes the exception, drops the risk flag', nyNec.doubleTaxRisk === false && nyNec.items.some((it) => /necessity exception/i.test(it.title)));
+
+  // International: Portugal (has totalization) → FEIE math + totalization OK + treaty→Pub 901, no treaty asserted.
+  const pt = rr.internationalResidency({ country: 'PT', foreignEarnedIncome: 120000, otherUSIncome: 0 });
+  ok('FEIE limit is the 2026 figure', pt.feieLimit === 132900);
+  ok('FEIE lowers US tax vs no exclusion', pt.feie.taxWithFeie < pt.feie.taxWithoutFeie);
+  ok('Portugal totalization agreement recognized', pt.totalizationAgreement === true && pt.items.some((it) => /totalization agreement/i.test(it.title)));
+  ok('treaty item points to Pub 901 and asserts nothing', pt.items.some((it) => /Publication 901/.test(it.detail)) && !pt.items.some((it) => /treaty-exempt|no treaty with/i.test(it.detail)));
+  ok('employer permanent-establishment warning present', pt.items.some((it) => /employer-side problem/i.test(it.title)));
+
+  // International: Mexico (no totalization) → warning.
+  const mx = rr.internationalResidency({ country: 'MX', foreignEarnedIncome: 120000, otherUSIncome: 0 });
+  ok('Mexico flags no totalization agreement', mx.totalizationAgreement === false && mx.items.some((it) => /no totalization/i.test(it.title)));
+
+  // Nomad-visa copy is the generic caution, never a per-country note.
+  ok('nomad-visa item is the generic caution', pt.items.some((it) => /Digital-nomad visas/i.test(it.title) && /change frequently/i.test(it.detail)));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

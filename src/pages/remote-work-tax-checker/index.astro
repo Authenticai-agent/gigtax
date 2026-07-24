@@ -1,0 +1,83 @@
+---
+/** Remote-work tax residency checker hub (add-on task 2). */
+import Base from '../../layouts/Base.astro';
+import RemoteResidencyChecker from '../../components/calculators/RemoteResidencyChecker.tsx';
+import { REMOTE_COUNTRIES, CONVENIENCE_STATES, FEIE_LIMIT } from '../../lib/remoteResidency';
+import { FEIE_LIMIT as _F } from '../../lib/feie';
+import { states } from '../../data/states';
+
+const feieStr = _F.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+const faqItems = [
+  { q: `If I work remotely from another state, who do I pay tax to?`, a: `Usually the state you live in taxes you, and the state you work in may too — with a credit preventing true double taxation. But reciprocity agreements, and a handful of "convenience of the employer" states (New York being the classic), change the answer. The tool maps which applies to your pair.`, review: true },
+  { q: `Do I still pay US tax if I work abroad for a US company?`, a: `Yes — US citizens are taxed on worldwide income wherever they live. You may be able to exclude up to ${feieStr} of earned income for 2026 with the Foreign Earned Income Exclusion, or use the Foreign Tax Credit, but you still file. Working abroad changes the relief, not the obligation.`, review: true },
+  { q: `Can I just work from abroad quietly?`, a: `The risk isn't only yours. An employee working from a country can create permanent-establishment and payroll-registration exposure for the employer. That employer-side problem is the real question under "can I just do it quietly" — and it's why this needs a conversation, not a quiet move.`, review: true },
+  { q: `Does this tool give me a final answer?`, a: `No — it maps which rules apply and where the risk sits. Cross-border tax is fact-specific and the penalties are real; confirm your situation with a qualified professional. For treaty specifics, see IRS Publication 901.`, review: true },
+];
+---
+
+<Base
+  title="Remote work tax residency checker — two states or abroad (2026)"
+  description="Live in one state and work for an employer in another? Or work abroad for a US company? Map which tax rules apply — convenience states, reciprocity, FEIE, totalization."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 · remote work</p>
+    <h1>Remote work tax residency checker</h1>
+    <p class="tagline">Two questions hide here: which US state taxes you when you and your employer are in different ones, and what you owe working abroad for a US company. This maps both — the rules, not a guess.</p>
+  </section>
+
+  <p>
+    Remote-work tax is where most online advice is wrong, because the rules are genuinely hard: "convenience of the
+    employer" states that tax you as if you never left, reciprocity agreements that let you skip it, and — abroad — the
+    fact that a US passport means worldwide taxation no matter where the laptop sits. This tool maps which rules apply
+    to your situation and where the double-taxation risk is, then tells you what a professional needs to confirm.
+  </p>
+
+  <RemoteResidencyChecker client:load />
+
+  <h2>The two hard truths</h2>
+  <p>
+    <strong>Between US states:</strong> your home state taxes you as a resident; the work state may tax the same wages
+    at source, with a credit usually preventing true double taxation. The exception is the convenience states — New York
+    and a small identified group — which can tax a remote worker as if every day were in the office.
+  </p>
+  <p>
+    <strong>Working abroad:</strong> as a US citizen you owe US tax on worldwide income. The FEIE (up to {feieStr} for
+    2026) or the Foreign Tax Credit can reduce it if you pass a residence test — but the employer's permanent-establishment
+    risk is the part almost no guide mentions.
+  </p>
+
+  <h2>By country</h2>
+  <p>Pick your destination in the tool above. Whether the US has a Social Security totalization agreement with it changes the self-employment picture — these are the destinations covered, with their totalization status per the SSA list:</p>
+  <ul class="link-columns">
+    {REMOTE_COUNTRIES.map((c) => (
+      <li>{c.name} — {c.totalization ? 'totalization agreement' : 'no totalization agreement'}</li>
+    ))}
+  </ul>
+
+  <h2>Convenience-of-employer states</h2>
+  <p>Employers in these states can tax your remote wages even if you never set foot there:</p>
+  <ul class="link-columns">
+    {CONVENIENCE_STATES.map((s) => (
+      <li>{s.name}</li>
+    ))}
+  </ul>
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/cross-border-tax/">Two-state tax calculator</a> — the numbers when you owe in two states</li>
+    <li><a href="/1099-tax-calculator/">1099 tax</a> — if you're a contractor abroad</li>
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a></li>
+  </ul>
+
+  <p class="results-note">This maps the rules; it does not file them. Cross-border filing needs a professional. Treaty details: IRS Publication 901 (Rev. 09/2024). FEIE and totalization figures from the IRS and SSA. Nothing you enter is stored. Not tax or legal advice.</p>
+</Base>

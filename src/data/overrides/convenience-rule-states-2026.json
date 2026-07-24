@@ -16,9 +16,15 @@
     "NJ": { "name": "New Jersey", "applies": true, "nuance": "Enacted a convenience rule that applies only to nonresidents from states that impose their own convenience rule (mirrors CT). New Jersey publishes an FAQ on it.", "employer_necessity_exception": true, "source": "NJ Division of Taxation — Convenience of the Employer Sourcing Rule FAQ (primary)", "source_url": "https://www.nj.gov/treasury/taxation/conveniencerulefaq.shtml", "verify_status": "verified" }
   },
 
+  "_owner_decision_2026_07_24": {
+    "signed_off": true,
+    "ship_posture": "The canonical, well-documented convenience states are New York (the classic) plus Connecticut, Delaware, Nebraska, and Pennsylvania; New Jersey is DOR-verified. Assert the rule for these with the employer-necessity exception. Arkansas is commonly cited but kept behind the same 'confirm' caution. For ANY state not clearly identified, do not assert a convenience rule — show the owner-approved caution and point to the DOR / a professional.",
+    "approved_copy": "This tool does not attempt to fully model the 'convenience of the employer' rule beyond New York and a small group of clearly identified states. For other jurisdictions, always confirm nonresident wage sourcing directly with the state Department of Revenue or a qualified professional.",
+    "employer_necessity_note": "Surface prominently: if the employer requires the remote work for a genuine business reason (not employee convenience), the wages may not be re-sourced."
+  },
   "_owner_review_notes": [
-    "NJ is confirmed against the state Division of Taxation FAQ (primary). The other six are from secondary summaries and need confirmation against each state DOR — convenience rules have changed recently (NE's 2024 amendment is the example).",
-    "Most convenience states offer an 'employer necessity' exception: if the employer requires the remote work for a genuine business reason (not employee convenience), the wages may not be re-sourced. The tool must surface this exception prominently, not just the rule.",
-    "This is a rules-map, not a tax computation — the tool outputs which rules apply and where double taxation risk sits, then leans on the existing reciprocity + credit-for-taxes-paid data for the states that have those instead."
+    "NJ is confirmed against the state Division of Taxation FAQ (primary). NY/CT/DE/NE/PA are the well-documented core per practitioner guidance. AR is commonly listed but not DOR-confirmed here — kept behind the confirm caution.",
+    "NE's rule applies only after 7+ days physical presence in NE (2024 amendment) — the example of why the list needs annual re-checking.",
+    "This is a rules-map, not a tax computation — the tool outputs which rules apply and where double-taxation risk sits, then leans on the existing reciprocity + credit-for-taxes-paid data."
   ]
 }

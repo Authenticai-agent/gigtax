@@ -440,3 +440,16 @@ main ol li { margin-bottom: .4rem; line-height: 1.68; }
 .rate-bar-track { background: rgba(255,255,255,.12); border-radius: 3px; height: 12px; overflow: hidden; }
 .rate-bar-fill { display: block; height: 100%; background: #a8e6cf; border-radius: 3px; }
 .rate-bar-row .num { color: #a8e6cf; }
+
+/* Remote residency — rules-map checklist */
+.mode-toggle { display: inline-flex; border: 1.5px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 1.25rem; }
+.mode-toggle button { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; padding: .55rem 1.1rem; background: #fff; color: var(--muted); border: none; cursor: pointer; }
+.mode-toggle button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.rule-list { list-style: none; margin: 1.25rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .6rem; }
+.rule-item { border-left: 3px solid var(--border); background: #fff; border-radius: 0 6px 6px 0; padding: .75rem 1rem; }
+.rule-item.ok { border-left-color: var(--g); }
+.rule-item.warning { border-left-color: var(--accent); background: rgba(184,64,24,.05); }
+.rule-item.action { border-left-color: var(--b); }
+.rule-item.info { border-left-color: var(--muted); }
+.rule-title { font-family: var(--disp); font-weight: 700; font-size: 14px; margin-bottom: .2rem; }
+.rule-detail { font-size: 14px; line-height: 1.55; margin: 0; }

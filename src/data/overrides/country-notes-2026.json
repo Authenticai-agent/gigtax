@@ -5,7 +5,8 @@
     "last_verified": "2026-07-24",
     "universal_facts": {
       "us_citizens_taxed_worldwide": "A US citizen owes US tax on worldwide income regardless of where they live or work.",
-      "feie_2026": "Foreign Earned Income Exclusion for 2026 is $132,900 (from federal.ts, foreignEarnedIncomeExclusion.amount; re-confirm against the IRS Rev. Proc.). Requires either the Physical Presence test (330 full days in any 12 months abroad) or the Bona Fide Residence test.",
+      "feie_2026": "Foreign Earned Income Exclusion for 2026 is $132,900 per qualifying taxpayer — VERIFIED against IRS 'Figuring the foreign earned income exclusion' (up from $130,000 in 2025), IRC §911(b)(2)(D)(i). Requires either the Physical Presence test (330 full days in any 12 months abroad) or the Bona Fide Residence test.",
+      "feie_2026_source_url": "https://www.irs.gov/individuals/international-taxpayers/figuring-the-foreign-earned-income-exclusion",
       "ftc_vs_feie": "Foreign Tax Credit and FEIE are alternative reliefs; FTC is usually better in high-tax countries, FEIE in low/no-tax countries. Not both on the same income.",
       "employer_side": "The part most content omits: an employee working from a country can create permanent-establishment and payroll-registration risk for the EMPLOYER — which is why 'can I just do it quietly' is the real question underneath."
     },
@@ -30,11 +31,19 @@
     "ID": { "name": "Indonesia", "totalization_agreement": false, "tax_treaty": "pending_confirm_irs_pub901", "nomad_visa_note": "Indonesia (Bali) has introduced nomad-visa routes; confirm current local tax treatment.", "note": "NO totalization agreement per SSA.", "source_url": "https://www.ssa.gov/international/agreements_overview.html", "verify_status": "sourced_pending_owner_review" }
   },
 
+  "_owner_decision_2026_07_24": {
+    "signed_off": true,
+    "feie_2026": "VERIFIED $132,900 (IRS). Safe to ship.",
+    "treaties_ship_posture": "Do NOT list treaty-exempt countries or interpret articles. Ship the approved caution only.",
+    "treaties_approved_copy": "Tax treaties can alter US tax obligations. For current treaty coverage and relief, consult IRS Publication 901, U.S. Tax Treaties (Rev. 09/2024), and the text of the relevant treaty. This tool does not interpret treaty articles.",
+    "nomad_visa_ship_posture": "Do NOT ship the per-country nomad_visa_note fields (kept below as internal research only). Ship the generic caution.",
+    "nomad_visa_approved_copy": "Some countries offer 'digital nomad' or remote-worker visas, which may have specific tax and residency implications. Because these rules change frequently, treat any summary as informational only and confirm current law with a local professional before relying on it.",
+    "totalization_ship_posture": "Totalization yes/no is SSA-sourced and shippable, framed as 'per the SSA list; confirm current status'.",
+    "disclaimer_posture": "The strongest on the site: 'this maps the rules; cross-border filing needs a professional.'"
+  },
   "_owner_review_notes": [
-    "Totalization flags are from the SSA overview (authoritative list) but each country row should be checked against the SSA per-country page before shipping; the file source_url points there.",
-    "tax_treaty is deliberately left as 'pending_confirm_irs_pub901' for EVERY country — income tax treaty status must be confirmed against IRS Publication 901 / the IRS treaty table, not asserted. Brazil, UAE, and Singapore are believed to have NO US income tax treaty; confirm.",
-    "nomad_visa_note fields are the most volatile data on the site — nomad-visa tax rules change frequently. They ship only with a visible 'last verified' date and a 'confirm current rules' caution, or not at all.",
-    "Re-confirm the 2026 FEIE amount ($132,900 in federal.ts) against the IRS Rev. Proc. as part of sign-off.",
-    "The disclaimer posture here is the strongest on the site: 'this maps the rules; cross-border filing needs a professional.'"
+    "Per-country nomad_visa_note fields are INTERNAL research only — the shipped tool renders the generic caution above, not these.",
+    "tax_treaty stays 'pending_confirm_irs_pub901' for every country and is NEVER asserted in shipped copy — the tool points to Pub 901 instead.",
+    "Totalization flags are SSA-sourced; re-verify per-country annually against the SSA list."
   ]
 }
