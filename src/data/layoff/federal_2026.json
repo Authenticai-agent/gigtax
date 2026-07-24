@@ -1,0 +1,51 @@
+{
+  "_meta": {
+    "purpose": "Federal 2026 constants the severance engine needs. Per spec item 4, numbers that already live in the shared tax engine are NOT duplicated here — this file records WHERE each is imported from so the engine reads one source of truth.",
+    "last_verified": "2026-07"
+  },
+  "imported_from_shared_engine": {
+    "social_security_wage_base_2026": {
+      "value": 184500,
+      "path": "src/data/federal.ts -> selfEmployment.socialSecurityWageBase (and incomeSources ficaSS_wageBase2026)",
+      "source_url": "https://www.ssa.gov/oact/cola/cbb.html"
+    },
+    "supplemental_withholding_flat_under_1m": {
+      "value": 0.22,
+      "path": "src/data/federal.ts -> incomeSources ... withholdingRate_supplemental_under1M",
+      "source_url": "https://www.irs.gov/pub/irs-pdf/p15.pdf"
+    },
+    "supplemental_withholding_mandatory_over_1m": {
+      "value": 0.37,
+      "path": "src/data/federal.ts -> withholdingRate_supplemental_over1M",
+      "source_url": "https://www.irs.gov/pub/irs-pdf/p15.pdf"
+    },
+    "medicare_rate_employee": {
+      "value": 0.0145,
+      "path": "half of federal.ts selfEmployment.medicareRate (0.029)",
+      "source_url": "https://www.irs.gov/pub/irs-pdf/p15.pdf"
+    },
+    "social_security_rate_employee": {
+      "value": 0.062,
+      "path": "half of federal.ts selfEmployment.socialSecurityRate (0.124)",
+      "source_url": "https://www.irs.gov/pub/irs-pdf/p15.pdf"
+    },
+    "additional_medicare_rate": {
+      "value": 0.009,
+      "path": "src/data/federal.ts -> selfEmployment.additionalMedicare.rate",
+      "thresholds": "single 200000 / mfj 250000",
+      "source_url": "https://www.irs.gov/pub/irs-pdf/p15.pdf"
+    },
+    "standard_deduction_2026": {
+      "single": 16100,
+      "mfj": 32200,
+      "path": "src/data/federal.ts -> filingStatuses / standardDeduction",
+      "source_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf"
+    },
+    "federal_brackets_2026": {
+      "path": "src/data/federal.ts -> federal.brackets (by filing status)",
+      "source_url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf"
+    }
+  },
+  "supplemental_note": "Severance is supplemental wages (IRS Pub 15, 2026). Separate payment: optional flat 22% under $1M/employer/year, mandatory 37% above $1M. If paid combined with a final regular paycheck, the aggregate method applies instead — the engine supports both modes via a toggle. OBBBA (P.L. 119-21) made the underlying TCJA rates permanent, so 22%/37% holds for 2026.",
+  "fica_note": "FICA applies to severance: 6.2% Social Security up to the 184,500 wage base (prior YTD wages from the SAME employer count toward the base — the engine asks for YTD wages), 1.45% Medicare with no cap, plus 0.9% additional Medicare above the threshold."
+}

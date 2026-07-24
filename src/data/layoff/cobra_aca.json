@@ -1,0 +1,57 @@
+{
+  "_meta": {
+    "purpose": "COBRA and ACA-marketplace constants for the layoff cluster's cobra-vs-marketplace calculator. Federal COBRA structural constants are stable statutory/DOL figures. The 2026 FPL table, 400% cliff thresholds, and ACA applicable-percentage table are NOT duplicated here — they already live in src/data/federal.ts (acaSubsidy) and are imported by the engine (spec item 4). This file adds only what the shared engine does not already hold: COBRA mechanics, per-state mini-COBRA flags, and KFF market averages.",
+    "subsidy_rules_last_verified": "PENDING",
+    "sourcing_status": "Federal COBRA constants sourced to DOL and shippable. KFF premium averages carry the spec's 2025 baseline and MUST be refreshed to 2026 KFF before ship. Per-state mini_cobra flags are UNSOURCED stubs pending state insurance-law lookup. See data_notes.md."
+  },
+
+  "cobra_federal": {
+    "premium_max_pct_of_full_cost": 1.02,
+    "admin_fee_pct": 0.02,
+    "disability_extension_pct": 1.50,
+    "standard_duration_months": 18,
+    "disability_extension_months": 29,
+    "second_qualifying_event_months": 36,
+    "election_window_days": 60,
+    "employer_size_threshold": 20,
+    "box12_code": "DD",
+    "estimation_method": "W-2 Box 12 Code DD (total annual premium) / 12 x 1.02 = monthly COBRA premium",
+    "retroactive_note": "Coverage is retroactive to the loss date if elected within the 60-day window, which enables a wait-and-see strategy. One late payment terminates coverage.",
+    "source_url": "https://www.dol.gov/general/topic/health-plans/cobra",
+    "last_verified": "2026-07",
+    "confidence": "high"
+  },
+
+  "aca_2026": {
+    "enhanced_credits_expired": "2025-12-31",
+    "cliff_at_fpl_pct": 4.0,
+    "special_enrollment_days": 60,
+    "note": "Enhanced premium tax credits expired 2025-12-31 (OBBBA did not extend). The 400% FPL subsidy cliff and reverted contribution percentages are back for 2026. FPL table, cliffThresholds400pct, and applicablePercentages2026 are read from src/data/federal.ts acaSubsidy — not duplicated here.",
+    "fpl_and_percentage_tables": "src/data/federal.ts -> acaSubsidy (fpl2026, cliffThresholds400pct, applicablePercentages2026)",
+    "state_backfill_programs_note": "NM, CT, and WA run state subsidy backfill programs as of Q1 2026; a few others were under discussion. Not modeled in v1 — surfaced as a per-state note.",
+    "subsidy_rules_last_verified": "PENDING",
+    "volatility_notice": "Congress was negotiating a subsidy extension as of Q1 2026. If passed, this file and the ACA scenario page need same-week updates.",
+    "source_url": "https://www.kff.org/affordable-care-act/",
+    "last_verified": "2026-07",
+    "confidence": "high"
+  },
+
+  "kff_premium_averages": {
+    "_status": "BASELINE FROM SPEC (KFF 2025 Employer Health Benefits Survey) — MUST be refreshed to exact 2026 KFF figures during Phase 1 sourcing before ship.",
+    "employer_contribution_individual_annual": 6296,
+    "employer_contribution_family_annual": 16399,
+    "typical_cobra_individual_monthly_range": [700, 900],
+    "typical_cobra_family_monthly_min": 2000,
+    "aca_avg_net_monthly_premium_2025": 113,
+    "aca_avg_net_monthly_premium_2026": 178,
+    "aca_net_premium_increase_pct_2026": 0.58,
+    "aca_avg_deductible_increase_2026": 1000,
+    "source_url": "https://www.kff.org/report-section/ehbs-2025-summary-of-findings/",
+    "last_verified": "2026-07",
+    "confidence": "medium"
+  },
+
+  "mini_cobra_by_state": {
+    "_status": "UNSOURCED STUBS. Per-state mini-COBRA (state continuation) applies to employers under 20 employees and varies by state (duration, eligibility). Each flag must be sourced to the state's insurance-department page before ship. Populated null pending Phase 1 sourcing — see data_notes.md."
+  }
+}

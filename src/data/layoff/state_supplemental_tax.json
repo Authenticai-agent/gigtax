@@ -1,0 +1,467 @@
+{
+  "_meta": {
+    "purpose": "Per-jurisdiction supplemental/flat state withholding rate applied to severance (supplemental wages). Client-side static JSON.",
+    "sourcing_status": "no_income_tax flags are derived from the repo's own src/data/states.ts (type:'none'). supplemental_rate is null/PENDING for every taxing state until sourced to that state's Department of Revenue withholding guide. Verify script blocks PENDING taxing states.",
+    "count": 51,
+    "last_verified": "PENDING"
+  },
+  "AL": {
+    "state": "Alabama",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "AK": {
+    "state": "Alaska",
+    "no_income_tax": true,
+    "supplemental_rate": 0.0,
+    "supplemental_rate_note": "No state wage income tax \u2014 no state withholding on severance.",
+    "source_url": "src/data/states.ts (type:none)",
+    "last_verified": "2026-07 (no_income_tax from repo)",
+    "verify_status": "verified_no_tax"
+  },
+  "AZ": {
+    "state": "Arizona",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "AR": {
+    "state": "Arkansas",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "CA": {
+    "state": "California",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "CO": {
+    "state": "Colorado",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "CT": {
+    "state": "Connecticut",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "DE": {
+    "state": "Delaware",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "DC": {
+    "state": "Washington DC",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "FL": {
+    "state": "Florida",
+    "no_income_tax": true,
+    "supplemental_rate": 0.0,
+    "supplemental_rate_note": "No state wage income tax \u2014 no state withholding on severance.",
+    "source_url": "src/data/states.ts (type:none)",
+    "last_verified": "2026-07 (no_income_tax from repo)",
+    "verify_status": "verified_no_tax"
+  },
+  "GA": {
+    "state": "Georgia",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "HI": {
+    "state": "Hawaii",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "ID": {
+    "state": "Idaho",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "IL": {
+    "state": "Illinois",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "IN": {
+    "state": "Indiana",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "IA": {
+    "state": "Iowa",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "KS": {
+    "state": "Kansas",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "KY": {
+    "state": "Kentucky",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "LA": {
+    "state": "Louisiana",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "ME": {
+    "state": "Maine",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "MD": {
+    "state": "Maryland",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "MA": {
+    "state": "Massachusetts",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "MI": {
+    "state": "Michigan",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "MN": {
+    "state": "Minnesota",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "MS": {
+    "state": "Mississippi",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "MO": {
+    "state": "Missouri",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "MT": {
+    "state": "Montana",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "NE": {
+    "state": "Nebraska",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "NV": {
+    "state": "Nevada",
+    "no_income_tax": true,
+    "supplemental_rate": 0.0,
+    "supplemental_rate_note": "No state wage income tax \u2014 no state withholding on severance.",
+    "source_url": "src/data/states.ts (type:none)",
+    "last_verified": "2026-07 (no_income_tax from repo)",
+    "verify_status": "verified_no_tax"
+  },
+  "NH": {
+    "state": "New Hampshire",
+    "no_income_tax": true,
+    "supplemental_rate": 0.0,
+    "supplemental_rate_note": "No state wage income tax \u2014 no state withholding on severance.",
+    "source_url": "src/data/states.ts (type:none)",
+    "last_verified": "2026-07 (no_income_tax from repo)",
+    "verify_status": "verified_no_tax"
+  },
+  "NJ": {
+    "state": "New Jersey",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "NM": {
+    "state": "New Mexico",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "NY": {
+    "state": "New York",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "NC": {
+    "state": "North Carolina",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "ND": {
+    "state": "North Dakota",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "OH": {
+    "state": "Ohio",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "OK": {
+    "state": "Oklahoma",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "OR": {
+    "state": "Oregon",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "PA": {
+    "state": "Pennsylvania",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "RI": {
+    "state": "Rhode Island",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "SC": {
+    "state": "South Carolina",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "SD": {
+    "state": "South Dakota",
+    "no_income_tax": true,
+    "supplemental_rate": 0.0,
+    "supplemental_rate_note": "No state wage income tax \u2014 no state withholding on severance.",
+    "source_url": "src/data/states.ts (type:none)",
+    "last_verified": "2026-07 (no_income_tax from repo)",
+    "verify_status": "verified_no_tax"
+  },
+  "TN": {
+    "state": "Tennessee",
+    "no_income_tax": true,
+    "supplemental_rate": 0.0,
+    "supplemental_rate_note": "No state wage income tax \u2014 no state withholding on severance.",
+    "source_url": "src/data/states.ts (type:none)",
+    "last_verified": "2026-07 (no_income_tax from repo)",
+    "verify_status": "verified_no_tax"
+  },
+  "TX": {
+    "state": "Texas",
+    "no_income_tax": true,
+    "supplemental_rate": 0.0,
+    "supplemental_rate_note": "No state wage income tax \u2014 no state withholding on severance.",
+    "source_url": "src/data/states.ts (type:none)",
+    "last_verified": "2026-07 (no_income_tax from repo)",
+    "verify_status": "verified_no_tax"
+  },
+  "UT": {
+    "state": "Utah",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "VT": {
+    "state": "Vermont",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "VA": {
+    "state": "Virginia",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "WA": {
+    "state": "Washington",
+    "no_income_tax": true,
+    "supplemental_rate": 0.0,
+    "supplemental_rate_note": "No state wage income tax \u2014 no state withholding on severance.",
+    "source_url": "src/data/states.ts (type:none)",
+    "last_verified": "2026-07 (no_income_tax from repo)",
+    "verify_status": "verified_no_tax"
+  },
+  "WV": {
+    "state": "West Virginia",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "WI": {
+    "state": "Wisconsin",
+    "no_income_tax": false,
+    "supplemental_rate": null,
+    "supplemental_rate_note": null,
+    "source_url": null,
+    "last_verified": null,
+    "verify_status": "PENDING"
+  },
+  "WY": {
+    "state": "Wyoming",
+    "no_income_tax": true,
+    "supplemental_rate": 0.0,
+    "supplemental_rate_note": "No state wage income tax \u2014 no state withholding on severance.",
+    "source_url": "src/data/states.ts (type:none)",
+    "last_verified": "2026-07 (no_income_tax from repo)",
+    "verify_status": "verified_no_tax"
+  }
+}
