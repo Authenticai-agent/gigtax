@@ -49,7 +49,7 @@ export default function FreelanceRateCalculator({ presetState = 'CA' }: { preset
             {result.breakdown.map((b) => (
               <div className="rate-bar-row" key={b.label}>
                 <span className="rate-bar-label">{b.label}</span>
-                <span className="rate-bar-track"><span className="rate-bar-fill" style={`width:${Math.round((b.annual / maxComp) * 100)}%`}></span></span>
+                <span className="rate-bar-track"><span className="rate-bar-fill" style={{ width: `${Math.round((b.annual / maxComp) * 100)}%` }}></span></span>
                 <span className="num">{formatMoney(b.perHour)}/hr</span>
               </div>
             ))}
