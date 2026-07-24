@@ -1,0 +1,56 @@
+{
+  "_meta": {
+    "purpose": "Side-income tax-threshold tool (tasks_layoff_addons.md task 5) — Phase 1 data. Three layers the tool must keep separate: (1) income tax, owed from the first dollar of profit; (2) the SE-tax filing threshold ($400 net SE earnings), which is NOT an income-tax exemption; (3) the 1099-K platform-reporting threshold, federal + per-state. This file holds layers 2 and 3. The existing engine already computes SE tax and income tax (layer 1).",
+    "phase": "1 — data, pending owner sign-off. Do not wire into a shipped tool until every 'sourced_pending_owner_review' row is confirmed.",
+    "last_verified": "2026-07-24",
+    "verify_status_legend": {
+      "verified": "confirmed against a primary source (IRS / statute) at last_verified",
+      "sourced_pending_owner_review": "sourced to a secondary summary; owner to confirm against the state Department of Revenue before it ships"
+    },
+    "schema": {
+      "federal": "{ amount, transactions, operator, effective, history_note, source, source_url, verify_status }",
+      "se_tax_filing_threshold": "{ amount, note, source, source_url, verify_status }",
+      "states": "code -> { amount, transactions|null, note, source, source_url, verify_status }; a state absent from this map follows the federal threshold"
+    },
+    "maintenance_note": "The federal 1099-K threshold has moved four times in five years (pre-ARPA 20k/200 -> ARPA 600 -> IRS phase-in 5,000 (2024) / 2,500 (2025) -> OBBBA restored 20k/200 for 2025+). It gets its OWN maintenance-calendar entry: re-verify the IRS 1099-K page every January and after any tax legislation."
+  },
+
+  "federal": {
+    "amount": 20000,
+    "transactions": 200,
+    "operator": "exceeds amount AND more than 200 transactions",
+    "effective": "tax year 2025 and forward",
+    "history_note": "ARPA (2021) set >$600, no transaction minimum, effective 2022. IRS delayed enforcement and phased it: $5,000 for 2024, $2,500 for 2025. OBBBA, signed 2025-07-04, repealed the ARPA change and retroactively reinstated the original >$20,000 AND >200 transactions for 2025 and forward.",
+    "source": "IRS — Understanding your Form 1099-K (page reviewed 2026-06-28)",
+    "source_url": "https://www.irs.gov/businesses/understanding-your-form-1099-k",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
+  },
+
+  "se_tax_filing_threshold": {
+    "amount": 400,
+    "note": "You must file Schedule SE and pay self-employment tax if your net self-employment earnings are $400 or more. This is the number everyone half-remembers — but it is NOT an income-tax exemption: income tax applies to profit from the first dollar. The $400 only governs when SE tax kicks in and when a return is triggered by SE income alone.",
+    "source": "IRC §6017; IRS Schedule SE (Form 1040) instructions",
+    "source_url": "https://www.irs.gov/instructions/i1040sse",
+    "last_verified": "2026-07-24",
+    "verify_status": "verified"
+  },
+
+  "states": {
+    "DC": { "amount": 600, "transactions": null, "note": "$600 threshold regardless of federal.", "source": "1099FIRE state-specific 1099-K thresholds (secondary)", "source_url": "https://www.1099fire.com/blog/state-specific-1099k-thresholds/", "verify_status": "sourced_pending_owner_review" },
+    "MD": { "amount": 600, "transactions": null, "note": "$600 threshold regardless of federal.", "source": "1099FIRE state-specific 1099-K thresholds (secondary)", "source_url": "https://www.1099fire.com/blog/state-specific-1099k-thresholds/", "verify_status": "sourced_pending_owner_review" },
+    "MA": { "amount": 600, "transactions": null, "note": "$600 threshold regardless of federal.", "source": "1099FIRE state-specific 1099-K thresholds (secondary)", "source_url": "https://www.1099fire.com/blog/state-specific-1099k-thresholds/", "verify_status": "sourced_pending_owner_review" },
+    "MT": { "amount": 600, "transactions": null, "note": "$600 threshold regardless of federal.", "source": "1099FIRE state-specific 1099-K thresholds (secondary)", "source_url": "https://www.1099fire.com/blog/state-specific-1099k-thresholds/", "verify_status": "sourced_pending_owner_review" },
+    "NC": { "amount": 600, "transactions": null, "note": "$600 threshold regardless of federal.", "source": "1099FIRE state-specific 1099-K thresholds (secondary)", "source_url": "https://www.1099fire.com/blog/state-specific-1099k-thresholds/", "verify_status": "sourced_pending_owner_review" },
+    "VT": { "amount": 600, "transactions": null, "note": "$600 threshold regardless of federal.", "source": "1099FIRE state-specific 1099-K thresholds (secondary)", "source_url": "https://www.1099fire.com/blog/state-specific-1099k-thresholds/", "verify_status": "sourced_pending_owner_review" },
+    "VA": { "amount": 600, "transactions": null, "note": "$600 threshold regardless of federal.", "source": "1099FIRE state-specific 1099-K thresholds (secondary)", "source_url": "https://www.1099fire.com/blog/state-specific-1099k-thresholds/", "verify_status": "sourced_pending_owner_review" },
+    "NJ": { "amount": 1000, "transactions": null, "note": "$1,000 threshold.", "source": "1099FIRE state-specific 1099-K thresholds (secondary)", "source_url": "https://www.1099fire.com/blog/state-specific-1099k-thresholds/", "verify_status": "sourced_pending_owner_review" },
+    "MO": { "amount": 1200, "transactions": null, "note": "$1,200 threshold.", "source": "1099FIRE state-specific 1099-K thresholds (secondary)", "source_url": "https://www.1099fire.com/blog/state-specific-1099k-thresholds/", "verify_status": "sourced_pending_owner_review" }
+  },
+
+  "_owner_review_notes": [
+    "Federal figure is confirmed against the IRS page and can ship. Every state row is from a single secondary aggregator and MUST be confirmed against that state's Department of Revenue before shipping — post-OBBBA, some states may have conformed to the federal $20,000/200 threshold, and this list may be incomplete (e.g. Illinois historically used $1,000 + 4 transactions and is not in the source list).",
+    "Confirm whether each state's threshold carries a transaction minimum (the source specified none).",
+    "Decide the shipping posture for unconfirmed states: default them to the federal threshold with a visible 'confirm with your state' note, rather than guessing a state figure."
+  ]
+}

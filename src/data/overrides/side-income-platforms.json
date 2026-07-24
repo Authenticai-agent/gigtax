@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "purpose": "Platform notes for the side-income threshold tool (task 5) — Phase 1 skeleton. Each platform: what it reports on a 1099-K, and any platform-specific quirk that changes how the number maps to taxable income. The universal truth the tool leads with: a 1099-K reports GROSS payments (before fees, refunds, and shipping you collected), not profit — reconciling gross to net is most of the return.",
+    "phase": "1 — data, pending owner sign-off. Platform-specific quirk claims marked 'sourced_pending_owner_review' need a primary source (the platform's own tax/help page) before shipping.",
+    "last_verified": "2026-07-24",
+    "schema": "code -> { name, category, reports, quirk, existing_page|null, source_url, verify_status }"
+  },
+
+  "platforms": {
+    "etsy": { "name": "Etsy", "category": "handmade / goods marketplace", "reports": "Gross sales processed through Etsy Payments, before Etsy fees. Sales tax Etsy collects and remits is generally excluded.", "quirk": "Fees, shipping labels, and materials are deductible against the gross — the 1099-K number is not your profit.", "existing_page": null, "source_url": "https://help.etsy.com/hc/en-us/articles/360000343428", "verify_status": "sourced_pending_owner_review" },
+    "ebay": { "name": "eBay", "category": "goods marketplace / resale", "reports": "Gross payments including shipping collected, before eBay fees.", "quirk": "Reselling personal items at a LOSS is not taxable income, but a 1099-K may still report the gross — the loss must be reconciled on the return (personal-item losses are not deductible, but they aren't taxable gains either).", "existing_page": null, "source_url": "https://www.ebay.com/help/selling/fees-credits-invoices/form-1099k", "verify_status": "sourced_pending_owner_review" },
+    "depop": { "name": "Depop", "category": "resale / secondhand fashion", "reports": "Gross sales through Depop Payments.", "quirk": "Same personal-items-at-a-loss issue as eBay for closet clean-outs vs a reselling business — the hobby-vs-business line matters here.", "existing_page": null, "source_url": "", "verify_status": "sourced_pending_owner_review" },
+    "poshmark": { "name": "Poshmark", "category": "resale / secondhand fashion", "reports": "Gross sales. Poshmark collects and remits sales tax on the buyer's behalf, so sales tax is not part of the seller's reportable income.", "quirk": "The sales-tax handling is the commonly-misunderstood point — confirm the exact 1099-K basis (before or after Poshmark's fee/commission) against Poshmark's tax page.", "existing_page": null, "source_url": "", "verify_status": "sourced_pending_owner_review" },
+    "stockx": { "name": "StockX", "category": "resale marketplace (sneakers / goods)", "reports": "Gross payout to the seller.", "quirk": "High-value flips are clearly a business; occasional personal resales sit closer to capital-asset treatment. Cost basis (what you paid) is the seller's to document.", "existing_page": null, "source_url": "", "verify_status": "sourced_pending_owner_review" },
+    "twitch": { "name": "Twitch", "category": "streaming / creator income", "reports": "Payouts may come on 1099-NEC (service income) and/or 1099-MISC (royalties) rather than 1099-K, depending on payout type — a key distinction for this platform.", "quirk": "Bits/subs vs royalty income can be reported on different forms; the SE-tax treatment follows the income type. Confirm current Twitch payout reporting.", "existing_page": null, "source_url": "", "verify_status": "sourced_pending_owner_review" },
+    "youtube": { "name": "YouTube", "category": "creator / ad + channel income", "reports": "AdSense payments typically on 1099-NEC, not 1099-K; US tax withholding may apply to some income types.", "quirk": "Not a 1099-K platform for most creators — the tool should route YouTube income to the SE-tax explanation, not the 1099-K threshold. Confirm current Google payout reporting.", "existing_page": null, "source_url": "", "verify_status": "sourced_pending_owner_review" },
+    "uber_doordash": { "name": "Uber / DoorDash / rideshare & delivery", "category": "gig platform", "reports": "Gig platforms report on 1099-NEC and/or 1099-K depending on income type (delivery fees vs incentives).", "quirk": "The site already has dedicated gig pages that compute this — the side-income tool should POINT to them, not re-implement.", "existing_page": "/gig-tax-calculator/", "source_url": "", "verify_status": "verified" }
+  },
+
+  "_owner_review_notes": [
+    "Every 'reports' and 'quirk' claim needs the platform's own current tax/help page as the source before shipping — platform reporting behavior changes and varies by payout type.",
+    "Twitch and YouTube are often NOT 1099-K platforms (creator income lands on 1099-NEC/MISC). The tool's copy must not imply a 1099-K threshold governs them; route them to the SE-tax / income-tax explanation instead.",
+    "The hobby-vs-business distinction gets ONE strong shared explainer page every platform+state combination links to (per the task file), not a restatement per page."
+  ]
+}
