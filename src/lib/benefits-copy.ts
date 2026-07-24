@@ -33,6 +33,12 @@ const DISABILITY_PREMIUM = {
   url: 'https://www.law.cornell.edu/uscode/text/26/104',
   confidence: 'high' as const,
 };
+const WORKERS_COMP = {
+  claim: 'Amounts received under a workers’ compensation act for a work-related injury or illness are excluded from gross income',
+  authority: 'IRC 104(a)(1)',
+  url: 'https://www.law.cornell.edu/uscode/text/26/104',
+  confidence: 'high' as const,
+};
 
 export const BENEFIT_PAGES: BenefitPage[] = [
   {
@@ -93,6 +99,20 @@ export const BENEFIT_PAGES: BenefitPage[] = [
       'They interact in one direction that matters. A taxable policy benefit counts as other income in the SSDI formula, so an employer-paid policy can drag your SSDI into being taxable as well. A policy you paid for yourself does not, because tax-free income stays out of the formula. Change the premium answer below and watch both lines move.',
     ],
     sources: [SS_FORMULA, DISABILITY_PREMIUM],
+  },
+  {
+    slug: 'workers-comp',
+    title: 'Workers’ comp tax calculator (2026) — is it taxable?',
+    h1: 'Is workers’ compensation taxable?',
+    description: 'Workers’ compensation for a job injury is tax-free in 2026 — federal and state. The one exception is the SSDI offset. See how it works.',
+    tagline: 'Workers’ comp for a job injury is tax-free. The one catch is when it reduces your SSDI.',
+    preset: [{ kind: 'workersComp', amount: 30000 }],
+    body: [
+      'Workers’ compensation paid for a job-related injury or illness is not taxable — not federally, and not by any state. It does not go on your return as income, you do not get a W-2 or 1099 for it, and it does not count toward any income-based threshold. This is one of the clearest rules in the tax code, and it holds whether the payments are weekly wage replacement, a lump-sum settlement, or medical benefits.',
+      'The one place it interacts with tax is the SSDI offset. If you receive SSDI and workers’ comp at the same time, Social Security caps the combined amount and reduces your SSDI by the overlap. That reduced-and-shifted portion — the “workers’ comp offset” — is treated as if it were SSDI, so it can be taxable under the SSDI formula. Only that offset amount is ever exposed to tax; the rest of the workers’ comp stays fully tax-free.',
+      'Add your workers’ comp below, and add any other household income to confirm it changes nothing. If you also receive SSDI, add that too and use the SSDI page to see how the offset is treated — the two benefits together are where the only tax question lives.',
+    ],
+    sources: [WORKERS_COMP, SS_FORMULA],
   },
   {
     slug: 'retirement',

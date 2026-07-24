@@ -1,0 +1,123 @@
+---
+/**
+ * OBBBA 2026 tax-changes tracker. A zero-JS reference page: every figure is read
+ * from the verified dataset (with a data-source attribution), never authored here.
+ */
+import Base from '../../layouts/Base.astro';
+import { federal, selfEmploymentDeductions, incomeSources, equityCompensation, acaSubsidy } from '../../data/federal';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const salt = (federal as any).saltDeduction;
+const qbi = (selfEmploymentDeductions as any).qualifiedBusinessIncomeDeduction;
+const s179 = (selfEmploymentDeductions as any).section179;
+const k = (incomeSources as any)['1099K'];
+const qsbs = (equityCompensation as any).qsbs.obbbaChanges;
+
+interface Provision {
+  title: string; impact: 'Positive' | 'Negative' | 'Mixed' | 'Neutral';
+  source: string; body: string; figure: string; link?: { href: string; label: string };
+}
+
+const provisions: Provision[] = [
+  {
+    title: 'QBI deduction (Section 199A) made permanent',
+    impact: 'Positive',
+    figure: `${formatPct(qbi.rate)} deduction, permanent`,
+    source: 'selfEmploymentDeductions.qualifiedBusinessIncomeDeduction',
+    body: `The 20% pass-through deduction was set to expire after 2025. OBBBA made it permanent. Sole proprietors, partnerships and S-corps keep deducting up to ${formatPct(qbi.rate)} of qualified business income. Specified service businesses still phase out above ${formatMoney(qbi.phaseoutSingle)} single and ${formatMoney(qbi.phaseoutMFJ)} married filing jointly.`,
+    link: { href: '/1099-tax-calculator/', label: 'See the QBI deduction in the 1099 calculator' },
+  },
+  {
+    title: '100% bonus depreciation made permanent',
+    impact: 'Positive',
+    figure: `${formatPct(s179.bonusDepreciationRate)} first-year write-off`,
+    source: 'selfEmploymentDeductions.section179',
+    body: `Bonus depreciation had been phasing out (40% in 2025, headed to zero). OBBBA restored ${formatPct(s179.bonusDepreciationRate)} bonus depreciation permanently for qualified property placed in service after January 19, 2025 — so equipment, computers and heavy vehicles can be written off in full in year one. Some states (California among them) do not conform, so the deduction is added back for state tax.`,
+  },
+  {
+    title: '1099-K reporting threshold restored',
+    impact: 'Mixed',
+    figure: `${formatMoney(k.threshold2026)} and 200 transactions`,
+    source: 'incomeSources.1099K',
+    body: `The $600 threshold from the American Rescue Plan is gone; OBBBA restored the ${formatMoney(k.threshold2026)}-and-200-transactions threshold. Most casual sellers will not get a 1099-K — but all income is still taxable whether or not a form is issued. The threshold only decides whether the platform must report it.`,
+    link: { href: '/1099-k-calculator/', label: 'Reconcile a 1099-K to taxable income' },
+  },
+  {
+    title: 'SALT cap raised to $40,400',
+    impact: 'Neutral',
+    figure: `${formatMoney(salt.cap)} (was $10,000)`,
+    source: 'federal.saltDeduction',
+    body: `For 2026 the state-and-local-tax deduction cap rises from $10,000 to ${formatMoney(salt.cap)}. It phases out above about ${formatMoney(salt.phaseoutStartMAGI)} of income and reverts to ${formatMoney(salt.revertTo)} in ${salt.revertYear}. High-tax-state itemizers deduct far more state income and property tax; Schedule C business deductions were never subject to the SALT cap.`,
+  },
+  {
+    title: 'QSBS exclusion cap raised',
+    impact: 'Positive',
+    figure: `${formatMoney(qsbs.exclusionLimit_old)} → ${formatMoney(qsbs.exclusionLimit_new)}`,
+    source: 'equityCompensation.qsbs.obbbaChanges',
+    body: `OBBBA raised the Section 1202 QSBS exclusion cap from ${formatMoney(qsbs.exclusionLimit_old)} to ${formatMoney(qsbs.exclusionLimit_new)} for stock acquired after July 4, 2025, and added a tiered holding period. Qualified small-business stock held long enough can exclude up to ${formatMoney(qsbs.exclusionLimit_new)} of gain from federal tax entirely.`,
+    link: { href: '/qsbs-tax-calculator/', label: 'Calculate the QSBS exclusion' },
+  },
+  {
+    title: 'ACA subsidy enhancements ended',
+    impact: 'Negative',
+    figure: 'Hard 400% FPL cliff returned',
+    source: 'acaSubsidy.cliffNote',
+    body: `The enhanced premium tax credits that removed the subsidy cliff expired December 31, 2025. For 2026 the pre-2021 rules are back: ${acaSubsidy.eligibilityRange}. Cross 400% of the federal poverty level by a dollar and the entire subsidy disappears — so a late-year side-hustle payment can be very expensive.`,
+    link: { href: '/aca-subsidy-calculator/', label: 'Model your income against the cliff' },
+  },
+  {
+    title: 'R&D expensing restored',
+    impact: 'Positive',
+    figure: 'Immediate expensing, domestic',
+    source: 'OBBBA — IRC §174 domestic R&D',
+    body: 'TCJA had forced businesses to amortize research costs over five years from 2022. OBBBA restored immediate expensing for domestic R&D — software development and product work can be fully deducted in the year incurred. Foreign R&D must still be amortized over fifteen years.',
+  },
+];
+
+const badge: Record<Provision['impact'], string> = { Positive: 'ok', Negative: 'bad', Mixed: 'warn', Neutral: 'warn' };
+---
+
+<Base
+  title="OBBBA 2026 tax changes — One Big Beautiful Bill Act"
+  description="What OBBBA changed for 2026: the SALT cap to $40,400, permanent QBI and bonus depreciation, the 1099-K threshold, QSBS to $15M, and the ACA cliff."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year · reference</p>
+    <h1>OBBBA: what changed for 2026</h1>
+    <p class="tagline">The One Big Beautiful Bill Act rewrote a stack of expiring tax rules. Here's what it changed, who it helps or hurts, and the figure that matters — each read from the verified 2026 dataset.</p>
+  </section>
+
+  <p>
+    The One Big Beautiful Bill Act (OBBBA) made several temporary tax breaks permanent, restored a few that had
+    lapsed, and let one big benefit expire. If you're self-employed, sell online, hold startup equity, or buy your
+    health insurance on the marketplace, at least one of these changes touches your 2026 return. Every figure below
+    comes straight from the same dataset the calculators use.
+  </p>
+
+  {provisions.map((p) => (
+    <div class="calc-panel" style="margin-bottom:1rem">
+      <h2 style="margin-top:0">{p.title} <span class={`pill ${badge[p.impact]}`}>{p.impact}</span></h2>
+      <p style="font-size:1.2rem;font-weight:600">{p.figure}</p>
+      <p data-source={`data/federal.ts → ${p.source}`}>{p.body}</p>
+      {p.link && <p><a href={p.link.href}>{p.link.label} →</a></p>}
+    </div>
+  ))}
+
+  <h2>Also extended</h2>
+  <p>
+    The Work Opportunity Tax Credit — for hiring veterans, SNAP recipients and the long-term unemployed — was
+    extended through 2026. Check current IRS guidance for the per-employee credit amounts, which vary by target group.
+  </p>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 &amp; self-employment tax</a> — where QBI and the 1099-K land</li>
+    <li><a href="/qsbs-tax-calculator/">QSBS calculator</a> — the raised exclusion</li>
+    <li><a href="/aca-subsidy-calculator/">ACA subsidy calculator</a> — the returned cliff</li>
+  </ul>
+
+  <p class="results-note">
+    A plain-language summary of the 2026 provisions, with figures from the verified dataset. Effective dates and
+    phase-outs have nuances a summary can't fully capture — confirm against IRS guidance for your situation. Not tax advice.
+  </p>
+</Base>
