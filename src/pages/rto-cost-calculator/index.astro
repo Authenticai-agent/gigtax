@@ -1,0 +1,86 @@
+---
+/** Return-to-office cost calculator hub (add-on task 4). */
+import Base from '../../layouts/Base.astro';
+import RtoCostCalculator from '../../components/calculators/RtoCostCalculator.tsx';
+import { rtoCost, DEFAULT_MILEAGE_RATE } from '../../lib/rtoCost';
+import { RTO_DEFAULTS, WORK_HOURS_PER_YEAR } from '../../data/rto-defaults';
+import { formatMoney } from '../../lib/tax-engine';
+
+// Worked example: a 25-mile drive, 3 days a week, $90k salary — computed by the real engine.
+const ex = rtoCost({
+  daysInOfficePerWeek: 3, oneWayDistanceMiles: 25, mode: 'car', mileageRatePerMile: DEFAULT_MILEAGE_RATE,
+  parkingPerOfficeDay: 12, transitFareRoundTrip: 0, commuteMinutesEachWay: 45,
+  hourlyValueOfTime: 90000 / WORK_HOURS_PER_YEAR, lunchDeltaPerOfficeDay: 8, coffeeDeltaPerOfficeDay: 0,
+  wardrobePerYear: 300, childcareDeltaPerOfficeDay: 0, weeksWorkedPerYear: RTO_DEFAULTS.weeksWorkedPerYear.value,
+  marginalTaxRate: RTO_DEFAULTS.marginalTaxRate.value,
+});
+
+const faqItems = [
+  { q: `Is a return-to-office mandate really a pay cut?`, a: `In cash terms, yes — every office day carries commute, parking, and food costs you don't pay working from home. This tool shows the annual figure and the pre-tax raise that would offset it. It's not a formal pay cut, but the effect on your take-home is real and measurable.` },
+  { q: `Should commute time count as a cost?`, a: `That's the argument people have, so the tool refuses to settle it for you: it shows hours per year and dollars out of pocket as separate figures, then a combined number only if you choose to value your time at your wage. Decide which framing you believe.` },
+  { q: `What mileage rate does the car calculation use?`, a: `The 2026 IRS standard mileage rate — ${DEFAULT_MILEAGE_RATE * 100}¢ per mile for the second half of the year (Announcement 2026-11) — as an editable default. It approximates fuel plus wear, not just gas. Enter your own per-mile cost if you track it.` },
+  { q: `Does this store my salary or commute details?`, a: `No. Every figure runs in your browser and nothing is sent anywhere or saved. Reload the page and it's gone.` },
+];
+---
+
+<Base
+  title="Return-to-office cost calculator 2026 — what RTO really costs"
+  description="Work out the true annual cost of a return-to-office mandate: commute, parking, food, time, and the raise that would offset it. All defaults sourced and editable."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 · return to office</p>
+    <h1>Return-to-office cost calculator</h1>
+    <p class="tagline">A back-to-the-office mandate is a pay cut nobody put in writing. Put a number on it — in dollars, in hours, and in the raise it would take to break even.</p>
+  </section>
+
+  <p>
+    Going back to the office costs money your remote colleagues keep: the drive or the fare, parking, lunch bought
+    out, a work wardrobe, sometimes extra childcare — plus hours of unpaid commute. This calculator adds it all up for
+    your specific mandate, then shows the pre-tax raise that would cancel it out. Every default is sourced and editable,
+    and time is kept separate from money so you can decide how much your hours are worth.
+  </p>
+
+  <RtoCostCalculator client:load />
+
+  <h2>Worked example: 25 miles, 3 days a week</h2>
+  <p>A {formatMoney(90000)} earner, driving 25 miles each way three days a week, $12 parking, $8 lunch:</p>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Out of pocket per year</td><td>{formatMoney(ex.mandate.annualMoney)}</td></tr>
+      <tr><td>Hours per year commuting</td><td>{ex.mandate.annualHours} hours</td></tr>
+      <tr><td>Those hours valued at their wage</td><td>{formatMoney(ex.mandate.annualTimeValue)}</td></tr>
+      <tr><td>Money + time combined</td><td>{formatMoney(ex.mandate.totalWithTime)}</td></tr>
+      <tr><td>Pre-tax raise to break even on cash</td><td>{formatMoney(ex.mandate.equivalentRaise)}</td></tr>
+      <tr><td>Full 5-day version</td><td>{formatMoney(ex.fullRto.annualMoney)} · {ex.fullRto.annualHours} hrs</td></tr>
+    </tbody>
+  </table>
+  <p>Three days a week already runs {formatMoney(ex.mandate.annualMoney)} out of pocket and {ex.mandate.annualHours} hours a year. At five days it's {formatMoney(ex.fullRto.annualMoney)} and {ex.fullRto.annualHours} hours.</p>
+
+  <h2>Why money and hours stay separate</h2>
+  <p>
+    The honest disagreement about RTO is whether commute time "counts." Roll it into one dollar figure and half the
+    room stops trusting the number. So this tool leads with two headline figures — cash out of pocket and hours a
+    year — and only combines them into a money-plus-time total if you opt into valuing your time at your wage. Both
+    numbers are on the share card, because both win different arguments.
+  </p>
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/is-rto-a-pay-cut/">Is RTO a pay cut?</a> — the argument, with numbers</li>
+    <li><a href="/hybrid-vs-remote-true-cost/">Hybrid vs remote</a> — what each day back really adds</li>
+    <li><a href="/should-i-change-jobs-over-rto/">Should I change jobs over RTO?</a></li>
+    <li><a href="/salary-negotiation-script-generator/">Salary negotiation script</a> — ask for the offsetting raise</li>
+    <li><a href="/layoff-runway-calculator/">Layoff runway</a> — if it pushes you to quit, know your runway first</li>
+  </ul>
+
+  <p class="results-note">An estimate on your own numbers. Defaults are sourced (IRS mileage rate, BLS food data) and editable; nothing you enter is stored. Not financial advice.</p>
+</Base>

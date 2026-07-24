@@ -1,0 +1,76 @@
+---
+/** Scenario: hybrid vs remote true cost. */
+import Base from '../../layouts/Base.astro';
+import RtoCostCalculator from '../../components/calculators/RtoCostCalculator.tsx';
+import { rtoCost, DEFAULT_MILEAGE_RATE } from '../../lib/rtoCost';
+import { RTO_DEFAULTS, WORK_HOURS_PER_YEAR } from '../../data/rto-defaults';
+import { formatMoney } from '../../lib/tax-engine';
+
+const mk = (days: number) => rtoCost({
+  daysInOfficePerWeek: days, oneWayDistanceMiles: 18, mode: 'car', mileageRatePerMile: DEFAULT_MILEAGE_RATE,
+  parkingPerOfficeDay: 8, transitFareRoundTrip: 0, commuteMinutesEachWay: 35,
+  hourlyValueOfTime: 85000 / WORK_HOURS_PER_YEAR, lunchDeltaPerOfficeDay: 8, coffeeDeltaPerOfficeDay: 0,
+  wardrobePerYear: 250, childcareDeltaPerOfficeDay: 0, weeksWorkedPerYear: RTO_DEFAULTS.weeksWorkedPerYear.value,
+  marginalTaxRate: RTO_DEFAULTS.marginalTaxRate.value,
+});
+const d2 = mk(2), d3 = mk(3), d5 = mk(5);
+const perDay = d5.moneyPerOfficeDay;
+
+const faqItems = [
+  { q: `How much does each extra office day cost?`, a: `Roughly ${formatMoney(perDay)} in cash plus ${d5.hoursPerOfficeDay} hours, every week it recurs — so about ${formatMoney(perDay * RTO_DEFAULTS.weeksWorkedPerYear.value)} a year per weekly day for the example commute here. The marginal day is the honest unit to argue over: two days versus three is one day's cost, not the whole mandate.` },
+  { q: `Is hybrid actually much cheaper than full RTO?`, a: `Proportionally, yes — cost scales almost linearly with days in office. Going from five days to three cuts the cash cost by about 40% and the commuting hours by the same. The wardrobe and any fixed costs don't scale, but the big items (commute, parking, lunch) do.` },
+];
+---
+
+<Base
+  title="Hybrid vs remote: the true cost per office day (2026)"
+  description="Every day back in the office adds commute, parking, food, and hours. See what 2, 3, and 5 days a week actually cost, and why the marginal day is the number to argue over."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 · scenario</p>
+    <h1>Hybrid vs remote: what each day back costs</h1>
+    <p class="tagline">Two days or three? The gap between them is one day's commute, parking, and lunch — repeated 48 weeks a year. Here's the marginal cost, priced.</p>
+  </section>
+
+  <p>
+    RTO debates fixate on the total, but the decision usually lives at the margin: two days versus three, three versus
+    five. Because commute, parking, and food all scale with days in office, each added day carries a near-constant cost.
+    Pricing the marginal day makes the trade-off concrete.
+  </p>
+
+  <h2>2 vs 3 vs 5 days, same commute</h2>
+  <p>An {formatMoney(85000)} earner, 18 miles each way, $8 parking, $8 lunch:</p>
+  <table class="data-table">
+    <thead><tr><th>Days/week</th><th>Cash per year</th><th>Hours per year</th><th>Offsetting raise</th></tr></thead>
+    <tbody>
+      <tr><td>2 days</td><td>{formatMoney(d2.mandate.annualMoney)}</td><td>{d2.mandate.annualHours}</td><td>{formatMoney(d2.mandate.equivalentRaise)}</td></tr>
+      <tr><td>3 days</td><td>{formatMoney(d3.mandate.annualMoney)}</td><td>{d3.mandate.annualHours}</td><td>{formatMoney(d3.mandate.equivalentRaise)}</td></tr>
+      <tr><td>5 days</td><td>{formatMoney(d5.mandate.annualMoney)}</td><td>{d5.mandate.annualHours}</td><td>{formatMoney(d5.mandate.equivalentRaise)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Each office day here is about {formatMoney(perDay)} and {d5.hoursPerOfficeDay} hours — so the jump from two days to
+    three is roughly {formatMoney(d3.mandate.annualMoney - d2.mandate.annualMoney)} a year and
+    {' '}{d3.mandate.annualHours - d2.mandate.annualHours} more hours. That marginal day is the thing to negotiate over.
+  </p>
+
+  <RtoCostCalculator client:load />
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/rto-cost-calculator/">RTO cost calculator</a></li>
+    <li><a href="/is-rto-a-pay-cut/">Is RTO a pay cut?</a></li>
+    <li><a href="/salary-negotiation-script-generator/">Negotiate the days or the raise</a></li>
+  </ul>
+
+  <p class="results-note">An estimate on your own numbers. Defaults sourced and editable; nothing stored. Not financial advice.</p>
+</Base>

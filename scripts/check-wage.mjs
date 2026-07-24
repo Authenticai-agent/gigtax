@@ -47,6 +47,8 @@ const sev = await load('src/lib/layoff/severanceTax.ts');
 const uib = await load('src/lib/layoff/uiBenefit.ts');
 const cvm = await load('src/lib/layoff/cobraVsMarketplace.ts');
 const rwy = await load('src/lib/layoff/runway.ts');
+const rto = await load('src/lib/rtoCost.ts');
+const neg = await load('src/lib/negotiation.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -913,6 +915,72 @@ console.log('\nlayoff: severance tax, UI benefit, COBRA vs marketplace, runway')
   ok('UI exhausts at month 6 (26 weeks)', run.monthUIExhausts === 6);
   ok('runway runs out and reports a break-even job-start month', run.runsOut && run.breakEvenJobStartMonth > run.monthUIExhausts && run.monthsOfRunway >= 8 && run.monthsOfRunway <= 14, `${run.monthsOfRunway}`);
   ok('balance curve is monotonic-ish and ends negative', run.balanceCurve.length === run.breakEvenJobStartMonth && run.balanceCurve.at(-1).balance < 0);
+}
+
+/* ---------------------- RTO commute cost (add-on task 4) ------------------- */
+console.log('\nRTO commute cost');
+{
+  const base = {
+    daysInOfficePerWeek: 3, oneWayDistanceMiles: 20, mode: 'car', mileageRatePerMile: 0.70,
+    parkingPerOfficeDay: 10, transitFareRoundTrip: 5.5, commuteMinutesEachWay: 45,
+    hourlyValueOfTime: 40, lunchDeltaPerOfficeDay: 8, coffeeDeltaPerOfficeDay: 0,
+    wardrobePerYear: 300, childcareDeltaPerOfficeDay: 0, weeksWorkedPerYear: 48, marginalTaxRate: 0.3,
+  };
+  const r = rto.rtoCost(base);
+  // per office day: 2*20*0.70 (=28) + parking 10 + lunch 8 = 46
+  ok('per-office-day money = mileage + parking + lunch', r.moneyPerOfficeDay === 46, `${r.moneyPerOfficeDay}`);
+  ok('per-office-day hours = 2 x each-way', r.hoursPerOfficeDay === 1.5, `${r.hoursPerOfficeDay}`);
+  // mandate 3 days: 46*3*48 + 300 wardrobe = 6624 + 300 = 6924
+  ok('mandate annual money = daily x days x weeks + wardrobe', r.mandate.annualMoney === 46 * 3 * 48 + 300, `${r.mandate.annualMoney}`);
+  ok('mandate annual hours = 1.5 x 3 x 48', r.mandate.annualHours === Math.round(1.5 * 3 * 48), `${r.mandate.annualHours}`);
+  ok('time value = hours x hourly value', r.mandate.annualTimeValue === Math.round(1.5 * 3 * 48 * 40), `${r.mandate.annualTimeValue}`);
+  ok('total with time = money + time value', r.mandate.totalWithTime === r.mandate.annualMoney + r.mandate.annualTimeValue);
+  // equivalent raise grosses up out-of-pocket money by marginal rate: 6924 / 0.7
+  ok('equivalent raise grosses up money by marginal rate', near(r.mandate.equivalentRaise, Math.round((46 * 3 * 48 + 300) / 0.7)), `${r.mandate.equivalentRaise}`);
+  // full RTO (5 days) costs more than the 3-day mandate; remote is zero.
+  ok('full RTO costs more than the mandate', r.fullRto.annualMoney > r.mandate.annualMoney && r.fullRto.annualHours > r.mandate.annualHours);
+  ok('remote scenario is zero on every axis', r.remote.annualMoney === 0 && r.remote.annualHours === 0 && r.remote.equivalentRaise === 0);
+  // transit mode uses the fare, not mileage.
+  const t = rto.rtoCost({ ...base, mode: 'transit' });
+  ok('transit mode uses round-trip fare + parking, not mileage', t.moneyPerOfficeDay === Math.round(5.5 + 10 + 8), `${t.moneyPerOfficeDay}`);
+  // walk/bike zeroes the travel money.
+  const w = rto.rtoCost({ ...base, mode: 'walk_bike', parkingPerOfficeDay: 0 });
+  ok('walk/bike has no travel money (lunch only)', w.moneyPerOfficeDay === 8, `${w.moneyPerOfficeDay}`);
+  ok('default mileage rate is the 2026 second-half IRS figure', rto.DEFAULT_MILEAGE_RATE === 0.76, `${rto.DEFAULT_MILEAGE_RATE}`);
+}
+
+/* ---------------------- salary negotiation (add-on task 1) ---------------- */
+console.log('\nsalary negotiation script');
+{
+  const base = neg.generateNegotiation({
+    situation: 'fair', asks: ['base'], tone: 'warm', role: 'Software Engineer',
+    hiringManager: 'Alex', yourName: 'Sam', currentBase: 150000, targetBase: 165000, marketNumber: 170000,
+  });
+  ok('email interpolates current and target base', base.email.includes('$150,000') && base.email.includes('$165,000'), '');
+  ok('email cites the market number when given', base.email.includes('$170,000'));
+  ok('email addresses the manager and signs the name', base.email.includes('Alex') && base.email.includes('Sam'));
+  ok('phone variant exists and is distinct from the email', base.phone.length > 0 && base.phone !== base.email);
+  ok('subject line is present', base.subject.length > 0 && /offer/i.test(base.subject));
+
+  // No market number → a note nudges toward BLS.
+  const noMkt = neg.generateNegotiation({ situation: 'fair', asks: ['base'], tone: 'direct', role: 'Designer', currentBase: 100000, targetBase: 110000 });
+  ok('missing market number adds a BLS nudge note', noMkt.notes.some((n) => /BLS/.test(n)));
+
+  // Competing offer surfaces the competing number.
+  const comp = neg.generateNegotiation({ situation: 'competing', asks: ['base'], tone: 'direct', role: 'PM', currentBase: 140000, targetBase: 155000, competingBase: 160000 });
+  ok('competing situation names the competing offer', comp.email.includes('$160,000') && comp.phone.includes('$160,000'));
+
+  // Post-layoff sign-on ask carries the offset framing.
+  const pl = neg.generateNegotiation({ situation: 'post_layoff', asks: ['signon'], tone: 'warm', role: 'Analyst', currentBase: 95000, targetBase: 95000, signOnAmount: 15000 });
+  ok('post-layoff sign-on offsets lost income', pl.email.includes('$15,000') && /lost income|between roles/i.test(pl.email));
+
+  // Multiple asks render as a bulleted list.
+  const multi = neg.generateNegotiation({ situation: 'lowball', asks: ['base', 'signon', 'remote'], tone: 'warm', role: 'SRE', currentBase: 130000, targetBase: 150000, remoteDetail: 'two remote days a week' });
+  ok('multiple asks render as bullets', (multi.email.match(/•/g) || []).length === 3 && multi.email.includes('two remote days a week'));
+
+  // Guard: target not above current triggers a warning note.
+  const oddball = neg.generateNegotiation({ situation: 'fair', asks: ['base'], tone: 'warm', role: 'X', currentBase: 100000, targetBase: 90000 });
+  ok('a target base not above the offer is flagged', oddball.notes.some((n) => /double-check|not above/i.test(n)));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

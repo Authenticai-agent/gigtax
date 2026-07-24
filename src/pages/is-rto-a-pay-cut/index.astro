@@ -1,0 +1,74 @@
+---
+/** Scenario: is RTO a pay cut. */
+import Base from '../../layouts/Base.astro';
+import RtoCostCalculator from '../../components/calculators/RtoCostCalculator.tsx';
+import { rtoCost, DEFAULT_MILEAGE_RATE } from '../../lib/rtoCost';
+import { RTO_DEFAULTS, WORK_HOURS_PER_YEAR } from '../../data/rto-defaults';
+import { formatMoney } from '../../lib/tax-engine';
+
+const five = rtoCost({
+  daysInOfficePerWeek: 5, oneWayDistanceMiles: 22, mode: 'car', mileageRatePerMile: DEFAULT_MILEAGE_RATE,
+  parkingPerOfficeDay: 10, transitFareRoundTrip: 0, commuteMinutesEachWay: 40,
+  hourlyValueOfTime: 100000 / WORK_HOURS_PER_YEAR, lunchDeltaPerOfficeDay: 9, coffeeDeltaPerOfficeDay: 0,
+  wardrobePerYear: 400, childcareDeltaPerOfficeDay: 0, weeksWorkedPerYear: RTO_DEFAULTS.weeksWorkedPerYear.value,
+  marginalTaxRate: RTO_DEFAULTS.marginalTaxRate.value,
+});
+
+const faqItems = [
+  { q: `Is going back to the office legally a pay cut?`, a: `No — your salary is unchanged, so it isn't a pay cut in the legal or payroll sense. But your take-home after commute, parking, and food costs falls, and your unpaid hours rise. The economic effect is a pay cut even though the pay stub isn't.` },
+  { q: `How big is the RTO pay cut, typically?`, a: `For a five-day mandate with a real commute it's commonly ${formatMoney(five.mandate.annualMoney)}–${formatMoney(five.mandate.equivalentRaise)} a year once you gross up for tax — plus hundreds of hours. Run your own numbers above; the range depends heavily on distance, parking, and childcare.` },
+];
+---
+
+<Base
+  title="Is return-to-office a pay cut? (2026, with numbers)"
+  description="A return-to-office mandate doesn't change your salary, but it cuts your take-home and adds unpaid hours. Here's how to size the RTO pay cut for your own commute."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 · scenario</p>
+    <h1>Is RTO a pay cut?</h1>
+    <p class="tagline">Your salary doesn't change, so nobody calls it a pay cut. But your take-home does change — here's the number they didn't put in the memo.</p>
+  </section>
+
+  <p>
+    A return-to-office mandate leaves your salary alone and quietly moves costs onto you: the commute, parking, lunch
+    bought out, a work wardrobe, and — the part that never shows up in dollars — hours. It isn't a pay cut on paper.
+    In your bank account it behaves exactly like one, and it's worth knowing how big.
+  </p>
+
+  <h2>A five-day mandate, worked out</h2>
+  <p>A {formatMoney(100000)} earner, 22 miles each way, five days a week, $10 parking, $9 lunch:</p>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Cash out of pocket per year</td><td>{formatMoney(five.mandate.annualMoney)}</td></tr>
+      <tr><td>Hours per year in the car</td><td>{five.mandate.annualHours} hours</td></tr>
+      <tr><td>Pre-tax raise to offset the cash</td><td>{formatMoney(five.mandate.equivalentRaise)}</td></tr>
+      <tr><td>Money + time, if you value the hours</td><td>{formatMoney(five.mandate.totalWithTime)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    That's a {formatMoney(five.mandate.equivalentRaise)} raise just to get back to where remote left you — before
+    counting a single one of those {five.mandate.annualHours} hours. Whether the hours "count" is the real argument;
+    the tool shows both so you can make your own case.
+  </p>
+
+  <RtoCostCalculator client:load />
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Do something with the number</h2>
+  <ul class="link-columns">
+    <li><a href="/rto-cost-calculator/">RTO cost calculator</a> — your full breakdown</li>
+    <li><a href="/salary-negotiation-script-generator/">Negotiation script</a> — ask for the offsetting raise</li>
+    <li><a href="/should-i-change-jobs-over-rto/">Should I change jobs over it?</a></li>
+  </ul>
+
+  <p class="results-note">An estimate on your own numbers. Defaults sourced and editable; nothing stored. Not financial advice.</p>
+</Base>

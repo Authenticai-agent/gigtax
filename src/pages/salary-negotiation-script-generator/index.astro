@@ -1,0 +1,69 @@
+---
+/** Salary negotiation script generator hub (add-on task 1). */
+import Base from '../../layouts/Base.astro';
+import NegotiationGenerator from '../../components/calculators/NegotiationGenerator.tsx';
+import { NEGOTIATION_ROLES } from '../../data/negotiation-roles';
+
+const faqItems = [
+  { q: `How do I counter a job offer by email?`, a: `Thank them, say you're excited, name one number, and stop. This tool writes exactly that: a short email that anchors your ask, backs it with your market number, and closes warmly. The most common mistake is over-explaining — say the number and let them respond.`, review: false },
+  { q: `Should I negotiate salary after a layoff?`, a: `Yes. A layoff doesn't weaken your case — the offer reflects the role, not your last month. A sign-on bonus framed as offsetting income you lost between roles is often the easiest ask to approve, and this tool has a post-layoff mode that writes it that way.`, review: false },
+  { q: `Where do I get a market salary number?`, a: `Look your role up on the U.S. Bureau of Labor Statistics <a href="https://www.bls.gov/oes/current/oes_nat.htm" rel="noopener">Occupational Employment and Wage Statistics</a> (OES) — it's free, public, and credible to cite. Bring that number into the tool; the email frames your ask around it. This tool never invents salary ranges.`, review: false },
+  { q: `Is a phone or email negotiation better?`, a: `Email gives you a paper trail and time to word it well; phone is better if they call first and you can hold your nerve. The generator writes both — a ready-to-send email and a short "what to say on the call" script.`, review: false },
+];
+---
+
+<Base
+  title="Salary negotiation script generator (2026) — counter-offer email"
+  description="Generate a ready-to-send salary counter-offer email and a phone script from your own numbers. Situation, ask, and tone tuned. Free, no signup, nothing stored."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 · career</p>
+    <h1>Salary negotiation script generator</h1>
+    <p class="tagline">Tell it your situation and what you want. It writes the counter-offer email — the whole thing, ready to send — plus what to say if they call first.</p>
+  </section>
+
+  <p>
+    Most people know they should negotiate and freeze on the wording. This writes it for you: pick your situation
+    (low offer, competing offer, post-layoff), choose what to ask for (base, sign-on, later start, remote), set the
+    tone, drop in your numbers, and get an email that sounds like a person — not a template. Bring a market number from
+    the BLS and the ask lands harder. Nothing you type is stored or sent anywhere.
+  </p>
+
+  <NegotiationGenerator client:load />
+
+  <h2>Bring a real market number</h2>
+  <p>
+    The single thing that strengthens an ask is a credible source behind the number. Look your role up on the
+    <a href="https://www.bls.gov/oes/current/oes_nat.htm" rel="noopener">BLS Occupational Employment and Wage
+    Statistics</a> — national and by-state medians, free and public — and cite it. This tool deliberately doesn't
+    invent salary ranges; it frames your ask around the number you bring.
+  </p>
+
+  <h2>After a layoff: the sign-on move</h2>
+  <p>
+    If you're coming off a layoff, a sign-on bonus framed as offsetting the income you lost between roles is often more
+    approvable than base — it's a one-time cost, not an ongoing one. Know your walk-away number first: the
+    <a href="/layoff-runway-calculator/">runway calculator</a> tells you how many months you can afford to hold out,
+    which is exactly the leverage a negotiation runs on. If your severance had a sign-on-to-offset angle, the
+    <a href="/severance-pay-tax-calculator/">severance tax calculator</a> shows what you actually netted.
+  </p>
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Negotiating for a specific role?</h2>
+  <p>Each role page presets the tool and explains where the leverage is in that field:</p>
+  <ul class="link-columns">
+    {NEGOTIATION_ROLES.map((r) => (
+      <li><a href={`/salary-negotiation-script-generator/${r.slug}/`}>{r.name} negotiation</a></li>
+    ))}
+  </ul>
+
+  <p class="results-note">A writing tool, not career or legal advice. Market figures come from you, cited to the BLS. Nothing you enter is stored.</p>
+</Base>

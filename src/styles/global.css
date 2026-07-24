@@ -424,3 +424,12 @@ main ol li { margin-bottom: .4rem; line-height: 1.68; }
 .methodology summary { cursor: pointer; padding: .85rem 0; font-weight: 600; font-size: 14px; }
 .methodology p { font-size: 14px; line-height: 1.6; margin: 0 0 .75rem; }
 .methodology .src { color: var(--muted); font-size: 12px; }
+
+/* Salary negotiation generator */
+.ask-set { border: 1.5px solid var(--border); border-radius: 4px; padding: .75rem 1rem; margin: 1rem 0; display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; }
+.ask-set legend { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 0 .4rem; }
+.ask-check { display: inline-flex; align-items: center; gap: .4rem; font-size: 14px; }
+.email-subject { font-size: 14px; margin-bottom: .5rem; }
+.email-body { white-space: pre-wrap; font-family: var(--serif); font-size: 15px; line-height: 1.6; background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 1rem; margin: .25rem 0 .75rem; overflow-x: auto; }
+.btn-copy { font-family: var(--mono); font-size: 12px; padding: .4rem .9rem; border: 1.5px solid var(--accent); background: #fff; color: var(--accent); border-radius: 4px; cursor: pointer; }
+.btn-copy:hover { background: var(--accent); color: var(--paper); }
