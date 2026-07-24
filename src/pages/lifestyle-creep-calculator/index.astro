@@ -1,0 +1,68 @@
+---
+/** Lifestyle: lifestyle creep. */
+import Base from '../../layouts/Base.astro';
+import LifestyleCreepCalculator from '../../components/calculators/LifestyleCreepCalculator.tsx';
+import { lifestyleCreep } from '../../lib/lifestyle';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = lifestyleCreep(60000, 0.20, 100000, 0.08, 0.07, 20);
+---
+
+<Base
+  title="Lifestyle creep calculator 2026"
+  description="When income rose but your savings rate fell, lifestyle creep quietly costs you. See the savings you forgo each year, and what it compounds to over time."
+>
+  <section class="hero">
+    <p class="hero-label">Lifestyle</p>
+    <h1>Lifestyle creep calculator</h1>
+    <p class="tagline">You earn far more than you used to — so why doesn't it feel like it? Lifestyle creep is spending rising to swallow every raise. Here's what it costs.</p>
+  </section>
+
+  <p>
+    Lifestyle creep is the quiet reason a bigger income doesn't feel like one: as pay rises, spending rises to match,
+    and the savings rate slips. This compares what you'd save at your old rate on today's income against what you
+    actually save — and compounds that yearly shortfall, which is where the real cost hides.
+  </p>
+
+  <LifestyleCreepCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>Income up from {formatMoney(60000)} (saving 20%) to {formatMoney(100000)} (saving 8%), over 20 years:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>You saved then</td><td>{formatMoney(ex.savingsThen)}/yr</td></tr>
+      <tr><td>You save now</td><td>{formatMoney(ex.savingsNow)}/yr</td></tr>
+      <tr><td>Foregone savings each year</td><td>{formatMoney(ex.foregoneAnnual)}</td></tr>
+      <tr><td>Over 20 years, invested</td><td>{formatMoney(ex.foregoneOverYears)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Despite earning {formatMoney(ex.incomeIncrease)} more, the drop from a 20% to an 8% savings rate means you save
+    only {formatMoney(ex.savingsNow)} a year — {formatMoney(ex.foregoneAnnual)} less than the old rate would. Over 20
+    years, invested, that's {formatMoney(ex.foregoneOverYears)} of foregone wealth: the price of letting spending grow
+    with income.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Is all lifestyle creep bad?</h3>
+    <p>No — some is the whole point of earning more, and a bigger income should buy a better life. The problem is
+      unnoticed creep, where the savings rate quietly falls to zero. The fix isn't never spending more; it's saving a
+      fixed share of every raise first.</p>
+  </div>
+  <div class="faq">
+    <h3>How do I avoid it?</h3>
+    <p>Pay yourself first: when a raise lands, route a set percentage of it straight to savings before it reaches your
+      checking account. Anchoring to a savings rate, not a dollar amount, keeps your saving growing with your income.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/budget-calculator/">50/30/20 budget</a> — hold the savings line</li>
+    <li><a href="/raise-calculator/">Raise calculator</a> — what a raise is really worth</li>
+    <li><a href="/fire-calculator/">FIRE calculator</a> — where a higher savings rate leads</li>
+  </ul>
+
+  <p class="results-note">A projection on a steady 7% return; an illustration, not a forecast. Not financial advice.</p>
+</Base>

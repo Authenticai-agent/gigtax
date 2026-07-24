@@ -1,0 +1,72 @@
+---
+/** Personal finance: net worth. */
+import Base from '../../layouts/Base.astro';
+import NetWorthCalculator from '../../components/calculators/NetWorthCalculator.tsx';
+import { netWorth } from '../../lib/personal-finance';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = netWorth({ cash: 15000, investments: 60000, homeValue: 350000, vehicles: 20000, otherAssets: 5000, mortgage: 280000, studentLoans: 25000, carLoans: 12000, creditCards: 4000, otherDebt: 0, age: 35 });
+---
+
+<Base
+  title="Net worth calculator 2026"
+  description="Add up what you own minus what you owe, and see how your net worth compares to the Federal Reserve median for your age. Runs in your browser."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance</p>
+    <h1>Net worth calculator</h1>
+    <p class="tagline">One number sums up your whole financial position: everything you own, minus everything you owe. Here it is — and how it stacks up.</p>
+  </section>
+
+  <p>
+    Net worth is the honest scoreboard. Income tells you what flows in; net worth tells you what you have kept.
+    It is total assets — cash, investments, home equity, anything you could sell — minus total debt. This adds
+    it up and sets it against the Federal Reserve median for your age, as a reference point, not a verdict.
+  </p>
+
+  <NetWorthCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>Someone at 35 with a {formatMoney(350000)} home, {formatMoney(60000)} invested, {formatMoney(15000)} cash and typical debts:</p>
+  <table class="data-table">
+    <thead><tr><th>Line</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Total assets</td><td>{formatMoney(ex.totalAssets)}</td></tr>
+      <tr><td>Total liabilities</td><td>−{formatMoney(ex.totalLiabilities)}</td></tr>
+      <tr><td>Net worth</td><td>{formatMoney(ex.netWorth)}</td></tr>
+      <tr><td>Federal Reserve median (age {ex.benchmarkLabel})</td><td>{formatMoney(ex.benchmarkMedian)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    That is {formatMoney(ex.netWorth)} of net worth — {formatMoney(Math.abs(ex.vsMedian))}
+    {' '}{ex.aheadOfMedian ? 'ahead of' : 'behind'} the {formatMoney(ex.benchmarkMedian)} median for the age
+    band. Most of the assets are illiquid (a home you live in), which the single number hides.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Does my income count toward net worth?</h3>
+    <p>No. Net worth is a snapshot of what you have, not what you earn. A high earner who spends everything can
+      have a lower net worth than a modest earner who saves — which is exactly why the number is worth tracking.</p>
+  </div>
+  <div class="faq">
+    <h3>Should I count my home?</h3>
+    <p>Include its market value as an asset and the mortgage as a liability, so only your equity flows into net
+      worth. Just remember it is illiquid — you cannot spend home equity without selling or borrowing against it.</p>
+  </div>
+  <div class="faq">
+    <h3>Am I behind if I'm below the median?</h3>
+    <p>Not necessarily. The Federal Reserve medians average across all households, including retirees with decades
+      of compounding. A younger person carrying student loans is investing in future earnings, not falling behind.
+      Use the median as a data point, not a judgment.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/fire-calculator/">FIRE calculator</a> — how long until work is optional</li>
+    <li><a href="/budget-calculator/">50/30/20 budget</a> — grow the savings side</li>
+    <li><a href="/credit-card-payoff-calculator/">Credit card payoff</a> — shrink the debt side</li>
+  </ul>
+
+  <p class="results-note">Federal Reserve medians are reference data, not targets. Not financial advice.</p>
+</Base>

@@ -1,0 +1,74 @@
+---
+/** Personal finance: buy vs rent break-even. */
+import Base from '../../layouts/Base.astro';
+import BuyVsRentCalculator from '../../components/calculators/BuyVsRentCalculator.tsx';
+import { buyVsRent } from '../../lib/personal-finance';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = buyVsRent({ homePrice: 400000, downPaymentPct: 0.2, mortgageRate: 0.065, termYears: 30, monthlyRent: 2200, homeAppreciation: 0.03, investmentReturn: 0.07, propertyTaxPct: 0.011, maintenancePct: 0.01, rentInflation: 0.03, years: 10 });
+---
+
+<Base
+  title="Buy vs rent calculator 2026 — the break-even year"
+  description="Should you buy or keep renting? Find the break-even year where buying beats renting, once you count the down payment's lost growth and selling costs."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance</p>
+    <h1>Buy vs rent break-even</h1>
+    <p class="tagline">Buying isn’t automatically better than renting — it depends how long you stay. This finds the year owning pulls ahead, opportunity cost and all.</p>
+  </section>
+
+  <p>
+    The honest buy-vs-rent question isn’t "is rent throwing money away?" — it’s "how many years until buying costs
+    less than renting?" Owning ties up a down payment that could have been invested, and selling costs a chunk on
+    the way out. Stay past the break-even year and buying wins; leave before it and renting was cheaper.
+  </p>
+
+  <BuyVsRentCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A {formatMoney(400000)} home, 20% down at 6.5%, versus {formatMoney(2200)}/month rent, over 10 years:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Monthly mortgage (P&amp;I)</td><td>{formatMoney(ex.monthlyPayment)}</td></tr>
+      <tr><td>Break-even year</td><td>{ex.breakEvenYear ? `year ${ex.breakEvenYear}` : 'beyond 10 years'}</td></tr>
+      <tr><td>Net cost of buying over 10 years</td><td>{formatMoney(ex.buyCostAtHorizon)}</td></tr>
+      <tr><td>Net cost of renting over 10 years</td><td>{formatMoney(ex.rentCostAtHorizon)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    {ex.breakEvenYear
+      ? `Buying pulls ahead in year ${ex.breakEvenYear}. Stay longer than that and owning is cheaper; move sooner and renting was the better call.`
+      : 'Renting stays cheaper across the full 10 years here — the down payment invested elsewhere outruns the equity built.'}
+    {' '}Over the decade, buying consumes {formatMoney(ex.buyCostAtHorizon)} against renting's {formatMoney(ex.rentCostAtHorizon)}.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why isn't renting just "throwing money away"?</h3>
+    <p>Because buying has its own sunk costs — mortgage interest, property tax, maintenance, insurance and selling
+      fees never build equity either. And the down payment a renter keeps invested can grow. The real comparison is
+      total cost of each path, not rent versus principal.</p>
+  </div>
+  <div class="faq">
+    <h3>What makes the break-even come sooner?</h3>
+    <p>A lower price-to-rent ratio, faster home appreciation, a lower mortgage rate, and staying longer. Higher
+      investment returns push it later, because the renter's invested down payment works harder.</p>
+  </div>
+  <div class="faq">
+    <h3>What isn't included?</h3>
+    <p>The mortgage-interest and property-tax deductions (which help only if you itemize), and the fact that owning
+      often costs more per month — money a renter could invest. Property tax and maintenance are assumed at 1.1% and
+      1% of value. It's a decision aid, not a precise forecast.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/rental-income-tax-calculator/">Rental income tax</a> — if you'd rent it out instead</li>
+    <li><a href="/net-worth-calculator/">Net worth</a> — home equity is part of the picture</li>
+    <li><a href="/salary-by-city-calculator/">Salary by city</a> — housing drives cost of living</li>
+  </ul>
+
+  <p class="results-note">A decision aid on stated assumptions, not a forecast. Not financial advice.</p>
+</Base>

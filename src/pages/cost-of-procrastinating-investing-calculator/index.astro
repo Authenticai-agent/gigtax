@@ -1,0 +1,67 @@
+---
+/** Personal finance: the cost of waiting to invest. */
+import Base from '../../layouts/Base.astro';
+import ProcrastinationCalculator from '../../components/calculators/ProcrastinationCalculator.tsx';
+import { procrastinationCost } from '../../lib/personal-finance';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = procrastinationCost(500, 0.07, 30, 5);
+---
+
+<Base
+  title="Cost of waiting to invest calculator 2026"
+  description="What waiting to invest costs by retirement — a few years' delay can cost more than the skipped contributions, because early years compound longest."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance</p>
+    <h1>The cost of waiting to invest</h1>
+    <p class="tagline">The most expensive investing mistake isn’t a bad pick — it’s a late start. See what a few years’ delay quietly costs by the time you need the money.</p>
+  </section>
+
+  <p>
+    Compounding rewards time more than amount. The dollars you invest earliest have the longest to grow, so
+    delaying even a few years can cost more than all the contributions you skipped — because you lose the growth
+    those early dollars would have thrown off for decades.
+  </p>
+
+  <ProcrastinationCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>Investing {formatMoney(500)}/month at 7%, with 30 years until you need it — starting now versus waiting 5 years:</p>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th>Ends with</th></tr></thead>
+    <tbody>
+      <tr><td>Start now (30 years)</td><td>{formatMoney(ex.ifStartNow)}</td></tr>
+      <tr><td>Wait 5 years (25 years)</td><td>{formatMoney(ex.ifDelayed)}</td></tr>
+      <tr><td>Cost of the 5-year delay</td><td>{formatMoney(ex.costOfWaiting)}</td></tr>
+      <tr><td>Extra contributions from starting now</td><td>{formatMoney(ex.contributedNow - ex.contributedDelayed)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Waiting five years costs {formatMoney(ex.costOfWaiting)} — far more than the
+    {' '}{formatMoney(ex.contributedNow - ex.contributedDelayed)} of extra contributions those five years would
+    have added. The gap is lost compounding: the early dollars had the longest runway, and you gave it up.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why is the cost bigger than the missed contributions?</h3>
+    <p>Because the dollars you skip early are the ones that would have compounded the longest. Five years of
+      {formatMoney(500)}/month is {formatMoney(ex.contributedNow - ex.contributedDelayed)} of contributions, but
+      the growth those dollars would have earned over the full horizon is worth much more.</p>
+  </div>
+  <div class="faq">
+    <h3>Is it ever too late to start?</h3>
+    <p>No — the cost of waiting is exactly why the best time to start is now rather than later still. A shorter
+      runway means less compounding, but every year you delay only makes the next start more expensive.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/fire-calculator/">FIRE calculator</a> — how the head start shortens your timeline</li>
+    <li><a href="/self-employed-retirement-calculator/">Self-employed retirement</a> — tax-advantaged places to start</li>
+    <li><a href="/net-worth-calculator/">Net worth</a> — track the result</li>
+  </ul>
+
+  <p class="results-note">Assumes a steady annual return, which markets do not deliver smoothly. An illustration, not a promise. Not financial advice.</p>
+</Base>

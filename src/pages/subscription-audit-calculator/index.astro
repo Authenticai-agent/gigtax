@@ -1,0 +1,67 @@
+---
+/** Personal finance: subscription audit. */
+import Base from '../../layouts/Base.astro';
+import SubscriptionAuditCalculator from '../../components/calculators/SubscriptionAuditCalculator.tsx';
+import { subscriptionAudit } from '../../lib/personal-finance';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = subscriptionAudit(85, 0.07, 20);
+---
+
+<Base
+  title="Subscription audit calculator 2026"
+  description="Add up what your monthly subscriptions really cost per year — and what the same money could grow to if you invested it instead. Runs in your browser."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance</p>
+    <h1>Subscription audit</h1>
+    <p class="tagline">Every subscription is “just a few dollars a month.” Added up and run over years, the total is a real number — here it is.</p>
+  </section>
+
+  <p>
+    Subscriptions are priced to feel small: a few dollars here, ten there. But they renew every month, forever, and
+    they add up quietly. This totals what you actually spend a year across streaming, music, apps, the gym and the
+    rest — and shows what the same money could become if it were invested instead.
+  </p>
+
+  <SubscriptionAuditCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A fairly ordinary stack — video, music, cloud, gym and a couple of apps — totaling {formatMoney(85)}/month:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Total per month</td><td>{formatMoney(ex.monthlyTotal)}</td></tr>
+      <tr><td>Total per year</td><td>{formatMoney(ex.annualTotal)}</td></tr>
+      <tr><td>Invested for 20 years (at 7%)</td><td>{formatMoney(ex.investedOverYears)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    {formatMoney(85)}/month barely registers, but it's {formatMoney(ex.annualTotal)} a year — and the same amount
+    invested at 7% for 20 years would grow to about {formatMoney(ex.investedOverYears)}. The goal isn't to cancel
+    everything; it's to see the true price of "just a few dollars a month" and keep only what you value.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why does a small monthly cost matter so much?</h3>
+    <p>Because it repeats forever and compounds when invested. A {formatMoney(85)} monthly habit is over
+      {formatMoney(ex.annualTotal * 5)} across five years of spending alone — before counting the growth you'd have
+      earned by investing it.</p>
+  </div>
+  <div class="faq">
+    <h3>How do I audit mine?</h3>
+    <p>Scan a bank or card statement for recurring charges — the forgotten ones are usually there — and list every
+      one. Cancel what you don't use, downgrade shared plans, and switch annual billing on for the keepers, which is
+      often cheaper.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/budget-calculator/">50/30/20 budget</a> — where subscriptions fit</li>
+    <li><a href="/cost-of-procrastinating-investing-calculator/">Cost of waiting to invest</a> — where the redirected money goes</li>
+    <li><a href="/net-worth-calculator/">Net worth</a> — the long-run payoff</li>
+  </ul>
+
+  <p class="results-note">The invested figure assumes a steady 7% return, which markets do not deliver smoothly. Not financial advice.</p>
+</Base>

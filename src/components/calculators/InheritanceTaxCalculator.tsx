@@ -78,12 +78,14 @@ export default function InheritanceTaxCalculator() {
           <h3>How your inheritance is taxed</h3>
           {result.taxFreeAtInheritance > 0 && <div className="result-line"><span>Received tax-free</span><span className="num">{formatMoney(result.taxFreeAtInheritance)}</span></div>}
           <div className="result-line"><span>Taxable amount</span><span className="num">{formatMoney(result.taxableAmount)}</span></div>
-          <div className="result-line total"><span>Estimated tax</span><span className="num">{formatMoney(result.estimatedTax)}</span></div>
+          <div className="result-line total"><span>Estimated federal tax</span><span className="num">{formatMoney(result.estimatedTax)}</span></div>
           <p className="results-note" data-review="legal">{result.treatment}</p>
           <p className="results-note">
-            Inheriting is not itself a taxable event for you — no federal inheritance tax exists. What you owe
-            depends entirely on the asset, as above. A few states levy their own inheritance tax on heirs. Not tax
-            or legal advice.
+            This is <strong>federal</strong> tax only — there is no federal inheritance tax, so it reflects federal
+            income or capital-gains tax on the asset once you sell or withdraw it. State tax is not included: your
+            state may tax the same income, and five states (PA, NJ, KY, NE and MD) levy a separate inheritance tax
+            on the heir. See the <a href="/state-estate-tax-calculator/">state estate &amp; inheritance tax
+            calculator</a>. Not tax or legal advice.
           </p>
         </div>
       )}

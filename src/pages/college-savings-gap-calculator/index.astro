@@ -1,0 +1,72 @@
+---
+/** Personal finance: college savings gap. */
+import Base from '../../layouts/Base.astro';
+import CollegeSavingsGapCalculator from '../../components/calculators/CollegeSavingsGapCalculator.tsx';
+import { collegeSavingsGap } from '../../lib/personal-finance';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = collegeSavingsGap({ annualCostToday: 30000, yearsUntilCollege: 10, yearsOfCollege: 4, educationInflation: 0.05, currentSavings: 20000, monthlyContribution: 300, annualReturn: 0.06 });
+---
+
+<Base
+  title="College savings gap calculator 2026"
+  description="Are you saving enough for college? Compare projected 529 savings against the inflated future cost, and see the extra monthly saving that closes the gap."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance</p>
+    <h1>College savings gap</h1>
+    <p class="tagline">College costs more every year. This projects what four years will cost when your child gets there — and whether your savings will reach it.</p>
+  </section>
+
+  <p>
+    Saving for college means aiming at a moving target: tuition has climbed faster than general inflation for
+    decades, so the sticker price today understates what you'll actually pay. This inflates the future cost, projects
+    your savings forward, and shows the gap — plus the extra monthly saving that would close it.
+  </p>
+
+  <CollegeSavingsGapCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>{formatMoney(30000)}/year today, 10 years out, 4 years of college, {formatMoney(20000)} saved and {formatMoney(300)}/month going in:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Future cost of 4 years</td><td>{formatMoney(ex.futureCost)}</td></tr>
+      <tr><td>Projected savings by then</td><td>{formatMoney(ex.projectedSavings)}</td></tr>
+      <tr><td>Funding gap</td><td>{ex.gap > 0 ? formatMoney(ex.gap) : 'none'}</td></tr>
+      <tr><td>Share of cost covered</td><td>{formatPct(ex.covered)}</td></tr>
+      {ex.gap > 0 && <tr><td>Extra monthly saving to close it</td><td>{formatMoney(ex.monthlyToCloseGap)}</td></tr>}
+    </tbody>
+  </table>
+  <p>
+    {formatMoney(30000)}/year today becomes {formatMoney(ex.futureCost)} for four years once inflated to when it's
+    paid. The current plan covers {formatPct(ex.covered)} of that
+    {ex.gap > 0 ? `, leaving a ${formatMoney(ex.gap)} gap that an extra ${formatMoney(ex.monthlyToCloseGap)}/month would close.` : ' — the full cost is on track.'}
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why is the future cost so much higher than today's price?</h3>
+    <p>Education inflation has run around 5% a year — faster than general inflation — so ten years out a year of
+      college costs meaningfully more than it does now. Compounding over the years until enrollment does the rest.</p>
+  </div>
+  <div class="faq">
+    <h3>Do I need to cover 100%?</h3>
+    <p>Not necessarily. Scholarships, financial aid, the student's own contribution, and in-state or community-college
+      options all lower what you personally fund. The gap here is the pure savings picture; treat it as the ceiling.</p>
+  </div>
+  <div class="faq">
+    <h3>Does a 529's tax break change this?</h3>
+    <p>It helps: 529 growth is tax-free when used for education, so you keep more than a taxable account would leave
+      you. This projects growth without that bonus, so a 529 plan should do a little better than shown.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/college-roi-calculator/">College degree ROI</a> — whether the degree pays off at all</li>
+    <li><a href="/fire-calculator/">FIRE calculator</a> — the same compounding, for retirement</li>
+    <li><a href="/budget-calculator/">50/30/20 budget</a> — find room to save more</li>
+  </ul>
+
+  <p class="results-note">Projection on stated inflation and return assumptions. Not financial advice.</p>
+</Base>

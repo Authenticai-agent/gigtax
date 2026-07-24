@@ -1,0 +1,76 @@
+---
+/** Lifestyle: death & money — project net worth, then run the estate engines. */
+import Base from '../../layouts/Base.astro';
+import DeathMoneyCalculator from '../../components/calculators/DeathMoneyCalculator.tsx';
+import { deathAndMoney } from '../../lib/lifestyle';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = deathAndMoney({ netWorth: 2000000, annualSavings: 50000, investmentReturn: 0.06, currentAge: 55, deathAge: 85, charity: 0, stateCode: 'CA', priorExemptionUsed: 0 });
+const rich = deathAndMoney({ netWorth: 12000000, annualSavings: 100000, investmentReturn: 0.06, currentAge: 55, deathAge: 85, charity: 0, stateCode: 'WA', priorExemptionUsed: 0 });
+---
+
+<Base
+  title="Death & money calculator 2026 — estate tax at death"
+  description="Project your net worth to death, then run the 2026 estate engines: the $15M federal exclusion, the 40% rate and state estate tax. Will your estate owe?"
+>
+  <section class="hero">
+    <p class="hero-label">Lifestyle · estate</p>
+    <h1>Death &amp; money: will your estate owe tax?</h1>
+    <p class="tagline">A point-in-time estate calculator asks what you'd owe today. This asks the real planning question: what will your estate be worth at the end, and will it owe tax then?</p>
+  </section>
+
+  <p>
+    The estate tax is a future problem, not a today problem — so the useful question is what your net worth grows to
+    by the end, not what it is now. This projects your estate forward to your expected age at death, then runs it
+    through the same verified engines as the estate and state-estate calculators: the 2026 federal $15 million
+    exclusion, the 40% rate, and your state's estate tax.
+  </p>
+
+  <DeathMoneyCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>Two estates projected from age 55 to 85 at 6% — one comfortable, one large:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>{formatMoney(2000000)} in California</th><th>{formatMoney(12000000)} in Washington</th></tr></thead>
+    <tbody>
+      <tr><td>Projected estate at death</td><td>{formatMoney(ex.projectedEstate)}</td><td>{formatMoney(rich.projectedEstate)}</td></tr>
+      <tr><td>Federal estate tax</td><td>{formatMoney(ex.federalEstateTax)}</td><td>{formatMoney(rich.federalEstateTax)}</td></tr>
+      <tr><td>State estate tax</td><td>{formatMoney(ex.stateEstateTax)}</td><td>{formatMoney(rich.stateEstateTax)}</td></tr>
+      <tr><td>Total death tax</td><td>{formatMoney(ex.totalDeathTax)}</td><td>{formatMoney(rich.totalDeathTax)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The {formatMoney(2000000)} estate grows to {formatMoney(ex.projectedEstate)} but still owes no federal estate tax
+    — it's under the $15M exclusion — and nothing to California, which has no estate tax. The {formatMoney(12000000)}
+    estate grows past $15M and into Washington's estate tax, showing how projection, not today's balance, is what
+    decides the bill.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why project forward instead of using today's net worth?</h3>
+    <p>Because the estate tax applies at death, and 30 years of growth can carry an estate from comfortably under the
+      exclusion to well over it. Planning is about the future value, which is exactly what point-in-time calculators
+      miss.</p>
+  </div>
+  <div class="faq">
+    <h3>Isn't the federal exclusion enormous?</h3>
+    <p>Yes — $15 million per person in 2026, $30 million for a married couple using portability, so the federal estate
+      tax reaches very few estates. State estate taxes are the real story for most: a dozen-odd states tax estates,
+      some starting at $1 million.</p>
+  </div>
+  <div class="faq">
+    <h3>How does a charitable bequest help?</h3>
+    <p>Gifts to charity at death are fully deductible from the taxable estate, dollar for dollar. For a large estate,
+      a bequest can drop it below a threshold and eliminate tax on the rest.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/estate-tax-calculator/">Estate tax calculator</a> — the point-in-time federal version</li>
+    <li><a href="/state-estate-tax-calculator/">State estate &amp; inheritance tax</a> — the state layer</li>
+    <li><a href="/inheritance-tax-calculator/">Inheritance tax</a> — what heirs owe on what they receive</li>
+  </ul>
+
+  <p class="results-note">Projects net worth on a steady assumed return, then applies the verified 2026 estate rules. An estimate, not a plan. Not tax or legal advice.</p>
+</Base>

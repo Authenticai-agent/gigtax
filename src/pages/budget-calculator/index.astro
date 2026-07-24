@@ -1,0 +1,70 @@
+---
+/** Personal finance: 50/30/20 budget. */
+import Base from '../../layouts/Base.astro';
+import BudgetCalculator from '../../components/calculators/BudgetCalculator.tsx';
+import { budget503020 } from '../../lib/personal-finance';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = budget503020(5000);
+---
+
+<Base
+  title="50/30/20 budget calculator 2026"
+  description="Split your monthly take-home pay into needs, wants and savings with the 50/30/20 rule — and compare it against what you actually spend."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance</p>
+    <h1>50/30/20 budget calculator</h1>
+    <p class="tagline">One simple frame for a whole budget: half to needs, a third to wants, a fifth to your future. See the split on your take-home pay.</p>
+  </section>
+
+  <p>
+    The 50/30/20 rule is the easiest budget to actually keep: 50% of take-home pay for needs (rent, groceries,
+    minimum debt), 30% for wants, and 20% for savings and extra debt payoff. Enter your monthly take-home pay to
+    see the split, and your real spending to see where it drifts.
+  </p>
+
+  <BudgetCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>On {formatMoney(5000)} of monthly take-home pay:</p>
+  <table class="data-table">
+    <thead><tr><th>Bucket</th><th>Monthly</th></tr></thead>
+    <tbody>
+      <tr><td>Needs (50%)</td><td>{formatMoney(ex.needs)}</td></tr>
+      <tr><td>Wants (30%)</td><td>{formatMoney(ex.wants)}</td></tr>
+      <tr><td>Savings & debt payoff (20%)</td><td>{formatMoney(ex.savings)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    That is {formatMoney(ex.needs)} for needs, {formatMoney(ex.wants)} for wants, and {formatMoney(ex.savings)}
+    toward savings and debt. The 20% line is the one that builds wealth — protect it first when money is tight.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What counts as a need versus a want?</h3>
+    <p>Needs are the things you cannot skip: housing, utilities, groceries, transport, insurance, and minimum
+      debt payments. Wants are everything you choose: dining out, subscriptions, travel, upgrades. The line is
+      about necessity, not price.</p>
+  </div>
+  <div class="faq">
+    <h3>What if my needs are over 50%?</h3>
+    <p>Common in high-cost cities, and not a failure — the rule is a frame, not a law. The one bucket to defend is
+      the 20% savings line; if needs push past 50%, trim wants before savings.</p>
+  </div>
+  <div class="faq">
+    <h3>Should the 20% include retirement contributions?</h3>
+    <p>Yes. Retirement contributions, emergency-fund saving, and extra debt payoff all live in the 20% bucket —
+      anything that improves your net worth rather than funding today's spending.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/paycheck-calculator/">Paycheck calculator</a> — find your real take-home pay first</li>
+    <li><a href="/net-worth-calculator/">Net worth</a> — where the 20% goes</li>
+    <li><a href="/credit-card-payoff-calculator/">Credit card payoff</a> — clear high-interest debt faster</li>
+  </ul>
+
+  <p class="results-note">A budgeting frame, not a rule for every situation. Not financial advice.</p>
+</Base>

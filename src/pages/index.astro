@@ -17,6 +17,7 @@ import { INSTRUMENTS } from '../lib/equity';
 import { localTaxStates } from '../lib/local-tax';
 import { PAIRS } from '../lib/formation-pairs';
 import { states } from '../data/states';
+import { personalFinance, lifestyle } from '../data/calculators-index';
 
 const localStates = localTaxStates();
 
@@ -104,16 +105,16 @@ import { GIG_CATEGORIES as GIG, GIG_PLATFORMS as PLATFORMS } from '../lib/gig';
     ))}
   </ul>
 
-  <h2>What your profession can deduct</h2>
+  <h2><a href="/business-deductions/">What your profession can deduct</a></h2>
   <p>
     Schedule C is the same form for everyone and the deductions on it are not. A signing agent's mileage,
     a driver's per diem, a minister's housing allowance that is exempt from income tax and taxed for
     self-employment tax at the same time:
   </p>
-  <p><a href="/self-employed-tax-calculator/deductions/">The deductions checklist that applies to every business →</a></p>
+  <p><a href="/business-deductions/deductions/">The deductions checklist that applies to every business →</a></p>
   <ul class="link-columns">
     {PROFESSIONS.map((p) => (
-      <li><a href={`/self-employed-tax-calculator/${p.slug}/`}>{p.name}</a></li>
+      <li><a href={`/business-deductions/${p.slug}/`}>{p.name}</a></li>
     ))}
   </ul>
 
@@ -173,7 +174,7 @@ import { GIG_CATEGORIES as GIG, GIG_PLATFORMS as PLATFORMS } from '../lib/gig';
     <li><a href="/brand-deal-tax-calculator/">Brand deals</a> — creators, and taxable gifted product</li>
   </ul>
 
-  <h2>Windfalls, gifts and inheritance</h2>
+  <h2><a href="/inheritance-tax-calculator/">Windfalls, gifts and inheritance</a></h2>
   <p>
     Money that arrives outside a paycheck is taxed by its own rules — a gambling win, a gift, an inheritance where
     the asset type decides everything. These never just say "taxable" or "tax-free".
@@ -193,7 +194,7 @@ import { GIG_CATEGORIES as GIG, GIG_PLATFORMS as PLATFORMS } from '../lib/gig';
     <li><a href="/state-estate-tax-calculator/">State estate &amp; inheritance tax</a> — 18 states, from $1M</li>
   </ul>
 
-  <h2>Investments and capital gains</h2>
+  <h2><a href="/capital-gains-tax-calculator/">Investments and capital gains</a></h2>
   <p>
     What you owe on gains, dividends, interest and crypto — the holding period, the 0/15/20% long-term rates,
     the 3.8% surtax, and which lot you sell — federal and your state, including the states that tax gains differently.
@@ -206,7 +207,7 @@ import { GIG_CATEGORIES as GIG, GIG_PLATFORMS as PLATFORMS } from '../lib/gig';
     <li><a href="/crypto-tax-calculator/">Crypto</a> — coins, staking and NFTs</li>
   </ul>
 
-  <h2>Equity compensation</h2>
+  <h2><a href="/rsu-tax-calculator/">Equity compensation</a></h2>
   <p>Each of these has one expensive mistake attached to it, and the pages lead with it:</p>
   <ul class="link-columns">
     {INSTRUMENTS.map((i) => (
@@ -214,7 +215,27 @@ import { GIG_CATEGORIES as GIG, GIG_PLATFORMS as PLATFORMS } from '../lib/gig';
     ))}
   </ul>
 
-  <h2>1099 tax calculator by state</h2>
+  <h2><a href="/personal-finance/">Personal finance</a></h2>
+  <p>The money questions beyond tax — net worth, retirement, budgeting and debt:</p>
+  <ul class="link-columns">
+    {personalFinance.map((c) => (
+      <li><a href={`/${c.slug}/`}>{c.title}</a> — {c.blurb}</li>
+    ))}
+  </ul>
+
+  <h2><a href="/lifestyle/">Lifestyle</a></h2>
+  <p>What life's big decisions and small habits actually cost:</p>
+  {lifestyle.length > 0 ? (
+    <ul class="link-columns">
+      {lifestyle.map((c) => (
+        <li><a href={`/${c.slug}/`}>{c.title}</a> — {c.blurb}</li>
+      ))}
+    </ul>
+  ) : (
+    <p>Being added now — <a href="/lifestyle/">see the lifestyle hub</a>.</p>
+  )}
+
+  <h2><a href="/1099-tax-calculator/">1099 tax calculator by state</a></h2>
   <p>Pick your state for a page built on that state's 2026 income tax rules:</p>
   <ul class="link-columns">
     {stateList.map(([, s]) => (

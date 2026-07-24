@@ -1,0 +1,73 @@
+---
+/** Lifestyle: climate financial risk. */
+import Base from '../../layouts/Base.astro';
+import ClimateRiskCalculator from '../../components/calculators/ClimateRiskCalculator.tsx';
+import { climateRisk } from '../../lib/lifestyle';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = climateRisk(500000, 2000, 'high', 10);
+---
+
+<Base
+  title="Climate financial risk calculator 2026"
+  description="What climate risk can cost a homeowner: rising insurance premiums, a hit to home value, and adaptation costs over the years you hold the property."
+>
+  <section class="hero">
+    <p class="hero-label">Lifestyle</p>
+    <h1>Climate financial risk</h1>
+    <p class="tagline">Climate risk shows up on a homeowner's balance sheet long before any disaster — in premiums, resale value, and the cost of hardening the house. Here's the exposure.</p>
+  </section>
+
+  <p>
+    For most homeowners, climate risk is a financial fact before it's ever a physical one: insurers raise premiums or
+    pull out, buyers discount for risk, and adapting the property costs money. This estimates that exposure over the
+    years you plan to hold the home, so the risk is a number you can weigh, not a vague unease.
+  </p>
+
+  <ClimateRiskCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A {formatMoney(500000)} home in a high-risk area, {formatMoney(2000)} current premium, held 10 years:</p>
+  <table class="data-table">
+    <thead><tr><th>Exposure</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Insurance increase, year one</td><td>{formatMoney(ex.annualInsuranceIncrease)}</td></tr>
+      <tr><td>Extra insurance over 10 years</td><td>{formatMoney(ex.insuranceOverPeriod)}</td></tr>
+      <tr><td>Potential hit to home value</td><td>{formatMoney(ex.valueLoss)}</td></tr>
+      <tr><td>One-off adaptation cost</td><td>{formatMoney(ex.adaptationCost)}</td></tr>
+      <tr><td>Total financial exposure</td><td>{formatMoney(ex.totalExposure)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The visible cost is the premium — {formatMoney(ex.insuranceOverPeriod)} of increases over a decade. The larger,
+    quieter one is home value: a high-risk designation can shave {formatMoney(ex.valueLoss)} off a {formatMoney(500000)}
+    home as buyers price the risk in. Together the exposure is around {formatMoney(ex.totalExposure)}.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>How would climate risk actually hit my finances?</h3>
+    <p>Three ways, usually in this order: insurance premiums rise (or coverage becomes hard to get), the home's resale
+      value softens as buyers and lenders price the risk, and you spend on adaptation — a new roof, flood vents,
+      defensible space. A disaster is the tail risk; these are the everyday costs.</p>
+  </div>
+  <div class="faq">
+    <h3>Where do these figures come from?</h3>
+    <p>Broad reference tiers by risk level, not a model of your specific address. For real numbers, check FEMA flood
+      maps, your state's fire-risk maps, and quotes from a local insurer — risk varies enormously street to street.</p>
+  </div>
+  <div class="faq">
+    <h3>Does adaptation pay off?</h3>
+    <p>Often. Hardening a home can lower premiums, preserve insurability, and protect resale value — and it reduces the
+      odds of a catastrophic uninsured loss. The adaptation figure here is a cost, but it offsets the other two lines.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/buy-vs-rent-calculator/">Buy vs rent</a> — factor risk into the decision</li>
+    <li><a href="/net-worth-calculator/">Net worth</a> — a home is most people's biggest asset</li>
+    <li><a href="/salary-by-city-calculator/">Salary by city</a> — if a move is on the table</li>
+  </ul>
+
+  <p class="results-note">Broad reference tiers, not a property-level risk model or insurance quote. Not financial or insurance advice.</p>
+</Base>

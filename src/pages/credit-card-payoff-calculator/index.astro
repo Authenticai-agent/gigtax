@@ -1,0 +1,72 @@
+---
+/** Personal finance: credit card minimum-payment trap. */
+import Base from '../../layouts/Base.astro';
+import CreditCardPayoffCalculator from '../../components/calculators/CreditCardPayoffCalculator.tsx';
+import { creditCardTrap } from '../../lib/personal-finance';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = creditCardTrap(6000, 0.22, 0.02, 250);
+const yrs = (m: number) => (Number.isFinite(m) ? `${Math.floor(m / 12)} years ${m % 12} months` : 'never');
+---
+
+<Base
+  title="Credit card payoff calculator 2026 — minimum-payment trap"
+  description="See how many years the minimum payment really takes to clear a card, and how much interest a fixed higher payment saves. Runs in your browser."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance</p>
+    <h1>Credit card minimum-payment trap</h1>
+    <p class="tagline">The minimum payment is designed to keep you paying. See how many years it really takes — and what a fixed payment saves instead.</p>
+  </section>
+
+  <p>
+    A credit card's minimum payment is a small percent of the balance, so it shrinks every month as the balance
+    falls. That is the trap: the payoff stretches over years and interest piles up. A fixed payment — the same
+    dollar amount every month — clears the balance far faster and cheaper.
+  </p>
+
+  <CreditCardPayoffCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A {formatMoney(6000)} balance at 22% APR: a 2%-of-balance minimum versus a fixed {formatMoney(250)}/month:</p>
+  <table class="data-table">
+    <thead><tr><th>Approach</th><th>Time to clear</th><th>Interest paid</th></tr></thead>
+    <tbody>
+      <tr><td>Minimum payment (2%)</td><td>{yrs(ex.minMonths)}</td><td>{Number.isFinite(ex.minTotalInterest) ? formatMoney(ex.minTotalInterest) : '—'}</td></tr>
+      <tr><td>Fixed {formatMoney(250)}/month</td><td>{yrs(ex.fixedMonths)}</td><td>{formatMoney(ex.fixedTotalInterest)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Paying the minimum drags the {formatMoney(6000)} balance out to {yrs(ex.minMonths)}. A fixed
+    {' '}{formatMoney(250)}/month clears it in {yrs(ex.fixedMonths)} and saves about
+    {' '}{formatMoney(ex.interestSaved)} in interest — same card, one changed habit.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why does the minimum take so long?</h3>
+    <p>Because it is a percent of the balance, it falls as the balance falls, so each payment covers less
+      principal. Near the end you are barely beating the interest, which is why a percent-based minimum can stretch
+      a payoff across many years.</p>
+  </div>
+  <div class="faq">
+    <h3>What's the fastest way out of card debt?</h3>
+    <p>Pay a fixed amount well above the minimum, and target the highest-APR card first (the avalanche method) to
+      minimize total interest. A 0% balance-transfer offer can help if you clear the balance before it expires.</p>
+  </div>
+  <div class="faq">
+    <h3>Is the interest figure exact?</h3>
+    <p>It is a close approximation. A real card recomputes the minimum every month as the balance changes; this
+      models the starting minimum as a level payment, which slightly understates the true interest — so the real
+      trap is a little worse, not better.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/budget-calculator/">50/30/20 budget</a> — free up cash to pay it down</li>
+    <li><a href="/net-worth-calculator/">Net worth</a> — debt is the other half of the number</li>
+    <li><a href="/personal-finance/">All personal finance tools</a></li>
+  </ul>
+
+  <p class="results-note">Minimum-payment interest is a close approximation; a real card recalculates monthly. Not financial advice.</p>
+</Base>

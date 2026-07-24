@@ -1,0 +1,4 @@
+# Permanent redirects for the profession/deductions section, moved from
+# /self-employed-tax-calculator/ to /business-deductions/ (all old URLs preserved).
+/self-employed-tax-calculator/            /business-deductions/            301
+/self-employed-tax-calculator/*           /business-deductions/:splat      301

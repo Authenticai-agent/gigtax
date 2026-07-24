@@ -1,0 +1,74 @@
+---
+/** Lifestyle: prenup financial mismatch. */
+import Base from '../../layouts/Base.astro';
+import PrenupMismatchCalculator from '../../components/calculators/PrenupMismatchCalculator.tsx';
+import { prenupMismatch } from '../../lib/lifestyle';
+import { formatMoney, formatPct } from '../../lib/tax-engine';
+
+const ex = prenupMismatch({ aIncome: 120000, aAssets: 150000, aDebt: 20000, bIncome: 55000, bAssets: 20000, bDebt: 80000 });
+---
+
+<Base
+  title="Prenup financial mismatch calculator 2026"
+  description="How financially different are two partners? Score the gap in income, net worth and debt — the signal a prenup and honest money talk are worth having."
+>
+  <section class="hero">
+    <p class="hero-label">Lifestyle</p>
+    <h1>Prenup financial mismatch</h1>
+    <p class="tagline">Marrying finances, not just people. This scores how far apart two partners are on income, net worth and debt — the honest starting point for a prenup conversation.</p>
+  </section>
+
+  <p>
+    A prenup isn't about expecting a divorce — it's about two people understanding each other's finances before they
+    merge them. The bigger the gap in income, net worth or debt, the more a prenup and a frank money conversation
+    protect both sides. This scores that gap, so the discussion starts from facts.
+  </p>
+
+  <PrenupMismatchCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>One partner earning {formatMoney(120000)} with positive net worth, the other {formatMoney(55000)} carrying {formatMoney(80000)} of debt:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Partner A net worth</td><td>{formatMoney(ex.aNetWorth)}</td></tr>
+      <tr><td>Partner B net worth</td><td>{formatMoney(ex.bNetWorth)}</td></tr>
+      <tr><td>Net-worth gap</td><td>{formatMoney(ex.netWorthGap)}</td></tr>
+      <tr><td>Income ratio</td><td>{formatPct(ex.incomeRatio)}</td></tr>
+      <tr><td>Mismatch score</td><td>{ex.mismatchScore}/100 ({ex.band})</td></tr>
+    </tbody>
+  </table>
+  <p>
+    A {formatMoney(ex.netWorthGap)} net-worth gap and one partner carrying real debt push this into the
+    {' '}<strong>{ex.band}</strong> band — exactly the situation where a prenup, and clarity about whose debt is
+    whose, matters most. A high score isn't a red flag for the relationship; it's a prompt for a conversation.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What does the score actually measure?</h3>
+    <p>The gap between two partners on three axes: how far apart their incomes are, how large the net-worth
+      difference is, and how much debt each carries relative to income. More distance means more to talk through
+      before combining finances.</p>
+  </div>
+  <div class="faq">
+    <h3>Do we need a prenup?</h3>
+    <p>That's a legal and personal decision this can't make for you. A prenup matters most when there's a business, an
+      inheritance, significant premarital assets, children from a prior relationship, or lopsided debt. A high score
+      suggests it's worth asking a family-law attorney.</p>
+  </div>
+  <div class="faq">
+    <h3>Isn't talking about this unromantic?</h3>
+    <p>Money is a leading cause of marital conflict, and surprises about debt or spending are worse discovered later.
+      A calculator is a low-stakes way to open the conversation with numbers instead of assumptions.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/net-worth-calculator/">Net worth</a> — each partner's starting point</li>
+    <li><a href="/marriage-tax-calculator/">Marriage penalty or bonus</a> — the tax side of combining incomes</li>
+    <li><a href="/cost-of-divorce-calculator/">Cost of divorce</a> — what a prenup plans around</li>
+  </ul>
+
+  <p class="results-note">A discussion aid, not a verdict on a relationship or a substitute for legal advice.</p>
+</Base>

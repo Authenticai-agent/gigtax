@@ -65,12 +65,12 @@ const rows = PROFESSIONS.map((p) => ({ ...p, count: deductionsFor(p.key).length 
     insurance, the Augusta rule, employing your own children. These apply whatever you do, they are worth
     more than most of the expenses people carefully receipt, and they are the ones most often missed.
   </p>
-  <p><a href="/self-employed-tax-calculator/deductions/">The full deductions checklist →</a></p>
+  <p><a href="/business-deductions/deductions/">The full deductions checklist →</a></p>
 
   <h2>By profession</h2>
   <ul class="link-columns">
     {rows.map((p) => (
-      <li><a href={`/self-employed-tax-calculator/${p.slug}/`}>{p.name}</a> — {p.count} key deductions</li>
+      <li><a href={`/business-deductions/${p.slug}/`}>{p.name}</a> — {p.count} key deductions</li>
     ))}
   </ul>
 

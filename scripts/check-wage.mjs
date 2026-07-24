@@ -39,6 +39,9 @@ const npf = await load('src/lib/nonprofit.ts');
 const nan = await load('src/lib/household-employer.ts');
 const car = await load('src/lib/comp-audit-risk.ts');
 const eqt = await load('src/lib/equity.ts');
+const pf = await load('src/lib/personal-finance.ts');
+const fin = await load('src/lib/finance.ts');
+const ls = await load('src/lib/lifestyle.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -713,6 +716,135 @@ console.log('\nestimated-tax penalty, nanny, nonprofit, audit risk, phantom');
   ok('phantom net is the payout minus its own tax', near(ph.net, 25000 - ph.totalExtraTax) && ph.net < 25000);
   const pc = eqt.phantomOutcome(25000, 150000, 'contractor', 'single');
   ok('phantom contractor pays SE tax instead of FICA', pc.seTax > 0 && pc.fica === 0);
+}
+
+/* ---------------------- personal finance (batch 1) ------------------------ */
+console.log('\npersonal finance: net worth, FIRE, procrastination, budget, card trap');
+{
+  const nw = pf.netWorth({ cash: 15000, investments: 60000, homeValue: 350000, vehicles: 20000, otherAssets: 5000, mortgage: 280000, studentLoans: 25000, carLoans: 12000, creditCards: 4000, otherDebt: 0, age: 35 });
+  ok('net worth = assets − liabilities', nw.totalAssets === 450000 && nw.totalLiabilities === 321000 && nw.netWorth === 129000, `${nw.netWorth}`);
+  ok('net worth compares to the age median', nw.benchmarkMedian > 0 && nw.vsMedian === nw.netWorth - nw.benchmarkMedian);
+
+  // FIRE target = expenses / withdrawal rate.
+  const proj = pf.projectToTarget({ currentAge: 30, currentSavings: 50000, monthlyContribution: 1500, annualReturn: 0.07, annualExpenses: 50000, withdrawalRate: 0.04 });
+  ok('FIRE number = 25× spending at the 4% rule', proj.target === 1250000, `${proj.target}`);
+  ok('FIRE is reached and age = currentAge + years', !proj.unreachable && proj.ageAtTarget === 30 + proj.yearsToTarget);
+  // More contribution → not more years.
+  const faster = pf.projectToTarget({ currentAge: 30, currentSavings: 50000, monthlyContribution: 3000, annualReturn: 0.07, annualExpenses: 50000, withdrawalRate: 0.04 });
+  ok('a bigger contribution reaches FIRE no later', faster.yearsToTarget <= proj.yearsToTarget);
+
+  const proc = pf.procrastinationCost(500, 0.07, 30, 5);
+  ok('waiting costs more than the skipped contributions', proc.costOfWaiting > 0 && proc.ifStartNow > proc.ifDelayed);
+  ok('lost growth exceeds lost contributions', proc.costOfWaiting > (proc.contributedNow - proc.contributedDelayed));
+
+  const b = pf.budget503020(5000);
+  ok('50/30/20 splits take-home pay', b.needs === 2500 && b.wants === 1500 && b.savings === 1000);
+
+  const trap = pf.creditCardTrap(6000, 0.22, 0.02, 250);
+  ok('the minimum takes longer than a fixed payment', trap.minMonths > trap.fixedMonths && trap.interestSaved > 0);
+}
+
+/* ---------------------- personal finance (batch 2) ------------------------ */
+console.log('\npersonal finance: buy-vs-rent, college ROI, savings gap, city, subscriptions');
+{
+  const bvr = pf.buyVsRent({ homePrice: 400000, downPaymentPct: 0.2, mortgageRate: 0.065, termYears: 30, monthlyRent: 2200, homeAppreciation: 0.03, investmentReturn: 0.07, propertyTaxPct: 0.011, maintenancePct: 0.01, rentInflation: 0.03, years: 30 });
+  ok('buy-vs-rent finds a break-even year', bvr.breakEvenYear !== null && bvr.breakEvenYear >= 1 && bvr.breakEvenYear <= 30, `${bvr.breakEvenYear}`);
+  ok('buy-vs-rent monthly = amortized P&I on the loan', near(bvr.monthlyPayment, fin.loanPayment(320000, 0.065, 360), 1));
+
+  const roi = pf.collegeROI({ degreeCost: 100000, yearsToComplete: 4, startingSalary: 65000, salaryGrowth: 0.03, altPathCost: 5000, altStartingSalary: 40000, careerYears: 40 });
+  ok('college ROI positive when the degree earns more over a career', roi.netGain > 0 && roi.roi > 0);
+  ok('college ROI reports a break-even year after graduation', roi.breakEvenYear !== null && roi.breakEvenYear > 4);
+
+  const gap = pf.collegeSavingsGap({ annualCostToday: 30000, yearsUntilCollege: 10, yearsOfCollege: 4, educationInflation: 0.05, currentSavings: 20000, monthlyContribution: 300, annualReturn: 0.06 });
+  ok('college future cost exceeds today’s sticker (inflation)', gap.futureCost > 4 * 30000);
+  ok('college gap and the monthly to close it are consistent', gap.gap >= 0 && gap.monthlyToCloseGap >= 0);
+
+  const city = pf.salaryByCity(100000, 100, 187);
+  ok('a pricier city needs a proportionally higher salary', near(city.equivalentSalary, 187000) && !city.keepsPurchasingPower);
+  ok('a cheaper city keeps purchasing power at a lower salary', pf.salaryByCity(100000, 187, 100).keepsPurchasingPower);
+
+  const sub = pf.subscriptionAudit(100, 0.07, 20);
+  ok('subscription annual = 12× monthly, invested value beats spend', sub.annualTotal === 1200 && sub.investedOverYears > 100 * 12 * 20);
+}
+
+/* ---------------------- personal finance (batch 3) ------------------------ */
+console.log('\npersonal finance: lifetime tax, profit margin, gender pay gap');
+{
+  const lt = pf.lifetimeTax({ currentAge: 40, careerStartAge: 22, retireAge: 65, currentIncome: 75000, incomeGrowth: 0.03, contribution401kPct: 0, status: 'single', stateCode: 'CA' });
+  ok('lifetime tax sums federal + state + FICA', near(lt.totalPersonalPaid, lt.totalFederal + lt.totalState + lt.totalEmployeeFICA), `${lt.totalPersonalPaid}`);
+  ok('lifetime IRS collected adds employer FICA', lt.totalIRSCollected === lt.totalPersonalPaid + lt.totalEmployerFICA);
+  ok('lifetime effective rate is a sane share of income', lt.effectiveLifetimeRate > 0.1 && lt.effectiveLifetimeRate < 0.5, `${(lt.effectiveLifetimeRate * 100).toFixed(1)}%`);
+  ok('a no-income-tax state pays less lifetime tax', pf.lifetimeTax({ currentAge: 40, careerStartAge: 22, retireAge: 65, currentIncome: 75000, incomeGrowth: 0.03, contribution401kPct: 0, status: 'single', stateCode: 'TX' }).totalPersonalPaid < lt.totalPersonalPaid);
+
+  const pm = pf.profitMargin(10000, 4000, 1500, 0);
+  ok('gross margin = (revenue − COGS) / revenue', near(pm.grossMargin, 0.6));
+  ok('net margin = (revenue − all costs) / revenue', near(pm.netMargin, 0.45) && pm.netProfit === 4500);
+  ok('a 50% margin is a 100% markup', near(pf.profitMargin(200, 100, 0, 0).markup, 1));
+
+  const occ = { name: 'Test', median: 100000, maleMedian: 110000, femaleMedian: 90000, note: '' };
+  const g = pf.genderPayGap(occ, 85000, 'female', 25, 0.07);
+  ok('occupation gap = male − female median', g.occupationGap === 20000 && near(g.occupationGapPct, 20000 / 110000));
+  ok('gap vs your gender median is signed', g.yourMedian === 90000 && g.vsYourMedian === -5000);
+  ok('lifetime gap invested exceeds the plain sum', g.lifetimeGapInvested > g.lifetimeGapSimple);
+}
+
+/* ---------------------- lifestyle (batch 4) ------------------------------- */
+console.log('\nlifestyle: baby, divorce, eldercare, prenup, death & money');
+{
+  const baby = ls.babyFirstYear({ delivery: 5000, prenatal: 2000, gear: 3000, diapersMonthly: 80, formulaMonthly: 150, childcareMonthly: 1200, otherMonthly: 100, salary: 60000, salaryReducedPct: 1, monthsOut: 3, investmentReturn: 0.07 });
+  ok('baby first-year = one-off + annualized + lost income', baby.totalFirstYear === baby.oneOff + baby.annualized + baby.lostIncome);
+  ok('baby lost income = salary × reduction × months/12', near(baby.lostIncome, 60000 * 1 * 0.25));
+
+  const div = ls.divorceCost({ home: 400000, retirement: 200000, savings: 50000, otherAssets: 20000, debts: 100000, alimonyMonthly: 2000, alimonyYears: 5, childMonthly: 1500, childYears: 10, attorneyYou: 15000, attorneySpouse: 15000, mediator: 5000 });
+  ok('divorce splits the net marital estate in half', div.netMaritalEstate === 570000 && div.yourAssetShare === 285000);
+  ok('divorce support = alimony + child support totals', div.totalSupport === 2000 * 12 * 5 + 1500 * 12 * 10);
+
+  const eld = ls.eldercareCost('nursing', 'vhigh', 3, 0.04);
+  ok('eldercare monthly = base × state tier', eld.monthlyCost === Math.round(8800 * 1.5));
+  ok('eldercare total inflates each year over the span', eld.totalCost > eld.annualCost * 3);
+
+  const pn = ls.prenupMismatch({ aIncome: 200000, aAssets: 300000, aDebt: 0, bIncome: 40000, bAssets: 5000, bDebt: 90000 });
+  ok('a big income + net-worth gap scores a wide mismatch', pn.mismatchScore > 60 && pn.band === 'wide', `${pn.mismatchScore}`);
+  ok('two identical partners score near zero', ls.prenupMismatch({ aIncome: 80000, aAssets: 50000, aDebt: 10000, bIncome: 80000, bAssets: 50000, bDebt: 10000 }).mismatchScore < 15);
+
+  // Estate projected under the $15m exclusion from the verified dataset.
+  const dm = ls.deathAndMoney({ netWorth: 2000000, annualSavings: 50000, investmentReturn: 0.06, currentAge: 50, deathAge: 85, charity: 0, stateCode: 'TX', priorExemptionUsed: 0 });
+  ok('death & money projects net worth forward to death', dm.projectedEstate > 2000000);
+  ok('an estate under $15m owes no federal estate tax', dm.projectedEstate < 15000000 ? dm.federalEstateTax === 0 : dm.federalEstateTax > 0);
+  const big = ls.deathAndMoney({ netWorth: 20000000, annualSavings: 0, investmentReturn: 0, currentAge: 84, deathAge: 85, charity: 0, stateCode: 'TX', priorExemptionUsed: 0 });
+  ok('a $20m estate owes 40% over the $15m exclusion', near(big.federalEstateTax, 2000000), `${big.federalEstateTax}`);
+}
+
+/* ---------------------- lifestyle (batch 5) ------------------------------- */
+console.log('\nlifestyle: coffee, lifestyle creep, climate risk, how rich if, true hourly');
+{
+  const cof = ls.recurringHabit(6, 250, 30, 0.10, 0.03);
+  ok('a habit invested beats a habit spent', cof.totalIfInvested > cof.totalSpent && cof.opportunityCost > 0);
+  ok('habit annual spend = per-occasion × times/year', cof.annualSpend === 6 * 250);
+
+  const creep = ls.lifestyleCreep(60000, 0.20, 100000, 0.08, 0.07, 20);
+  ok('lifestyle creep foregone = old-rate savings − actual savings', creep.foregoneAnnual === Math.round(100000 * 0.20) - Math.round(100000 * 0.08));
+  ok('foregone savings compound over the years', creep.foregoneOverYears > creep.foregoneAnnual * 20);
+
+  const cl = ls.climateRisk(500000, 2000, 'high', 10);
+  ok('climate value loss = home value × tier loss', cl.valueLoss === Math.round(500000 * 0.30));
+  ok('climate total exposure sums the three costs', cl.totalExposure === cl.insuranceOverPeriod + cl.valueLoss + cl.adaptationCost);
+  ok('higher severity means higher exposure', ls.climateRisk(500000, 2000, 'high', 10).totalExposure > ls.climateRisk(500000, 2000, 'low', 10).totalExposure);
+
+  const hri = ls.howRichIf(500, 30, 0.07);
+  ok('how-rich-if future value exceeds contributions', hri.futureValue > hri.contributed && hri.growth === hri.futureValue - hri.contributed);
+
+  const wage = ls.trueHourlyWage(100000, 40, 8, 5, 48, 6000);
+  ok('true hourly is below the nominal hourly', wage.realHourly < wage.nominalHourly && wage.gapPerHour > 0);
+  ok('nominal hourly = salary / contracted hours', near(wage.nominalHourly, 100000 / (40 * 48), 0.01));
+}
+
+/* ---------------------- finance primitives -------------------------------- */
+{
+  ok('annuity FV exceeds total contributions', fin.futureValueAnnuity(500, 0.07, 30) > 500 * 12 * 30);
+  ok('zero-rate annuity FV = contributions', fin.futureValueAnnuity(500, 0, 30) === 500 * 12 * 30);
+  ok('lump FV doubles near the rule of 72', near(fin.futureValueLump(1000, 0.072, 10), 2004, 5), `${Math.round(fin.futureValueLump(1000, 0.072, 10))}`);
+  ok('a payment below the interest never pays off', fin.payoffMonths(10000, 0.24, 100) === Infinity);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

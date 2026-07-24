@@ -1,0 +1,73 @@
+---
+/** Personal finance: FIRE — years to financial independence. */
+import Base from '../../layouts/Base.astro';
+import FireCalculator from '../../components/calculators/FireCalculator.tsx';
+import { projectToTarget } from '../../lib/personal-finance';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = projectToTarget({ currentAge: 30, currentSavings: 50000, monthlyContribution: 1500, annualReturn: 0.07, annualExpenses: 50000, withdrawalRate: 0.04 });
+---
+
+<Base
+  title="FIRE calculator 2026 — how long until I’m rich?"
+  description="How many years to financial independence at your savings rate. Set your contributions, return and the 4% rule to see when work becomes optional."
+>
+  <section class="hero">
+    <p class="hero-label">Personal finance · FIRE</p>
+    <h1>FIRE calculator — how long until I’m rich?</h1>
+    <p class="tagline">Financial independence is a number, not an age: the nest egg whose safe withdrawal covers your spending. Here’s how long your savings rate takes to get there.</p>
+  </section>
+
+  <p>
+    FIRE — financial independence, retire early — turns "am I rich yet?" into arithmetic. Pick the spending you
+    want to sustain, apply a safe withdrawal rate (the 4% rule is the usual starting point), and that is your
+    target. Then it is just how fast your savings and contributions compound toward it.
+  </p>
+
+  <FireCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>A 30-year-old with {formatMoney(50000)} saved, adding {formatMoney(1500)}/month, wanting {formatMoney(50000)}/year in retirement at a 7% return and the 4% rule:</p>
+  <table class="data-table">
+    <thead><tr><th>Step</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>FIRE number (4% of {formatMoney(50000)} spending)</td><td>{formatMoney(ex.target)}</td></tr>
+      <tr><td>Years to reach it</td><td>{ex.yearsToTarget}</td></tr>
+      <tr><td>Age at independence</td><td>{ex.ageAtTarget}</td></tr>
+      <tr><td>Portfolio at that point</td><td>{formatMoney(ex.projectedAtTarget)}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    A {formatMoney(50000)} lifestyle needs a {formatMoney(ex.target)} portfolio under the 4% rule. On these
+    assumptions that arrives in {ex.yearsToTarget} years — at age {ex.ageAtTarget}. Raise the contribution or
+    lower the spending and the years fall fast; the two levers matter far more than shaving the return.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>What is the 4% rule?</h3>
+    <p>A rule of thumb that a portfolio can sustainably fund about 4% of its starting value each year, adjusted
+      for inflation, over a long retirement — so your target nest egg is roughly 25× your annual spending. It is a
+      guide from historical data, not a guarantee; some plan on 3.5% to be safe.</p>
+  </div>
+  <div class="faq">
+    <h3>Why does spending matter more than income?</h3>
+    <p>Your FIRE number is driven entirely by what you spend, not what you earn — lower spending both shrinks the
+      target and frees up more to invest. Cutting {formatMoney(5000)} of annual spending lowers the target by
+      {formatMoney(125000)} under the 4% rule.</p>
+  </div>
+  <div class="faq">
+    <h3>Is a 7% return realistic?</h3>
+    <p>It is a common long-run stock-market assumption before inflation; after inflation, closer to 4–5% is
+      prudent. The calculator lets you set it — lower it and the timeline stretches, which is the honest picture.</p>
+  </div>
+
+  <h2>Related tools</h2>
+  <ul class="link-columns">
+    <li><a href="/when-can-i-retire-calculator/">When can I retire?</a> — the same math, framed by age</li>
+    <li><a href="/cost-of-procrastinating-investing-calculator/">Cost of waiting to invest</a> — why starting now matters</li>
+    <li><a href="/net-worth-calculator/">Net worth</a> — where you stand today</li>
+  </ul>
+
+  <p class="results-note">Projections assume a steady return every year, which markets do not deliver. An illustration, not a promise. Not financial advice.</p>
+</Base>
