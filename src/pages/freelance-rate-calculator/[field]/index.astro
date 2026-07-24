@@ -1,0 +1,79 @@
+---
+/**
+ * One page per field: presets the calculator and carries the field-specific
+ * overhead and billable reality (both change the floor-rate math). Field copy
+ * is the differentiator; no market rate is invented — BLS link-out only.
+ */
+import Base from '../../../layouts/Base.astro';
+import FreelanceRateCalculator from '../../../components/calculators/FreelanceRateCalculator.tsx';
+import { FREELANCE_FIELDS, fieldBySlug } from '../../../data/freelance-fields';
+import { freelanceRateTool } from '../../../lib/freelanceRateTool';
+import { formatMoney } from '../../../lib/tax-engine';
+
+export function getStaticPaths() {
+  return FREELANCE_FIELDS.map((f) => ({ params: { field: f.slug }, props: { slug: f.slug } }));
+}
+const { slug } = Astro.props as { slug: string };
+const f = fieldBySlug(slug)!;
+const art = /^[aeiou]/i.test(f.name) ? 'an' : 'a';
+// Worked example at this field's typical billable hours.
+const ex = freelanceRateTool({ targetTakeHome: 80000, healthInsuranceAnnual: 6000, overheadAnnual: 4000, stateCode: 'CA', weeksOff: 4, billableHoursPerWeek: f.defaultBillable });
+
+const faqItems = [
+  { q: `What hourly rate should ${art} ${f.name.toLowerCase()} charge?`, a: `The rate you <em>need</em> depends on your target take-home, costs, and billable hours — for an ${formatMoney(80000)} take-home at ${f.defaultBillable} billable hours a week, the floor here lands near ${formatMoney(ex.floorHourlyRate)}/hr (${formatMoney(ex.dayRate)}/day). Compare that to the market for ${f.blsGroup} on the BLS. This page never invents a going rate.`, review: false },
+  { q: `How much can ${art} ${f.name.toLowerCase()} actually bill in a week?`, a: `${f.billableNote}`, review: false },
+  { q: `What overhead does ${art} ${f.name.toLowerCase()} carry?`, a: `${f.overheadNote} It's deductible against your income, but it still has to be covered by the rate.`, review: false },
+];
+
+const title = `${f.name} freelance rate calculator (2026)`;
+const desc = `What should ${art} freelance ${f.name.toLowerCase()} charge? Work out the floor hourly and day rate for your target take-home, after tax, ${f.name.toLowerCase()} overhead, and unbillable time.`;
+---
+
+<Base title={title} description={desc} faqItems={faqItems}>
+  <div class="breadcrumbs"><a href="/">Home</a> / <a href="/freelance-rate-calculator/">Freelance rates</a> / {f.name}</div>
+
+  <section class="hero">
+    <p class="hero-label">2026 · {f.name}</p>
+    <h1>{f.name} freelance rate</h1>
+    <p class="tagline">The floor rate {art} freelance {f.name.toLowerCase()} needs — with this field's overhead and billable reality built into the math, not a generic salary split.</p>
+  </section>
+
+  <h2>What shapes {art} {f.name.toLowerCase()}'s rate</h2>
+  <p><strong>Overhead.</strong> {f.overheadNote}</p>
+  <p><strong>Billable reality.</strong> {f.billableNote}</p>
+
+  <FreelanceRateCalculator client:load presetState="CA" />
+
+  <h2>The floor, worked out</h2>
+  <p>
+    At {f.defaultBillable} billable hours a week and {formatMoney(80000)} of target take-home, the floor here is about
+    {formatMoney(ex.floorHourlyRate)}/hr — {ex.upliftMultiple}× the {formatMoney(ex.naiveHourly)}/hr you'd get dividing
+    take-home by hours. You'd gross {formatMoney(ex.grossRevenue)} over {ex.annualBillableHours} billable hours. Adjust
+    the inputs above to your own numbers.
+  </p>
+
+  <h2>Get your market number</h2>
+  <p>
+    This is the rate you need, not the going rate. For the market, look up <strong>{f.blsGroup}</strong> on the
+    <a href="https://www.bls.gov/oes/current/oes_nat.htm" rel="noopener">BLS OES</a> and convert the salary to an
+    hourly benchmark. If your floor sits above the market, something — the target, the hours, or the overhead — has to
+    move. No going rate is invented on this page.
+  </p>
+
+  <h2>Questions about {f.name.toLowerCase()} rates</h2>
+  {faqItems.map((q) => (
+    <div class="faq">
+      <h3>{q.q}</h3>
+      <p set:html={q.a}></p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/freelance-rate-calculator/">All fields</a></li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a></li>
+    <li><a href="/side-income-tax-threshold/">Side income tax threshold</a></li>
+  </ul>
+
+  <p class="results-note">An estimate for 2026. Tax math from the site's engine; market wages not included — bring your own from BLS. Nothing stored. Not financial advice.</p>
+</Base>

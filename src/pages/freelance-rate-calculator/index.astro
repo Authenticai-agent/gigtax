@@ -1,102 +1,71 @@
 ---
-/** Hub: freelance floor rate. Worked example by freelanceRate(). */
+/** Freelance rate calculator hub (add-on task 3). */
 import Base from '../../layouts/Base.astro';
 import FreelanceRateCalculator from '../../components/calculators/FreelanceRateCalculator.tsx';
-import { freelanceRate } from '../../lib/se-business';
+import { freelanceRateTool } from '../../lib/freelanceRateTool';
+import { FREELANCE_FIELDS } from '../../data/freelance-fields';
 import { formatMoney } from '../../lib/tax-engine';
 
-const ex = freelanceRate(80000, 6000, 'CA', 'single', 6, 25, 40);
+const ex = freelanceRateTool({ targetTakeHome: 90000, healthInsuranceAnnual: 6000, overheadAnnual: 4000, stateCode: 'CA', weeksOff: 4, billableHoursPerWeek: 25 });
+
+const faqItems = [
+  { q: `Why isn't my freelance rate just my salary divided by hours?`, a: `Because a salaried $50/hr came with an employer paying half your FICA, covering benefits, and paying you for 2,080 hours including PTO. Freelance, you pay all the self-employment tax, buy your own benefits, only some hours are billable, and time off is unpaid. In this example the real floor is <strong>${ex.upliftMultiple}×</strong> the naive take-home ÷ hours number.`, review: false },
+  { q: `How many hours a week can I actually bill?`, a: `Rarely all of them. Admin, pitching, revisions, and gaps between clients are unpaid, so 20–30 billable hours out of a 40-hour week is typical. Fewer billable hours means a higher rate for the same take-home — the calculator makes that trade-off explicit.`, review: false },
+  { q: `Where do I find the market rate for my field?`, a: `The BLS Occupational Employment and Wage Statistics has median salaries by occupation and metro. Convert the salary to an hourly benchmark and compare it to your computed floor. This tool never invents a market band — it tells you the rate you need and leaves the market number to a real source.`, review: false },
+];
 ---
 
 <Base
-  title="Freelance rate calculator — the hourly rate you need"
-  description="Work out the floor hourly rate to hit your target take-home as a freelancer, after self-employment tax, income tax, business expenses and unbilled hours."
+  title="Freelance rate calculator — the hourly rate you actually need (2026)"
+  description="Work out the freelance hourly and day rate to hit your target take-home, after self-employment tax, benefits, and unbillable time. Your salaried $50/hr isn't $50/hr freelance."
+  faqItems={faqItems}
 >
   <section class="hero">
-    <p class="hero-label">Freelance</p>
+    <p class="hero-label">2026 · freelance</p>
     <h1>Freelance rate calculator</h1>
-    <p class="tagline">Your salary ÷ 2,080 is not your rate. Taxes, expenses and unbilled hours push it far higher.</p>
+    <p class="tagline">Your old $50/hr salary is not $50/hr freelance. Enter the take-home you want and see the floor rate that actually covers self-employment tax, benefits, and the hours you can't bill.</p>
   </section>
 
   <p>
-    New freelancers guess a rate by dividing a salary by 2,080 hours. That misses
-    everything: self-employment tax, income tax, business expenses, time off, and the
-    fact that only some hours are billable. This solves the other way — from the
-    take-home you need back to the floor hourly rate that delivers it.
+    The most expensive freelance mistake is pricing off your old salary. As an employee, someone else paid half your
+    payroll tax, covered your benefits, and paid you for time off. Freelance, all of that lands on your rate — and only
+    part of your week is billable. This runs the 1099 tax math backward: from the take-home you want to the rate that
+    delivers it.
   </p>
 
   <FreelanceRateCalculator client:load />
 
-  <h2>Worked example — {formatMoney(80000)} take-home in California</h2>
+  <h2>Why the floor is higher than you'd guess</h2>
   <p>
-    A California freelancer wants {formatMoney(80000)} in the bank, has {formatMoney(6000)}
-    of expenses, bills 25 hours a week, and takes 6 weeks off:
-  </p>
-  <table class="data-table">
-    <thead><tr><th>Figure</th><th>Amount</th></tr></thead>
-    <tbody>
-      <tr><td>Target take-home</td><td>{formatMoney(80000)}</td></tr>
-      <tr><td>Gross revenue required</td><td>{formatMoney(ex.grossRevenue)}</td></tr>
-      <tr><td>Billable hours a year</td><td>{formatMoney(ex.annualBillableHours)}</td></tr>
-      <tr><td>Floor hourly rate</td><td>{formatMoney(ex.hourlyRate)}/hr</td></tr>
-      <tr><td>A typical 40-hour project</td><td>{formatMoney(ex.projectRate)}</td></tr>
-    </tbody>
-  </table>
-  <p>
-    To keep {formatMoney(80000)}, this freelancer must bill {formatMoney(ex.hourlyRate)}
-    an hour — because {formatMoney(ex.grossRevenue)} of revenue, spread over only
-    {formatMoney(ex.annualBillableHours)} billable hours, is what survives taxes and
-    expenses to leave {formatMoney(80000)}. A rate that "feels like" a good salary is
-    usually far too low once you do this math.
+    On a {formatMoney(90000)} target take-home with typical costs, the floor lands near {formatMoney(ex.floorHourlyRate)}/hr —
+    about {ex.upliftMultiple}× the {formatMoney(ex.naiveHourly)}/hr you'd get by just dividing take-home by billable hours.
+    The gap is self-employment tax, income tax, health insurance and overhead, spread over the hours you can actually
+    invoice. Every one of those is a real cost the salary quietly absorbed.
   </p>
 
-  <h2>Questions</h2>
-  <div class="faq">
-    <h3>Why is my floor rate so much higher than a salary wage?</h3>
-    <p>
-      Because a {formatMoney(80000)} salary hides a lot: the employer paid half your
-      FICA, covered benefits, and paid you for 2,080 hours. Freelancing, you pay the
-      full 15.3% self-employment tax, buy your own benefits, and bill perhaps 25 hours
-      a week. All of that has to come out of your rate.
-    </p>
-  </div>
-  <div class="faq">
-    <h3>What are billable hours?</h3>
-    <p>
-      The hours you can actually charge for. Sales calls, admin, invoicing, marketing
-      and learning are real work but unbillable, so most freelancers bill 20–30 of a
-      40-hour week. Your rate has to cover the unbillable hours too, which is why
-      lowering billable hours raises the floor rate.
-    </p>
-  </div>
-  <div class="faq">
-    <h3>Is the floor rate what I should charge?</h3>
-    <p>
-      No — it is the minimum to survive at your target. What you actually charge
-      should be your market rate: what clients in your niche pay. If the market rate
-      is above your floor, charge the market rate. If it is below, the niche can't
-      support your income goal at those hours.
-    </p>
-  </div>
-  <div class="faq">
-    <h3>Does an S-corp change this?</h3>
-    <p>
-      It can, at higher incomes, by cutting self-employment tax on the distribution
-      portion — which lowers the revenue you need and so the floor rate. See the
-      <a href="/s-corp-tax-calculator/">S-corp calculator</a> for whether it pays off
-      at your numbers.
-    </p>
-  </div>
-
-  <h2>Related tools</h2>
+  <h2>By field</h2>
+  <p>Each field has its own overhead and its own billable reality — both change the floor:</p>
   <ul class="link-columns">
-    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — the tax on your freelance profit</li>
-    <li><a href="/hourly-to-salary-calculator/">Hourly to salary calculator</a> — the reverse view</li>
-    <li><a href="/self-employed-retirement-calculator/">Self-employed retirement</a></li>
+    {FREELANCE_FIELDS.map((f) => (
+      <li><a href={`/freelance-rate-calculator/${f.slug}/`}>{f.name} rates</a></li>
+    ))}
   </ul>
 
-  <p class="results-note">
-    Estimate for the 2026 tax year. A floor, not a market rate. Not tax or business
-    advice.
-  </p>
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — the tax on that income</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly taxes</a> — pay it in through the year</li>
+    <li><a href="/cobra-vs-marketplace-calculator/">Health coverage</a> — the benefits number to plug in</li>
+    <li><a href="/layoff-runway-calculator/">Layoff runway</a> — freelancing to bridge a gap</li>
+  </ul>
+
+  <p class="results-note">An estimate for 2026 on your own numbers. Tax math from the site's engine; market wages are not included — bring your own from BLS. Nothing you enter is stored. Not financial advice.</p>
 </Base>

@@ -50,6 +50,7 @@ const rwy = await load('src/lib/layoff/runway.ts');
 const rto = await load('src/lib/rtoCost.ts');
 const neg = await load('src/lib/negotiation.ts');
 const sid = await load('src/lib/sideIncome.ts');
+const frt = await load('src/lib/freelanceRateTool.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -1021,6 +1022,27 @@ console.log('\nside-income tax threshold');
 
   // Tax math comes from the existing engine and is positive on real profit.
   ok('tax estimate uses the existing engine (positive on profit)', big.tax.totalTax > 0 && big.tax.seTax > 0);
+}
+
+/* ---------------------- freelance rate (add-on task 3) -------------------- */
+console.log('\nfreelance rate calculator');
+{
+  const r = frt.freelanceRateTool({ targetTakeHome: 90000, healthInsuranceAnnual: 6000, overheadAnnual: 4000, stateCode: 'CA', weeksOff: 4, billableHoursPerWeek: 25 });
+  ok('floor rate = gross / annual billable hours', near(r.floorHourlyRate, r.grossRevenue / r.annualBillableHours, 0.5), `${r.floorHourlyRate}`);
+  ok('annual billable hours = (52 - weeksOff) x hours', r.annualBillableHours === (52 - 4) * 25, `${r.annualBillableHours}`);
+  ok('day rate = 8 x hourly', r.dayRate === Math.round(r.floorHourlyRate * 8));
+  // The floor is well above the naive take-home / hours number.
+  ok('floor rate exceeds the naive take-home/hours number', r.floorHourlyRate > r.naiveHourly && r.upliftMultiple > 1, `${r.upliftMultiple}x`);
+  // Breakdown reconciles to gross revenue (take-home + SE + income tax + health + overhead).
+  const sumAnnual = r.breakdown.reduce((a, b) => a + b.annual, 0);
+  ok('breakdown sums to about the gross revenue', near(sumAnnual, r.grossRevenue, 3), `${sumAnnual} vs ${r.grossRevenue}`);
+  ok('breakdown has the four uplift components + take-home', r.breakdown.length === 5 && r.breakdown.some((b) => /self-employment/i.test(b.label)));
+  // More weeks off (fewer billable hours) → a higher required rate.
+  const moreOff = frt.freelanceRateTool({ targetTakeHome: 90000, healthInsuranceAnnual: 6000, overheadAnnual: 4000, stateCode: 'CA', weeksOff: 10, billableHoursPerWeek: 25 });
+  ok('fewer working weeks raises the floor rate', moreOff.floorHourlyRate > r.floorHourlyRate);
+  // No-income-tax state needs a lower gross for the same take-home.
+  const tx = frt.freelanceRateTool({ targetTakeHome: 90000, healthInsuranceAnnual: 6000, overheadAnnual: 4000, stateCode: 'TX', weeksOff: 4, billableHoursPerWeek: 25 });
+  ok('a no-income-tax state needs a lower gross than California', tx.grossRevenue < r.grossRevenue && tx.stateTax === 0);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

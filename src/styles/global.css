@@ -433,3 +433,10 @@ main ol li { margin-bottom: .4rem; line-height: 1.68; }
 .email-body { white-space: pre-wrap; font-family: var(--serif); font-size: 15px; line-height: 1.6; background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 1rem; margin: .25rem 0 .75rem; overflow-x: auto; }
 .btn-copy { font-family: var(--mono); font-size: 12px; padding: .4rem .9rem; border: 1.5px solid var(--accent); background: #fff; color: var(--accent); border-radius: 4px; cursor: pointer; }
 .btn-copy:hover { background: var(--accent); color: var(--paper); }
+
+/* Freelance rate — decomposition bars (inside the dark results box) */
+.rate-bar-row { display: grid; grid-template-columns: 1fr 2fr auto; align-items: center; gap: .6rem; padding: .35rem 0; font-family: var(--mono); font-size: 12px; }
+.rate-bar-label { color: rgba(244,241,235,.85); }
+.rate-bar-track { background: rgba(255,255,255,.12); border-radius: 3px; height: 12px; overflow: hidden; }
+.rate-bar-fill { display: block; height: 100%; background: #a8e6cf; border-radius: 3px; }
+.rate-bar-row .num { color: #a8e6cf; }
