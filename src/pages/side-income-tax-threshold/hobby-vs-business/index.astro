@@ -1,0 +1,77 @@
+---
+/** The one shared hobby-vs-business explainer every platform page links to. */
+import Base from '../../../layouts/Base.astro';
+
+const faqItems = [
+  { q: `Is my side income a hobby or a business?`, a: `The IRS looks at whether you run it to make a profit — businesslike records, effort, dependence on the income, and a history of profit all point to a business. A business reports on Schedule C and pays self-employment tax but can deduct expenses; a hobby reports income but, since 2018, cannot deduct hobby expenses.`, review: true },
+  { q: `Can I deduct expenses from hobby income?`, a: `No. Since the 2018 tax law, hobby expenses are not deductible, but hobby income is still fully taxable. That's the trap: a hobby is the worst of both worlds tax-wise, which is why the business classification — with its deductions — often matters more than people expect.`, review: true },
+  { q: `Does selling my used stuff count as income?`, a: `Selling personal items at a loss (a closet clean-out) isn't taxable income, and the loss isn't deductible either. Selling them at a gain can be. A 1099-K may still report the gross, so you reconcile it on the return — the form doesn't decide whether it's taxable.`, review: true },
+];
+---
+
+<Base
+  title="Hobby vs business: how side income is taxed (2026)"
+  description="Whether your side income is a hobby or a business changes everything: businesses deduct expenses and pay SE tax; hobbies pay tax on income with no deductions. The 2026 rules."
+  faqItems={faqItems}
+>
+  <div class="breadcrumbs"><a href="/">Home</a> / <a href="/side-income-tax-threshold/">Side income</a> / Hobby vs business</div>
+
+  <section class="hero">
+    <p class="hero-label">2026 · side income</p>
+    <h1>Hobby vs business: why it decides your tax</h1>
+    <p class="tagline">The same $5,000 of side income is taxed two very different ways depending on one classification — and the "hobby" side is the expensive one.</p>
+  </section>
+
+  <p>
+    Every platform-and-state question eventually hits the same fork: is this a hobby or a business? It's not a label you
+    pick for convenience — the IRS decides by whether you're genuinely trying to make a profit — and it changes the math
+    more than the dollar amount does.
+  </p>
+
+  <h2>What changes with the classification</h2>
+  <table class="data-table">
+    <thead><tr><th></th><th>Business (Schedule C)</th><th>Hobby</th></tr></thead>
+    <tbody>
+      <tr><td>Income taxable?</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Deduct expenses?</td><td>Yes — fees, materials, mileage</td><td>No (since 2018)</td></tr>
+      <tr><td>Self-employment tax?</td><td>Yes, on net profit</td><td>No</td></tr>
+      <tr><td>Can claim a loss?</td><td>Yes, against other income</td><td>No</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The counter-intuitive part: a hobby often costs <em>more</em> tax on the same gross, because you pay on income
+    while deducting nothing. If you're running it seriously, the business classification — with its deductions — is
+    usually where you want to be, SE tax included.
+  </p>
+
+  <h2>How the IRS decides</h2>
+  <p>
+    No single test, but the factors point the same way: do you keep businesslike records, put in real time and effort,
+    depend on the income, and have a history (or reasonable expectation) of profit? Consistent effort aimed at profit
+    reads as a business; occasional sales for fun read as a hobby.
+  </p>
+
+  <h2>Selling your own used things</h2>
+  <p>
+    A separate case: offloading personal items you already owned. Sold at a loss, it's not taxable income and the loss
+    isn't deductible. A platform may still send a 1099-K reporting the gross, which you reconcile on the return — the
+    form reports, it doesn't tax.
+  </p>
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/side-income-tax-threshold/">Side income tax threshold</a> — the calculator</li>
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a></li>
+    <li><a href="/business-deductions/">Business deductions by profession</a></li>
+  </ul>
+
+  <p class="results-note">General information for 2026, not tax advice. Classification is fact-specific — a professional can confirm yours.</p>
+</Base>

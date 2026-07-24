@@ -1,0 +1,73 @@
+---
+/** Side-income tax threshold hub (add-on task 5). */
+import Base from '../../layouts/Base.astro';
+import SideIncomeCalculator from '../../components/calculators/SideIncomeCalculator.tsx';
+import { SIDE_INCOME_PLATFORMS, SE_THRESHOLD, FEDERAL_1099K } from '../../lib/sideIncome';
+
+const faqItems = [
+  { q: `How much can I earn on a platform before paying taxes?`, a: `There's no tax-free amount on <em>profit</em> — income tax applies from the first dollar you make. What people are half-remembering is the $${SE_THRESHOLD} self-employment-tax threshold and the 1099-K reporting threshold, and neither is a tax-free allowance.`, review: true },
+  { q: `Is the $400 rule a tax-free limit?`, a: `No. $${SE_THRESHOLD} is the point at which you must file <em>self-employment tax</em> on your net earnings. It is not an income-tax exemption — profit below it is still income-taxable; it just doesn't add SE tax.`, review: true },
+  { q: `If I don't get a 1099-K, do I still owe tax?`, a: `Yes. A 1099-K is a reporting form the platform sends when you cross the threshold (federally, over $${FEDERAL_1099K.amount.toLocaleString()} and more than ${FEDERAL_1099K.transactions} transactions). Not getting one doesn't make the income tax-free — you report profit either way.`, review: true },
+  { q: `What's the 2026 federal 1099-K threshold?`, a: `Over $${FEDERAL_1099K.amount.toLocaleString()} in payments AND more than ${FEDERAL_1099K.transactions} transactions. OBBBA (signed July 2025) repealed the $600 rule and restored this threshold for 2025 and forward. Some states set lower thresholds — confirm with yours.`, review: true },
+];
+---
+
+<Base
+  title="Side income tax threshold — do you owe tax on platform sales? (2026)"
+  description="How much can you earn on Etsy, eBay, or a side hustle before paying taxes? The honest answer: profit is taxable from $1. The $400 and 1099-K thresholds explained."
+  faqItems={faqItems}
+>
+  <section class="hero">
+    <p class="hero-label">2026 · side income</p>
+    <h1>Side income tax threshold</h1>
+    <p class="tagline">"How much can I earn before I pay tax?" has a misunderstood answer. There's no tax-free amount on profit — but there are two thresholds people confuse with one. Here's the real picture.</p>
+  </section>
+
+  <p>
+    Search results collapse three different rules into one wrong sentence. Profit is <strong>income-taxable from the
+    first dollar</strong>. The <strong>$400</strong> figure is the self-employment-tax threshold, not a tax-free
+    allowance. And the <strong>1099-K</strong> threshold only decides whether the platform sends a form — never whether
+    you owe. Pick your platform and numbers and the tool separates all three.
+  </p>
+
+  <SideIncomeCalculator client:load />
+
+  <h2>The three layers, kept apart</h2>
+  <table class="data-table">
+    <tbody>
+      <tr><td>Income tax</td><td>Owed on profit from $1 — no tax-free floor</td></tr>
+      <tr><td>Self-employment tax</td><td>Applies once net earnings hit ${SE_THRESHOLD}</td></tr>
+      <tr><td>1099-K reporting</td><td>Federal: over {FEDERAL_1099K.amount.toLocaleString()} AND {FEDERAL_1099K.transactions}+ transactions — a form, not a tax</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The hobby-vs-business question sits underneath all three and changes how you report — see the
+    <a href="/side-income-tax-threshold/hobby-vs-business/">hobby vs business explainer</a>.
+  </p>
+
+  <h2>By platform</h2>
+  <p>Each platform reports differently — some don't use a 1099-K at all:</p>
+  <ul class="link-columns">
+    {SIDE_INCOME_PLATFORMS.filter((p) => p.code !== 'uber_doordash').map((p) => (
+      <li><a href={`/side-income-tax-threshold/${p.code}/`}>{p.name} taxes</a></li>
+    ))}
+    <li><a href="/gig-tax-calculator/">Uber / DoorDash</a> — use the gig calculator</li>
+  </ul>
+
+  <h2>Questions</h2>
+  {faqItems.map((f) => (
+    <div class="faq">
+      <h3>{f.q}</h3>
+      <p data-review="legal" set:html={f.a}></p>
+    </div>
+  ))}
+
+  <h2>Related</h2>
+  <ul class="link-columns">
+    <li><a href="/1099-tax-calculator/">1099 tax calculator</a> — the full self-employment estimate</li>
+    <li><a href="/quarterly-tax-calculator/">Quarterly taxes</a> — if you owe, set aside and pay in</li>
+    <li><a href="/side-income-tax-threshold/hobby-vs-business/">Hobby vs business</a></li>
+  </ul>
+
+  <p class="results-note">An estimate for 2026 on your own numbers. Federal figures from the IRS; state reporting thresholds vary — confirm with your state. Nothing you enter is stored. Not tax advice.</p>
+</Base>

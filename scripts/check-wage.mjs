@@ -49,6 +49,7 @@ const cvm = await load('src/lib/layoff/cobraVsMarketplace.ts');
 const rwy = await load('src/lib/layoff/runway.ts');
 const rto = await load('src/lib/rtoCost.ts');
 const neg = await load('src/lib/negotiation.ts');
+const sid = await load('src/lib/sideIncome.ts');
 
 let pass = 0, fail = 0;
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
@@ -981,6 +982,45 @@ console.log('\nsalary negotiation script');
   // Guard: target not above current triggers a warning note.
   const oddball = neg.generateNegotiation({ situation: 'fair', asks: ['base'], tone: 'warm', role: 'X', currentBase: 100000, targetBase: 90000 });
   ok('a target base not above the offer is flagged', oddball.notes.some((n) => /double-check|not above/i.test(n)));
+}
+
+/* ---------------------- side-income threshold (add-on task 5) ------------- */
+console.log('\nside-income tax threshold');
+{
+  // Etsy, under both federal 1099-K prongs, but profitable: taxable + SE tax, no form.
+  const small = sid.sideIncomeThreshold({ platform: 'etsy', stateCode: 'CA', netProfit: 3000, grossSales: 5000, transactions: 40 });
+  ok('income taxable from the first dollar', small.incomeTaxable === true);
+  ok('SE tax applies over $400 profit', small.seTaxApplies === true && small.seThreshold === 400);
+  ok('no 1099-K under the federal threshold', small.willReceive1099K === false);
+  ok('headline makes the featured-snippet correction', /taxable from the first dollar/.test(small.headline) && /\$400/.test(small.headline));
+
+  // Under $400 profit: no SE tax, but still income-taxable.
+  const tiny = sid.sideIncomeThreshold({ platform: 'etsy', stateCode: 'CA', netProfit: 300, grossSales: 900, transactions: 10 });
+  ok('under $400 profit: no SE tax but still income-taxable', tiny.seTaxApplies === false && tiny.incomeTaxable === true);
+
+  // Over BOTH federal prongs → 1099-K issued.
+  const big = sid.sideIncomeThreshold({ platform: 'ebay', stateCode: 'TX', netProfit: 30000, grossSales: 60000, transactions: 500 });
+  ok('1099-K issued over $20k AND 200 transactions', big.willReceive1099K === true);
+  ok('federal threshold is 20k / 200', big.federalThreshold.amount === 20000 && big.federalThreshold.transactions === 200);
+
+  // Over dollar amount but NOT over 200 transactions → no federal 1099-K (AND logic).
+  const oneProng = sid.sideIncomeThreshold({ platform: 'stockx', stateCode: 'TX', netProfit: 25000, grossSales: 50000, transactions: 30 });
+  ok('both prongs required: high dollars but few transactions → no 1099-K', oneProng.willReceive1099K === false);
+
+  // Twitch/YouTube are not 1099-K platforms → routed to the SE explainer.
+  const tw = sid.sideIncomeThreshold({ platform: 'twitch', stateCode: 'NY', netProfit: 40000, grossSales: 80000, transactions: 900 });
+  ok('Twitch does not use 1099-K (1099-NEC/MISC)', tw.platformUses1099K === false && tw.willReceive1099K === false);
+  ok('Twitch headline routes to SE/income, not the 1099-K threshold', /1099-NEC|1099-MISC/.test(tw.headline));
+
+  // Gig platform points to the existing calculator.
+  const gig = sid.sideIncomeThreshold({ platform: 'uber_doordash', stateCode: 'CA', netProfit: 20000, grossSales: 25000, transactions: 800 });
+  ok('gig platform points to the existing gig calculator', gig.gigPointer === '/gig-tax-calculator/');
+
+  // State note is generic (default-to-federal posture), never a per-state figure.
+  ok('state note defers to the state, no guessed figure', /confirm with your state/i.test(big.stateReportingNote) && !/\$600|\$1,000|\$1,200/.test(big.stateReportingNote));
+
+  // Tax math comes from the existing engine and is positive on real profit.
+  ok('tax estimate uses the existing engine (positive on profit)', big.tax.totalTax > 0 && big.tax.seTax > 0);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -48,9 +48,17 @@
     "MO": { "amount": 1200, "transactions": null, "note": "$1,200 threshold.", "source": "1099FIRE state-specific 1099-K thresholds (secondary)", "source_url": "https://www.1099fire.com/blog/state-specific-1099k-thresholds/", "verify_status": "sourced_pending_owner_review" }
   },
 
+  "_clarification": "These state values are 1099-K REPORTING THRESHOLDS (the dollar level of platform sales that triggers a Form 1099-K to the seller) — NOT filing fees, and NOT estate/inheritance figures. A '$600 threshold' means the platform issues a 1099-K once sales pass $600.",
+
+  "_owner_decision_2026_07_24": {
+    "ship_posture": "DEFAULT ALL STATES TO THE FEDERAL THRESHOLD ($20,000 / 200 transactions) in the shipped tool. Do NOT present any per-state figure as an authoritative state-published threshold. Where a state MAY set a lower threshold, show only a caution: 'Your state may require a platform to report at a lower amount — confirm with [state DOR].'",
+    "rationale": "The only source for the state rows is a single secondary aggregator; the figures are unconfirmed against the state DORs. Presenting them as official would overclaim. Owner approved default-to-federal + confirm-note.",
+    "state_rows_role": "Retained below ONLY as unconfirmed research pointers for a future verification pass — never rendered as fact in shipped copy."
+  },
+
   "_owner_review_notes": [
-    "Federal figure is confirmed against the IRS page and can ship. Every state row is from a single secondary aggregator and MUST be confirmed against that state's Department of Revenue before shipping — post-OBBBA, some states may have conformed to the federal $20,000/200 threshold, and this list may be incomplete (e.g. Illinois historically used $1,000 + 4 transactions and is not in the source list).",
-    "Confirm whether each state's threshold carries a transaction minimum (the source specified none).",
-    "Decide the shipping posture for unconfirmed states: default them to the federal threshold with a visible 'confirm with your state' note, rather than guessing a state figure."
+    "state rows are unconfirmed secondary-source references, kept for a future per-DOR verification pass; the shipped tool ignores them and uses the federal threshold (see _owner_decision).",
+    "Illinois historically used $1,000 + 4 transactions and is not in the source list — example of why the list is treated as incomplete/unconfirmed.",
+    "A future verification pass, if the owner wants real per-state thresholds, must confirm each against the state DOR and whether a transaction minimum applies."
   ]
 }
