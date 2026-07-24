@@ -1018,8 +1018,18 @@ console.log('\nside-income tax threshold');
   const gig = sid.sideIncomeThreshold({ platform: 'uber_doordash', stateCode: 'CA', netProfit: 20000, grossSales: 25000, transactions: 800 });
   ok('gig platform points to the existing gig calculator', gig.gigPointer === '/gig-tax-calculator/');
 
-  // State note is generic (default-to-federal posture), never a per-state figure.
-  ok('state note defers to the state, no guessed figure', /confirm with your state/i.test(big.stateReportingNote) && !/\$600|\$1,000|\$1,200/.test(big.stateReportingNote));
+  // A no-threshold state (TX) gets the generic note with no figure.
+  ok('no-threshold state note names no figure', /confirm with your/i.test(big.stateReportingNote) && !/\$600|\$1,000|\$1,200/.test(big.stateReportingNote));
+
+  // A lower-threshold state (MA $600): a form can arrive under the federal bar, and the note names the figure with a caveat.
+  const ma = sid.sideIncomeThreshold({ platform: 'etsy', stateCode: 'MA', netProfit: 3000, grossSales: 5000, transactions: 40 });
+  ok('MA lower threshold → state form possible under the federal bar', ma.willReceive1099K === false && ma.willReceiveStateForm === true && ma.stateThreshold.amount === 600);
+  ok('MA note names the $600 figure with a confirm caveat', /\$600/.test(ma.stateReportingNote) && /confirm with the/i.test(ma.stateReportingNote));
+  // Illinois needs BOTH >$1,000 and 4+ transactions.
+  const ilLow = sid.sideIncomeThreshold({ platform: 'etsy', stateCode: 'IL', netProfit: 2000, grossSales: 1500, transactions: 2 });
+  ok('IL needs 4+ transactions too — 2 transactions → no state form', ilLow.willReceiveStateForm === false && ilLow.stateThreshold.transactions === 4);
+  const ilHigh = sid.sideIncomeThreshold({ platform: 'etsy', stateCode: 'IL', netProfit: 2000, grossSales: 1500, transactions: 6 });
+  ok('IL over $1,000 AND 6 transactions → state form possible', ilHigh.willReceiveStateForm === true);
 
   // Tax math comes from the existing engine and is positive on real profit.
   ok('tax estimate uses the existing engine (positive on profit)', big.tax.totalTax > 0 && big.tax.seTax > 0);

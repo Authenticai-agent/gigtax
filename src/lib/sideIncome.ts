@@ -14,9 +14,11 @@
 import { calcCombined } from './tax-engine';
 import k1099 from '../data/overrides/side-income-1099k-2026.json';
 import platformsData from '../data/overrides/side-income-platforms.json';
+import { states } from '../data/states';
 
 const FED = (k1099 as any).federal as { amount: number; transactions: number };
 const SE_THRESHOLD = (k1099 as any).se_tax_filing_threshold.amount as number;
+const STATE_THRESHOLDS = (k1099 as any).states as Record<string, { amount: number; transactions: number | null }>;
 const PLATFORMS = (platformsData as any).platforms as Record<string, any>;
 
 /** Platforms whose creator income is reported on 1099-NEC/MISC, not 1099-K. */
@@ -40,7 +42,9 @@ export interface SideIncomeResult {
   seThreshold: number;
   platformUses1099K: boolean;
   willReceive1099K: boolean;
+  willReceiveStateForm: boolean;
   federalThreshold: { amount: number; transactions: number };
+  stateThreshold: { amount: number; transactions: number | null } | null;
   platformNote: string;
   stateReportingNote: string;
   gigPointer: string | null;
@@ -56,8 +60,17 @@ export function sideIncomeThreshold(i: SideIncomeInput): SideIncomeResult {
   const overFederal = i.grossSales > FED.amount && i.transactions > FED.transactions;
   const willReceive1099K = platformUses1099K && overFederal;
 
+  // Some states set a lower reporting threshold, so a form can arrive under the
+  // federal bar. Multi-source figures, surfaced with a confirm-your-state caveat.
+  const stateThreshold = STATE_THRESHOLDS[i.stateCode] ?? null;
+  const overState = !!stateThreshold
+    && i.grossSales > stateThreshold.amount
+    && (stateThreshold.transactions == null || i.transactions >= stateThreshold.transactions);
+  const willReceiveStateForm = platformUses1099K && !willReceive1099K && overState;
+
   const incomeTaxable = i.netProfit > 0;
   const seTaxApplies = i.netProfit >= SE_THRESHOLD;
+  const stateName = states[i.stateCode]?.name ?? i.stateCode;
 
   // Tax on the profit, via the existing 1099 engine (profit as SE net income).
   const tax = calcCombined(0, i.netProfit, 0, status, i.stateCode);
@@ -66,7 +79,9 @@ export function sideIncomeThreshold(i: SideIncomeInput): SideIncomeResult {
     ? `Whether or not ${p.name} sends you a 1099-K, your profit is taxable from the first dollar. The $${SE_THRESHOLD} figure is the self-employment-tax threshold, not a tax-free allowance.`
     : `${p.name} income is usually reported on a 1099-NEC or 1099-MISC, not a 1099-K — so the $${FED.amount.toLocaleString()} 1099-K threshold doesn't apply. Your profit is taxable from the first dollar, and self-employment tax applies at $${SE_THRESHOLD} of net earnings.`;
 
-  const stateReportingNote = `The federal 1099-K threshold is $${FED.amount.toLocaleString()} and more than ${FED.transactions} transactions. Some states set a lower reporting threshold — confirm with your state's Department of Revenue, because a form there doesn't change what you owe, only whether one is issued.`;
+  const stateReportingNote = stateThreshold
+    ? `${stateName} is reported to require a 1099-K at over $${stateThreshold.amount.toLocaleString()}${stateThreshold.transactions ? ` and ${stateThreshold.transactions}+ transactions` : ''} — lower than the federal $${FED.amount.toLocaleString()} — per 2026 filing guides; confirm with the ${stateName} Department of Revenue. A form there changes whether one is issued, not what you owe.`
+    : `The federal 1099-K threshold is $${FED.amount.toLocaleString()} and more than ${FED.transactions} transactions. ${stateName} isn't among the states reported to set a lower threshold, but confirm with your Department of Revenue — a form never changes what you owe, only whether one is issued.`;
 
   return {
     platformName: p.name,
@@ -75,7 +90,9 @@ export function sideIncomeThreshold(i: SideIncomeInput): SideIncomeResult {
     seThreshold: SE_THRESHOLD,
     platformUses1099K,
     willReceive1099K,
+    willReceiveStateForm,
     federalThreshold: { amount: FED.amount, transactions: FED.transactions },
+    stateThreshold,
     platformNote: p.quirk || p.reports || '',
     stateReportingNote,
     gigPointer: GIG_POINTER.has(i.platform) ? (p.existing_page || '/gig-tax-calculator/') : null,

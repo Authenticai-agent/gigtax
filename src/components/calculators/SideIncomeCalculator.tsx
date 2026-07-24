@@ -43,7 +43,7 @@ export default function SideIncomeCalculator({ presetPlatform = 'etsy', presetSt
             <h3>Your {result.platformName} side income</h3>
             <div className="result-line"><span>Income tax owed on the profit?</span><span className="num">{result.incomeTaxable ? 'Yes, from $1' : 'No profit'}</span></div>
             <div className="result-line"><span>Self-employment tax (profit ≥ ${result.seThreshold})?</span><span className="num">{result.seTaxApplies ? 'Yes' : 'No'}</span></div>
-            <div className="result-line"><span>Will {result.platformName} send a 1099-K?</span><span className="num">{!result.platformUses1099K ? 'No — uses 1099-NEC/MISC' : result.willReceive1099K ? 'Yes' : 'No — under federal threshold'}</span></div>
+            <div className="result-line"><span>Will {result.platformName} send a 1099-K?</span><span className="num">{!result.platformUses1099K ? 'No — uses 1099-NEC/MISC' : result.willReceive1099K ? 'Yes — over federal threshold' : result.willReceiveStateForm ? 'Maybe — your state’s lower threshold' : 'No — under federal threshold'}</span></div>
             <div className="result-line total"><span>Estimated tax on ${formatMoney(netProfit).replace('$', '')} profit</span><span className="num">{formatMoney(result.tax.totalTax)}</span></div>
             <div className="result-line"><span>— of which self-employment tax</span><span className="num">{formatMoney(result.tax.seTax)}</span></div>
             <div className="result-line"><span>— of which {states[stateCode].name} state tax</span><span className="num">{formatMoney(result.tax.stateTax)}</span></div>
