@@ -1,0 +1,24 @@
+{
+  "_meta": {
+    "purpose": "Remote-work tax residency checker (task 2) — Phase 1 data. The 'convenience of the employer' states: states that tax a nonresident remote worker as if every day were worked at the employer's in-state office, which can create double taxation with the worker's home state. Reciprocity and credit-for-taxes-paid live in the existing src/data/reciprocity.ts — not duplicated here.",
+    "phase": "1 — data, pending owner sign-off. Confirm each state against its Department of Revenue before Phase 2.",
+    "last_verified": "2026-07-24",
+    "schema": "code -> { name, applies, nuance, employer_necessity_exception, source, source_url, verify_status }"
+  },
+
+  "states": {
+    "NY": { "name": "New York", "applies": true, "nuance": "The oldest and most aggressive convenience rule. Taxes a nonresident's wages as NY-source unless the remote work is for the employer's necessity, not the employee's convenience.", "employer_necessity_exception": true, "source": "NY DTF (confirm against TSB-M guidance)", "source_url": "https://www.tax.ny.gov/", "verify_status": "sourced_pending_owner_review" },
+    "PA": { "name": "Pennsylvania", "applies": true, "nuance": "Applies the convenience rule to nonresident remote workers of PA employers.", "employer_necessity_exception": true, "source": "PA DOR (confirm)", "source_url": "https://www.revenue.pa.gov/", "verify_status": "sourced_pending_owner_review" },
+    "DE": { "name": "Delaware", "applies": true, "nuance": "Applies a convenience rule to nonresident employees of Delaware employers.", "employer_necessity_exception": true, "source": "DE Division of Revenue (confirm)", "source_url": "https://revenue.delaware.gov/", "verify_status": "sourced_pending_owner_review" },
+    "AR": { "name": "Arkansas", "applies": true, "nuance": "Applies a convenience rule to nonresident remote workers.", "employer_necessity_exception": true, "source": "AR DFA (confirm)", "source_url": "https://www.dfa.arkansas.gov/", "verify_status": "sourced_pending_owner_review" },
+    "NE": { "name": "Nebraska", "applies": true, "nuance": "Amended 2024: the convenience rule applies only after at least 7 days of physical presence in Nebraska in the year. If the nonresident never sets foot in NE, it does not apply.", "employer_necessity_exception": true, "source": "NE DOR (confirm the 7-day amendment)", "source_url": "https://revenue.nebraska.gov/", "verify_status": "sourced_pending_owner_review" },
+    "CT": { "name": "Connecticut", "applies": true, "nuance": "Limited: CT applies its convenience rule only to nonresidents whose home state itself has a convenience rule (a reciprocal-retaliation design).", "employer_necessity_exception": true, "source": "CT DRS (confirm)", "source_url": "https://portal.ct.gov/drs", "verify_status": "sourced_pending_owner_review" },
+    "NJ": { "name": "New Jersey", "applies": true, "nuance": "Enacted a convenience rule that applies only to nonresidents from states that impose their own convenience rule (mirrors CT). New Jersey publishes an FAQ on it.", "employer_necessity_exception": true, "source": "NJ Division of Taxation — Convenience of the Employer Sourcing Rule FAQ (primary)", "source_url": "https://www.nj.gov/treasury/taxation/conveniencerulefaq.shtml", "verify_status": "verified" }
+  },
+
+  "_owner_review_notes": [
+    "NJ is confirmed against the state Division of Taxation FAQ (primary). The other six are from secondary summaries and need confirmation against each state DOR — convenience rules have changed recently (NE's 2024 amendment is the example).",
+    "Most convenience states offer an 'employer necessity' exception: if the employer requires the remote work for a genuine business reason (not employee convenience), the wages may not be re-sourced. The tool must surface this exception prominently, not just the rule.",
+    "This is a rules-map, not a tax computation — the tool outputs which rules apply and where double taxation risk sits, then leans on the existing reciprocity + credit-for-taxes-paid data for the states that have those instead."
+  ]
+}
