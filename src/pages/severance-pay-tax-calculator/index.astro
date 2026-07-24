@@ -1,0 +1,76 @@
+---
+/** Layoff cluster: severance pay tax calculator. */
+import Base from '../../layouts/Base.astro';
+import LayoffProgress from '../../components/LayoffProgress.astro';
+import SeveranceCalculator from '../../components/calculators/SeveranceCalculator.tsx';
+import { severanceTax } from '../../lib/layoff/severanceTax';
+import { formatMoney } from '../../lib/tax-engine';
+
+const lo = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'CA', ytdWages: 0, filingStatus: 'single', otherIncome: 20000 });
+const hi = severanceTax({ severance: 40000, paymentMode: 'separate', stateCode: 'CA', ytdWages: 0, filingStatus: 'single', otherIncome: 400000 });
+---
+
+<Base
+  title="Severance pay tax calculator 2026 — withholding vs tax"
+  description="Severance is withheld at a flat 22% federally — but that's not your tax. See your net check, real liability, and whether you get a refund or owe."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year · laid off</p>
+    <h1>Severance pay tax calculator</h1>
+    <p class="tagline">The 22% taken out of your severance is withholding, not your tax bill. Depending on your income it over- or under-shoots — here's the real number.</p>
+  </section>
+
+  <LayoffProgress active="severance" />
+
+  <p>
+    Severance is "supplemental wages," so an employer withholds a flat 22% for federal tax (37% on anything over
+    $1 million) when it's paid separately. That flat rate ignores your actual bracket: it over-withholds if you're
+    in the 10–22% range (refund at filing) and under-withholds if you're in the 32–37% range (a bill you should set
+    aside for now). This shows the withholding and your estimated real liability side by side.
+  </p>
+
+  <SeveranceCalculator client:load />
+
+  <h2>The same $40,000 severance, two incomes</h2>
+  <p>Why "22% withheld" tells you almost nothing on its own — a single filer in California, $40,000 severance:</p>
+  <table class="data-table">
+    <thead><tr><th>Other 2026 income</th><th>Withheld (federal)</th><th>Actual liability</th><th>At filing</th></tr></thead>
+    <tbody>
+      <tr><td>{formatMoney(20000)}</td><td>{formatMoney(lo.federalWithholding)}</td><td>{formatMoney(lo.estimatedActualLiability)}</td><td>refund ≈ {formatMoney(Math.abs(lo.overUnderWithholding))}</td></tr>
+      <tr><td>{formatMoney(400000)}</td><td>{formatMoney(hi.federalWithholding)}</td><td>{formatMoney(hi.estimatedActualLiability)}</td><td>owe ≈ {formatMoney(Math.abs(hi.overUnderWithholding))} more</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Same {formatMoney(40000)}, same {formatMoney(lo.federalWithholding)} withheld — but the low earner gets money
+    back and the high earner owes thousands more. The withholding rate is fixed; your tax rate is not.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Is severance taxed at a higher rate?</h3>
+    <p data-review="legal">No. It's <em>withheld</em> differently (a flat 22%), but it's taxed as ordinary income at
+      your normal rates. The flat withholding just isn't your final tax — you settle up at filing. See the myth in the
+      table above.</p>
+  </div>
+  <div class="faq">
+    <h3>Does FICA come out of severance?</h3>
+    <p data-review="legal">Yes — 6.2% Social Security up to the $184,500 wage base (wages already earned from the same
+      employer this year count toward it) and 1.45% Medicare with no cap, plus 0.9% additional Medicare on wages over
+      $200,000 ($250,000 married).</p>
+  </div>
+  <div class="faq">
+    <h3>What if it's paid with my final paycheck?</h3>
+    <p data-review="legal">Then the aggregate method applies instead of the flat 22% — the employer withholds as if the
+      combined amount were regular wages, which usually lands much closer to your real rate. Pick that mode above to see it.</p>
+  </div>
+
+  <h2>Next steps</h2>
+  <ul class="link-columns">
+    <li><a href="/cobra-vs-marketplace-calculator/">Health coverage</a> — COBRA vs the 2026 marketplace</li>
+    <li><a href="/unemployment-benefits-calculator/">Unemployment</a> — your weekly benefit and duration</li>
+    <li><a href="/layoff-runway-calculator/">Runway</a> — how long your money lasts</li>
+    <li><a href="/estimated-tax-penalty-calculator/">Estimated tax penalty</a> — if you under-withheld</li>
+  </ul>
+
+  <p class="results-note">An estimate for the 2026 tax year on your own inputs. Nothing you enter is stored or sent anywhere. Not tax advice.</p>
+</Base>

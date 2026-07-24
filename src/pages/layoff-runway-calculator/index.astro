@@ -1,0 +1,79 @@
+---
+/** Layoff cluster: runway calculator — the anchor. */
+import Base from '../../layouts/Base.astro';
+import LayoffProgress from '../../components/LayoffProgress.astro';
+import RunwayCalculator from '../../components/calculators/RunwayCalculator.tsx';
+import { runway } from '../../lib/layoff/runway';
+import { formatMoney } from '../../lib/tax-engine';
+
+const ex = runway({ savings: 15000, netSeverance: 27000, monthlyUINet: 2200, uiWeeks: 26, monthlyEssentialSpend: 3800, healthPremiumMonthly: 600, otherMonthlyIncome: 0 });
+---
+
+<Base
+  title="Layoff runway calculator 2026 — how long will it last?"
+  description="Add up net severance, unemployment and savings against your spending and health premium to see how many months of runway you have."
+>
+  <section class="hero">
+    <p class="hero-label">2026 tax year · laid off</p>
+    <h1>Layoff runway calculator</h1>
+    <p class="tagline">The one number that matters after a layoff: how many months until the money runs out. This chains severance, unemployment and health costs into a single answer.</p>
+  </section>
+
+  <LayoffProgress active="runway" />
+
+  <p>
+    A severance letter comes with a countdown. This is the calculator that reads it: your savings plus net severance,
+    topped up by unemployment for as long as it lasts, against your essential spending and health premium — month by
+    month, until the balance hits zero. It tells you your runway and the month you need a paycheck by. Run the other
+    three calculators first and carry their net figures in here.
+  </p>
+
+  <RunwayCalculator client:load />
+
+  <h2>Worked example</h2>
+  <p>{formatMoney(15000)} savings + {formatMoney(27000)} net severance, {formatMoney(2200)}/mo unemployment for 26 weeks, {formatMoney(3800)} spending + {formatMoney(600)} health premium:</p>
+  <table class="data-table">
+    <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Starting balance</td><td>{formatMoney(ex.startingBalance)}</td></tr>
+      <tr><td>Monthly burn</td><td>{formatMoney(ex.monthlyBurn)}</td></tr>
+      <tr><td>Unemployment runs out at month</td><td>{ex.monthUIExhausts}</td></tr>
+      <tr><td>Months of runway</td><td>{ex.runsOut ? ex.monthsOfRunway : `${ex.monthsOfRunway}+`}</td></tr>
+      <tr><td>Need income by month</td><td>{ex.breakEvenJobStartMonth ?? '—'}</td></tr>
+    </tbody>
+  </table>
+  <p>
+    That's <strong>{ex.monthsOfRunway} months of runway</strong> — comfortable while unemployment lasts, then the
+    balance falls faster once it ends at month {ex.monthUIExhausts}. The job search has a deadline: income by month
+    {' '}{ex.breakEvenJobStartMonth}.
+  </p>
+
+  <h2>Questions</h2>
+  <div class="faq">
+    <h3>Why does my balance fall faster later?</h3>
+    <p>Because unemployment ends. While it's paying, it covers a chunk of your spending; once it runs out (here at
+      month {ex.monthUIExhausts}), your full burn comes out of savings, so the curve steepens. That inflection is the
+      point to plan around.</p>
+  </div>
+  <div class="faq">
+    <h3>Should I enter unemployment before or after tax?</h3>
+    <p>After tax. Unemployment is federally taxable and most states tax it too, so use the net figure for an honest
+      runway. The unemployment calculator shows your state's treatment.</p>
+  </div>
+  <div class="faq">
+    <h3>What counts as essential spending?</h3>
+    <p>The things you can't stop: rent or mortgage, food, utilities, transport, insurance, minimum debt payments.
+      Keep the health premium separate — the calculator adds it — and leave out discretionary spending you'd cut in a
+      pinch.</p>
+  </div>
+
+  <h2>The full toolkit</h2>
+  <ul class="link-columns">
+    <li><a href="/severance-pay-tax-calculator/">Severance tax</a> — your net check</li>
+    <li><a href="/unemployment-benefits-calculator/">Unemployment</a> — weekly benefit and weeks</li>
+    <li><a href="/cobra-vs-marketplace-calculator/">Health coverage</a> — the monthly premium</li>
+    <li><a href="/budget-calculator/">50/30/20 budget</a> — trim the burn</li>
+  </ul>
+
+  <p class="results-note">An estimate on your own numbers — no inflation or investment growth modeled. Nothing you enter is stored or sent anywhere. Not financial advice.</p>
+</Base>
